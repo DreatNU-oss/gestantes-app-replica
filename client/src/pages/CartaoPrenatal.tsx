@@ -475,10 +475,20 @@ export default function CartaoPrenatal() {
                   if (marco.isRange && Array.isArray(marco.semanas) && Array.isArray(marco.dias)) {
                     dataInicio = calcularDataPorUS(marco.semanas[0], marco.dias[0]);
                     dataFim = calcularDataPorUS(marco.semanas[1], marco.dias[1]);
-                    textoParaCopiar = `${marco.titulo}: ${dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'} a ${dataFim ? dataFim.toLocaleDateString('pt-BR') : '-'}`;
+                    // Formato: "DD/MM a DD/MM/AAAA"
+                    if (dataInicio && dataFim) {
+                      const diaInicio = String(dataInicio.getDate()).padStart(2, '0');
+                      const mesInicio = String(dataInicio.getMonth() + 1).padStart(2, '0');
+                      const diaFim = String(dataFim.getDate()).padStart(2, '0');
+                      const mesFim = String(dataFim.getMonth() + 1).padStart(2, '0');
+                      const anoFim = dataFim.getFullYear();
+                      textoParaCopiar = `${diaInicio}/${mesInicio} a ${diaFim}/${mesFim}/${anoFim}`;
+                    } else {
+                      textoParaCopiar = '-';
+                    }
                   } else if (typeof marco.semanas === 'number' && typeof marco.dias === 'number') {
                     dataInicio = calcularDataPorUS(marco.semanas, marco.dias);
-                    textoParaCopiar = `${marco.titulo}: ${dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'}`;
+                    textoParaCopiar = dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-';
                   }
 
                   return (

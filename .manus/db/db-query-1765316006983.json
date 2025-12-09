@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE gestantes \nSET \n  gesta = 2,\n  para = 1,\n  partosNormais = 1,\n  cesareas = 0,\n  abortos = 0,\n  dataUltrassom = '2025-07-28',\n  igUltrassomSemanas = 7,\n  igUltrassomDias = 1,\n  tipoPartoDesejado = 'normal'\nWHERE id = 330092 AND nome = 'Vivian Mantovani Lopes e Silva'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE gestantes \nSET \n  gesta = 2,\n  para = 1,\n  partosNormais = 1,\n  cesareas = 0,\n  abortos = 0,\n  dataUltrassom = '2025-07-28',\n  igUltrassomSemanas = 7,\n  igUltrassomDias = 1,\n  tipoPartoDesejado = 'normal'\nWHERE id = 330092 AND nome = 'Vivian Mantovani Lopes e Silva'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 167
+}

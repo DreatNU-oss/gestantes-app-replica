@@ -171,3 +171,12 @@
 - [x] Atualizar layout de informações da gestante no Cartão de Pré-Natal para ficar idêntico ao print original
 - [x] Garantir que marcos no Cartão sempre usam DPP pelo US
 - [x] Adicionar cálculo de DPP pelo US no backend (campo dppUS no objeto calculado)
+
+
+## Bugs no Cartão de Pré-Natal (Reportados 09/12/2025)
+
+- [x] Corrigir exibição de dados Gesta/Para no card de Dados da Gestante
+- [ ] Corrigir exibição de consultas no Histórico de Consultas (Vivian não tem consultas cadastradas)
+- [x] Corrigir exibição dos Marcos Importantes (não aparecem mesmo com dados de ultrassom)
+- [x] Ajustar formato do texto copiado dos marcos para "DD/MM a DD/MM/AAAA" em períodos
+- [x] Verificar se campos Gesta/Para estão sendo retornados pelo backend
