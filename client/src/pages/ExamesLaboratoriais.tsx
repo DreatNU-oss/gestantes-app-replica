@@ -6,12 +6,12 @@ export default function ExamesLaboratoriais() {
     <GestantesLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-3xl font-bold text-foreground">ExamesLaboratoriais</h2>
-          <p className="text-muted-foreground">Em desenvolvimento</p>
+          <h2 className="text-3xl font-bold text-foreground">Exames Laboratoriais</h2>
+          <p className="text-muted-foreground">Funcionalidade em desenvolvimento</p>
         </div>
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Funcionalidade em desenvolvimento</p>
+            <p className="text-muted-foreground">Esta funcionalidade será implementada em breve</p>
           </CardContent>
         </Card>
       </div>

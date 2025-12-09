@@ -47,3 +47,18 @@
 - [x] Adicionar logo da clínica Mais Mulher
 - [x] Interface responsiva e intuitiva
 - [x] Indicadores coloridos por trimestre
+
+
+## Réplica Exata do Projeto Original
+
+- [x] Implementar página de Marcos Importantes completa
+- [x] Implementar página de Previsão de Partos completa
+- [ ] Implementar página de Exames Laboratoriais completa
+- [ ] Implementar página de Exames Estruturados completa
+- [ ] Implementar página de Cartão Pré-Natal com geração de PDF
+- [ ] Implementar página de Estatísticas completa
+- [x] Implementar página de Gerenciar Planos completa
+- [x] Implementar página de Gerenciar Médicos completa
+- [ ] Implementar página de Agendamento de Consultas pré-natais
+- [ ] Adicionar todas as funcionalidades de cálculo de datas
+- [ ] Replicar exatamente o design e cores do original

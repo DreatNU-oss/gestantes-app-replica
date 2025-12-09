@@ -7,11 +7,11 @@ export default function CartaoPrenatal() {
       <div className="space-y-6">
         <div>
           <h2 className="text-3xl font-bold text-foreground">CartaoPrenatal</h2>
-          <p className="text-muted-foreground">Em desenvolvimento</p>
+          <p className="text-muted-foreground">Funcionalidade em desenvolvimento</p>
         </div>
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Funcionalidade em desenvolvimento</p>
+            <p className="text-muted-foreground">Esta funcionalidade será implementada em breve</p>
           </CardContent>
         </Card>
       </div>
