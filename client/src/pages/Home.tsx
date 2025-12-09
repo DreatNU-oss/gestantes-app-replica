@@ -1,31 +1,100 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
-import { Streamdown } from 'streamdown';
+import { Baby, Calendar, Calculator } from "lucide-react";
+import { useEffect } from "react";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      window.location.href = "/dashboard";
+    }
+  }, [loading, isAuthenticated]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-100">
+      <div className="container py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <img src="/logo-horizontal.png" alt="Mais Mulher" className="h-24 w-auto" />
+            </div>
+            <h1 className="text-4xl font-bold text-foreground mb-4">
+              APP Gestantes
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Sistema completo para acompanhamento e gestão de gestantes
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card>
+              <CardHeader>
+                <Calendar className="w-8 h-8 text-primary mb-2" />
+                <CardTitle className="text-lg">Cálculo por DUM</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Calcule automaticamente a idade gestacional baseada na Data da Última Menstruação
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Calculator className="w-8 h-8 text-primary mb-2" />
+                <CardTitle className="text-lg">Cálculo por Ultrassom</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Determine a idade gestacional com base nos dados do primeiro ultrassom
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Baby className="w-8 h-8 text-primary mb-2" />
+                <CardTitle className="text-lg">Gestão Completa</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Cadastre, acompanhe e gerencie todas as suas pacientes gestantes em um só lugar
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button size="lg" asChild>
+              <a href={getLoginUrl()}>
+                Entrar no Sistema
+              </a>
+            </Button>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Faça login para começar a usar o sistema
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
