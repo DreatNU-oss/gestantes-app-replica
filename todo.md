@@ -124,3 +124,5 @@
 ## Melhorias de UX
 
 - [x] Ordenar gestantes alfabeticamente no seletor do Cartão de Pré-Natal
+
+- [x] Adicionar função de busca no seletor de gestantes do Cartão de Pré-Natal

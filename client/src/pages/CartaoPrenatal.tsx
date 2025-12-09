@@ -39,6 +39,7 @@ export default function CartaoPrenatal() {
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
+  const [buscaGestante, setBuscaGestante] = useState("");
 
   const [formData, setFormData] = useState({
     dataConsulta: getDataHoje(),
@@ -189,29 +190,45 @@ export default function CartaoPrenatal() {
             <CardTitle>Selecionar Gestante</CardTitle>
             <CardDescription>Escolha a gestante para visualizar ou registrar consultas</CardDescription>
           </CardHeader>
-          <CardContent>
-            <Select
-              value={gestanteSelecionada?.toString() || ""}
-              onValueChange={(value) => {
-                setGestanteSelecionada(parseInt(value));
-                setMostrarFormulario(false);
-                resetForm();
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione uma gestante" />
-              </SelectTrigger>
-              <SelectContent>
-                {gestantes
-                  ?.slice()
-                  .sort((a: any, b: any) => a.nome.localeCompare(b.nome))
-                  .map((g: any) => (
-                    <SelectItem key={g.id} value={g.id.toString()}>
-                      {g.nome}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Buscar Gestante</Label>
+              <Input
+                type="text"
+                placeholder="Digite o nome da gestante..."
+                value={buscaGestante}
+                onChange={(e) => setBuscaGestante(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label>Selecionar Gestante</Label>
+              <Select
+                value={gestanteSelecionada?.toString() || ""}
+                onValueChange={(value) => {
+                  setGestanteSelecionada(parseInt(value));
+                  setMostrarFormulario(false);
+                  resetForm();
+                }}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Selecione uma gestante" />
+                </SelectTrigger>
+                <SelectContent>
+                  {gestantes
+                    ?.slice()
+                    .sort((a: any, b: any) => a.nome.localeCompare(b.nome))
+                    .filter((g: any) => 
+                      g.nome.toLowerCase().includes(buscaGestante.toLowerCase())
+                    )
+                    .map((g: any) => (
+                      <SelectItem key={g.id} value={g.id.toString()}>
+                        {g.nome}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
         </Card>
 
