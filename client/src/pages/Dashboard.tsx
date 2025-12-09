@@ -92,7 +92,7 @@ export default function Dashboard() {
             const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
             const diasRestantes = 280 - igUltrassomDias;
             const dpp = new Date(dataUS);
-            dpp.setDate(dpp.getDate() + diasRestantes);
+            dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
             return dpp.getTime();
           };
           

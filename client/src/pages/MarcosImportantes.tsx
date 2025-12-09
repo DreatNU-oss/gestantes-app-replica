@@ -64,7 +64,7 @@ export default function MarcosImportantes() {
     const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
     const diasRestantes = 280 - igUltrassomDias;
     const dpp = new Date(dataUS);
-    dpp.setDate(dpp.getDate() + diasRestantes);
+    dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
     return dpp;
   };
 

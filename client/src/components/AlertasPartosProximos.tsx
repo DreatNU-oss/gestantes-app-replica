@@ -48,7 +48,7 @@ export function AlertasPartosProximos({
     const diasGestacao = (gestante.igUltrassomSemanas! * 7) + (gestante.igUltrassomDias || 0);
     const diasRestantes = 280 - diasGestacao;
     const dpp = new Date(dataUS);
-    dpp.setDate(dpp.getDate() + diasRestantes);
+    dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
     return dpp;
   };
 

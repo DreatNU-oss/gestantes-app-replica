@@ -48,7 +48,7 @@ export default function PrevisaoPartos() {
     const dataUS = new Date(gestante.dataUltrassom);
     const igTotalDias = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
     const diasRestantes = 280 - igTotalDias;
-    const dpp = new Date(dataUS.getTime() + diasRestantes * 24 * 60 * 60 * 1000);
+    const dpp = new Date(dataUS.getTime() + (diasRestantes + 1) * 24 * 60 * 60 * 1000); // +1 para contar o dia do US
     return dpp;
   };
 

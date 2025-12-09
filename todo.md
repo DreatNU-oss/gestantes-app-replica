@@ -145,3 +145,10 @@
 - [x] Ajustar cores dos badges de dias (laranja para urgente, verde para distante)
 - [x] Adicionar ícone de calendário antes da data
 - [x] Importar datas de partos programados do CSV atualizado (13 datas importadas)
+
+
+## Correção de Cálculo DPP Ultrassom
+
+- [x] Investigar diferença no cálculo da DPP pelo Ultrassom (Paula Marques)
+- [x] Corrigir fórmula de cálculo da DPP pelo US para ficar idêntica ao site original (+1 dia)
+- [x] Validar cálculo com dados de teste (Paula Marques: US 20/05/2025, IG 7s6d = DPP 31/12/2025)
