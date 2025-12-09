@@ -202,11 +202,14 @@ export default function CartaoPrenatal() {
                 <SelectValue placeholder="Selecione uma gestante" />
               </SelectTrigger>
               <SelectContent>
-                {gestantes?.map((g: any) => (
-                  <SelectItem key={g.id} value={g.id.toString()}>
-                    {g.nome}
-                  </SelectItem>
-                ))}
+                {gestantes
+                  ?.slice()
+                  .sort((a: any, b: any) => a.nome.localeCompare(b.nome))
+                  .map((g: any) => (
+                    <SelectItem key={g.id} value={g.id.toString()}>
+                      {g.nome}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </CardContent>

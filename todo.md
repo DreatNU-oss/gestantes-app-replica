@@ -119,3 +119,8 @@
 - [x] Apresentar Histórico Obstétrico em linha única
 - [ ] Adicionar geração de PDF do cartão pré-natal
 - [ ] Incluir logo da clínica no PDF
+
+
+## Melhorias de UX
+
+- [x] Ordenar gestantes alfabeticamente no seletor do Cartão de Pré-Natal
