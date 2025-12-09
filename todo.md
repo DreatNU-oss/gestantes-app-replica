@@ -70,3 +70,15 @@
 - [x] Usar logo horizontal no sidebar
 - [x] Usar logo vertical na landing page
 - [ ] Atualizar favicon com o logo
+
+
+## Migração de Dados do Site Atual
+
+- [x] Importar dados de usuários
+- [x] Importar dados de gestantes (113 gestantes)
+- [x] Importar dados de médicos (4 médicos)
+- [ ] Importar dados de consultas pré-natais (requer adaptação de schema)
+- [ ] Importar dados de agendamentos de consultas (requer adaptação de schema)
+- [ ] Importar dados de exames laboratoriais (requer adaptação de schema)
+- [ ] Importar dados de exames laboratoriais estruturados (requer adaptação de schema)
+- [x] Validar integridade dos dados migrados
