@@ -315,7 +315,7 @@ export const appRouter = router({
       }),
   }),
 
-  consultas: router({
+  consultasPrenatal: router({
     list: protectedProcedure
       .input(z.object({ gestanteId: z.number() }))
       .query(({ input }) => getConsultasByGestanteId(input.gestanteId)),

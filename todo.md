@@ -95,3 +95,27 @@
 - [x] Implementar gráfico de distribuição por tipo de parto
 - [x] Implementar gráfico de distribuição por convênio
 - [x] Implementar gráfico de morfológicos por mês
+
+
+## Correção de Bugs
+
+- [x] Investigar por que o dashboard mostra 105 gestantes ao invés de 113
+- [x] Remover filtro por userId para permitir visualização compartilhada de todas as gestantes
+- [x] Atualizar todas as queries para não filtrar por usuário
+- [x] Validar que todas as 113 gestantes aparecem no dashboard
+
+
+## Ajustes de Títulos e Navegação
+
+- [x] Ajustar títulos das abas do menu lateral para ficarem idênticos ao site original
+- [ ] Ajustar títulos das páginas para ficarem idênticos ao site original
+- [ ] Verificar nomenclatura em todas as páginas
+
+## Funcionalidade de Cartão Pré-Natal
+
+- [x] Implementar página completa de Cartão Pré-Natal
+- [x] Incluir IG calculada por DUM e Ultrassom
+- [x] Exibir Idade ao invés de Data de Nascimento
+- [x] Apresentar Histórico Obstétrico em linha única
+- [ ] Adicionar geração de PDF do cartão pré-natal
+- [ ] Incluir logo da clínica no PDF

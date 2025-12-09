@@ -132,7 +132,8 @@ export async function getGestantesByUserId(userId: number): Promise<Gestante[]> 
   const db = await getDb();
   if (!db) return [];
   
-  return db.select().from(gestantes).where(eq(gestantes.userId, userId));
+  // Retorna todas as gestantes (compartilhadas entre todos os usuários)
+  return db.select().from(gestantes);
 }
 
 export async function getGestanteById(id: number): Promise<Gestante | undefined> {

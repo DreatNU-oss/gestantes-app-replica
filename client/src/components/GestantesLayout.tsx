@@ -36,11 +36,12 @@ import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { trpc } from "@/lib/trpc";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  { icon: Users, label: "Gestantes", path: "/dashboard" },
+  { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal" },
+  { icon: FileText, label: "Exames Laboratoriais", path: "/exames-laboratoriais" },
   { icon: Calendar, label: "Marcos Importantes", path: "/marcos" },
-  { icon: Baby, label: "Previsão de Partos", path: "/previsao-partos" },
-  { icon: Activity, label: "Exames Laboratoriais", path: "/exames" },
-  { icon: FileText, label: "Cartão Pré-Natal", path: "/cartao-prenatal" },
+  { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos" },
+  { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas" },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas" },
   { icon: Settings, label: "Gerenciar Planos", path: "/gerenciar-planos" },
   { icon: Settings, label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
