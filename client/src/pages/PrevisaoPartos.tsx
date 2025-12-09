@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { useState, useMemo } from "react";
-import { Calendar, Baby } from "lucide-react";
+import { Calendar, Baby, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -17,6 +19,7 @@ import {
 } from "@/components/ui/table";
 
 export default function PrevisaoPartos() {
+  const [, setLocation] = useLocation();
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [medicoFiltro, setMedicoFiltro] = useState("todos");
@@ -98,11 +101,22 @@ export default function PrevisaoPartos() {
   return (
     <GestantesLayout>
       <div className="space-y-6">
-        <div>
-          <h2 className="text-3xl font-bold text-foreground">Previsão de Partos</h2>
-          <p className="text-muted-foreground">
-            Visualize as gestantes com previsão de parto em um período específico
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setLocation("/dashboard")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">Previsão de Partos</h2>
+            <p className="text-muted-foreground">
+              Visualize as gestantes com previsão de parto em um período específico
+            </p>
+          </div>
         </div>
 
         <Card>

@@ -484,6 +484,46 @@ export const appRouter = router({
       }))
       .mutation(({ input }) => createAlertaEnviado(input)),
   }),
-});
 
+  estatisticas: router({
+    tiposPartosDesejados: protectedProcedure
+      .query(async ({ ctx }) => {
+        const gestantes = await getGestantesByUserId(ctx.user.id);
+        
+        const contagem = {
+          cesariana: 0,
+          normal: 0,
+          a_definir: 0,
+        };
+
+        gestantes.forEach((g) => {
+          if (g.tipoPartoDesejado === "cesariana") contagem.cesariana++;
+          else if (g.tipoPartoDesejado === "normal") contagem.normal++;
+          else contagem.a_definir++;
+        });
+
+        return contagem;
+      }),
+
+    convenios: protectedProcedure
+      .query(async ({ ctx }) => {
+        const gestantes = await getGestantesByUserId(ctx.user.id);
+        const planos = await listarTodosPlanos();
+        
+        const contagem: Record<string, number> = {};
+        
+        gestantes.forEach((g) => {
+          if (g.planoSaudeId) {
+            const plano = planos.find(p => p.id === g.planoSaudeId);
+            const nomePlano = plano?.nome || "Sem plano";
+            contagem[nomePlano] = (contagem[nomePlano] || 0) + 1;
+          } else {
+            contagem["Sem plano"] = (contagem["Sem plano"] || 0) + 1;
+          }
+        });
+
+        return contagem;
+      }),
+  }),
+});
 export type AppRouter = typeof appRouter;

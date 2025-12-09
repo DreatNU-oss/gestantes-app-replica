@@ -82,3 +82,16 @@
 - [ ] Importar dados de exames laboratoriais (requer adaptação de schema)
 - [ ] Importar dados de exames laboratoriais estruturados (requer adaptação de schema)
 - [x] Validar integridade dos dados migrados
+
+
+## Melhorias de Navegação
+
+- [x] Adicionar botão "Voltar" no topo de cada página
+- [ ] Implementar navegação breadcrumb para melhor UX
+
+## Página de Estatísticas
+
+- [x] Implementar gráfico de distribuição por trimestre (Distribuição de Partos por Mês)
+- [x] Implementar gráfico de distribuição por tipo de parto
+- [x] Implementar gráfico de distribuição por convênio
+- [x] Implementar gráfico de morfológicos por mês

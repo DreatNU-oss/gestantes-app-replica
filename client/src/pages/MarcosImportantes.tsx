@@ -3,14 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
-import { Calendar, Baby, Syringe, Activity, CheckCircle2 } from "lucide-react";
+import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 
 type MetodoCalculo = "dum" | "ultrassom";
 
 export default function MarcosImportantes() {
+  const [, setLocation] = useLocation();
   const [gestanteSelecionada, setGestanteSelecionada] = useState<string>("");
   const [metodo, setMetodo] = useState<MetodoCalculo>("ultrassom");
 
@@ -125,11 +128,22 @@ export default function MarcosImportantes() {
   return (
     <GestantesLayout>
       <div className="space-y-6">
-        <div>
-          <h2 className="text-3xl font-bold text-foreground">Marcos Importantes</h2>
-          <p className="text-muted-foreground">
-            Visualize as datas importantes da gestação
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setLocation("/dashboard")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">Marcos Importantes</h2>
+            <p className="text-muted-foreground">
+              Visualize as datas importantes da gestação
+            </p>
+          </div>
         </div>
 
         <Card>
