@@ -182,7 +182,7 @@ export default function Dashboard() {
 
         {/* Alertas de Partos Próximos */}
         {gestantes && gestantes.length > 0 && (
-          <AlertasPartosProximos gestantes={gestantes} />
+          <AlertasPartosProximos gestantes={gestantes} medicos={medicos} />
         )}
 
         <Card>

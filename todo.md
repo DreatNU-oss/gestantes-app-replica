@@ -136,3 +136,12 @@
 - [x] Criar componente de alertas no Dashboard para próximos 21 dias
 - [x] Exibir alertas ordenados por proximidade da data
 - [x] Incluir informações da gestante e tipo de parto nos alertas
+
+
+## Ajuste de Layout dos Alertas
+
+- [x] Ajustar layout dos alertas para formato compacto em linha única
+- [x] Adicionar informações do médico responsável nos alertas
+- [x] Ajustar cores dos badges de dias (laranja para urgente, verde para distante)
+- [x] Adicionar ícone de calendário antes da data
+- [x] Importar datas de partos programados do CSV atualizado (13 datas importadas)

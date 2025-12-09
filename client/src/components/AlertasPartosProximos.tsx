@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Calendar, Clock } from "lucide-react";
+import { AlertCircle, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface Gestante {
@@ -12,6 +11,12 @@ interface Gestante {
   igUltrassomSemanas?: number | null;
   igUltrassomDias?: number | null;
   dataPartoProgramado?: string | Date | null;
+  medicoId?: number | null;
+}
+
+interface Medico {
+  id: number;
+  nome: string;
 }
 
 interface AlertaParto {
@@ -19,10 +24,16 @@ interface AlertaParto {
   dataParto: Date;
   diasRestantes: number;
   tipo: "programado" | "usg" | "dum";
-  urgencia: "alta" | "media" | "baixa";
+  medico: Medico | undefined;
 }
 
-export function AlertasPartosProximos({ gestantes }: { gestantes: Gestante[] }) {
+export function AlertasPartosProximos({ 
+  gestantes, 
+  medicos = [] 
+}: { 
+  gestantes: Gestante[];
+  medicos?: Medico[];
+}) {
   const calcularDPP = (gestante: Gestante): Date | null => {
     if (!gestante.dum) return null;
     const dum = new Date(gestante.dum);
@@ -62,10 +73,12 @@ export function AlertasPartosProximos({ gestantes }: { gestantes: Gestante[] }) 
     return null;
   };
 
-  const obterUrgencia = (diasRestantes: number): "alta" | "media" | "baixa" => {
-    if (diasRestantes <= 7) return "alta";
-    if (diasRestantes <= 14) return "media";
-    return "baixa";
+  const getCorDias = (diasRestantes: number): string => {
+    if (diasRestantes <= 5) return "bg-orange-500 text-white";
+    if (diasRestantes <= 8) return "bg-green-500 text-white";
+    if (diasRestantes <= 10) return "bg-green-600 text-white";
+    if (diasRestantes <= 17) return "bg-green-700 text-white";
+    return "bg-green-800 text-white";
   };
 
   const alertas: AlertaParto[] = gestantes
@@ -83,96 +96,90 @@ export function AlertasPartosProximos({ gestantes }: { gestantes: Gestante[] }) 
       // Filtrar apenas partos nos próximos 21 dias
       if (diasRestantes < 0 || diasRestantes > 21) return null;
 
+      const medico = medicos.find(m => m.id === gestante.medicoId);
+
       return {
         gestante,
         dataParto: resultado.data,
         diasRestantes,
         tipo: resultado.tipo,
-        urgencia: obterUrgencia(diasRestantes),
+        medico,
       };
     })
     .filter((alerta): alerta is AlertaParto => alerta !== null)
-    .sort((a, b) => a.diasRestantes - b.diasRestantes);
+    .sort((a, b) => a!.diasRestantes - b!.diasRestantes);
 
   if (alertas.length === 0) {
     return null;
   }
 
-  const getCorUrgencia = (urgencia: "alta" | "media" | "baixa") => {
-    switch (urgencia) {
-      case "alta":
-        return "bg-red-50 border-red-200";
-      case "media":
-        return "bg-yellow-50 border-yellow-200";
-      case "baixa":
-        return "bg-green-50 border-green-200";
-    }
-  };
-
-  const getCorBadge = (urgencia: "alta" | "media" | "baixa") => {
-    switch (urgencia) {
-      case "alta":
-        return "bg-red-100 text-red-800 border-red-300";
-      case "media":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "baixa":
-        return "bg-green-100 text-green-800 border-green-300";
-    }
-  };
-
   const getTipoTexto = (tipo: "programado" | "usg" | "dum") => {
     switch (tipo) {
       case "programado":
-        return "Parto Programado";
+        return "Programado";
       case "usg":
-        return "DPP (Ultrassom)";
+        return "DPP US";
       case "dum":
-        return "DPP (DUM)";
+        return "DPP DUM";
+    }
+  };
+
+  const getTipoPartoTexto = (tipo: string | null) => {
+    if (!tipo) return "A Definir";
+    switch (tipo) {
+      case "normal":
+        return "Normal";
+      case "cesariana":
+        return "Cesárea";
+      default:
+        return "A Definir";
     }
   };
 
   return (
-    <Card className="border-orange-200 bg-orange-50/50">
-      <CardHeader>
+    <Card className="border-orange-200 bg-orange-50/30">
+      <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-orange-600" />
-          <CardTitle className="text-orange-900">Partos Próximos (21 dias)</CardTitle>
+          <AlertCircle className="h-5 w-5 text-orange-600" />
+          <CardTitle className="text-lg text-orange-900">Alertas de Partos Próximos</CardTitle>
         </div>
         <CardDescription className="text-orange-700">
-          {alertas.length} {alertas.length === 1 ? "gestante com parto previsto" : "gestantes com partos previstos"} nos próximos 21 dias
+          {alertas.length} {alertas.length === 1 ? "gestante com parto previsto" : "gestantes com parto previsto"} nos próximos 21 dias
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2">
         {alertas.map((alerta) => (
-          <Alert key={alerta.gestante.id} className={`${getCorUrgencia(alerta.urgencia)} border`}>
-            <AlertDescription>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="font-semibold text-foreground mb-1">
-                    {alerta.gestante.nome}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {alerta.dataParto.toLocaleDateString("pt-BR")}
-                    </div>
-                    <Badge variant="outline" className={getCorBadge(alerta.urgencia)}>
-                      <Clock className="h-3 w-3 mr-1" />
-                      {alerta.diasRestantes} {alerta.diasRestantes === 1 ? "dia" : "dias"}
-                    </Badge>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-300">
-                      {getTipoTexto(alerta.tipo)}
-                    </Badge>
-                    {alerta.gestante.tipoPartoDesejado && alerta.gestante.tipoPartoDesejado !== "a_definir" && (
-                      <Badge variant="outline" className="bg-purple-50 text-purple-800 border-purple-300">
-                        {alerta.gestante.tipoPartoDesejado === "cesariana" ? "Cesariana" : "Normal"}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
+          <div 
+            key={alerta.gestante.id} 
+            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-orange-300 transition-colors"
+          >
+            <div className="flex-1">
+              <div className="font-semibold text-gray-900 mb-1">
+                {alerta.gestante.nome}
               </div>
-            </AlertDescription>
-          </Alert>
+              <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {alerta.dataParto.toLocaleDateString("pt-BR")}
+                </div>
+                {alerta.medico && (
+                  <span>Médico: {alerta.medico.nome}</span>
+                )}
+                <span>Tipo: {getTipoPartoTexto(alerta.gestante.tipoPartoDesejado)}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge className={`${getCorDias(alerta.diasRestantes)} font-semibold px-2 py-1`}>
+                {alerta.diasRestantes} {alerta.diasRestantes === 1 ? "dia" : "dias"}
+              </Badge>
+              <Badge 
+                variant="outline" 
+                className={alerta.tipo === "programado" ? "bg-purple-100 text-purple-800 border-purple-300" : "bg-blue-100 text-blue-800 border-blue-300"}
+              >
+                {getTipoTexto(alerta.tipo)}
+              </Badge>
+            </div>
+          </div>
         ))}
       </CardContent>
     </Card>
