@@ -248,6 +248,7 @@ export const appRouter = router({
         igUltrassomSemanas: z.number().optional(),
         igUltrassomDias: z.number().optional(),
         dataUltrassom: z.string().optional(),
+        dataPartoProgramado: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const data: any = {
@@ -269,6 +270,7 @@ export const appRouter = router({
           igUltrassomSemanas: input.igUltrassomSemanas || null,
           igUltrassomDias: input.igUltrassomDias || null,
           dataUltrassom: input.dataUltrassom ? parseLocalDate(input.dataUltrassom) : null,
+          dataPartoProgramado: input.dataPartoProgramado ? parseLocalDate(input.dataPartoProgramado) : null,
         };
         
         return createGestante(data);
@@ -294,6 +296,7 @@ export const appRouter = router({
         igUltrassomSemanas: z.number().optional(),
         igUltrassomDias: z.number().optional(),
         dataUltrassom: z.string().optional(),
+        dataPartoProgramado: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...rest } = input;
@@ -302,6 +305,7 @@ export const appRouter = router({
         if (data.dataNascimento) data.dataNascimento = parseLocalDate(data.dataNascimento);
         if (data.dum) data.dum = parseLocalDate(data.dum);
         if (data.dataUltrassom) data.dataUltrassom = parseLocalDate(data.dataUltrassom);
+        if (data.dataPartoProgramado) data.dataPartoProgramado = parseLocalDate(data.dataPartoProgramado);
         
         await updateGestante(id, data);
         return { success: true };

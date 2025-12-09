@@ -126,3 +126,13 @@
 - [x] Ordenar gestantes alfabeticamente no seletor do Cartão de Pré-Natal
 
 - [x] Adicionar função de busca no seletor de gestantes do Cartão de Pré-Natal
+
+
+## Sistema de Alertas de Partos Próximos
+
+- [x] Adicionar campo dataPartoProgramado no schema e formulários
+- [x] Implementar lógica de priorização (1º Parto Programado, 2º DPP USG, 3º DPP DUM)
+- [x] Adicionar códigos de cores para indicar urgência dos alertas
+- [x] Criar componente de alertas no Dashboard para próximos 21 dias
+- [x] Exibir alertas ordenados por proximidade da data
+- [x] Incluir informações da gestante e tipo de parto nos alertas

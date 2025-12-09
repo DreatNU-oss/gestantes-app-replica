@@ -93,6 +93,7 @@ export const gestantes = mysqlTable("gestantes", {
   igUltrassomSemanas: int("igUltrassomSemanas"),
   igUltrassomDias: int("igUltrassomDias"),
   dataUltrassom: date("dataUltrassom"),
+  dataPartoProgramado: date("dataPartoProgramado"),
   
   // Armazenamento de documentos
   cartaoPrenatalUrl: text("cartaoPrenatalUrl"),

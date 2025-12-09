@@ -30,6 +30,7 @@ import {
 import { toast } from "sonner";
 import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
+import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
 
 type SortOption = "nome" | "dpp-dum" | "dpp-us";
 
@@ -178,6 +179,11 @@ export default function Dashboard() {
             Nova Gestante
           </Button>
         </div>
+
+        {/* Alertas de Partos Próximos */}
+        {gestantes && gestantes.length > 0 && (
+          <AlertasPartosProximos gestantes={gestantes} />
+        )}
 
         <Card>
           <CardHeader>

@@ -15,6 +15,13 @@
       "when": 1765296846872,
       "tag": "0001_lumpy_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1765313469058,
+      "tag": "0002_overrated_dark_beast",
+      "breakpoints": true
     }
   ]
 }
