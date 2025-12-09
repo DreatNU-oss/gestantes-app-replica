@@ -62,3 +62,11 @@
 - [ ] Implementar página de Agendamento de Consultas pré-natais
 - [ ] Adicionar todas as funcionalidades de cálculo de datas
 - [ ] Replicar exatamente o design e cores do original
+
+
+## Atualização de Logo
+
+- [x] Substituir logo atual pelos logos oficiais da clínica Mais Mulher
+- [x] Usar logo horizontal no sidebar
+- [x] Usar logo vertical na landing page
+- [ ] Atualizar favicon com o logo

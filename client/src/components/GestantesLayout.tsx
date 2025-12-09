@@ -82,8 +82,8 @@ export default function GestantesLayout({
             <div className="flex items-center justify-center">
               <img 
                 src="/logo-horizontal.png" 
-                alt="Mais Mulher" 
-                className="h-20 w-auto object-contain"
+                alt="Mais Mulher - Clínica de Saúde Feminina" 
+                className="h-16 w-auto object-contain"
               />
             </div>
           </SidebarHeader>

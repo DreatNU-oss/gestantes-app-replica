@@ -35,7 +35,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex justify-center mb-6">
-              <img src="/logo-horizontal.png" alt="Mais Mulher" className="h-24 w-auto" />
+              <img src="/logo-vertical.png" alt="Mais Mulher - Clínica de Saúde Feminina" className="h-32 w-auto" />
             </div>
             <h1 className="text-4xl font-bold text-foreground mb-4">
               APP Gestantes
