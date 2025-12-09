@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   Table,
@@ -167,6 +167,91 @@ export default function CartaoPrenatal() {
     return d.toLocaleDateString('pt-BR');
   };
 
+  // Calcula data para uma semana específica pelo Ultrassom
+  const calcularDataPorUS = (semanas: number, dias: number = 0) => {
+    if (!gestante?.dataUltrassom || gestante?.igUltrassomSemanas === null || gestante?.igUltrassomDias === null) return null;
+    const dataUS = new Date(gestante.dataUltrassom);
+    const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
+    const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
+    const dataAlvo = new Date(dataUS);
+    dataAlvo.setDate(dataAlvo.getDate() + diasDesdeUS);
+    return dataAlvo;
+  };
+
+  const copiarTexto = (texto: string) => {
+    navigator.clipboard.writeText(texto);
+    toast.success("Copiado para a área de transferência!");
+  };
+
+  const marcos = [
+    {
+      titulo: "Concepção",
+      icon: Baby,
+      semanas: 2,
+      dias: 0,
+      color: "bg-purple-100 text-purple-700 border-purple-300",
+    },
+    {
+      titulo: "Morfológico 1º Tri",
+      icon: Activity,
+      semanas: [11, 13],
+      dias: [5, 3],
+      color: "bg-emerald-100 text-emerald-700 border-emerald-300",
+      isRange: true,
+    },
+    {
+      titulo: "13 Semanas",
+      icon: CheckCircle2,
+      semanas: 13,
+      dias: 0,
+      color: "bg-blue-100 text-blue-700 border-blue-300",
+    },
+    {
+      titulo: "Morfológico 2º Tri",
+      icon: Activity,
+      semanas: [20, 24],
+      dias: [0, 6],
+      color: "bg-cyan-100 text-cyan-700 border-cyan-300",
+      isRange: true,
+    },
+    {
+      titulo: "Vacina dTpa",
+      icon: Syringe,
+      semanas: 27,
+      dias: 0,
+      color: "bg-orange-100 text-orange-700 border-orange-300",
+    },
+    {
+      titulo: "Vacina Bronquiolite",
+      icon: Syringe,
+      semanas: [32, 36],
+      dias: [0, 0],
+      color: "bg-yellow-100 text-yellow-700 border-yellow-300",
+      isRange: true,
+    },
+    {
+      titulo: "Termo Precoce",
+      icon: Calendar,
+      semanas: 37,
+      dias: 0,
+      color: "bg-cyan-100 text-cyan-700 border-cyan-300",
+    },
+    {
+      titulo: "Termo Completo",
+      icon: Calendar,
+      semanas: 39,
+      dias: 0,
+      color: "bg-green-100 text-green-700 border-green-300",
+    },
+    {
+      titulo: "DPP (40 semanas)",
+      icon: Calendar,
+      semanas: 40,
+      dias: 0,
+      color: "bg-rose-100 text-rose-700 border-rose-300",
+    },
+  ];
+
   return (
     <GestantesLayout>
       <div className="container mx-auto py-6 space-y-6">
@@ -236,41 +321,50 @@ export default function CartaoPrenatal() {
         {gestante && (
           <Card>
             <CardHeader>
-              <CardTitle>Informações da Gestante</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Dados da Gestante
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-muted-foreground">Nome</Label>
-                  <p className="font-medium">{gestante.nome}</p>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Nome Completo</Label>
+                    <p className="font-semibold text-lg">{gestante.nome}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Gesta</Label>
+                    <p className="font-medium">{gestante.gesta || "-"}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Partos Normais</Label>
+                    <p className="font-medium">{gestante.partosNormais || "-"}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-muted-foreground">Idade</Label>
-                  <p className="font-medium">{gestante.calculado?.idade || "-"} anos</p>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-muted-foreground text-sm">DPP pela DUM</Label>
+                    <p className="font-semibold text-lg">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Para</Label>
+                    <p className="font-medium">{gestante.para || "-"}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Cesáreas</Label>
+                    <p className="font-medium">{gestante.cesareas || "-"}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-muted-foreground">DUM</Label>
-                  <p className="font-medium">{gestante.dum ? formatarData(gestante.dum) : "-"}</p>
-                </div>
-                <div>
-                  <Label className="text-muted-foreground">DPP</Label>
-                  <p className="font-medium">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</p>
-                </div>
-                <div>
-                  <Label className="text-muted-foreground">IG (DUM)</Label>
-                  <p className="font-medium">
-                    {gestante.calculado?.igDUM 
-                      ? `${gestante.calculado.igDUM.semanas}s${gestante.calculado.igDUM.dias}d`
-                      : "-"}
-                  </p>
-                </div>
-                <div>
-                  <Label className="text-muted-foreground">IG (US)</Label>
-                  <p className="font-medium">
-                    {gestante.calculado?.igUS 
-                      ? `${gestante.calculado.igUS.semanas}s${gestante.calculado.igUS.dias}d`
-                      : "-"}
-                  </p>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-muted-foreground text-sm">DPP pelo Ultrassom</Label>
+                    <p className="font-semibold text-lg">{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Abortos</Label>
+                    <p className="font-medium">{gestante.abortos || "-"}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -359,6 +453,66 @@ export default function CartaoPrenatal() {
                   </Button>
                 </div>
               </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Marcos Importantes da Gestação */}
+        {gestante && gestante.dataUltrassom && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Marcos Importantes da Gestação</CardTitle>
+              <CardDescription>Calculados pela data do Ultrassom</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {marcos.map((marco, idx) => {
+                  const Icon = marco.icon;
+                  let dataInicio = null;
+                  let dataFim = null;
+                  let textoParaCopiar = "";
+
+                  if (marco.isRange && Array.isArray(marco.semanas) && Array.isArray(marco.dias)) {
+                    dataInicio = calcularDataPorUS(marco.semanas[0], marco.dias[0]);
+                    dataFim = calcularDataPorUS(marco.semanas[1], marco.dias[1]);
+                    textoParaCopiar = `${marco.titulo}: ${dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'} a ${dataFim ? dataFim.toLocaleDateString('pt-BR') : '-'}`;
+                  } else if (typeof marco.semanas === 'number' && typeof marco.dias === 'number') {
+                    dataInicio = calcularDataPorUS(marco.semanas, marco.dias);
+                    textoParaCopiar = `${marco.titulo}: ${dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'}`;
+                  }
+
+                  return (
+                    <Card key={idx} className={`border-2 ${marco.color} relative`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Icon className="h-5 w-5" />
+                            <span className="font-semibold text-sm">{marco.titulo}</span>
+                          </div>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            onClick={() => copiarTexto(textoParaCopiar)}
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        {marco.isRange ? (
+                          <div className="text-sm space-y-1">
+                            <div>{dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'} a</div>
+                            <div>{dataFim ? dataFim.toLocaleDateString('pt-BR') : '-'}</div>
+                          </div>
+                        ) : (
+                          <div className="text-sm font-medium">
+                            {dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-'}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
         )}

@@ -152,3 +152,22 @@
 - [x] Investigar diferença no cálculo da DPP pelo Ultrassom (Paula Marques)
 - [x] Corrigir fórmula de cálculo da DPP pelo US para ficar idêntica ao site original (+1 dia)
 - [x] Validar cálculo com dados de teste (Paula Marques: US 20/05/2025, IG 7s6d = DPP 31/12/2025)
+
+
+## Ajuste de Design dos Alertas
+
+- [ ] Ajustar cores dos badges de dias para ficarem idênticas ao site original
+- [ ] Ajustar formato e estilo das bordas dos alertas
+- [ ] Ajustar tamanhos e organização dos textos
+- [ ] Replicar layout exato do print do site original
+
+
+## Marcos Importantes e Cartão de Pré-Natal
+
+- [x] Implementar todos os 9 marcos importantes (Concepção, Morfológico 1º Tri, 13 Semanas, Morfológico 2º Tri, Vacina dTpa, Vacina Bronquiolite, Termo Precoce, Termo Completo, DPP 40 semanas)
+- [x] Adicionar períodos de datas nos marcos que precisam (Morfológico 1º Tri, Morfológico 2º Tri, Vacina Bronquiolite)
+- [x] Adicionar seção de Marcos Importantes no Cartão de Pré-Natal (abaixo das consultas)
+- [x] Implementar botões de copiar em cada marco no Cartão de Pré-Natal
+- [x] Atualizar layout de informações da gestante no Cartão de Pré-Natal para ficar idêntico ao print original
+- [x] Garantir que marcos no Cartão sempre usam DPP pelo US
+- [x] Adicionar cálculo de DPP pelo US no backend (campo dppUS no objeto calculado)

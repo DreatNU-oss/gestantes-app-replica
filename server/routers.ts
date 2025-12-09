@@ -79,6 +79,13 @@ function calcularDPP(dum: Date): Date {
   return dpp;
 }
 
+function calcularDppUS(igUltrassomDias: number, dataUltrassom: Date): Date {
+  const diasRestantes = 280 - igUltrassomDias;
+  const dpp = new Date(dataUltrassom);
+  dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
+  return dpp;
+}
+
 function calcularDataParaSemana(dum: Date, semanasAlvo: number): Date {
   const dataAlvo = new Date(dum);
   dataAlvo.setDate(dataAlvo.getDate() + (semanasAlvo * 7));
@@ -161,6 +168,7 @@ export const appRouter = router({
         let igDUM = null;
         let igUS = null;
         let dpp = null;
+        let dppUS = null;
         let idade = null;
         
         if (g.dum) {
@@ -173,6 +181,7 @@ export const appRouter = router({
           const dataUS = new Date(g.dataUltrassom);
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
+          dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
         
         if (g.dataNascimento) {
@@ -185,6 +194,7 @@ export const appRouter = router({
             igDUM,
             igUS,
             dpp,
+            dppUS,
             idade
           }
         };
@@ -200,6 +210,7 @@ export const appRouter = router({
         let igDUM = null;
         let igUS = null;
         let dpp = null;
+        let dppUS = null;
         let idade = null;
         
         if (g.dum) {
@@ -212,6 +223,7 @@ export const appRouter = router({
           const dataUS = new Date(g.dataUltrassom);
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
+          dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
         
         if (g.dataNascimento) {
@@ -224,6 +236,7 @@ export const appRouter = router({
             igDUM,
             igUS,
             dpp,
+            dppUS,
             idade
           }
         };
