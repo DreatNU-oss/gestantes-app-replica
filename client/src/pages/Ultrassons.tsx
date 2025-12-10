@@ -7,13 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, ArrowLeft, Sparkles } from 'lucide-react';
+import { useLocation } from 'wouter';
+import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
 
 
 export default function Ultrassons() {
+  const [, setLocation] = useLocation();
 
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
   const [busca, setBusca] = useState('');
+  const [modalInterpretarAberto, setModalInterpretarAberto] = useState(false);
   
   // Buscar gestantes
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
@@ -158,6 +162,31 @@ export default function Ultrassons() {
     }
   }, [ultrassons]);
   
+  // Função para preencher dados extraídos pela IA
+  const handleDadosExtraidos = (tipo: string, dados: Record<string, string>) => {
+    switch (tipo) {
+      case 'primeiro_ultrassom':
+        setPrimeiroUS(prev => ({ ...prev, ...dados }));
+        break;
+      case 'morfologico_1tri':
+        setMorfo1Tri(prev => ({ ...prev, ...dados }));
+        break;
+      case 'ultrassom_obstetrico':
+        setUsObstetrico(prev => ({ ...prev, ...dados }));
+        break;
+      case 'morfologico_2tri':
+        setMorfo2Tri(prev => ({ ...prev, ...dados }));
+        break;
+      case 'ecocardiograma':
+        setEcocardiograma(prev => ({ ...prev, ...dados }));
+        break;
+      case 'ultrassom_seguimento':
+        setUsSeguimento(prev => ({ ...prev, ...dados }));
+        break;
+    }
+    alert('Dados extraídos com sucesso! Revise os campos e salve.');
+  };
+
   // Função para salvar ultrassom
   const handleSalvar = async (tipoUltrassom: string, dados: any) => {
     if (!gestanteSelecionada) {
@@ -191,9 +220,30 @@ export default function Ultrassons() {
   
   return (
     <div className="container py-8">
+      <Button
+        variant="ghost"
+        onClick={() => setLocation('/')}
+        className="mb-6"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Voltar
+      </Button>
+      
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Ultrassons Pré-Natais</h1>
-        <p className="text-muted-foreground">Registre os ultrassons realizados durante o pré-natal</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Ultrassons Pré-Natais</h1>
+            <p className="text-muted-foreground">Registre os ultrassons realizados durante o pré-natal</p>
+          </div>
+          <Button
+            onClick={() => setModalInterpretarAberto(true)}
+            disabled={!gestanteSelecionada}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+          >
+            <Sparkles className="mr-2 h-4 w-4" />
+            Interpretar com IA
+          </Button>
+        </div>
       </div>
       
       {/* Seleção de Gestante */}
@@ -807,6 +857,13 @@ export default function Ultrassons() {
           </Card>
         </div>
       )}
+
+      {/* Modal de Interpretação com IA */}
+      <InterpretarUltrassomModal
+        open={modalInterpretarAberto}
+        onClose={() => setModalInterpretarAberto(false)}
+        onDadosExtraidos={handleDadosExtraidos}
+      />
     </div>
   );
 }

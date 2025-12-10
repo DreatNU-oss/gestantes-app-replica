@@ -846,6 +846,25 @@ export const appRouter = router({
         await deletarUltrassom(input.id);
         return { success: true };
       }),
+
+    interpretar: protectedProcedure
+      .input(z.object({
+        fileUrl: z.string(),
+        tipoUltrassom: z.enum([
+          "primeiro_ultrassom",
+          "morfologico_1tri",
+          "ultrassom_obstetrico",
+          "morfologico_2tri",
+          "ecocardiograma",
+          "ultrassom_seguimento"
+        ]),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const { interpretarLaudoUltrassom } = await import('./interpretarUltrassom');
+        const dados = await interpretarLaudoUltrassom(input.fileUrl, input.tipoUltrassom, input.mimeType);
+        return { success: true, dados };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;
