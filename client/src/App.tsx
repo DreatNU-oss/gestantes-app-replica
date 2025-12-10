@@ -13,6 +13,7 @@ import CartaoPrenatal from "./pages/CartaoPrenatal";
 import Estatisticas from "./pages/Estatisticas";
 import GerenciarPlanos from "./pages/GerenciarPlanos";
 import GerenciarMedicos from "./pages/GerenciarMedicos";
+import AgendamentoConsultas from "./pages/AgendamentoConsultas";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/gerenciar-planos"} component={GerenciarPlanos} />
       <Route path={"/gerenciar-medicos"} component={GerenciarMedicos} />
+      <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

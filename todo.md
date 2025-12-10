@@ -286,3 +286,22 @@
 - [x] Corrigir problema de fuso horário em datas programadas (ex: 15/12 aparece como 14/12) - RESOLVIDO: parseLocalDate agora retorna string diretamente
 - [x] Corrigir problema de fuso horário em todas as datas do sistema (DUM, dataUltrassom, dataPartoProgramado, dataConsulta) - RESOLVIDO
 - [x] Validar que todas as datas estão sendo salvas e exibidas corretamente - RESOLVIDO: Graziela agora mostra 15/12/2025 corretamente
+
+
+## Copiar Agendamento de Consultas do Site Original (Solicitado 10/12/2025)
+
+- [x] Acessar arquivo agendamentoConsultas.ts do site original
+- [x] Analisar e documentar a lógica de cálculo de datas
+- [x] Extrair regras de sugestão de consultas (ultrassom, cardiotocografia)
+- [x] Identificar semanas gestacionais específicas para cada tipo de consulta
+- [x] Implementar a mesma lógica no novo projeto (server/agendamento.ts)
+- [x] Criar schema de banco (tabela agendamentosConsultas)
+- [x] Implementar procedures tRPC (calcular, list, updateStatus, deletar)
+- [x] Criar página frontend AgendamentoConsultas.tsx
+- [x] Adicionar rota /agendamento-consultas no App.tsx
+- [x] Adaptar layout visual para seguir padrão do novo projeto (botão voltar, cards, etc)
+- [x] Testar lógica de backend com vitest - PASSOU (7 consultas calculadas corretamente)
+- [ ] BUG: Botão "Calcular Agendamentos" não dispara evento onClick no frontend
+- [ ] Debugar e corrigir problema de evento onClick
+- [ ] Testar com dados reais de gestantes após correção do bug
+- [ ] Validar que as datas sugeridas são idênticas ao site original

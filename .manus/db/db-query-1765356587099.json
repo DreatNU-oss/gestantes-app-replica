@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, nome, dum FROM gestantes WHERE nome LIKE '%Vivian%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dum FROM gestantes WHERE nome LIKE '%Vivian%'",
+  "rows": [
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "dum": "2025-10-01"
+    },
+    {
+      "id": "330092",
+      "nome": "Vivian Mantovani Lopes e Silva",
+      "dum": "2025-06-04"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\n330008\tLucíola Viviane Achilles Medeiros Araújo\t2025-10-01\n330092\tVivian Mantovani Lopes e Silva\t2025-06-04\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

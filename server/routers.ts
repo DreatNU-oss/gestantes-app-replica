@@ -44,6 +44,13 @@ import {
   createAlertaEnviado,
   getAlertasByGestanteId
 } from "./db";
+import {
+  calcularConsultasSugeridas,
+  salvarAgendamentos,
+  buscarAgendamentos,
+  atualizarStatusAgendamento,
+  remarcarAgendamento
+} from "./agendamento";
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -580,6 +587,51 @@ export const appRouter = router({
         });
 
         return contagem;
+      }),
+  }),
+
+  agendamentos: router({
+    calcular: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        dum: z.string(),
+        dataPrimeiraConsulta: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        // Converter strings YYYY-MM-DD para Date sem problemas de fuso horário
+        const [dumYear, dumMonth, dumDay] = input.dum.split('-').map(Number);
+        const dum = new Date(dumYear, dumMonth - 1, dumDay, 12, 0, 0);
+        
+        const [dataYear, dataMonth, dataDay] = input.dataPrimeiraConsulta.split('-').map(Number);
+        const dataPrimeira = new Date(dataYear, dataMonth - 1, dataDay, 12, 0, 0);
+        
+        const consultas = calcularConsultasSugeridas(dum, dataPrimeira);
+        await salvarAgendamentos(input.gestanteId, consultas);
+        return { success: true, consultas };
+      }),
+
+    list: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => buscarAgendamentos(input.gestanteId)),
+
+    updateStatus: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["agendado", "realizado", "cancelado", "remarcado"]),
+      }))
+      .mutation(async ({ input }) => {
+        await atualizarStatusAgendamento(input.id, input.status);
+        return { success: true };
+      }),
+
+    remarcar: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        novaData: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        await remarcarAgendamento(input.id, new Date(input.novaData));
+        return { success: true };
       }),
   }),
 });

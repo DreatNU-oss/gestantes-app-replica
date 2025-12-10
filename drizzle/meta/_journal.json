@@ -43,6 +43,13 @@
       "when": 1765332612079,
       "tag": "0005_mature_oracle",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1765356111649,
+      "tag": "0006_perpetual_pete_wisdom",
+      "breakpoints": true
     }
   ]
 }

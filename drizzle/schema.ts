@@ -209,3 +209,22 @@ export const alertasEnviados = mysqlTable("alertasEnviados", {
 
 export type AlertaEnviado = typeof alertasEnviados.$inferSelect;
 export type InsertAlertaEnviado = typeof alertasEnviados.$inferInsert;
+
+/**
+ * Tabela de agendamentos de consultas pré-natais
+ */
+export const agendamentosConsultas = mysqlTable("agendamentosConsultas", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  dataAgendada: date("dataAgendada").notNull(),
+  igSemanas: int("igSemanas"),
+  igDias: int("igDias"),
+  exameComplementar: mysqlEnum("exameComplementar", ["nenhum", "us_obstetrico", "cardiotocografia"]).default("nenhum"),
+  status: mysqlEnum("status", ["agendado", "realizado", "cancelado", "remarcado"]).default("agendado"),
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AgendamentoConsulta = typeof agendamentosConsultas.$inferSelect;
+export type InsertAgendamentoConsulta = typeof agendamentosConsultas.$inferInsert;
