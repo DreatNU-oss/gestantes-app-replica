@@ -458,3 +458,11 @@
 - [x] Corrigir sobreposição de textos nas legendas abaixo do gráfico
 - [x] Melhorar espaçamento e rotação das legendas
 - [x] Testar visualização no navegador
+
+
+## Bug de Salvamento de Peso Inicial (Reportado 10/12/2025)
+
+- [x] Investigar por que alteração de peso inicial não é salva no banco
+- [x] Verificar se campo pesoInicial está sendo enviado ao backend
+- [x] Corrigir procedure tRPC de edição de gestante (adicionar altura e pesoInicial ao schema)
+- [x] Testar salvamento e verificar reflexo no gráfico (Débora: 81kg salvo e gráfico atualizado)

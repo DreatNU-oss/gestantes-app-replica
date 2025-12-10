@@ -317,6 +317,8 @@ export const appRouter = router({
         carteirinhaUnimed: z.string().optional(),
         medicoId: z.number().optional(),
         tipoPartoDesejado: z.enum(["cesariana", "normal", "a_definir"]).optional(),
+        altura: z.number().optional(),
+        pesoInicial: z.number().optional(),
         gesta: z.number().optional(),
         para: z.number().optional(),
         partosNormais: z.number().optional(),
