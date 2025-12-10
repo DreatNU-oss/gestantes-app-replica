@@ -5,13 +5,14 @@ interface ExameInterpretado {
   nomeExame: string;
   valor: string;
   subcampo?: string; // Para TTGO: "Jejum", "1 hora", "2 horas"
+  dataColeta?: string; // Data da coleta do exame (formato YYYY-MM-DD)
 }
 
 export async function interpretarExamesComIA(
   fileBuffer: Buffer,
   mimeType: string,
   trimestre: "primeiro" | "segundo" | "terceiro"
-): Promise<Record<string, string>> {
+): Promise<{ resultados: Record<string, string>; dataColeta?: string }> {
   // 1. Upload do arquivo para S3
   const fileKey = `exames-temp/${Date.now()}-${Math.random().toString(36).substring(7)}.${mimeType.split('/')[1]}`;
   const { url: fileUrl } = await storagePut(fileKey, fileBuffer, mimeType);
@@ -37,12 +38,14 @@ ${examesEsperados.map(e => `- ${e}`).join('\n')}
 **FORMATO DE RESPOSTA (JSON):**
 Retorne um array de objetos com esta estrutura:
 [
-  { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%" },
-  { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "92 mg/dL", "subcampo": "Jejum" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "180 mg/dL", "subcampo": "1 hora" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "155 mg/dL", "subcampo": "2 horas" }
+  { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
+  { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "92 mg/dL", "subcampo": "Jejum", "dataColeta": "2025-11-11" },
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "180 mg/dL", "subcampo": "1 hora", "dataColeta": "2025-11-11" },
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "155 mg/dL", "subcampo": "2 horas", "dataColeta": "2025-11-11" }
 ]
+
+**IMPORTANTE:** Extraia a data da coleta do exame se estiver visível no documento (formato YYYY-MM-DD). Se não encontrar a data, omita o campo "dataColeta".
 
 Se nenhum exame for encontrado, retorne um array vazio: []`;
 
@@ -85,7 +88,8 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
                 properties: {
                   nomeExame: { type: "string", description: "Nome exato do exame conforme a lista fornecida" },
                   valor: { type: "string", description: "Valor do exame como está escrito no documento" },
-                  subcampo: { type: "string", description: "Subcampo para exames com múltiplos valores (opcional)" }
+                  subcampo: { type: "string", description: "Subcampo para exames com múltiplos valores (opcional)" },
+                  dataColeta: { type: "string", description: "Data da coleta do exame no formato YYYY-MM-DD (opcional)" }
                 },
                 required: ["nomeExame", "valor"],
                 additionalProperties: false
@@ -108,8 +112,14 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
 
   // 4. Converter para formato esperado pelo frontend
   const resultados: Record<string, string> = {};
+  let dataColeta: string | undefined = undefined;
   
   for (const exame of parsed.exames) {
+    // Capturar data da coleta (assumindo que todos os exames do mesmo laudo têm a mesma data)
+    if (exame.dataColeta && !dataColeta) {
+      dataColeta = exame.dataColeta;
+    }
+    
     if (exame.subcampo) {
       // Para exames com subcampos (TTGO)
       const chave = `${exame.nomeExame}__${exame.subcampo}`;
@@ -119,7 +129,7 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
     }
   }
 
-  return resultados;
+  return { resultados, dataColeta };
 }
 
 function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "terceiro"): string[] {

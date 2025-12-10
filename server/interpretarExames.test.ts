@@ -71,9 +71,12 @@ describe('Interpretação de Exames com IA', () => {
     );
 
     expect(resultados).toEqual({
-      'Tipagem sanguínea ABO/Rh': 'O+',
-      'Hemoglobina/Hematócrito': '12.5 g/dL / 37%',
-      'Glicemia de jejum': '85 mg/dL',
+      resultados: {
+        'Tipagem sanguínea ABO/Rh': 'O+',
+        'Hemoglobina/Hematócrito': '12.5 g/dL / 37%',
+        'Glicemia de jejum': '85 mg/dL',
+      },
+      dataColeta: undefined, // Nenhuma data no mock
     });
   });
 
@@ -128,10 +131,13 @@ describe('Interpretação de Exames com IA', () => {
     );
 
     expect(resultados).toEqual({
-      'Hemoglobina/Hematócrito': '11.8 g/dL / 35%',
-      'TTGO 75g (Curva Glicêmica)__Jejum': '92 mg/dL',
-      'TTGO 75g (Curva Glicêmica)__1 hora': '180 mg/dL',
-      'TTGO 75g (Curva Glicêmica)__2 horas': '155 mg/dL',
+      resultados: {
+        'Hemoglobina/Hematócrito': '11.8 g/dL / 35%',
+        'TTGO 75g (Curva Glicêmica)__Jejum': '92 mg/dL',
+        'TTGO 75g (Curva Glicêmica)__1 hora': '180 mg/dL',
+        'TTGO 75g (Curva Glicêmica)__2 horas': '155 mg/dL',
+      },
+      dataColeta: undefined, // Nenhuma data no mock
     });
   });
 
@@ -163,7 +169,10 @@ describe('Interpretação de Exames com IA', () => {
     );
 
     // Assert
-    expect(resultados).toEqual({});
+    expect(resultados).toEqual({
+      resultados: {},
+      dataColeta: undefined,
+    });
   });
 
   it('deve lançar erro quando LLM não retorna conteúdo', async () => {

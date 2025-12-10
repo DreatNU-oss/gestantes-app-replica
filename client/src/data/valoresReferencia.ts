@@ -667,3 +667,51 @@ export function validarResultado(
 
   return { tipo: 'normal' };
 }
+
+
+/**
+ * Lista de exames que aceitam apenas valores "Reagente" ou "Não reagente"
+ */
+export const EXAMES_SOROLOGICOS = [
+  'vdrl',
+  'fta_abs_igg',
+  'fta_abs_igm',
+  'hiv',
+  'hepatite_b',
+  'anti_hbs',
+  'hepatite_c',
+  'toxoplasmose_igg',
+  'toxoplasmose_igm',
+  'rubeola_igg',
+  'rubeola_igm',
+  'cmv_igg',
+  'cmv_igm',
+  'coombs_indireto'
+];
+
+/**
+ * Verifica se um exame é sorológico (aceita apenas Reagente/Não reagente)
+ */
+export function isExameSorologico(nomeExame: string): boolean {
+  // Importar mapeamento de exames
+  const MAPEAMENTO: Record<string, string> = {
+    "Tipagem sanguínea ABO/Rh": "tipagem_sanguinea",
+    "Coombs indireto": "coombs_indireto",
+    "VDRL": "vdrl",
+    "FTA-ABS IgG": "fta_abs_igg",
+    "FTA-ABS IgM": "fta_abs_igm",
+    "HIV": "hiv",
+    "Hepatite B (HBsAg)": "hepatite_b",
+    "Anti-HBs": "anti_hbs",
+    "Hepatite C (Anti-HCV)": "hepatite_c",
+    "Toxoplasmose IgG": "toxoplasmose_igg",
+    "Toxoplasmose IgM": "toxoplasmose_igm",
+    "Rubéola IgG": "rubeola_igg",
+    "Rubéola IgM": "rubeola_igm",
+    "Citomegalovírus IgG": "cmv_igg",
+    "Citomegalovírus IgM": "cmv_igm"
+  };
+  
+  const idExame = MAPEAMENTO[nomeExame];
+  return idExame ? EXAMES_SOROLOGICOS.includes(idExame) : false;
+}

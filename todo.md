@@ -520,3 +520,29 @@
 
 - [x] Corrigir texto "Útero não palpável" no campo AUF que estava com problema de acentuação (estava como "Úter--snip--o")
 - [x] Testar visualização no navegador (dropdown e tabela corrigidos)
+
+
+## Data de Coleta por Trimestre nos Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Atualizar schema do banco para suportar data específica por trimestre (já suportava: dataExame + trimestre)
+- [x] Atualizar backend (routers.ts) para salvar e carregar datas por trimestre
+- [x] Atualizar interface para mostrar campo de data em cada trimestre
+- [x] Atualizar IA para extrair datas dos exames de PDFs/fotos (schema e retorno atualizados)
+- [x] Atualizar dados da Camila Sidrin com data 11/11/2025 em todos os exames registrados (22 exames)
+- [x] Testar salvamento e carregamento de datas por trimestre (validado no navegador)
+
+
+## Padronização de Nomenclatura - NEG para Não Reagente (Solicitado 10/12/2025)
+
+- [x] Identificar todos os campos que usam "NEG" ou "Negativo" (14 exames sorológicos)
+- [x] Trocar para "Não reagente" em toda a interface (dropdowns implementados)
+- [x] Garantir que todos os campos tenham apenas duas opções: "Reagente" ou "Não reagente"
+- [x] Atualizar validações e destaques visuais para usar nova nomenclatura
+- [x] Atualizar IA para interpretar e retornar "Não reagente" ao invés de "NEG"
+- [x] Testar todas as alterações no navegador (validado com Camila Sidrin)
+
+
+## Adicionar Botão Voltar na Página de Exames Laboratoriais (Reportado 10/12/2025)
+
+- [x] Adicionar botão "Voltar" no topo da página de Exames Laboratoriais
+- [x] Manter consistência visual com outras páginas

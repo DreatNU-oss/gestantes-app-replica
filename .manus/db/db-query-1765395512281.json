@@ -1,0 +1,164 @@
+{
+  "query": "SELECT id, nomeExame, trimestre, resultado, dataExame FROM resultadosExames WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 1)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nomeExame, trimestre, resultado, dataExame FROM resultadosExames WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 1)",
+  "rows": [
+    {
+      "id": "120023",
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "trimestre": "1",
+      "resultado": "A+",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120024",
+      "nomeExame": "Coombs indireto",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120025",
+      "nomeExame": "Glicemia de jejum",
+      "trimestre": "1",
+      "resultado": "87",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120026",
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "resultado": "12/39",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120027",
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120028",
+      "nomeExame": "FTA-ABS IgG",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120029",
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120030",
+      "nomeExame": "Hepatite B (HBsAg)",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120031",
+      "nomeExame": "Hepatite C (Anti-HCV)",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120032",
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "REAG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120033",
+      "nomeExame": "Rubéola IgM",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120034",
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120035",
+      "nomeExame": "Urocultura",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120036",
+      "nomeExame": "EPF (Parasitológico de Fezes)",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120037",
+      "nomeExame": "TSH",
+      "trimestre": "1",
+      "resultado": "0,77 μUl/mL",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120038",
+      "nomeExame": "T4 Livre",
+      "trimestre": "1",
+      "resultado": "1.0",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120039",
+      "nomeExame": "Citomegalovírus IgG",
+      "trimestre": "1",
+      "resultado": "Inferior a 1,10 UA/mL",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120040",
+      "nomeExame": "Vitamina D (25-OH)",
+      "trimestre": "1",
+      "resultado": "485",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120041",
+      "nomeExame": "Vitamina B12",
+      "trimestre": "1",
+      "resultado": "485",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120042",
+      "nomeExame": "Ferritina",
+      "trimestre": "1",
+      "resultado": "161",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120043",
+      "nomeExame": "Citomegalovírus IgM",
+      "trimestre": "1",
+      "resultado": "0,08",
+      "dataExame": "NULL"
+    },
+    {
+      "id": "120044",
+      "nomeExame": "Anti-HBs",
+      "trimestre": "1",
+      "resultado": "NEG",
+      "dataExame": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnomeExame\ttrimestre\tresultado\tdataExame\n120023\tTipagem sanguínea ABO/Rh\t1\tA+\tNULL\n120024\tCoombs indireto\t1\tNEG\tNULL\n120025\tGlicemia de jejum\t1\t87\tNULL\n120026\tHemoglobina/Hematócrito\t1\t12/39\tNULL\n120027\tVDRL\t1\tNEG\tNULL\n120028\tFTA-ABS IgG\t1\tNEG\tNULL\n120029\tHIV\t1\tNEG\tNULL\n120030\tHepatite B (HBsAg)\t1\tNEG\tNULL\n120031\tHepatite C (Anti-HCV)\t1\tNEG\tNULL\n120032\tToxoplasmose IgM\t1\tREAG\tNULL\n120033\tRubéola IgM\t1\tNEG\tNULL\n120034\tEAS (Urina tipo 1)\t1\tNEG\tNULL\n120035\tUrocultura\t1\tNEG\tNULL\n120036\tEPF (Parasitológico de Fezes)\t1\tNEG\tNULL\n120037\tTSH\t1\t0,77 μUl/mL\tNULL\n120038\tT4 Livre\t1\t1.0\tNULL\n120039\tCitomegalovírus IgG\t1\tInferior a 1,10 UA/mL\tNULL\n120040\tVitamina D (25-OH)\t1\t485\tNULL\n120041\tVitamina B12\t1\t485\tNULL\n120042\tFerritina\t1\t161\tNULL\n120043\tCitomegalovírus IgM\t1\t0,08\tNULL\n120044\tAnti-HBs\t1\tNEG\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 90
+}

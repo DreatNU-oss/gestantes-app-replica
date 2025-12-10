@@ -8,9 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { InputExameValidado } from "@/components/InputExameValidado";
 import { obterIdValidacao } from "@/data/mapeamentoExames";
+import { isExameSorologico } from "@/data/valoresReferencia";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 import {
   examesSangue,
   examesUrina,
@@ -20,6 +23,7 @@ import {
 } from "@/data/examesConfig";
 
 export default function ExamesLaboratoriais() {
+  const [, setLocation] = useLocation();
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
   const [modalAberto, setModalAberto] = useState(false);
@@ -61,6 +65,38 @@ export default function ExamesLaboratoriais() {
     }));
   };
 
+  // Componente helper para renderizar campo de resultado (Select ou Input)
+  const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string) => {
+    const isSorologico = isExameSorologico(nomeExame);
+    
+    if (isSorologico) {
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Não reagente">Não reagente</SelectItem>
+            <SelectItem value="Reagente">Reagente</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    return (
+      <InputExameValidado
+        nomeExame={obterIdValidacao(nomeExame) || nomeExame}
+        trimestre={trimestre}
+        value={valor}
+        onChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
+        className="w-full"
+      />
+    );
+  };
+
   const renderExameRow = (exame: ExameConfig) => {
     // Se o exame tem subcampos (ex: TTGO), renderizar múltiplas linhas
     if (exame.subcampos) {
@@ -73,60 +109,67 @@ export default function ExamesLaboratoriais() {
                 <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
               </TableCell>
               <TableCell className="text-center">
-                {index === 0 ? (
-                  <Input
-                    type="date"
-                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(exame.nome, "data", e.target.value)
-                    }
-                    className="w-full text-xs"
-                  />
-                ) : (
-                  <div></div>
-                )}
-              </TableCell>
-              <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
-                  <InputExameValidado
-                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
-                    trimestre={1}
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""}
-                    onChange={(valor) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "1", valor)
-                    }
-                    className="w-full"
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data1"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data1", e.target.value)
+                      }
+                      className="w-full text-xs mb-1"
+                      placeholder="Data"
+                    />
+                    {renderCampoResultado(
+                      `${exame.nome}-${subcampo}`,
+                      1,
+                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""
+                    )}
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
               </TableCell>
               <TableCell className="text-center">
                 {exame.trimestres.segundo ? (
-                  <InputExameValidado
-                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
-                    trimestre={2}
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""}
-                    onChange={(valor) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "2", valor)
-                    }
-                    className="w-full"
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data2"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data2", e.target.value)
+                      }
+                      className="w-full text-xs mb-1"
+                      placeholder="Data"
+                    />
+                    {renderCampoResultado(
+                      `${exame.nome}-${subcampo}`,
+                      2,
+                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""
+                    )}
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
               </TableCell>
               <TableCell className="text-center">
                 {exame.trimestres.terceiro ? (
-                  <InputExameValidado
-                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
-                    trimestre={3}
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""}
-                    onChange={(valor) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "3", valor)
-                    }
-                    className="w-full"
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data3"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data3", e.target.value)
+                      }
+                      className="w-full text-xs mb-1"
+                      placeholder="Data"
+                    />
+                    {renderCampoResultado(
+                      `${exame.nome}-${subcampo}`,
+                      3,
+                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""
+                    )}
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
@@ -142,56 +185,67 @@ export default function ExamesLaboratoriais() {
       <TableRow key={exame.nome}>
         <TableCell className="font-medium">{exame.nome}</TableCell>
         <TableCell className="text-center">
-          <Input
-            type="date"
-            value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data"] : "") || ""}
-            onChange={(e) =>
-              handleResultadoChange(exame.nome, "data", e.target.value)
-            }
-            className="w-full text-xs"
-          />
-        </TableCell>
-        <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
-            <InputExameValidado
-              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
-              trimestre={1}
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""}
-              onChange={(valor) =>
-                handleResultadoChange(exame.nome, "1", valor)
-              }
-              className="w-full"
-            />
+            <div className="space-y-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data1", e.target.value)
+                }
+                className="w-full text-xs mb-1"
+                placeholder="Data"
+              />
+              {renderCampoResultado(
+                exame.nome,
+                1,
+                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""
+              )}
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
         </TableCell>
         <TableCell className="text-center">
           {exame.trimestres.segundo ? (
-            <InputExameValidado
-              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
-              trimestre={2}
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""}
-              onChange={(valor) =>
-                handleResultadoChange(exame.nome, "2", valor)
-              }
-              className="w-full"
-            />
+            <div className="space-y-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data2", e.target.value)
+                }
+                className="w-full text-xs mb-1"
+                placeholder="Data"
+              />
+              {renderCampoResultado(
+                exame.nome,
+                2,
+                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""
+              )}
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
         </TableCell>
         <TableCell className="text-center">
           {exame.trimestres.terceiro ? (
-            <InputExameValidado
-              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
-              trimestre={3}
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""}
-              onChange={(valor) =>
-                handleResultadoChange(exame.nome, "3", valor)
-              }
-              className="w-full"
-            />
+            <div className="space-y-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data3", e.target.value)
+                }
+                className="w-full text-xs mb-1"
+                placeholder="Data"
+              />
+              {renderCampoResultado(
+                exame.nome,
+                3,
+                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""
+              )}
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
@@ -208,10 +262,9 @@ export default function ExamesLaboratoriais() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-1/4">Exame</TableHead>
-              <TableHead className="text-center w-[100px]">Data Coleta</TableHead>
-              <TableHead className="text-center w-1/5">1º Trimestre</TableHead>
-              <TableHead className="text-center w-1/5">2º Trimestre</TableHead>
-              <TableHead className="text-center w-1/5">3º Trimestre</TableHead>
+              <TableHead className="text-center w-1/4">1º Trimestre</TableHead>
+              <TableHead className="text-center w-1/4">2º Trimestre</TableHead>
+              <TableHead className="text-center w-1/4">3º Trimestre</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -225,11 +278,21 @@ export default function ExamesLaboratoriais() {
   return (
     <GestantesLayout>
       <div className="space-y-6">
-        <div>
-          <h2 className="text-3xl font-bold text-foreground">Exames Laboratoriais</h2>
-          <p className="text-muted-foreground">
-            Acompanhe os exames realizados em cada trimestre
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation("/")}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">Exames Laboratoriais</h2>
+            <p className="text-muted-foreground">
+              Acompanhe os exames realizados em cada trimestre
+            </p>
+          </div>
         </div>
 
         <Card>
@@ -297,18 +360,23 @@ export default function ExamesLaboratoriais() {
                     className="bg-rose-600 hover:bg-rose-700"
                     onClick={() => {
                       if (gestanteSelecionada) {
-                        // Extrair datas dos resultados
-                        const datas: Record<string, string> = {};
+                        // Extrair datas dos resultados (data1, data2, data3)
+                        const datas: Record<string, Record<string, string> | string> = {};
                         const resultadosLimpos: Record<string, Record<string, string> | string> = {};
                         
                         for (const [nomeExame, valor] of Object.entries(resultados)) {
                           if (typeof valor === 'object' && valor !== null) {
-                            const { data, ...resto } = valor as Record<string, string>;
+                            const { data1, data2, data3, ...resto } = valor as Record<string, string>;
                             
-                            // Armazenar data se existir
-                            if (data) datas[nomeExame] = data;
+                            // Armazenar datas se existirem
+                            if (data1 || data2 || data3) {
+                              datas[nomeExame] = {};
+                              if (data1) (datas[nomeExame] as Record<string, string>).data1 = data1;
+                              if (data2) (datas[nomeExame] as Record<string, string>).data2 = data2;
+                              if (data3) (datas[nomeExame] as Record<string, string>).data3 = data3;
+                            }
                             
-                            // Remover campo de data dos resultados
+                            // Remover campos de data dos resultados
                             resultadosLimpos[nomeExame] = resto;
                           } else {
                             resultadosLimpos[nomeExame] = valor;
@@ -331,7 +399,7 @@ export default function ExamesLaboratoriais() {
                 <InterpretarExamesModal
                   open={modalAberto}
                   onOpenChange={setModalAberto}
-                  onResultados={(novosResultados, trimestre) => {
+                  onResultados={(novosResultados, trimestre, dataColeta) => {
                     // Converter resultados da IA para o formato esperado
                     const trimestreNum = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
                     const resultadosFormatados: Record<string, Record<string, string> | string> = {};
@@ -340,6 +408,8 @@ export default function ExamesLaboratoriais() {
                       resultadosFormatados[nomeExame] = {
                         ...(typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? resultados[nomeExame] : {}),
                         [trimestreNum]: valor,
+                        // Adicionar data extraída pela IA ao trimestre correspondente
+                        ...(dataColeta ? { [`data${trimestreNum}`]: dataColeta } : {}),
                       };
                     }
                     

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 interface InterpretarExamesModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onResultados: (resultados: Record<string, string>, trimestre: string) => void;
+  onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string) => void;
 }
 
 export function InterpretarExamesModal({ open, onOpenChange, onResultados }: InterpretarExamesModalProps) {
@@ -20,8 +20,11 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation({
     onSuccess: (data) => {
-      toast.success(`${Object.keys(data.resultados).length} exames interpretados com sucesso!`);
-      onResultados(data.resultados, trimestre);
+      const mensagem = data.dataColeta 
+        ? `${Object.keys(data.resultados).length} exames interpretados (Data: ${data.dataColeta})!`
+        : `${Object.keys(data.resultados).length} exames interpretados com sucesso!`;
+      toast.success(mensagem);
+      onResultados(data.resultados, trimestre, data.dataColeta);
       handleClose();
     },
     onError: (error) => {

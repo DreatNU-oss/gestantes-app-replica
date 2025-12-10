@@ -1,0 +1,14 @@
+{
+  "query": "SELECT id, nome FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 5",
+  "rows": [
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n330007\tCamila Soares Ferreira Sidrin\n",
+  "stderr": "",
+  "execution_time_ms": 115
+}

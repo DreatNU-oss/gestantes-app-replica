@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE resultadosExames SET dataExame = '2025-11-11' WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 1)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE resultadosExames SET dataExame = '2025-11-11' WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Camila%Sidrin%' LIMIT 1)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 61
+}

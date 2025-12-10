@@ -687,7 +687,7 @@ export const appRouter = router({
       .input(z.object({
         gestanteId: z.number(),
         resultados: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])),
-        datas: z.record(z.string(), z.string()).optional(), // Datas dos exames (formato YYYY-MM-DD)
+        datas: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])).optional(), // Datas por trimestre ou data única
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -700,12 +700,12 @@ export const appRouter = router({
         const resultadosParaInserir: InsertResultadoExame[] = [];
         
         for (const [nomeExame, valor] of Object.entries(input.resultados)) {
-          const dataExameStr = input.datas?.[nomeExame];
-          const dataExame = dataExameStr ? new Date(dataExameStr) : null;
+          const datasExame = input.datas?.[nomeExame];
           
           if (nomeExame === 'outros_observacoes') {
             // Campo de texto livre - salvar como trimestre 0
             if (typeof valor === 'string' && valor.trim()) {
+              const dataExame = typeof datasExame === 'string' ? new Date(datasExame) : null;
               resultadosParaInserir.push({
                 gestanteId: input.gestanteId,
                 nomeExame,
@@ -718,6 +718,16 @@ export const appRouter = router({
             // Exame com trimestres
             for (const [trimestre, resultado] of Object.entries(valor)) {
               if (resultado && resultado.trim()) {
+                // Buscar data específica do trimestre ou data única
+                let dataExame: Date | null = null;
+                if (datasExame) {
+                  if (typeof datasExame === 'object' && datasExame[`data${trimestre}`]) {
+                    dataExame = new Date(datasExame[`data${trimestre}`]);
+                  } else if (typeof datasExame === 'string') {
+                    dataExame = new Date(datasExame);
+                  }
+                }
+                
                 resultadosParaInserir.push({
                   gestanteId: input.gestanteId,
                   nomeExame,
@@ -750,13 +760,13 @@ export const appRouter = router({
           const fileBuffer = Buffer.from(input.fileBase64, 'base64');
           
           // Chamar função de interpretação
-          const resultados = await interpretarExamesComIA(
+          const { resultados, dataColeta } = await interpretarExamesComIA(
             fileBuffer,
             input.mimeType,
             input.trimestre
           );
           
-          return { success: true, resultados };
+          return { success: true, resultados, dataColeta };
         } catch (error) {
           console.error('Erro ao interpretar exames:', error);
           throw new TRPCError({ 
@@ -788,7 +798,14 @@ export const appRouter = router({
             if (!resultadosEstruturados[resultado.nomeExame]) {
               resultadosEstruturados[resultado.nomeExame] = {};
             }
+            // Adicionar resultado do trimestre
             (resultadosEstruturados[resultado.nomeExame] as Record<string, string>)[resultado.trimestre.toString()] = resultado.resultado || '';
+            
+            // Adicionar data do trimestre se existir
+            if (resultado.dataExame) {
+              const dataFormatada = new Date(resultado.dataExame).toISOString().split('T')[0];
+              (resultadosEstruturados[resultado.nomeExame] as Record<string, string>)[`data${resultado.trimestre}`] = dataFormatada;
+            }
           }
         }
         
