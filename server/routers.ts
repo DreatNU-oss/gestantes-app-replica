@@ -366,6 +366,7 @@ export const appRouter = router({
         pressaoArterial: z.string().optional(),
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
+        mf: z.number().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(({ input }) => {
@@ -386,6 +387,7 @@ export const appRouter = router({
         pressaoArterial: z.string().optional(),
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
+        mf: z.number().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(({ input }) => {
