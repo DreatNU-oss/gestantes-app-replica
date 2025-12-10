@@ -101,6 +101,14 @@ export function AlertasPartosProximos({
     return "bg-green-800 text-white";
   };
 
+  const getCorFundoCard = (diasRestantes: number): string => {
+    if (diasRestantes <= 5) return "bg-orange-50 border-orange-300";
+    if (diasRestantes <= 8) return "bg-green-50 border-green-300";
+    if (diasRestantes <= 10) return "bg-emerald-50 border-emerald-300";
+    if (diasRestantes <= 17) return "bg-teal-50 border-teal-300";
+    return "bg-cyan-50 border-cyan-300";
+  };
+
   const alertas: AlertaParto[] = gestantes
     .map((gestante) => {
       const resultado = obterDataParto(gestante);
@@ -171,7 +179,7 @@ export function AlertasPartosProximos({
         {alertas.map((alerta) => (
           <div 
             key={alerta.gestante.id} 
-            className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-orange-300 transition-colors"
+            className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes)}`}
           >
             <div className="flex-1">
               <div className="font-semibold text-gray-900 mb-1">

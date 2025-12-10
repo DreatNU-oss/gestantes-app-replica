@@ -1,0 +1,914 @@
+{
+  "query": "SELECT \n  g.id, \n  g.nome, \n  g.medicoId, \n  m.nome as medico_nome,\n  g.planoSaudeId,\n  p.nome as plano_nome\nFROM gestantes g\nLEFT JOIN medicos m ON g.medicoId = m.id\nLEFT JOIN planosSaude p ON g.planoSaudeId = p.id\nORDER BY g.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  g.id, \n  g.nome, \n  g.medicoId, \n  m.nome as medico_nome,\n  g.planoSaudeId,\n  p.nome as plano_nome\nFROM gestantes g\nLEFT JOIN medicos m ON g.medicoId = m.id\nLEFT JOIN planosSaude p ON g.planoSaudeId = p.id\nORDER BY g.id;",
+  "rows": [
+    {
+      "id": "30001",
+      "nome": "Adrieli Rezende Barros",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "300006",
+      "nome": "Graziela Mazoni",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330002",
+      "nome": "Paula Marques de Oliveira",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "2",
+      "plano_nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "330003",
+      "nome": "Sara Nunes de Moura",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "2",
+      "plano_nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330009",
+      "nome": "Jenilda Aparecida Souza Santos",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330011",
+      "nome": "Aline Aparecida Ribeiro Reis",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330012",
+      "nome": "Aline Clara Silva",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330013",
+      "nome": "Aline Cristina Soares Gallo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330016",
+      "nome": "Amanda Paula da Costa Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330017",
+      "nome": "Amanda Tavares Amado",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330018",
+      "nome": "Ana Clara Borges da Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330020",
+      "nome": "Anna Clara Sousa Borges",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330023",
+      "nome": "Bruna do Carmo Cunha",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330024",
+      "nome": "Bruna Fernandes Fonseca Oliveira",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330025",
+      "nome": "Bruna Ribeiro Costa",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330026",
+      "nome": "Bruna Tertuliano de Souza",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330027",
+      "nome": "Camila Dias Vicente",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330028",
+      "nome": "Camila Rosa Carvalho",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330029",
+      "nome": "Carine Rosário Pereira Galvão",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330031",
+      "nome": "Cecília de Salles Amaral Olímpio",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "2",
+      "plano_nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "330032",
+      "nome": "Cinthia dos Anjos Antonietto Drumond",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330033",
+      "nome": "Cintia de Oliveira Souza Rosa",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330034",
+      "nome": "Crislaine Aparecida da Costa Soares",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330035",
+      "nome": "Crislayne Eleniz de Andrade",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330036",
+      "nome": "Danielle Barbosa Lopes de Moraes",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330037",
+      "nome": "Danielle Fliegner Enout Nadur",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330038",
+      "nome": "Denise Bittencourt Siqueira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330039",
+      "nome": "Débora Gouvea Rocha de Jesus",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "5",
+      "plano_nome": "FUSEX"
+    },
+    {
+      "id": "330040",
+      "nome": "Eliane Gomes de Noronha",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330041",
+      "nome": "Eliane Tolentino Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "6",
+      "plano_nome": "COPASS"
+    },
+    {
+      "id": "330042",
+      "nome": "Ellem Ribeiro Lemes",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330043",
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330044",
+      "nome": "Erica Aparecida Luz",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330045",
+      "nome": "Fabrícia Paulino Luciano da Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330046",
+      "nome": "Fernanda Carmem de Souza",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330048",
+      "nome": "Gabriela das Graças Arantes Lemos",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330049",
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330050",
+      "nome": "Giovanna Alexsandra Mecia",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330051",
+      "nome": "Gisele Silva Batista",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330052",
+      "nome": "Helena Resende Andrade",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330053",
+      "nome": "Heloísa Lemes Silva",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330054",
+      "nome": "Iara Silva Miguel",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330055",
+      "nome": "Iris Fonseca de Morais",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330056",
+      "nome": "Isis Milena Gomes",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330057",
+      "nome": "Janaína Helena Machado",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330058",
+      "nome": "Jéssica Aparecida de Souza",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330059",
+      "nome": "Joyce Mirelle Costa Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330060",
+      "nome": "Juliana da Silva Tavares",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330061",
+      "nome": "Kassiara Batista Borges",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330062",
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330063",
+      "nome": "Kerolainy Aparecida Faria Jorge",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330064",
+      "nome": "Lara Carolyne Miguel de Paula",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330065",
+      "nome": "Larissa Santos Santana",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330066",
+      "nome": "Laura Antônia Marques Correa",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330067",
+      "nome": "Laura Stefany Quintiliano da Silva",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330068",
+      "nome": "Letícia Campos Calderaro Dias",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330069",
+      "nome": "Letícia Celeste Caetano",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330070",
+      "nome": "Letícia Dias de Souza",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330071",
+      "nome": "Letícia Nogueira Chauke",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330072",
+      "nome": "Lorena Luísa da Costa",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "5",
+      "plano_nome": "FUSEX"
+    },
+    {
+      "id": "330073",
+      "nome": "Luciana Maria Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330074",
+      "nome": "Luciany Aparecida Vilela",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330075",
+      "nome": "Lívia Caldas Marins",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330076",
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330077",
+      "nome": "Meirielen Santiago Levy de Souza",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "2",
+      "plano_nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "330078",
+      "nome": "Milene de Souza Braga",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330079",
+      "nome": "Naiane Kelly de Oliveira Vale",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330080",
+      "nome": "Natália da Silva Silveira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330081",
+      "nome": "Patrícia Aparecida Camilo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330082",
+      "nome": "Poliane Amado Silva do Prado",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "2",
+      "plano_nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "330083",
+      "nome": "Raquel Couto e Silva",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330084",
+      "nome": "Rayane Aparecida Zanin",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330085",
+      "nome": "Rayssa Aparecida Oliveira Martins",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330086",
+      "nome": "Roana Borges Nascimento",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "330087",
+      "nome": "Samanta Silva Maciel",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330088",
+      "nome": "Sara Rosa da Silva",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330089",
+      "nome": "Sophy Marie Ferreira Martins",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330090",
+      "nome": "Suelen Gandza Gomes",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330091",
+      "nome": "Wanna Marya Coelho Rosa Borges",
+      "medicoId": "3",
+      "medico_nome": "Plantonista do SUS",
+      "planoSaudeId": "30001",
+      "plano_nome": "CORTESIA"
+    },
+    {
+      "id": "330092",
+      "nome": "Vivian Mantovani Lopes e Silva",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330093",
+      "nome": "Vanessa Gomes Ferreira",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "5",
+      "plano_nome": "FUSEX"
+    },
+    {
+      "id": "330094",
+      "nome": "Valéria Aparecida Palmeira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330095",
+      "nome": "Tainara dos Reis Oliveira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330096",
+      "nome": "Tamiris Cristina Moreira Gomes",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "330097",
+      "nome": "Thaina Cristiane Marques",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330098",
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330099",
+      "nome": "Taynara Magalhães Porfirio",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330100",
+      "nome": "Thaiane Massarim do Nascimento",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330101",
+      "nome": "Thainá Batista Valim",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "330102",
+      "nome": "Thaynara Evelyn Souza Galo",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "660001",
+      "nome": "Meireceli Batista Teixeira",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "NULL",
+      "plano_nome": "NULL"
+    },
+    {
+      "id": "690018",
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "720001",
+      "nome": "Elisangela da Silva",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "720002",
+      "nome": "Camila Paiva do Nascimento",
+      "medicoId": "NULL",
+      "medico_nome": "NULL",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "780001",
+      "nome": "Leticia Petrin",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "1",
+      "plano_nome": "Particular"
+    },
+    {
+      "id": "810001",
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "840001",
+      "nome": "Fernanda Angélica Mafra",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "3",
+      "plano_nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "870001",
+      "nome": "Julia Prates Gonçalves",
+      "medicoId": "1",
+      "medico_nome": "Dr. André",
+      "planoSaudeId": "5",
+      "plano_nome": "FUSEX"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tmedicoId\tmedico_nome\tplanoSaudeId\tplano_nome\n30001\tAdrieli Rezende Barros\tNULL\tNULL\tNULL\tNULL\n270001\tRaissa Andrade Gibram\tNULL\tNULL\tNULL\tNULL\n300004\tCamila Zanco Pereira\t1\tDr. André\t1\tParticular\n300005\tJosiane Alves Batista\t1\tDr. André\t3\tUnimed (inclui o parto)\n300006\tGraziela Mazoni\t1\tDr. André\t1\tParticular\n330002\tPaula Marques de Oliveira\t3\tPlantonista do SUS\t2\tUnimed (ambulatorial)\n330003\tSara Nunes de Moura\t3\tPlantonista do SUS\t2\tUnimed (ambulatorial)\n330004\tKetlin Pereira Ferreira\t1\tDr. André\tNULL\tNULL\n330005\tDaniela Aparecida Françoso\t1\tDr. André\t3\tUnimed (inclui o parto)\n330006\tThabata Aline de Oliveira Costa\tNULL\tNULL\tNULL\tNULL\n330007\tCamila Soares Ferreira Sidrin\tNULL\tNULL\tNULL\tNULL\n330008\tLucíola Viviane Achilles Medeiros Araújo\tNULL\tNULL\tNULL\tNULL\n330009\tJenilda Aparecida Souza Santos\t1\tDr. André\t3\tUnimed (inclui o parto)\n330010\tLetícia Aparecida Silveira\tNULL\tNULL\tNULL\tNULL\n330011\tAline Aparecida Ribeiro Reis\t1\tDr. André\t3\tUnimed (inclui o parto)\n330012\tAline Clara Silva\tNULL\tNULL\tNULL\tNULL\n330013\tAline Cristina Soares Gallo\tNULL\tNULL\tNULL\tNULL\n330014\tAmanda Cristina Souza Oliveira\tNULL\tNULL\tNULL\tNULL\n330015\tAmanda Junqueira Vilela\tNULL\tNULL\tNULL\tNULL\n330016\tAmanda Paula da Costa Silva\t1\tDr. André\t3\tUnimed (inclui o parto)\n330017\tAmanda Tavares Amado\tNULL\tNULL\tNULL\tNULL\n330018\tAna Clara Borges da Silva\t1\tDr. André\t3\tUnimed (inclui o parto)\n330019\tAndressa Helena Silva Fonseca\tNULL\tNULL\tNULL\tNULL\n330020\tAnna Clara Sousa Borges\tNULL\tNULL\tNULL\tNULL\n330021\tBianca Aparecida Marcolino do Carmo\tNULL\tNULL\tNULL\tNULL\n330022\tBianca Fonseca Moreno da Cruz\tNULL\tNULL\tNULL\tNULL\n330023\tBruna do Carmo Cunha\tNULL\tNULL\tNULL\tNULL\n330024\tBruna Fernandes Fonseca Oliveira\t1\tDr. André\t3\tUnimed (inclui o parto)\n330025\tBruna Ribeiro Costa\tNULL\tNULL\tNULL\tNULL\n330026\tBruna Tertuliano de Souza\tNULL\tNULL\t1\tParticular\n330027\tCamila Dias Vicente\tNULL\tNULL\tNULL\tNULL\n330028\tCamila Rosa Carvalho\tNULL\tNULL\tNULL\tNULL\n330029\tCarine Rosário Pereira Galvão\t1\tDr. André\t3\tUnimed (inclui o parto)\n330031\tCecília de Salles Amaral Olímpio\t3\tPlantonista do SUS\t2\tUnimed (ambulatorial)\n330032\tCinthia dos Anjos Antonietto Drumond\tNULL\tNULL\tNULL\tNULL\n330033\tCintia de Oliveira Souza Rosa\tNULL\tNULL\tNULL\tNULL\n330034\tCrislaine Aparecida da Costa Soares\tNULL\tNULL\tNULL\tNULL\n330035\tCrislayne Eleniz de Andrade\tNULL\tNULL\tNULL\tNULL\n330036\tDanielle Barbosa Lopes de Moraes\tNULL\tNULL\tNULL\tNULL\n330037\tDanielle Fliegner Enout Nadur\tNULL\tNULL\tNULL\tNULL\n330038\tDenise Bittencourt Siqueira\tNULL\tNULL\tNULL\tNULL\n330039\tDébora Gouvea Rocha de Jesus\t1\tDr. André\t5\tFUSEX\n330040\tEliane Gomes de Noronha\tNULL\tNULL\tNULL\tNULL\n330041\tEliane Tolentino Silva\t1\tDr. André\t6\tCOPASS\n330042\tEllem Ribeiro Lemes\tNULL\tNULL\tNULL\tNULL\n330043\tEllen Aparecida Ferreira Batista\tNULL\tNULL\tNULL\tNULL\n330044\tErica Aparecida Luz\tNULL\tNULL\tNULL\tNULL\n330045\tFabrícia Paulino Luciano da Silva\t1\tDr. André\t1\tParticular\n330046\tFernanda Carmem de Souza\tNULL\tNULL\tNULL\tNULL\n330047\tFernanda Luciano Santos Gonçalves\tNULL\tNULL\tNULL\tNULL\n330048\tGabriela das Graças Arantes Lemos\tNULL\tNULL\tNULL\tNULL\n330049\tGabriela dos Santos Batista Figueiredo\tNULL\tNULL\tNULL\tNULL\n330050\tGiovanna Alexsandra Mecia\tNULL\tNULL\t1\tParticular\n330051\tGisele Silva Batista\tNULL\tNULL\tNULL\tNULL\n330052\tHelena Resende Andrade\tNULL\tNULL\t1\tParticular\n330053\tHeloísa Lemes Silva\tNULL\tNULL\tNULL\tNULL\n330054\tIara Silva Miguel\tNULL\tNULL\tNULL\tNULL\n330055\tIris Fonseca de Morais\tNULL\tNULL\tNULL\tNULL\n330056\tIsis Milena Gomes\tNULL\tNULL\tNULL\tNULL\n330057\tJanaína Helena Machado\tNULL\tNULL\tNULL\tNULL\n330058\tJéssica Aparecida de Souza\tNULL\tNULL\tNULL\tNULL\n330059\tJoyce Mirelle Costa Silva\t1\tDr. André\t3\tUnimed (inclui o parto)\n330060\tJuliana da Silva Tavares\tNULL\tNULL\tNULL\tNULL\n330061\tKassiara Batista Borges\tNULL\tNULL\tNULL\tNULL\n330062\tKayane Ketnny Gomes Branquinho\tNULL\tNULL\tNULL\tNULL\n330063\tKerolainy Aparecida Faria Jorge\tNULL\tNULL\tNULL\tNULL\n330064\tLara Carolyne Miguel de Paula\tNULL\tNULL\tNULL\tNULL\n330065\tLarissa Santos Santana\tNULL\tNULL\tNULL\tNULL\n330066\tLaura Antônia Marques Correa\tNULL\tNULL\tNULL\tNULL\n330067\tLaura Stefany Quintiliano da Silva\t3\tPlantonista do SUS\t1\tParticular\n330068\tLetícia Campos Calderaro Dias\t3\tPlantonista do SUS\t1\tParticular\n330069\tLetícia Celeste Caetano\tNULL\tNULL\tNULL\tNULL\n330070\tLetícia Dias de Souza\tNULL\tNULL\tNULL\tNULL\n330071\tLetícia Nogueira Chauke\tNULL\tNULL\tNULL\tNULL\n330072\tLorena Luísa da Costa\t1\tDr. André\t5\tFUSEX\n330073\tLuciana Maria Silva\t1\tDr. André\t3\tUnimed (inclui o parto)\n330074\tLuciany Aparecida Vilela\tNULL\tNULL\tNULL\tNULL\n330075\tLívia Caldas Marins\tNULL\tNULL\tNULL\tNULL\n330076\tMakisleide Ferreira de Souza Santos\t1\tDr. André\t3\tUnimed (inclui o parto)\n330077\tMeirielen Santiago Levy de Souza\tNULL\tNULL\t2\tUnimed (ambulatorial)\n330078\tMilene de Souza Braga\tNULL\tNULL\tNULL\tNULL\n330079\tNaiane Kelly de Oliveira Vale\tNULL\tNULL\tNULL\tNULL\n330080\tNatália da Silva Silveira\tNULL\tNULL\tNULL\tNULL\n330081\tPatrícia Aparecida Camilo\tNULL\tNULL\tNULL\tNULL\n330082\tPoliane Amado Silva do Prado\t1\tDr. André\t2\tUnimed (ambulatorial)\n330083\tRaquel Couto e Silva\tNULL\tNULL\tNULL\tNULL\n330084\tRayane Aparecida Zanin\tNULL\tNULL\t1\tParticular\n330085\tRayssa Aparecida Oliveira Martins\tNULL\tNULL\tNULL\tNULL\n330086\tRoana Borges Nascimento\tNULL\tNULL\t1\tParticular\n330087\tSamanta Silva Maciel\tNULL\tNULL\tNULL\tNULL\n330088\tSara Rosa da Silva\tNULL\tNULL\tNULL\tNULL\n330089\tSophy Marie Ferreira Martins\tNULL\tNULL\tNULL\tNULL\n330090\tSuelen Gandza Gomes\t1\tDr. André\t3\tUnimed (inclui o parto)\n330091\tWanna Marya Coelho Rosa Borges\t3\tPlantonista do SUS\t30001\tCORTESIA\n330092\tVivian Mantovani Lopes e Silva\tNULL\tNULL\tNULL\tNULL\n330093\tVanessa Gomes Ferreira\t1\tDr. André\t5\tFUSEX\n330094\tValéria Aparecida Palmeira\tNULL\tNULL\tNULL\tNULL\n330095\tTainara dos Reis Oliveira\tNULL\tNULL\tNULL\tNULL\n330096\tTamiris Cristina Moreira Gomes\t1\tDr. André\t3\tUnimed (inclui o parto)\n330097\tThaina Cristiane Marques\tNULL\tNULL\tNULL\tNULL\n330098\tTassiana Tonioli Craveiro Chagas\tNULL\tNULL\tNULL\tNULL\n330099\tTaynara Magalhães Porfirio\tNULL\tNULL\tNULL\tNULL\n330100\tThaiane Massarim do Nascimento\tNULL\tNULL\tNULL\tNULL\n330101\tThainá Batista Valim\tNULL\tNULL\tNULL\tNULL\n330102\tThaynara Evelyn Souza Galo\tNULL\tNULL\tNULL\tNULL\n660001\tMeireceli Batista Teixeira\tNULL\tNULL\tNULL\tNULL\n690018\tJeniffer Catrine Alves de Souza\t1\tDr. André\t3\tUnimed (inclui o parto)\n720001\tElisangela da Silva\t1\tDr. André\t3\tUnimed (inclui o parto)\n720002\tCamila Paiva do Nascimento\tNULL\tNULL\t1\tParticular\n780001\tLeticia Petrin\t1\tDr. André\t1\tParticular\n810001\tLuana Maria Oliveira Ribeiro Bernardes\t1\tDr. André\t3\tUnimed (inclui o parto)\n840001\tFernanda Angélica Mafra\t1\tDr. André\t3\tUnimed (inclui o parto)\n870001\tJulia Prates Gonçalves\t1\tDr. André\t5\tFUSEX\n",
+  "stderr": "",
+  "execution_time_ms": 664
+}
