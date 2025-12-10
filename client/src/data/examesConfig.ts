@@ -23,6 +23,7 @@ export const examesSangue: ExameConfig[] = [
   { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "HIV", trimestres: { primeiro: true, segundo: false, terceiro: true } },
   { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: false, terceiro: true } },
+  { nome: "Anti-HBs", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
   { nome: "Toxoplasmose IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Toxoplasmose IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },

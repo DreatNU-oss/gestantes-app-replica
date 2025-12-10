@@ -272,6 +272,7 @@ export const resultadosExames = mysqlTable("resultadosExames", {
   nomeExame: varchar("nomeExame", { length: 255 }).notNull(),
   trimestre: int("trimestre").notNull(), // 1, 2 ou 3
   resultado: text("resultado"),
+  dataExame: date("dataExame"), // Data em que o exame foi realizado
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

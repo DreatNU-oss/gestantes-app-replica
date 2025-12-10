@@ -484,3 +484,13 @@
 - [x] Investigar ordenação atual das consultas no backend (desc em db.ts linha 279)
 - [x] Alterar ordenação para crescente (ASC) por data (primeira consulta no topo)
 - [x] Testar visualização no Cartão de Pré-Natal
+
+
+## Melhorias no Cart\u00e3o Pr\u00e9-Natal e Exame## Melhorias no Cartão Pré-Natal e Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Adicionar opção "Úter--snip--o não palpável" no campo Altura Uterina (AUF) do Cartão Pré-Natal
+- [x] Adicionar exame Anti-HBs nos 3 trimestres na configuração de exames laboratoriais
+- [x] Implementar validação de Anti-HBs (Reagente = verde normal, Não Reagente = vermelho crítico)
+- [x] Atualizar interpretação por IA para incluir Anti-HBs
+- [ ] Adicionar campo de data para cada exame laboratorial registrado (backend pronto, falta frontend)
+- [x] Testar todas as alterações no navegadorar todas as altera\u00e7\u00f5es no navegador

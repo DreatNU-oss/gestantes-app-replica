@@ -264,6 +264,33 @@ export const VALORES_REFERENCIA: Record<string, ConfigExame> = {
     }
   },
 
+  'anti_hbs': {
+    nome: 'Anti-HBs',
+    faixas: [{
+      valorEsperado: 'reagente',
+      trimestres: [1, 2, 3]
+    }],
+    validacaoEspecial: (valor: string) => {
+      const valorLower = valor.toLowerCase().trim();
+      
+      // Reagente = imune (normal)
+      if (valorLower.includes('reagente') && !valorLower.includes('não')) {
+        return { tipo: 'normal' };
+      }
+      
+      // Não reagente = sem imunidade (crítico - precisa vacinar)
+      if (valorLower.includes('não') && valorLower.includes('reagente') ||
+          valorLower.includes('negativo')) {
+        return {
+          tipo: 'critico',
+          mensagem: '🚨 SEM IMUNIDADE PARA HEPATITE B - Indicar vacinação'
+        };
+      }
+      
+      return { tipo: 'normal' };
+    }
+  },
+
   'hepatite_c': {
     nome: 'Hepatite C (Anti-HCV)',
     faixas: [{

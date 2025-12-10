@@ -1,0 +1,1 @@
+ALTER TABLE `resultadosExames` ADD `dataExame` date;

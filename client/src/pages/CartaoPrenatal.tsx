@@ -115,7 +115,7 @@ export default function CartaoPrenatal() {
       dataConsulta: formData.dataConsulta,
       peso: formData.peso ? parseInt(formData.peso) * 1000 : undefined, // converter kg para gramas
       pressaoArterial: formData.pressaoArterial || undefined,
-      alturaUterina: formData.alturaUterina ? parseInt(formData.alturaUterina) * 10 : undefined, // converter cm para mm
+      alturaUterina: formData.alturaUterina === "nao_palpavel" ? -1 : (formData.alturaUterina ? parseInt(formData.alturaUterina) * 10 : undefined), // -1 = não palpável, converter cm para mm
       bcf: formData.bcf ? parseInt(formData.bcf) : undefined,
       mf: formData.mf ? parseInt(formData.mf) : undefined,
       observacoes: formData.observacoes || undefined,
@@ -134,7 +134,7 @@ export default function CartaoPrenatal() {
       dataConsulta: new Date(consulta.dataConsulta).toISOString().split('T')[0],
       peso: consulta.peso ? String(consulta.peso / 1000) : "",
       pressaoArterial: consulta.pressaoArterial || "",
-      alturaUterina: consulta.alturaUterina ? String(consulta.alturaUterina / 10) : "",
+      alturaUterina: consulta.alturaUterina === -1 ? "nao_palpavel" : (consulta.alturaUterina ? String(consulta.alturaUterina / 10) : ""),
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
       observacoes: consulta.observacoes || "",
@@ -426,12 +426,17 @@ export default function CartaoPrenatal() {
                   </div>
                   <div>
                     <Label>Altura Uterina (cm)</Label>
-                    <Input
-                      type="number"
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       value={formData.alturaUterina}
                       onChange={(e) => setFormData({ ...formData, alturaUterina: e.target.value })}
-                      placeholder="Ex: 25"
-                    />
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="nao_palpavel">Úter--snip--o não palpável</option>
+                      {Array.from({ length: 31 }, (_, i) => i + 10).map(cm => (
+                        <option key={cm} value={String(cm)}>{cm} cm</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <Label>BCF</Label>
@@ -586,7 +591,11 @@ export default function CartaoPrenatal() {
                         </TableCell>
                         <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
                         <TableCell>{consulta.pressaoArterial || "-"}</TableCell>
-                        <TableCell>{consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}</TableCell>
+                        <TableCell>
+                          {consulta.alturaUterina === -1 ? (
+                            <span className="text-muted-foreground italic">Úter--snip--o não palpável</span>
+                          ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
+                        </TableCell>
                         <TableCell>
                           {consulta.bcf === 1 ? (
                             <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>

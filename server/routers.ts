@@ -687,6 +687,7 @@ export const appRouter = router({
       .input(z.object({
         gestanteId: z.number(),
         resultados: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])),
+        datas: z.record(z.string(), z.string()).optional(), // Datas dos exames (formato YYYY-MM-DD)
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -699,6 +700,9 @@ export const appRouter = router({
         const resultadosParaInserir: InsertResultadoExame[] = [];
         
         for (const [nomeExame, valor] of Object.entries(input.resultados)) {
+          const dataExameStr = input.datas?.[nomeExame];
+          const dataExame = dataExameStr ? new Date(dataExameStr) : null;
+          
           if (nomeExame === 'outros_observacoes') {
             // Campo de texto livre - salvar como trimestre 0
             if (typeof valor === 'string' && valor.trim()) {
@@ -707,6 +711,7 @@ export const appRouter = router({
                 nomeExame,
                 trimestre: 0,
                 resultado: valor,
+                dataExame,
               });
             }
           } else if (typeof valor === 'object' && valor !== null) {
@@ -718,6 +723,7 @@ export const appRouter = router({
                   nomeExame,
                   trimestre: parseInt(trimestre),
                   resultado,
+                  dataExame,
                 });
               }
             }
