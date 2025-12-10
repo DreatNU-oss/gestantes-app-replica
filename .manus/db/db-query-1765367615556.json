@@ -1,0 +1,14 @@
+{
+  "query": "SELECT chave, valor FROM configuracoesEmail WHERE chave = 'smtp_email';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT chave, valor FROM configuracoesEmail WHERE chave = 'smtp_email';",
+  "rows": [
+    {
+      "chave": "smtp_email",
+      "valor": "prenatalmaismulher@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "chave\tvalor\nsmtp_email\tprenatalmaismulher@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 97
+}

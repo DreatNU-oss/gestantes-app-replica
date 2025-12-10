@@ -17,8 +17,8 @@ async function getConfig(chave: string): Promise<string | null> {
  * Cria transporter do Nodemailer com configurações do banco
  */
 async function createTransporter() {
-  const emailUser = await getConfig('EMAIL_USER');
-  const emailPass = await getConfig('EMAIL_PASS');
+  const emailUser = await getConfig('smtp_email');
+  const emailPass = await getConfig('smtp_senha');
   
   if (!emailUser || !emailPass) {
     throw new Error('Configurações de e-mail não encontradas. Configure EMAIL_USER e EMAIL_PASS.');
@@ -45,7 +45,9 @@ function criarTemplateEmail(titulo: string, conteudo: string): string {
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background-color: #f97316; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .header { background-color: #ffffff; padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0; border-bottom: 3px solid #f97316; }
+    .header img { max-width: 300px; height: auto; margin-bottom: 15px; }
+    .header h1 { color: #7c2d3d; margin: 0; font-size: 24px; }
     .content { background-color: #ffffff; padding: 30px; border: 1px solid #e5e7eb; }
     .footer { background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-radius: 0 0 8px 8px; }
     .alert { background-color: #fef3c7; border-left: 4px solid: #f59e0b; padding: 12px; margin: 20px 0; }
@@ -55,6 +57,7 @@ function criarTemplateEmail(titulo: string, conteudo: string): string {
 <body>
   <div class="container">
     <div class="header">
+      <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663167696128/gejrETdwpvuKoumY.png" alt="Clínica Mais Mulher" />
       <h1>${titulo}</h1>
     </div>
     <div class="content">
@@ -140,7 +143,8 @@ export const templates = {
       <p>Olá <strong>${nomeGestante}</strong>,</p>
       <p>Você está com <strong>27 semanas de gestação</strong> e chegou o momento de tomar a <strong>vacina dTpa</strong> (tríplice bacteriana acelular).</p>
       <p>Esta vacina é importante para proteger você e seu bebê contra <strong>difteria, tétano e coqueluche</strong>.</p>
-      <p><strong>Por favor, agende sua vacina com a clínica.</strong></p>
+      <p><strong>Procure uma clínica de vacinação para agendar sua vacina.</strong></p>
+      <p style="color: #059669; font-weight: bold;">💚 Esta vacina também está disponível gratuitamente pelo SUS.</p>
     `,
   }),
   
@@ -152,7 +156,8 @@ export const templates = {
       <p>Você está com <strong>${semanas} semanas de gestação</strong> e está no período ideal para tomar a <strong>vacina contra bronquiolite</strong> (VSR - Vírus Sincicial Respiratório).</p>
       <p>Esta vacina protege seu bebê contra infecções respiratórias graves nos primeiros meses de vida.</p>
       <p><strong>Período recomendado:</strong> entre 32 e 36 semanas de gestação.</p>
-      <p><strong>Por favor, agende sua vacina com a clínica.</strong></p>
+      <p><strong>Procure uma clínica de vacinação para agendar sua vacina.</strong></p>
+      <p style="color: #059669; font-weight: bold;">💚 Esta vacina também está disponível gratuitamente pelo SUS.</p>
     `,
   }),
   

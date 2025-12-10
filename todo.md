@@ -346,3 +346,30 @@
 - [x] Testar envio de e-mails com conta Gmail do usuário - SUCESSO: E-mail de dTpa enviado
 - [x] Validar que e-mails não são enviados duplicados (tabela logsEmails + verificação)
 - [ ] Implementar job automático diário (opcional - pode ser executado manualmente)
+
+
+## Bug: E-mail Não Recebido (Reportado 10/12/2025 - 06:15)
+
+- [x] Verificar logs de e-mail no banco de dados - Log mostrava "enviado" sem erros
+- [x] Verificar se há mensagem de erro no log - Sem erros
+- [x] Testar conexão SMTP com Gmail - RESOLVIDO: Senha precisava incluir espaços
+- [x] Verificar se senha de app está correta - RESOLVIDO: Senha correta é 'wawz fmyc gwgp tjcj' (com espaços)
+- [x] Corrigir formato da tabela configuracoesEmail (chave-valor)
+- [x] Corrigir código email.ts para usar chaves corretas (smtp_email, smtp_senha)
+- [x] Reenviar e-mail de teste - SUCESSO: E-mail de dTpa enviado
+- [ ] Aguardando confirmação do usuário sobre recebimento
+
+
+## Adicionar Logotipo nos E-mails (Solicitado 10/12/2025 - 07:00)
+
+- [x] Fazer upload do logotipo para S3 (LogoMaisMulher.png)
+- [x] Atualizar templates de e-mail com o logotipo no cabeçalho
+- [x] Testar envio de e-mail com logotipo - SUCESSO
+- [x] Validar que o logotipo aparece corretamente - CONFIRMADO pelo usuário
+
+
+## Atualizar Textos de E-mails de Vacinas (Solicitado 10/12/2025 - 07:10)
+
+- [x] Atualizar texto da vacina dTpa para orientar procurar clínica de vacinação e mencionar SUS
+- [x] Atualizar texto da vacina de Bronquiolite para orientar procurar clínica de vacinação e mencionar SUS
+- [x] Adicionar mensagem verde com 💚 sobre disponibilidade no SUS

@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM configuracoesEmail; \nINSERT INTO configuracoesEmail (chave, valor, descricao) VALUES \n('smtp_email', 'prenatalmaismulher@gmail.com', 'E-mail do remetente'),\n('smtp_senha', 'wawzfmycgwgptjcj', 'Senha de App do Gmail');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute DELETE FROM configuracoesEmail; \nINSERT INTO configuracoesEmail (chave, valor, descricao) VALUES \n('smtp_email', 'prenatalmaismulher@gmail.com', 'E-mail do remetente'),\n('smtp_senha', 'wawzfmycgwgptjcj', 'Senha de App do Gmail');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 75
+}

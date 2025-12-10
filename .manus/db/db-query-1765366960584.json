@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE gestantes SET \n  dum = '2025-04-21',\n  dataUltrassom = '2025-05-19',\n  igUltrassomSemanas = 38,\n  igUltrassomDias = 4\nWHERE nome LIKE '%Graziela%Mazoni%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE gestantes SET \n  dum = '2025-04-21',\n  dataUltrassom = '2025-05-19',\n  igUltrassomSemanas = 38,\n  igUltrassomDias = 4\nWHERE nome LIKE '%Graziela%Mazoni%';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 53
+}
