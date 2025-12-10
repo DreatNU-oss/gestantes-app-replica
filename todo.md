@@ -416,3 +416,8 @@
 
 - [x] Mover Coombs indireto para segunda posição (logo após Tipagem Sanguínea)
 - [x] Mover FTA-ABS IgG e IgM para logo abaixo de VDRL
+
+
+## Ajuste de Trimestres - Glicemia de Jejum (Solicitado 10/12/2025)
+
+- [x] Remover Glicemia de jejum do 3º trimestre (manter apenas 1º trimestre)
