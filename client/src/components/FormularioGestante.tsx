@@ -43,6 +43,8 @@ export default function FormularioGestante({
     igUltrassomSemanas: "",
     igUltrassomDias: "",
     dataUltrassom: "",
+    dataPartoProgramado: "",
+    observacoes: "",
   });
 
   const { data: gestante } = trpc.gestantes.get.useQuery(
@@ -93,6 +95,8 @@ export default function FormularioGestante({
         igUltrassomSemanas: gestante.igUltrassomSemanas?.toString() || "",
         igUltrassomDias: gestante.igUltrassomDias?.toString() || "",
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom.toISOString().split('T')[0]) : "",
+        dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : gestante.dataPartoProgramado.toISOString().split('T')[0]) : "",
+        observacoes: gestante.observacoes || "",
       });
     }
   }, [gestante]);
@@ -118,6 +122,8 @@ export default function FormularioGestante({
       igUltrassomSemanas: formData.igUltrassomSemanas ? parseInt(formData.igUltrassomSemanas) : undefined,
       igUltrassomDias: formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : undefined,
       dataUltrassom: formData.dataUltrassom || undefined,
+      dataPartoProgramado: formData.dataPartoProgramado || undefined,
+      observacoes: formData.observacoes || undefined,
     };
 
     if (gestanteId) {
@@ -364,6 +370,34 @@ export default function FormularioGestante({
                   onChange={(e) => setFormData({ ...formData, igUltrassomDias: e.target.value })}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dataPartoProgramado">Data Planejada para o Parto</Label>
+              <Input
+                id="dataPartoProgramado"
+                type="date"
+                value={formData.dataPartoProgramado}
+                onChange={(e) => setFormData({ ...formData, dataPartoProgramado: e.target.value })}
+              />
+              <p className="text-sm text-muted-foreground">Para cesáreas eletivas ou partos programados</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Observações</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="observacoes">Observações</Label>
+              <textarea
+                id="observacoes"
+                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Anotações adicionais sobre a gestante"
+                value={formData.observacoes}
+                onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+              />
             </div>
           </CardContent>
         </Card>

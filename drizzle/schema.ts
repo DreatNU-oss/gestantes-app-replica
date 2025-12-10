@@ -100,6 +100,9 @@ export const gestantes = mysqlTable("gestantes", {
   guiaExameUrl: text("guiaExameUrl"),
   documentosUrls: text("documentosUrls"), // JSON array de URLs
   
+  // Observações
+  observacoes: text("observacoes"),
+  
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

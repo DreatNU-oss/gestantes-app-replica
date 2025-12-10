@@ -218,3 +218,14 @@
 - [x] Implementar autocomplete com sugestões na página de Cartão de Pré-Natal (seletor de gestante)
 - [x] Mostrar dropdown com nomes compatíveis ao digitar
 - [x] Permitir clicar diretamente no nome sugerido
+
+
+## Atualização do Formulário de Edição de Gestante (Solicitado 09/12/2025)
+
+- [x] Verificar se campo "observacoes" existe no schema
+- [x] Adicionar campo "observacoes" ao schema
+- [x] Adicionar campo "E-mail" no formulário (já existe)
+- [x] Adicionar campo "Data Planejada para o Parto" no formulário
+- [x] Adicionar campo "Observações" (textarea) no formulário
+- [x] Garantir que todos os campos do print original estão presentes
+- [x] Testar salvamento de todos os campos
