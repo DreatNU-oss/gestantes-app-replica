@@ -108,68 +108,86 @@ export default function ExamesLaboratoriais() {
                 {index === 0 ? exame.nome : ""}
                 <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
               </TableCell>
+              {/* 1º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
-                  <div className="space-y-1">
-                    <Input
-                      type="date"
-                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data1"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data1", e.target.value)
-                      }
-                      className="w-full text-xs mb-1"
-                      placeholder="Data"
-                    />
-                    {renderCampoResultado(
-                      `${exame.nome}-${subcampo}`,
-                      1,
-                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""
-                    )}
-                  </div>
+                  <Input
+                    type="date"
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data1"] : "") || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data1", e.target.value)
+                    }
+                    className="w-full text-xs"
+                    placeholder="Data"
+                  />
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
               </TableCell>
+              {/* 1º Trimestre - Resultado */}
+              <TableCell className="text-center">
+                {exame.trimestres.primeiro ? (
+                  renderCampoResultado(
+                    `${exame.nome}-${subcampo}`,
+                    1,
+                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""
+                  )
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+              {/* 2º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.segundo ? (
-                  <div className="space-y-1">
-                    <Input
-                      type="date"
-                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data2"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data2", e.target.value)
-                      }
-                      className="w-full text-xs mb-1"
-                      placeholder="Data"
-                    />
-                    {renderCampoResultado(
-                      `${exame.nome}-${subcampo}`,
-                      2,
-                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""
-                    )}
-                  </div>
+                  <Input
+                    type="date"
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data2"] : "") || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data2", e.target.value)
+                    }
+                    className="w-full text-xs"
+                    placeholder="Data"
+                  />
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
               </TableCell>
+              {/* 2º Trimestre - Resultado */}
+              <TableCell className="text-center">
+                {exame.trimestres.segundo ? (
+                  renderCampoResultado(
+                    `${exame.nome}-${subcampo}`,
+                    2,
+                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""
+                  )
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+              {/* 3º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.terceiro ? (
-                  <div className="space-y-1">
-                    <Input
-                      type="date"
-                      value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data3"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(`${exame.nome}-${subcampo}`, "data3", e.target.value)
-                      }
-                      className="w-full text-xs mb-1"
-                      placeholder="Data"
-                    />
-                    {renderCampoResultado(
-                      `${exame.nome}-${subcampo}`,
-                      3,
-                      (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""
-                    )}
-                  </div>
+                  <Input
+                    type="date"
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data3"] : "") || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data3", e.target.value)
+                    }
+                    className="w-full text-xs"
+                    placeholder="Data"
+                  />
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+              {/* 3º Trimestre - Resultado */}
+              <TableCell className="text-center">
+                {exame.trimestres.terceiro ? (
+                  renderCampoResultado(
+                    `${exame.nome}-${subcampo}`,
+                    3,
+                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""
+                  )
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
@@ -184,68 +202,86 @@ export default function ExamesLaboratoriais() {
     return (
       <TableRow key={exame.nome}>
         <TableCell className="font-medium">{exame.nome}</TableCell>
+        {/* 1º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
-            <div className="space-y-1">
-              <Input
-                type="date"
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data1", e.target.value)
-                }
-                className="w-full text-xs mb-1"
-                placeholder="Data"
-              />
-              {renderCampoResultado(
-                exame.nome,
-                1,
-                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""
-              )}
-            </div>
+            <Input
+              type="date"
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "data1", e.target.value)
+              }
+              className="w-full text-xs"
+              placeholder="Data"
+            />
           ) : (
             <div className="text-gray-400">-</div>
           )}
         </TableCell>
+        {/* 1º Trimestre - Resultado */}
+        <TableCell className="text-center">
+          {exame.trimestres.primeiro ? (
+            renderCampoResultado(
+              exame.nome,
+              1,
+              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""
+            )
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+        {/* 2º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.segundo ? (
-            <div className="space-y-1">
-              <Input
-                type="date"
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data2", e.target.value)
-                }
-                className="w-full text-xs mb-1"
-                placeholder="Data"
-              />
-              {renderCampoResultado(
-                exame.nome,
-                2,
-                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""
-              )}
-            </div>
+            <Input
+              type="date"
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "data2", e.target.value)
+              }
+              className="w-full text-xs"
+              placeholder="Data"
+            />
           ) : (
             <div className="text-gray-400">-</div>
           )}
         </TableCell>
+        {/* 2º Trimestre - Resultado */}
+        <TableCell className="text-center">
+          {exame.trimestres.segundo ? (
+            renderCampoResultado(
+              exame.nome,
+              2,
+              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""
+            )
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+        {/* 3º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.terceiro ? (
-            <div className="space-y-1">
-              <Input
-                type="date"
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data3", e.target.value)
-                }
-                className="w-full text-xs mb-1"
-                placeholder="Data"
-              />
-              {renderCampoResultado(
-                exame.nome,
-                3,
-                (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""
-              )}
-            </div>
+            <Input
+              type="date"
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "data3", e.target.value)
+              }
+              className="w-full text-xs"
+              placeholder="Data"
+            />
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+        {/* 3º Trimestre - Resultado */}
+        <TableCell className="text-center">
+          {exame.trimestres.terceiro ? (
+            renderCampoResultado(
+              exame.nome,
+              3,
+              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""
+            )
           ) : (
             <div className="text-gray-400">-</div>
           )}
@@ -261,10 +297,13 @@ export default function ExamesLaboratoriais() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/4">Exame</TableHead>
-              <TableHead className="text-center w-1/4">1º Trimestre</TableHead>
-              <TableHead className="text-center w-1/4">2º Trimestre</TableHead>
-              <TableHead className="text-center w-1/4">3º Trimestre</TableHead>
+              <TableHead className="w-1/6">Exame</TableHead>
+              <TableHead className="text-center w-1/12">Data 1º Tri</TableHead>
+              <TableHead className="text-center w-1/6">Resultado 1º Tri</TableHead>
+              <TableHead className="text-center w-1/12">Data 2º Tri</TableHead>
+              <TableHead className="text-center w-1/6">Resultado 2º Tri</TableHead>
+              <TableHead className="text-center w-1/12">Data 3º Tri</TableHead>
+              <TableHead className="text-center w-1/6">Resultado 3º Tri</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

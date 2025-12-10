@@ -554,3 +554,10 @@
 - [x] Executar UPDATE para converter "NEG" para "Não reagente"
 - [x] Validar que todos os registros foram atualizados corretamente (0 NEG restantes, 22 com "Não reagente")
 - [x] Documentar quantidade de registros migrados (22 registros)
+
+
+## Reorganização de Colunas - Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Atualizar cabeçalho da tabela para 7 colunas (Nome, Data 1º, Resultado 1º, Data 2º, Resultado 2º, Data 3º, Resultado 3º)
+- [x] Reorganizar renderização dos campos para separar data e resultado em colunas distintas
+- [x] Testar visualização no navegador (validado com Camila Sidrin)
