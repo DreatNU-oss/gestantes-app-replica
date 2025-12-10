@@ -421,3 +421,8 @@
 ## Ajuste de Trimestres - Glicemia de Jejum (Solicitado 10/12/2025)
 
 - [x] Remover Glicemia de jejum do 3º trimestre (manter apenas 1º trimestre)
+
+
+## Ajuste de Nomenclatura - Outros Exames (Solicitado 10/12/2025)
+
+- [x] Alterar título "Outros Exames" para "Pesquisa para E.G.B."

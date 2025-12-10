@@ -240,7 +240,7 @@ export default function ExamesLaboratoriais() {
                 {renderTabelaExames("Exames de Sangue", examesSangue)}
                 {renderTabelaExames("Exames de Urina", examesUrina)}
                 {renderTabelaExames("Exames de Fezes", examesFezes)}
-                {renderTabelaExames("Outros Exames", outrosExames)}
+                {renderTabelaExames("Pesquisa para E.G.B.", outrosExames)}
 
                 {/* Campo de texto livre para outros exames */}
                 <div className="space-y-2">
