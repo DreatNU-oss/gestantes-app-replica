@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { ArrowLeft, Calendar, Stethoscope, Activity, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -112,29 +112,14 @@ export default function AgendamentoConsultas() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="gestante">Gestante</Label>
-              <Select
+              <AutocompleteSelect
+                options={gestantes?.filter((g) => g.dum).slice().sort((a: any, b: any) => a.nome.localeCompare(b.nome)) || []}
                 value={gestanteSelecionada?.toString() || ""}
-                onValueChange={(value) => setGestanteSelecionada(Number(value))}
-              >
-                <SelectTrigger id="gestante">
-                  <SelectValue placeholder="Selecione uma gestante" />
-                </SelectTrigger>
-                <SelectContent>
-                  {loadingGestantes ? (
-                    <SelectItem value="loading" disabled>
-                      Carregando...
-                    </SelectItem>
-                  ) : (
-                    gestantes
-                      ?.filter((g) => g.dum) // Apenas gestantes com DUM
-                      .map((g) => (
-                        <SelectItem key={g.id} value={g.id.toString()}>
-                          {g.nome}
-                        </SelectItem>
-                      ))
-                  )}
-                </SelectContent>
-              </Select>
+                onChange={(value) => setGestanteSelecionada(parseInt(value))}
+                placeholder="Digite o nome da gestante..."
+                labelKey="nome"
+                valueKey="id"
+              />
             </div>
 
             <div className="space-y-2">
