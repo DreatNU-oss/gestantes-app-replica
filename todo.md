@@ -498,7 +498,7 @@
 
 ## Melhorias na Página de Ultrassons (Solicitado 10/12/2025)
 
-- [ ] Adicionar botão "Voltar" na página de Ultrassons para consistência com outras páginas
+- [x] Adicionar botão "Voltar" na página de Ultrassons para consistência com outras páginas
 - [x] Criar backend para interpretar laudos de ultrassom com IA (similar aos exames laboratoriais)
 - [x] Criar modal de upload de PDF/imagem de laudos de ultrassom
 - [x] Implementar preenchimento automático dos campos de ultrassom baseado na interpretação da IA

@@ -228,22 +228,20 @@ export default function Ultrassons() {
         <ArrowLeft className="mr-2 h-4 w-4" />
         Voltar
       </Button>
-      
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Ultrassons Pré-Natais</h1>
-            <p className="text-muted-foreground">Registre os ultrassons realizados durante o pré-natal</p>
-          </div>
-          <Button
-            onClick={() => setModalInterpretarAberto(true)}
-            disabled={!gestanteSelecionada}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-          >
-            <Sparkles className="mr-2 h-4 w-4" />
-            Interpretar com IA
-          </Button>
+
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Ultrassons Pré-Natais</h1>
+          <p className="text-muted-foreground">Registre os ultrassons realizados durante o pré-natal</p>
         </div>
+        <Button
+          onClick={() => setModalInterpretarAberto(true)}
+          disabled={!gestanteSelecionada}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+        >
+          <Sparkles className="mr-2 h-4 w-4" />
+          Interpretar com IA
+        </Button>
       </div>
       
       {/* Seleção de Gestante */}
