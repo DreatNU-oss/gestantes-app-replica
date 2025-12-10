@@ -14,11 +14,13 @@ export interface ExameConfig {
 
 export const examesSangue: ExameConfig[] = [
   { nome: "Tipagem sanguínea ABO/Rh", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+  { nome: "Coombs indireto", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Hemoglobina/Hematócrito", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Plaquetas", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "Coombs indireto", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Glicemia de jejum", trimestres: { primeiro: true, segundo: false, terceiro: true } },
   { nome: "VDRL", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+  { nome: "FTA-ABS IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+  { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "HIV", trimestres: { primeiro: true, segundo: false, terceiro: true } },
   { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: false, terceiro: true } },
   { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
@@ -28,8 +30,6 @@ export const examesSangue: ExameConfig[] = [
   { nome: "Rubéola IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Citomegalovírus IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Citomegalovírus IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "FTA-ABS IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "TSH", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "T4 Livre", trimestres: { primeiro: true, segundo: false, terceiro: false } },
   { nome: "Eletroforese de Hemoglobina", trimestres: { primeiro: true, segundo: false, terceiro: false } },

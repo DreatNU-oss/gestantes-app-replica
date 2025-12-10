@@ -410,3 +410,9 @@
 ## Ajuste de Ordem dos Exames Laboratoriais (Solicitado 10/12/2025)
 
 - [x] Mover Tipagem Sanguínea ABO/Rh para o topo da lista de exames
+
+
+## Ajuste de Ordem dos Exames - Parte 2 (Solicitado 10/12/2025)
+
+- [x] Mover Coombs indireto para segunda posição (logo após Tipagem Sanguínea)
+- [x] Mover FTA-ABS IgG e IgM para logo abaixo de VDRL
