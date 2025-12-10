@@ -426,3 +426,8 @@
 ## Ajuste de Nomenclatura - Outros Exames (Solicitado 10/12/2025)
 
 - [x] Alterar título "Outros Exames" para "Pesquisa para E.G.B."
+
+
+## Atualização em Massa - Dados Antropométricos (Solicitado 10/12/2025)
+
+- [x] Atualizar todas as gestantes com altura de 165cm e peso inicial de 60kg para habilitar gráficos de ganho de peso

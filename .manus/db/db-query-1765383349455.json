@@ -1,0 +1,35 @@
+{
+  "query": "SELECT nome, altura, pesoInicial FROM gestantes LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, altura, pesoInicial FROM gestantes LIMIT 5",
+  "rows": [
+    {
+      "nome": "Adrieli Rezende Barros",
+      "altura": "165",
+      "pesoInicial": "60"
+    },
+    {
+      "nome": "Raissa Andrade Gibram",
+      "altura": "165",
+      "pesoInicial": "60"
+    },
+    {
+      "nome": "Camila Zanco Pereira",
+      "altura": "165",
+      "pesoInicial": "60"
+    },
+    {
+      "nome": "Josiane Alves Batista",
+      "altura": "165",
+      "pesoInicial": "60"
+    },
+    {
+      "nome": "Graziela Mazoni",
+      "altura": "165",
+      "pesoInicial": "60"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\taltura\tpesoInicial\nAdrieli Rezende Barros\t165\t60\nRaissa Andrade Gibram\t165\t60\nCamila Zanco Pereira\t165\t60\nJosiane Alves Batista\t165\t60\nGraziela Mazoni\t165\t60\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
