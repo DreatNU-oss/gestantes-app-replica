@@ -48,6 +48,7 @@ import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atu
 import { processarLembretes } from './lembretes';
 import { configuracoesEmail, logsEmails, resultadosExames, type InsertResultadoExame } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
+import { interpretarExamesComIA } from './interpretarExames';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 
@@ -727,6 +728,34 @@ export const appRouter = router({
         }
         
         return { success: true, count: resultadosParaInserir.length };
+      }),
+
+    interpretarComIA: protectedProcedure
+      .input(z.object({
+        fileBase64: z.string(),
+        mimeType: z.string(),
+        trimestre: z.enum(["primeiro", "segundo", "terceiro"]),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          // Converter base64 para Buffer
+          const fileBuffer = Buffer.from(input.fileBase64, 'base64');
+          
+          // Chamar função de interpretação
+          const resultados = await interpretarExamesComIA(
+            fileBuffer,
+            input.mimeType,
+            input.trimestre
+          );
+          
+          return { success: true, resultados };
+        } catch (error) {
+          console.error('Erro ao interpretar exames:', error);
+          throw new TRPCError({ 
+            code: 'INTERNAL_SERVER_ERROR', 
+            message: error instanceof Error ? error.message : 'Erro ao interpretar exames' 
+          });
+        }
       }),
 
     buscar: protectedProcedure

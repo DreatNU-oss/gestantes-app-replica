@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
+import { Sparkles } from "lucide-react";
 import {
   examesSangue,
   examesUrina,
@@ -18,6 +20,7 @@ import {
 export default function ExamesLaboratoriais() {
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
+  const [modalAberto, setModalAberto] = useState(false);
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -253,7 +256,16 @@ export default function ExamesLaboratoriais() {
                   />
                 </div>
 
-                <div className="flex justify-end mt-6">
+                <div className="flex justify-between items-center mt-6">
+                  <Button 
+                    variant="outline"
+                    className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950"
+                    onClick={() => setModalAberto(true)}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Interpretar com IA
+                  </Button>
+                  
                   <Button 
                     className="bg-rose-600 hover:bg-rose-700"
                     onClick={() => {
@@ -269,6 +281,28 @@ export default function ExamesLaboratoriais() {
                     {salvarMutation.isPending ? 'Salvando...' : 'Salvar Resultados'}
                   </Button>
                 </div>
+                
+                <InterpretarExamesModal
+                  open={modalAberto}
+                  onOpenChange={setModalAberto}
+                  onResultados={(novosResultados, trimestre) => {
+                    // Converter resultados da IA para o formato esperado
+                    const trimestreNum = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
+                    const resultadosFormatados: Record<string, Record<string, string> | string> = {};
+                    
+                    for (const [nomeExame, valor] of Object.entries(novosResultados)) {
+                      resultadosFormatados[nomeExame] = {
+                        ...(typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? resultados[nomeExame] : {}),
+                        [trimestreNum]: valor,
+                      };
+                    }
+                    
+                    setResultados(prev => ({
+                      ...prev,
+                      ...resultadosFormatados,
+                    }));
+                  }}
+                />
               </div>
             </CardContent>
           </Card>

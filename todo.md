@@ -431,3 +431,12 @@
 ## Atualização em Massa - Dados Antropométricos (Solicitado 10/12/2025)
 
 - [x] Atualizar todas as gestantes com altura de 165cm e peso inicial de 60kg para habilitar gráficos de ganho de peso
+
+
+## Interpretação Automática de Exames por IA (Solicitado 10/12/2025)
+
+- [x] Criar backend para processar upload de PDF/imagem e extrair dados com IA
+- [x] Criar interface de upload com modal para seleção de trimestre (1º, 2º ou 3º)
+- [x] Implementar preenchimento automático dos campos de exames (exceto "Observações / Outros Exames")
+- [ ] Testar com PDFs e imagens de exames reais
+- [x] Escrever testes automatizados
