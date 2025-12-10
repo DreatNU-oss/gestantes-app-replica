@@ -477,3 +477,10 @@
 - [x] Adicionar rota /ultrassons no App.tsx e menu lateral
 - [x] Testar salvamento e carregamento de dados no navegador
 - [x] Escrever testes automatizados (7 testes passando)
+
+
+## Inversão de Ordem das Consultas no Cartão de Pré-Natal (Solicitado 10/12/2025)
+
+- [x] Investigar ordenação atual das consultas no backend (desc em db.ts linha 279)
+- [x] Alterar ordenação para crescente (ASC) por data (primeira consulta no topo)
+- [x] Testar visualização no Cartão de Pré-Natal

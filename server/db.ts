@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { eq, and, gte, lte, desc, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -276,7 +276,7 @@ export async function getConsultasByGestanteId(gestanteId: number): Promise<Cons
   
   return db.select().from(consultasPrenatal)
     .where(eq(consultasPrenatal.gestanteId, gestanteId))
-    .orderBy(desc(consultasPrenatal.dataConsulta));
+    .orderBy(asc(consultasPrenatal.dataConsulta));
 }
 
 export async function getConsultaById(id: number): Promise<ConsultaPrenatal | undefined> {
