@@ -13,9 +13,9 @@ export interface ExameConfig {
 }
 
 export const examesSangue: ExameConfig[] = [
+  { nome: "Tipagem sanguínea ABO/Rh", trimestres: { primeiro: true, segundo: false, terceiro: false } },
   { nome: "Hemoglobina/Hematócrito", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Plaquetas", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "Tipagem sanguínea ABO/Rh", trimestres: { primeiro: true, segundo: false, terceiro: false } },
   { nome: "Coombs indireto", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Glicemia de jejum", trimestres: { primeiro: true, segundo: false, terceiro: true } },
   { nome: "VDRL", trimestres: { primeiro: true, segundo: true, terceiro: true } },

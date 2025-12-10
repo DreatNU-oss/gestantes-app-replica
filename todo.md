@@ -405,3 +405,8 @@
 - [ ] Criar tabela no banco para armazenar resultados de exames
 - [ ] Implementar tRPC procedures para salvar e recuperar resultados
 - [ ] Conectar botão "Salvar Resultados" ao backend
+
+
+## Ajuste de Ordem dos Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Mover Tipagem Sanguínea ABO/Rh para o topo da lista de exames
