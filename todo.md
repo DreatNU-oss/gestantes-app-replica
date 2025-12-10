@@ -505,3 +505,12 @@
 - [x] Adicionar seleção de tipo de ultrassom no modal (1º US, Morfo 1º Tri, US Obstétrico, Morfo 2º Tri, Ecocardiograma, US Seguimento)
 - [x] Testar com laudos reais de ultrassom (7 testes automatizados passando)
 - [x] Escrever testes automatizados (7 testes em interpretarUltrassom.test.ts)
+
+
+## Adicionar Data de Coleta aos Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Adicionar campo de data de coleta para cada exame na interface
+- [x] Atualizar lógica de salvamento para incluir datas
+- [x] Atualizar lógica de carregamento para exibir datas
+- [x] Testar salvamento e carregamento de datas no navegador
+- [x] Atualizar testes automatizados para validar datas (4 testes passando em examesLab.dataColeta.test.ts)

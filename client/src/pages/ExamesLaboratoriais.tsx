@@ -73,6 +73,20 @@ export default function ExamesLaboratoriais() {
                 <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
               </TableCell>
               <TableCell className="text-center">
+                {index === 0 ? (
+                  <Input
+                    type="date"
+                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data"] : "") || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(exame.nome, "data", e.target.value)
+                    }
+                    className="w-full text-xs"
+                  />
+                ) : (
+                  <div></div>
+                )}
+              </TableCell>
+              <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
                   <InputExameValidado
                     nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
@@ -127,6 +141,16 @@ export default function ExamesLaboratoriais() {
     return (
       <TableRow key={exame.nome}>
         <TableCell className="font-medium">{exame.nome}</TableCell>
+        <TableCell className="text-center">
+          <Input
+            type="date"
+            value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data"] : "") || ""}
+            onChange={(e) =>
+              handleResultadoChange(exame.nome, "data", e.target.value)
+            }
+            className="w-full text-xs"
+          />
+        </TableCell>
         <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
             <InputExameValidado
@@ -183,10 +207,11 @@ export default function ExamesLaboratoriais() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/2">Exame</TableHead>
-              <TableHead className="text-center w-1/6">1º Trimestre</TableHead>
-              <TableHead className="text-center w-1/6">2º Trimestre</TableHead>
-              <TableHead className="text-center w-1/6">3º Trimestre</TableHead>
+              <TableHead className="w-1/4">Exame</TableHead>
+              <TableHead className="text-center w-[100px]">Data Coleta</TableHead>
+              <TableHead className="text-center w-1/5">1º Trimestre</TableHead>
+              <TableHead className="text-center w-1/5">2º Trimestre</TableHead>
+              <TableHead className="text-center w-1/5">3º Trimestre</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -272,9 +297,28 @@ export default function ExamesLaboratoriais() {
                     className="bg-rose-600 hover:bg-rose-700"
                     onClick={() => {
                       if (gestanteSelecionada) {
+                        // Extrair datas dos resultados
+                        const datas: Record<string, string> = {};
+                        const resultadosLimpos: Record<string, Record<string, string> | string> = {};
+                        
+                        for (const [nomeExame, valor] of Object.entries(resultados)) {
+                          if (typeof valor === 'object' && valor !== null) {
+                            const { data, ...resto } = valor as Record<string, string>;
+                            
+                            // Armazenar data se existir
+                            if (data) datas[nomeExame] = data;
+                            
+                            // Remover campo de data dos resultados
+                            resultadosLimpos[nomeExame] = resto;
+                          } else {
+                            resultadosLimpos[nomeExame] = valor;
+                          }
+                        }
+                        
                         salvarMutation.mutate({
                           gestanteId: gestanteSelecionada,
-                          resultados,
+                          resultados: resultadosLimpos,
+                          datas: Object.keys(datas).length > 0 ? datas : undefined,
                         });
                       }
                     }}
