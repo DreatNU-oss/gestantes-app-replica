@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO consultasPrenatal (id, gestanteId, dataConsulta, igDumSemanas, igDumDias, peso, pressaoSistolica, pressaoDiastolica, alturaUterina, bcf, movimentosFetais, observacoes, createdAt, updatedAt, igUsSemanas, igUsDias)\nVALUES (1740001, 330092, '2025-12-09', NULL, NULL, 61.2, 90, 50, 23, 1, 1, '', '2025-12-09 20:21:40', '2025-12-09 20:21:40', 26, 2)\nON DUPLICATE KEY UPDATE\n  dataConsulta = '2025-12-09',\n  peso = 61.2,\n  pressaoSistolica = 90,\n  pressaoDiastolica = 50,\n  alturaUterina = 23,\n  bcf = 1,\n  movimentosFetais = 1,\n  igUsSemanas = 26,\n  igUsDias = 2,\n  updatedAt = '2025-12-09 20:21:40'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO consultasPrenatal (id, gestanteId, dataConsulta, igDumSemanas, igDumDias, peso, pressaoSistolica, pressaoDiastolica, alturaUterina, bcf, movimentosFetais, observacoes, createdAt, updatedAt, igUsSemanas, igUsDias)\nVALUES (1740001, 330092, '2025-12-09', NULL, NULL, 61.2, 90, 50, 23, 1, 1, '', '2025-12-09 20:21:40', '2025-12-09 20:21:40', 26, 2)\nON DUPLICATE KEY UPDATE\n  dataConsulta = '2025-12-09',\n  peso = 61.2,\n  pressaoSistolica = 90,\n  pressaoDiastolica = 50,\n  alturaUterina = 23,\n  bcf = 1,\n  movimentosFetais = 1,\n  igUsSemanas = 26,\n  igUsDias = 2,\n  updatedAt = '2025-12-09 20:21:40'",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'igDumSemanas' in 'field list'"
+  ]
+}

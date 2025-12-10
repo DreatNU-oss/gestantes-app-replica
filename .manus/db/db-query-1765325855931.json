@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO consultasPrenatal (id, gestanteId, dataConsulta, igSemanas, igDias, peso, pressaoArterial, alturaUterina, bcf, observacoes, createdAt, updatedAt)\nVALUES (1740001, 330092, '2025-12-09', 26, 6, 61200, '90/50', 230, 1, '', '2025-12-09 20:21:40', '2025-12-09 20:21:40')\nON DUPLICATE KEY UPDATE\n  dataConsulta = '2025-12-09',\n  igSemanas = 26,\n  igDias = 6,\n  peso = 61200,\n  pressaoArterial = '90/50',\n  alturaUterina = 230,\n  bcf = 1,\n  observacoes = '',\n  updatedAt = '2025-12-09 20:21:40'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO consultasPrenatal (id, gestanteId, dataConsulta, igSemanas, igDias, peso, pressaoArterial, alturaUterina, bcf, observacoes, createdAt, updatedAt)\nVALUES (1740001, 330092, '2025-12-09', 26, 6, 61200, '90/50', 230, 1, '', '2025-12-09 20:21:40', '2025-12-09 20:21:40')\nON DUPLICATE KEY UPDATE\n  dataConsulta = '2025-12-09',\n  igSemanas = 26,\n  igDias = 6,\n  peso = 61200,\n  pressaoArterial = '90/50',\n  alturaUterina = 230,\n  bcf = 1,\n  observacoes = '',\n  updatedAt = '2025-12-09 20:21:40'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 58
+}
