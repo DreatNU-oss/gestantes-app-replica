@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { getDb } from './db';
 import { configuracoesEmail, logsEmails } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
@@ -14,23 +14,16 @@ async function getConfig(chave: string): Promise<string | null> {
 }
 
 /**
- * Cria transporter do Nodemailer com configurações do banco
+ * Cria cliente Resend com configurações do banco
  */
-async function createTransporter() {
-  const emailUser = await getConfig('smtp_email');
-  const emailPass = await getConfig('smtp_senha');
+async function createResendClient() {
+  const apiKey = await getConfig('resend_api_key');
   
-  if (!emailUser || !emailPass) {
-    throw new Error('Configurações de e-mail não encontradas. Configure EMAIL_USER e EMAIL_PASS.');
+  if (!apiKey) {
+    throw new Error('Chave API do Resend não encontrada. Configure resend_api_key.');
   }
   
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: emailUser,
-      pass: emailPass,
-    },
-  });
+  return new Resend(apiKey);
 }
 
 /**
@@ -94,11 +87,11 @@ export async function enviarEmail(params: {
   if (!db) throw new Error('Banco de dados não disponível');
   
   try {
-    const transporter = await createTransporter();
+    const resend = await createResendClient();
     const htmlContent = criarTemplateEmail(params.titulo, params.conteudo);
     
-    const emailFrom = await getConfig('EMAIL_USER') || '';
-    await transporter.sendMail({
+    const emailFrom = await getConfig('resend_from_email') || 'onboarding@resend.dev';
+    await resend.emails.send({
       from: emailFrom,
       to: params.destinatario,
       subject: params.assunto,

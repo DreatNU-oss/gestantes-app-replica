@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO configuracoesEmail (chave, valor, descricao) VALUES ('resend_api_key', 're_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy', 'Chave API do Resend para envio de e-mails') ON DUPLICATE KEY UPDATE valor = 're_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO configuracoesEmail (chave, valor, descricao) VALUES ('resend_api_key', 're_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy', 'Chave API do Resend para envio de e-mails') ON DUPLICATE KEY UPDATE valor = 're_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 62
+}

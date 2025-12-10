@@ -1,0 +1,8 @@
+{
+  "query": "SELECT \n  tipoLembrete,\n  emailDestinatario,\n  assunto,\n  status,\n  mensagemErro,\n  criadoEm\nFROM logsEmails \nWHERE gestanteId = 300006 \nORDER BY criadoEm DESC \nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  tipoLembrete,\n  emailDestinatario,\n  assunto,\n  status,\n  mensagemErro,\n  criadoEm\nFROM logsEmails \nWHERE gestanteId = 300006 \nORDER BY criadoEm DESC \nLIMIT 5;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'criadoem' in 'field list'"
+  ]
+}

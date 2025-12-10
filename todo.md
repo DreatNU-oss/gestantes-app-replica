@@ -373,3 +373,12 @@
 - [x] Atualizar texto da vacina dTpa para orientar procurar clínica de vacinação e mencionar SUS
 - [x] Atualizar texto da vacina de Bronquiolite para orientar procurar clínica de vacinação e mencionar SUS
 - [x] Adicionar mensagem verde com 💚 sobre disponibilidade no SUS
+
+
+## Migrar Sistema de E-mails para Resend (Solicitado 10/12/2025 - 07:30)
+
+- [ ] Instalar biblioteca resend
+- [ ] Atualizar código email.ts para usar Resend API
+- [ ] Configurar chave API do Resend no banco
+- [ ] Testar envio de e-mail com Resend
+- [ ] Validar recebimento em ambos os e-mails (Yahoo e iCloud)
