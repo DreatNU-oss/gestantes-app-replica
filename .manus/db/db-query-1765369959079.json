@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, gestanteId, tipoLembrete, emailDestinatario, assunto, status, createdAt FROM logsEmails ORDER BY createdAt DESC LIMIT 4;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, tipoLembrete, emailDestinatario, assunto, status, createdAt FROM logsEmails ORDER BY createdAt DESC LIMIT 4;",
+  "rows": [
+    {
+      "id": "90005",
+      "gestanteId": "330093",
+      "tipoLembrete": "morfo1tri",
+      "emailDestinatario": "andreschlemper@me.com",
+      "assunto": "Lembrete: Ultrassom Morfológico 1º Trimestre",
+      "status": "enviado",
+      "createdAt": "2025-12-10 12:32:21"
+    },
+    {
+      "id": "90004",
+      "gestanteId": "330092",
+      "tipoLembrete": "dtpa",
+      "emailDestinatario": "dreatnu@yahoo.com",
+      "assunto": "Lembrete: Vacina dTpa - 27 semanas",
+      "status": "enviado",
+      "createdAt": "2025-12-10 12:32:21"
+    },
+    {
+      "id": "90003",
+      "gestanteId": "330092",
+      "tipoLembrete": "dtpa",
+      "emailDestinatario": "dreatnu@yahoo.com",
+      "assunto": "Lembrete: Vacina dTpa - 27 semanas",
+      "status": "enviado",
+      "createdAt": "2025-12-10 12:32:00"
+    },
+    {
+      "id": "90002",
+      "gestanteId": "330092",
+      "tipoLembrete": "bronquiolite",
+      "emailDestinatario": "andreschlemper@me.com",
+      "assunto": "Lembrete: Vacina Bronquiolite",
+      "status": "enviado",
+      "createdAt": "2025-12-10 12:29:30"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoLembrete\temailDestinatario\tassunto\tstatus\tcreatedAt\n90005\t330093\tmorfo1tri\tandreschlemper@me.com\tLembrete: Ultrassom Morfológico 1º Trimestre\tenviado\t2025-12-10 12:32:21\n90004\t330092\tdtpa\tdreatnu@yahoo.com\tLembrete: Vacina dTpa - 27 semanas\tenviado\t2025-12-10 12:32:21\n90003\t330092\tdtpa\tdreatnu@yahoo.com\tLembrete: Vacina dTpa - 27 semanas\tenviado\t2025-12-10 12:32:00\n90002\t330092\tbronquiolite\tandreschlemper@me.com\tLembrete: Vacina Bronquiolite\tenviado\t2025-12-10 12:29:30\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}
