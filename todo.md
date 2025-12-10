@@ -305,3 +305,11 @@
 - [ ] Debugar e corrigir problema de evento onClick
 - [ ] Testar com dados reais de gestantes após correção do bug
 - [ ] Validar que as datas sugeridas são idênticas ao site original
+
+
+## Bug nos Alertas do Dashboard (Reportado 10/12/2025 - 01:05)
+
+- [x] Verificar data da Graziela Mazoni no banco de dados - RESOLVIDO: Data correta (2025-12-15)
+- [x] Investigar código dos alertas no dashboard (AlertasPartosProximos.tsx) - RESOLVIDO: Problema na conversão de string para Date
+- [x] Corrigir problema de fuso horário na exibição das datas nos alertas - RESOLVIDO: Adicionada função parseLocalDate
+- [x] Validar que a data 15/12 aparece corretamente nos alertas - RESOLVIDO: Graziela agora mostra 15/12/2025

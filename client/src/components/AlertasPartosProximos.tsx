@@ -52,10 +52,16 @@ export function AlertasPartosProximos({
     return dpp;
   };
 
+  const parseLocalDate = (dateStr: string | Date): Date => {
+    if (dateStr instanceof Date) return dateStr;
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day, 12, 0, 0);
+  };
+
   const obterDataParto = (gestante: Gestante): { data: Date; tipo: "programado" | "usg" | "dum" } | null => {
     // Prioridade 1: Parto Programado
     if (gestante.dataPartoProgramado) {
-      return { data: new Date(gestante.dataPartoProgramado), tipo: "programado" };
+      return { data: parseLocalDate(gestante.dataPartoProgramado as string), tipo: "programado" };
     }
 
     // Prioridade 2: DPP por Ultrassom
