@@ -259,3 +259,21 @@
 - [x] Corrigir problema de fuso horário nos cálculos de data (instanceof Date check)
 - [x] Testar com exemplos reais - Vivian agora mostra datas (antes era NaN)
 - [ ] Aguardando confirmação do usuário se datas estão corretas ou ainda 1 dia antes
+
+
+## Gráfico de Curva de Peso no Cartão de Pré-Natal (Solicitado 09/12/2025)
+
+- [x] Instalar biblioteca de gráficos (Recharts)
+- [x] Criar componente GraficoPeso.tsx
+- [x] Buscar dados de peso de todas as consultas da gestante
+- [x] Calcular IMC pré-gestacional da gestante
+- [x] Calcular curva de ganho ponderal ideal baseado no IMC
+- [x] Plotar pontos de peso real das consultas
+- [x] Plotar linha de referência do ganho ideal
+- [x] Adicionar labels e tooltips informativos
+- [x] Integrar gráfico no Cartão de Pré-Natal (após histórico de consultas)
+- [x] Testar com dados reais da Vivian
+- [x] Adicionar campos altura e pesoInicial ao formulário de cadastro/edição de gestantes
+- [x] Implementar área sombreada mostrando faixa ideal de ganho de peso
+- [x] Diferenciar cores por categoria de IMC (baixo peso, adequado, sobrepeso, obesidade)
+- [x] Validar funcionamento completo com dados da Vivian (IMC 21.3, Peso Adequado)

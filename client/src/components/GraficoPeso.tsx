@@ -1,0 +1,216 @@
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, ComposedChart } from 'recharts';
+
+interface ConsultaComIG {
+  data: string;
+  peso: number; // em kg
+  igSemanas: number;
+}
+
+interface GraficoPesoProps {
+  consultas: ConsultaComIG[];
+  altura: number; // em cm
+  pesoInicial: number; // em kg
+}
+
+// Função para calcular IMC
+function calcularIMC(pesoKg: number, alturaCm: number): number {
+  const alturaM = alturaCm / 100;
+  return pesoKg / (alturaM * alturaM);
+}
+
+// Função para determinar categoria de IMC
+function getCategoriaIMC(imc: number): 'baixo' | 'adequado' | 'sobrepeso' | 'obesidade' {
+  if (imc < 18.5) return 'baixo';
+  if (imc < 25) return 'adequado';
+  if (imc < 30) return 'sobrepeso';
+  return 'obesidade';
+}
+
+// Taxas semanais de ganho de peso (kg/semana) para 2º e 3º trimestres
+const TAXAS_GANHO: Record<string, { min: number; max: number }> = {
+  baixo: { min: 0.44, max: 0.58 },
+  adequado: { min: 0.35, max: 0.50 },
+  sobrepeso: { min: 0.23, max: 0.33 },
+  obesidade: { min: 0.17, max: 0.27 },
+};
+
+// Ganho no 1º trimestre (semanas 0-13)
+const GANHO_PRIMEIRO_TRI = { min: 0.5, max: 2.0 };
+
+// Função para calcular faixa ideal de peso por semana
+function calcularFaixaIdeal(
+  semana: number,
+  pesoInicial: number,
+  categoria: 'baixo' | 'adequado' | 'sobrepeso' | 'obesidade'
+): { min: number; max: number } {
+  if (semana <= 13) {
+    // Primeiro trimestre: ganho pequeno e linear
+    const proporcao = semana / 13;
+    return {
+      min: pesoInicial + (GANHO_PRIMEIRO_TRI.min * proporcao),
+      max: pesoInicial + (GANHO_PRIMEIRO_TRI.max * proporcao),
+    };
+  }
+
+  // Segundo e terceiro trimestres
+  const semanasApos13 = semana - 13;
+  const ganhoTri1 = (GANHO_PRIMEIRO_TRI.min + GANHO_PRIMEIRO_TRI.max) / 2; // média do 1º tri
+  const taxas = TAXAS_GANHO[categoria];
+
+  return {
+    min: pesoInicial + ganhoTri1 + (taxas.min * semanasApos13),
+    max: pesoInicial + ganhoTri1 + (taxas.max * semanasApos13),
+  };
+}
+
+export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps) {
+  if (!altura || !pesoInicial || consultas.length === 0) {
+    return (
+      <div className="rounded-lg border bg-card p-6 text-center text-muted-foreground">
+        <p>Dados insuficientes para gerar o gráfico de peso.</p>
+        <p className="text-sm mt-2">
+          É necessário cadastrar altura, peso inicial e ter pelo menos uma consulta registrada.
+        </p>
+      </div>
+    );
+  }
+
+  const imc = calcularIMC(pesoInicial, altura);
+  const categoria = getCategoriaIMC(imc);
+
+  // Cores por categoria
+  const coresCategoria: Record<string, { faixa: string; linha: string; nome: string }> = {
+    baixo: { faixa: '#93c5fd', linha: '#3b82f6', nome: 'Baixo Peso' },
+    adequado: { faixa: '#86efac', linha: '#22c55e', nome: 'Peso Adequado' },
+    sobrepeso: { faixa: '#fde047', linha: '#eab308', nome: 'Sobrepeso' },
+    obesidade: { faixa: '#fca5a5', linha: '#ef4444', nome: 'Obesidade' },
+  };
+
+  const cor = coresCategoria[categoria];
+
+  // Gerar dados da faixa ideal (semana 0 até 42)
+  const dadosFaixa = [];
+  for (let semana = 0; semana <= 42; semana++) {
+    const faixa = calcularFaixaIdeal(semana, pesoInicial, categoria);
+    dadosFaixa.push({
+      semana,
+      pesoMin: faixa.min,
+      pesoMax: faixa.max,
+    });
+  }
+
+  // Combinar dados reais com faixa ideal
+  const dadosGrafico = dadosFaixa.map((faixa) => {
+    const consultaNaSemana = consultas.find((c) => c.igSemanas === faixa.semana);
+    return {
+      ...faixa,
+      pesoReal: consultaNaSemana?.peso || null,
+    };
+  });
+
+  return (
+    <div className="rounded-lg border bg-card p-6">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Curva de Ganho de Peso Gestacional</h3>
+        <p className="text-sm text-muted-foreground">
+          IMC pré-gestacional: <strong>{imc.toFixed(1)}</strong> ({cor.nome})
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Altura: {altura} cm | Peso inicial: {pesoInicial.toFixed(1)} kg
+        </p>
+      </div>
+
+      <ResponsiveContainer width="100%" height={400}>
+        <ComposedChart data={dadosGrafico} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="semana"
+            label={{ value: 'Semana de Gestação', position: 'insideBottom', offset: -5 }}
+          />
+          <YAxis
+            label={{ value: 'Peso (kg)', angle: -90, position: 'insideLeft' }}
+            domain={['dataMin - 2', 'dataMax + 2']}
+          />
+          <Tooltip
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                const data = payload[0].payload;
+                return (
+                  <div className="rounded-lg border bg-background p-3 shadow-lg">
+                    <p className="font-semibold">Semana {data.semana}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Faixa ideal: {data.pesoMin.toFixed(1)} - {data.pesoMax.toFixed(1)} kg
+                    </p>
+                    {data.pesoReal && (
+                      <p className="text-sm font-semibold" style={{ color: cor.linha }}>
+                        Peso real: {data.pesoReal.toFixed(1)} kg
+                      </p>
+                    )}
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+          <Legend />
+
+          {/* Área sombreada da faixa ideal */}
+          <Area
+            type="monotone"
+            dataKey="pesoMax"
+            stroke="none"
+            fill={cor.faixa}
+            fillOpacity={0.3}
+            name="Faixa ideal (máx)"
+          />
+          <Area
+            type="monotone"
+            dataKey="pesoMin"
+            stroke="none"
+            fill="#ffffff"
+            fillOpacity={1}
+            name="Faixa ideal (mín)"
+          />
+
+          {/* Linhas de limite da faixa */}
+          <Line
+            type="monotone"
+            dataKey="pesoMin"
+            stroke={cor.linha}
+            strokeWidth={1}
+            strokeDasharray="5 5"
+            dot={false}
+            name="Limite inferior"
+          />
+          <Line
+            type="monotone"
+            dataKey="pesoMax"
+            stroke={cor.linha}
+            strokeWidth={1}
+            strokeDasharray="5 5"
+            dot={false}
+            name="Limite superior"
+          />
+
+          {/* Linha de peso real */}
+          <Line
+            type="monotone"
+            dataKey="pesoReal"
+            stroke={cor.linha}
+            strokeWidth={3}
+            dot={{ r: 5, fill: cor.linha }}
+            connectNulls={false}
+            name="Peso real"
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+
+      <div className="mt-4 text-sm text-muted-foreground">
+        <p>
+          <strong>Legenda:</strong> A área sombreada representa a faixa ideal de ganho de peso para sua categoria de IMC.
+          Os pontos mostram o peso registrado em cada consulta.
+        </p>
+      </div>
+    </div>
+  );
+}

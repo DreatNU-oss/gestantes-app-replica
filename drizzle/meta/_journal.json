@@ -36,6 +36,13 @@
       "when": 1765330483986,
       "tag": "0004_redundant_lilith",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1765332612079,
+      "tag": "0005_mature_oracle",
+      "breakpoints": true
     }
   ]
 }

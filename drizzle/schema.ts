@@ -95,6 +95,10 @@ export const gestantes = mysqlTable("gestantes", {
   dataUltrassom: date("dataUltrassom"),
   dataPartoProgramado: date("dataPartoProgramado"),
   
+  // Dados antropométricos
+  altura: int("altura"), // altura em cm
+  pesoInicial: int("pesoInicial"), // peso pré-gestacional em gramas
+  
   // Armazenamento de documentos
   cartaoPrenatalUrl: text("cartaoPrenatalUrl"),
   guiaExameUrl: text("guiaExameUrl"),

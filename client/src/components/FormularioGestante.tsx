@@ -45,6 +45,8 @@ export default function FormularioGestante({
     dataUltrassom: "",
     dataPartoProgramado: "",
     observacoes: "",
+    altura: "",
+    pesoInicial: "",
   });
 
   const { data: gestante } = trpc.gestantes.get.useQuery(
@@ -97,6 +99,8 @@ export default function FormularioGestante({
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom.toISOString().split('T')[0]) : "",
         dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : gestante.dataPartoProgramado.toISOString().split('T')[0]) : "",
         observacoes: gestante.observacoes || "",
+        altura: gestante.altura?.toString() || "",
+        pesoInicial: gestante.pesoInicial ? (gestante.pesoInicial / 1000).toFixed(1) : "", // converter gramas para kg
       });
     }
   }, [gestante]);
@@ -124,6 +128,8 @@ export default function FormularioGestante({
       dataUltrassom: formData.dataUltrassom || undefined,
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
       observacoes: formData.observacoes || undefined,
+      altura: formData.altura ? parseInt(formData.altura) : undefined,
+      pesoInicial: formData.pesoInicial ? Math.round(parseFloat(formData.pesoInicial) * 1000) : undefined, // converter kg para gramas
     };
 
     if (gestanteId) {
@@ -369,6 +375,32 @@ export default function FormularioGestante({
                   value={formData.igUltrassomDias}
                   onChange={(e) => setFormData({ ...formData, igUltrassomDias: e.target.value })}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="altura">Altura (cm)</Label>
+                <Input
+                  id="altura"
+                  type="number"
+                  min="100"
+                  max="250"
+                  placeholder="Ex: 165"
+                  value={formData.altura}
+                  onChange={(e) => setFormData({ ...formData, altura: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
+                <Input
+                  id="pesoInicial"
+                  type="number"
+                  step="0.1"
+                  min="30"
+                  max="200"
+                  placeholder="Ex: 65.5"
+                  value={formData.pesoInicial}
+                  onChange={(e) => setFormData({ ...formData, pesoInicial: e.target.value })}
+                />
+                <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
               </div>
             </div>
             <div className="space-y-2">

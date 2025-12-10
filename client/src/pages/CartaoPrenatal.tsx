@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { AutocompleteSelect } from "@/components/AutocompleteSelect";
+import { GraficoPeso } from "@/components/GraficoPeso";
 import { toast } from "sonner";
 
 export default function CartaoPrenatal() {
@@ -620,6 +621,30 @@ export default function CartaoPrenatal() {
                   })}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Gráfico de Evolução de Peso */}
+        {gestanteSelecionada && gestante && gestante.altura && gestante.pesoInicial && consultas && consultas.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Evolução de Peso Gestacional</CardTitle>
+              <CardDescription>Acompanhamento do ganho de peso baseado no IMC pré-gestacional</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoPeso
+                consultas={consultas.map((c: any) => {
+                  const igDUM = calcularIG(c.dataConsulta);
+                  return {
+                    data: c.dataConsulta,
+                    peso: c.peso / 1000, // converter gramas para kg
+                    igSemanas: igDUM?.semanas || 0,
+                  };
+                })}
+                altura={gestante.altura}
+                pesoInicial={gestante.pesoInicial / 1000} // converter gramas para kg
+              />
             </CardContent>
           </Card>
         )}
