@@ -123,6 +123,7 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   pressaoArterial: varchar("pressaoArterial", { length: 20 }),
   alturaUterina: int("alturaUterina"), // em mm
   bcf: int("bcf"), // batimentos cardíacos fetais
+  mf: int("mf"), // movimento fetal (1 = sim, 0 = não)
   observacoes: text("observacoes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

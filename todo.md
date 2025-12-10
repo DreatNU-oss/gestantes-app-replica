@@ -229,3 +229,15 @@
 - [x] Adicionar campo "Observações" (textarea) no formulário
 - [x] Garantir que todos os campos do print original estão presentes
 - [x] Testar salvamento de todos os campos
+
+
+## Melhorias no Cartão de Pré-Natal (Solicitado 09/12/2025)
+
+- [x] Adicionar botões de copiar em TODOS os marcos importantes (já implementado)
+- [x] Ajustar badges BCF e MF para verde com texto "Sim"
+- [x] Mostrar IG DUM e IG US na mesma célula do histórico de consultas (duas linhas)
+- [x] Adicionar campo MF (Movimento Fetal) ao schema e formulário
+- [x] Adicionar coluna Observações na tabela de histórico
+- [x] Implementar botão de editar consulta funcional (ícone de lápis)
+- [x] Criar formulário de edição de consulta (já existe)
+- [x] Testar todas as melhorias no navegador

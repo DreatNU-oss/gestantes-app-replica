@@ -41,6 +41,7 @@ export default function CartaoPrenatal() {
     pressaoArterial: "",
     alturaUterina: "",
     bcf: "",
+    mf: "",
     observacoes: "",
   });
 
@@ -93,6 +94,7 @@ export default function CartaoPrenatal() {
       pressaoArterial: "",
       alturaUterina: "",
       bcf: "",
+      mf: "",
       observacoes: "",
     });
     setMostrarFormulario(false);
@@ -114,6 +116,7 @@ export default function CartaoPrenatal() {
       pressaoArterial: formData.pressaoArterial || undefined,
       alturaUterina: formData.alturaUterina ? parseInt(formData.alturaUterina) * 10 : undefined, // converter cm para mm
       bcf: formData.bcf ? parseInt(formData.bcf) : undefined,
+      mf: formData.mf ? parseInt(formData.mf) : undefined,
       observacoes: formData.observacoes || undefined,
     };
 
@@ -132,6 +135,7 @@ export default function CartaoPrenatal() {
       pressaoArterial: consulta.pressaoArterial || "",
       alturaUterina: consulta.alturaUterina ? String(consulta.alturaUterina / 10) : "",
       bcf: consulta.bcf ? String(consulta.bcf) : "",
+      mf: consulta.mf ? String(consulta.mf) : "",
       observacoes: consulta.observacoes || "",
     });
     setMostrarFormulario(true);
@@ -152,6 +156,21 @@ export default function CartaoPrenatal() {
     const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const semanas = Math.floor(totalDias / 7);
     const dias = totalDias % 7;
+    
+    return { semanas, dias };
+  };
+
+  const calcularIGPorUS = (dataConsulta: string) => {
+    if (!gestante?.dataUltrassom || !gestante?.igUltrassomSemanas) return null;
+    
+    const ultrassom = new Date(gestante.dataUltrassom);
+    const consulta = new Date(dataConsulta);
+    const diffMs = consulta.getTime() - ultrassom.getTime();
+    const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS;
+    const semanas = Math.floor(totalDiasUS / 7);
+    const dias = totalDiasUS % 7;
     
     return { semanas, dias };
   };
@@ -395,13 +414,28 @@ export default function CartaoPrenatal() {
                     />
                   </div>
                   <div>
-                    <Label>BCF (bpm)</Label>
-                    <Input
-                      type="number"
+                    <Label>BCF</Label>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       value={formData.bcf}
                       onChange={(e) => setFormData({ ...formData, bcf: e.target.value })}
-                      placeholder="Ex: 140"
-                    />
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="1">Sim</option>
+                      <option value="0">Não</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label>MF (Movimento Fetal)</Label>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      value={formData.mf}
+                      onChange={(e) => setFormData({ ...formData, mf: e.target.value })}
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="1">Sim</option>
+                      <option value="0">Não</option>
+                    </select>
                   </div>
                 </div>
                 <div>
@@ -512,20 +546,38 @@ export default function CartaoPrenatal() {
                     <TableHead>PA</TableHead>
                     <TableHead>AU</TableHead>
                     <TableHead>BCF</TableHead>
+                    <TableHead>MF</TableHead>
+                    <TableHead>Observações</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {consultas.map((consulta: any) => {
-                    const ig = calcularIG(consulta.dataConsulta);
+                    const igDUM = calcularIG(consulta.dataConsulta);
+                    const igUS = gestante?.dataUltrassom ? calcularIGPorUS(consulta.dataConsulta) : null;
                     return (
                       <TableRow key={consulta.id}>
                         <TableCell>{formatarData(consulta.dataConsulta)}</TableCell>
-                        <TableCell>{ig ? `${ig.semanas}s${ig.dias}d` : "-"}</TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>I.G. DUM: {igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : "-"}</div>
+                            {igUS && <div>I.G. US: {igUS.semanas}s {igUS.dias}d</div>}
+                          </div>
+                        </TableCell>
                         <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
                         <TableCell>{consulta.pressaoArterial || "-"}</TableCell>
                         <TableCell>{consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}</TableCell>
-                        <TableCell>{consulta.bcf ? `${consulta.bcf} bpm` : "-"}</TableCell>
+                        <TableCell>
+                          {consulta.bcf === 1 ? (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
+                          ) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {consulta.mf === 1 ? (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
+                          ) : "-"}
+                        </TableCell>
+                        <TableCell>{consulta.observacoes || "-"}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button
