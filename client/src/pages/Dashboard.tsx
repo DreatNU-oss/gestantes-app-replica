@@ -43,6 +43,8 @@ export default function Dashboard() {
   const [filterTipoParto, setFilterTipoParto] = useState<string>("todos");
   const [filterMedico, setFilterMedico] = useState<string>("todos");
   const [filterPlano, setFilterPlano] = useState<string>("todos");
+  const [filterDppInicio, setFilterDppInicio] = useState<string>("");
+  const [filterDppFim, setFilterDppFim] = useState<string>("");
   
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
@@ -68,7 +70,24 @@ export default function Dashboard() {
       const matchMedico = filterMedico === "todos" || g.medicoId?.toString() === filterMedico;
       const matchPlano = filterPlano === "todos" || g.planoSaudeId?.toString() === filterPlano;
       
-      return matchNome && matchTipoParto && matchMedico && matchPlano;
+      let matchDppPeriodo = true;
+      if (filterDppInicio || filterDppFim) {
+        const dpp = g.calculado?.dpp ? new Date(g.calculado.dpp) : null;
+        if (dpp) {
+          if (filterDppInicio) {
+            const inicio = new Date(filterDppInicio);
+            if (dpp < inicio) matchDppPeriodo = false;
+          }
+          if (filterDppFim) {
+            const fim = new Date(filterDppFim);
+            if (dpp > fim) matchDppPeriodo = false;
+          }
+        } else {
+          matchDppPeriodo = false;
+        }
+      }
+      
+      return matchNome && matchTipoParto && matchMedico && matchPlano && matchDppPeriodo;
     });
     
     const sorted = [...filtered];
@@ -102,7 +121,7 @@ export default function Dashboard() {
       default:
         return sorted;
     }
-  }, [gestantes, sortBy, searchTerm, filterTipoParto, filterMedico, filterPlano]);
+  }, [gestantes, sortBy, searchTerm, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim]);
 
   const handleSuccess = () => {
     setShowForm(false);
@@ -129,12 +148,20 @@ export default function Dashboard() {
     }
   };
 
-  const getTrimestre = (igDUM: any) => {
-    if (!igDUM) return null;
-    const semanas = igDUM.semanas;
-    if (semanas <= 13) return { nome: "1º Trimestre", cor: "bg-green-100 text-green-800" };
-    if (semanas <= 27) return { nome: "2º Trimestre", cor: "bg-blue-100 text-blue-800" };
-    return { nome: "3º Trimestre", cor: "bg-orange-100 text-orange-800" };
+  const getTrimestre = (semanas: number) => {
+    if (semanas <= 13) return { nome: "1º Tri", cor: "bg-green-100 text-green-700 border border-green-300" };
+    if (semanas <= 27) return { nome: "2º Tri", cor: "bg-blue-100 text-blue-700 border border-blue-300" };
+    return { nome: "3º Tri", cor: "bg-pink-100 text-pink-700 border border-pink-300" };
+  };
+
+  const formatIGBadge = (ig: { semanas: number; dias: number } | null | undefined) => {
+    if (!ig) return null;
+    const trimestre = getTrimestre(ig.semanas);
+    return {
+      text: `${ig.semanas}s ${ig.dias}d`,
+      trimestre: trimestre.nome,
+      cor: trimestre.cor
+    };
   };
 
   if (showForm) {
@@ -193,7 +220,8 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -238,7 +266,37 @@ export default function Dashboard() {
                   ))}
                 </SelectContent>
               </Select>
+
+              <Select value={filterPlano} onValueChange={setFilterPlano}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Plano de Saúde" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os planos</SelectItem>
+                  {planos.map(p => (
+                    <SelectItem key={p.id} value={p.id.toString()}>{p.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-muted-foreground">Período de DPP:</span>
+              <Input
+                type="date"
+                value={filterDppInicio}
+                onChange={(e) => setFilterDppInicio(e.target.value)}
+                className="w-auto"
+              />
+              <span className="text-sm text-muted-foreground">até</span>
+              <Input
+                type="date"
+                value={filterDppFim}
+                onChange={(e) => setFilterDppFim(e.target.value)}
+                className="w-auto"
+              />
+            </div>
+          </div>
           </CardContent>
         </Card>
 
@@ -260,28 +318,28 @@ export default function Dashboard() {
                     <TableHead>#</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>IG (DUM)</TableHead>
+                    <TableHead>DPP (DUM)</TableHead>
                     <TableHead>IG (US)</TableHead>
-                    <TableHead>DPP</TableHead>
-                    <TableHead>Trimestre</TableHead>
+                    <TableHead>DPP (US)</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sortedGestantes.map((g, idx) => {
-                    const trimestre = getTrimestre(g.calculado?.igDUM);
+                    const igDumBadge = formatIGBadge(g.calculado?.igDUM);
+                    const igUsBadge = formatIGBadge(g.calculado?.igUS);
                     return (
                       <TableRow key={g.id}>
                         <TableCell className="font-medium">{idx + 1}</TableCell>
                         <TableCell className="font-medium">{g.nome}</TableCell>
                         <TableCell>
-                          {g.calculado?.igDUM 
-                            ? `${g.calculado.igDUM.semanas}s${g.calculado.igDUM.dias}d`
-                            : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {g.calculado?.igUS 
-                            ? `${g.calculado.igUS.semanas}s${g.calculado.igUS.dias}d`
-                            : "-"}
+                          {igDumBadge ? (
+                            <span className={`inline-block px-3 py-1.5 rounded text-xs font-medium ${igDumBadge.cor}`}>
+                              {igDumBadge.text}
+                              <br />
+                              <span className="text-[10px]">{igDumBadge.trimestre}</span>
+                            </span>
+                          ) : "-"}
                         </TableCell>
                         <TableCell>
                           {g.calculado?.dpp 
@@ -289,11 +347,18 @@ export default function Dashboard() {
                             : "-"}
                         </TableCell>
                         <TableCell>
-                          {trimestre && (
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${trimestre.cor}`}>
-                              {trimestre.nome}
+                          {igUsBadge ? (
+                            <span className={`inline-block px-3 py-1.5 rounded text-xs font-medium ${igUsBadge.cor}`}>
+                              {igUsBadge.text}
+                              <br />
+                              <span className="text-[10px]">{igUsBadge.trimestre}</span>
                             </span>
-                          )}
+                          ) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {g.calculado?.dppUS 
+                            ? new Date(g.calculado.dppUS).toLocaleDateString('pt-BR')
+                            : "-"}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">

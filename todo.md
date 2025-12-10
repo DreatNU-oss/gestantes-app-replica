@@ -180,3 +180,20 @@
 - [x] Corrigir exibição dos Marcos Importantes (não aparecem mesmo com dados de ultrassom)
 - [x] Ajustar formato do texto copiado dos marcos para "DD/MM a DD/MM/AAAA" em períodos
 - [x] Verificar se campos Gesta/Para estão sendo retornados pelo backend
+
+
+## Redesign da Página de Gestantes (Solicitado 09/12/2025)
+
+- [x] Adicionar campo de busca por nome no topo
+- [x] Adicionar dropdown "Tipo de parto desejado" (normal, cesárea, todos)
+- [x] Adicionar dropdown "Parto será realizado por" (lista de médicos)
+- [x] Adicionar dropdown "Plano de Saúde" (lista de planos)
+- [x] Adicionar filtro de período de DPP (data inicial e final)
+- [x] Redesenhar tabela com coluna # (número sequencial)
+- [x] Adicionar coluna IG (DUM) com badge colorido (semanas+dias + trimestre)
+- [x] Adicionar coluna DPP (DUM) com data formatada
+- [x] Adicionar coluna IG (US) com badge colorido (quando disponível)
+- [x] Adicionar coluna DPP (US) com data formatada (quando disponível)
+- [x] Implementar badges coloridos por trimestre (verde=1º, azul=2º, rosa=3º)
+- [x] Atualizar backend para calcular e retornar IG (DUM) e IG (US)
+- [x] Implementar lógica de filtros no backend
