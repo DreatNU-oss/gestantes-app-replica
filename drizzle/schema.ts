@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date, json } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -278,3 +278,27 @@ export const resultadosExames = mysqlTable("resultadosExames", {
 
 export type ResultadoExame = typeof resultadosExames.$inferSelect;
 export type InsertResultadoExame = typeof resultadosExames.$inferInsert;
+
+/**
+ * Tabela de ultrassons pré-natais
+ */
+export const ultrassons = mysqlTable("ultrassons", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  tipoUltrassom: mysqlEnum("tipoUltrassom", [
+    "primeiro_ultrassom",
+    "morfologico_1tri",
+    "ultrassom_obstetrico",
+    "morfologico_2tri",
+    "ecocardiograma_fetal",
+    "ultrassom_seguimento"
+  ]).notNull(),
+  dataExame: varchar("dataExame", { length: 10 }), // YYYY-MM-DD
+  idadeGestacional: varchar("idadeGestacional", { length: 50 }), // Ex: "12s 3d"
+  dados: json("dados").notNull(), // JSON com campos específicos de cada tipo
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Ultrassom = typeof ultrassons.$inferSelect;
+export type InsertUltrassom = typeof ultrassons.$inferInsert;

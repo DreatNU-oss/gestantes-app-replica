@@ -466,3 +466,14 @@
 - [x] Verificar se campo pesoInicial está sendo enviado ao backend
 - [x] Corrigir procedure tRPC de edição de gestante (adicionar altura e pesoInicial ao schema)
 - [x] Testar salvamento e verificar reflexo no gráfico (Débora: 81kg salvo e gráfico atualizado)
+
+
+## Nova Aba de Ultrassons (Solicitado 10/12/2025)
+
+- [x] Criar schema de banco para tabela ultrassons (6 tipos: 1º US, Morfo 1º Tri, US Obstétrico, Morfo 2º Tri, Ecocardiograma, US Seguimento)
+- [x] Criar procedures tRPC para salvar e carregar ultrassons
+- [x] Criar página frontend Ultrassons.tsx similar à de Exames Laboratoriais
+- [x] Implementar formulários para cada tipo de ultrassom com campos específicos
+- [x] Adicionar rota /ultrassons no App.tsx e menu lateral
+- [x] Testar salvamento e carregamento de dados no navegador
+- [x] Escrever testes automatizados (7 testes passando)

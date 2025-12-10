@@ -15,6 +15,7 @@ import GerenciarPlanos from "./pages/GerenciarPlanos";
 import GerenciarMedicos from "./pages/GerenciarMedicos";
 import AgendamentoConsultas from "./pages/AgendamentoConsultas";
 import GerenciarEmails from "./pages/GerenciarEmails";
+import Ultrassons from "./pages/Ultrassons";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path={"/marcos"} component={MarcosImportantes} />
       <Route path={"/previsao-partos"} component={PrevisaoPartos} />
       <Route path={"/exames"} component={ExamesLaboratoriais} />
+      <Route path={"/ultrassons"} component={Ultrassons} />
       <Route path={"/cartao-prenatal"} component={CartaoPrenatal} />
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/gerenciar-planos"} component={GerenciarPlanos} />

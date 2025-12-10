@@ -789,5 +789,57 @@ export const appRouter = router({
         return resultadosEstruturados;
       }),
   }),
+
+  ultrassons: router({
+    salvar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoUltrassom: z.enum([
+          "primeiro_ultrassom",
+          "morfologico_1tri",
+          "ultrassom_obstetrico",
+          "morfologico_2tri",
+          "ecocardiograma_fetal",
+          "ultrassom_seguimento"
+        ]),
+        dataExame: z.string().optional(),
+        idadeGestacional: z.string().optional(),
+        dados: z.any(),
+      }))
+      .mutation(async ({ input }) => {
+        const { salvarUltrassom } = await import('./ultrassons');
+        const id = await salvarUltrassom(input);
+        return { success: true, id };
+      }),
+
+    buscar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const { buscarUltrassons } = await import('./ultrassons');
+        return await buscarUltrassons(input.gestanteId);
+      }),
+
+    buscarPorTipo: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoUltrassom: z.string(),
+      }))
+      .query(async ({ input }) => {
+        const { buscarUltrassomPorTipo } = await import('./ultrassons');
+        return await buscarUltrassomPorTipo(input.gestanteId, input.tipoUltrassom);
+      }),
+
+    deletar: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const { deletarUltrassom } = await import('./ultrassons');
+        await deletarUltrassom(input.id);
+        return { success: true };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

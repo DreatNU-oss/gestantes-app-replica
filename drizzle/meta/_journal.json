@@ -71,6 +71,13 @@
       "when": 1765381773167,
       "tag": "0009_brainy_sister_grimm",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1765387850035,
+      "tag": "0010_gorgeous_the_hand",
+      "breakpoints": true
     }
   ]
 }
