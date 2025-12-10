@@ -546,3 +546,11 @@
 
 - [x] Adicionar botão "Voltar" no topo da página de Exames Laboratoriais
 - [x] Manter consistência visual com outras páginas
+
+
+## Migração de Dados - NEG para Não Reagente (Solicitado 10/12/2025)
+
+- [x] Criar script SQL para identificar registros com "NEG" (22 registros encontrados)
+- [x] Executar UPDATE para converter "NEG" para "Não reagente"
+- [x] Validar que todos os registros foram atualizados corretamente (0 NEG restantes, 22 com "Não reagente")
+- [x] Documentar quantidade de registros migrados (22 registros)
