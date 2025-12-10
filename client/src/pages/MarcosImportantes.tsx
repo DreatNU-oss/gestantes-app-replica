@@ -155,13 +155,12 @@ export default function MarcosImportantes() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button
-            variant="outline"
-            size="sm"
+            variant="ghost"
+            size="icon"
             onClick={() => setLocation("/dashboard")}
-            className="flex items-center gap-2"
+            className="shrink-0"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
+            <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
             <h2 className="text-3xl font-bold text-foreground">Marcos Importantes</h2>

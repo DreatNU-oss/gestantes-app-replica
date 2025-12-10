@@ -602,21 +602,48 @@ export const VALORES_REFERENCIA: Record<string, ConfigExame> = {
     }
   },
 
-  'urocultura': {
-    nome: 'Urocultura',
+  'eas': {
+    nome: 'EAS (Urina tipo 1)',
     faixas: [{
-      valorEsperado: 'negativa',
+      valorEsperado: 'Normal',
       trimestres: [1, 2, 3]
     }],
     validacaoEspecial: (valor: string) => {
-      const valorLower = valor.toLowerCase().trim();
+      const valorTrim = valor.trim();
       
-      if (valorLower.includes('positiv') || valorLower.includes('crescimento') ||
-          valorLower.match(/\d+.*ufc/i)) {
+      if (valorTrim === 'Alterado') {
+        return {
+          tipo: 'atencao',
+          mensagem: '⚠️ Exame de urina alterado - Avaliar necessidade de urocultura'
+        };
+      }
+      
+      if (valorTrim === 'Normal') {
+        return { tipo: 'normal' };
+      }
+      
+      return { tipo: 'normal' };
+    }
+  },
+
+  'urocultura': {
+    nome: 'Urocultura',
+    faixas: [{
+      valorEsperado: 'Negativa',
+      trimestres: [1, 2, 3]
+    }],
+    validacaoEspecial: (valor: string) => {
+      const valorTrim = valor.trim();
+      
+      if (valorTrim === 'Positiva') {
         return {
           tipo: 'critico',
           mensagem: '🚨 BACTERIÚRIA - Tratar infecção urinária'
         };
+      }
+      
+      if (valorTrim === 'Negativa') {
+        return { tipo: 'normal' };
       }
       
       return { tipo: 'normal' };
@@ -686,7 +713,9 @@ export const EXAMES_SOROLOGICOS = [
   'rubeola_igm',
   'cmv_igg',
   'cmv_igm',
-  'coombs_indireto'
+  'coombs_indireto',
+  'eas',
+  'urocultura'
 ];
 
 /**
@@ -709,7 +738,9 @@ export function isExameSorologico(nomeExame: string): boolean {
     "Rubéola IgG": "rubeola_igg",
     "Rubéola IgM": "rubeola_igm",
     "Citomegalovírus IgG": "cmv_igg",
-    "Citomegalovírus IgM": "cmv_igm"
+    "Citomegalovírus IgM": "cmv_igm",
+    "EAS (Urina tipo 1)": "eas",
+    "Urocultura": "urocultura"
   };
   
   const idExame = MAPEAMENTO[nomeExame];

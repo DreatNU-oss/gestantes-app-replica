@@ -71,6 +71,43 @@ export default function ExamesLaboratoriais() {
     const isSorologico = isExameSorologico(nomeExame);
     
     if (isSorologico) {
+      // EAS tem opções específicas
+      if (nomeExame === "EAS (Urina tipo 1)") {
+        return (
+          <Select
+            value={valor || ""}
+            onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Normal">Normal</SelectItem>
+              <SelectItem value="Alterado">Alterado</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      }
+      
+      // Urocultura tem opções específicas
+      if (nomeExame === "Urocultura") {
+        return (
+          <Select
+            value={valor || ""}
+            onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Negativa">Negativa</SelectItem>
+              <SelectItem value="Positiva">Positiva</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      }
+      
+      // Exames sorológicos padrão
       return (
         <Select
           value={valor || ""}

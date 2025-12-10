@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
+import GestantesLayout from "@/components/GestantesLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -77,18 +78,19 @@ export default function AgendamentoConsultas() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => setLocation("/")}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold">Agendamento de Consultas</h1>
-          <p className="text-muted-foreground">
-            Calcule automaticamente as datas das consultas pré-natais
-          </p>
+    <GestantesLayout>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => setLocation("/")}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Agendamento de Consultas</h1>
+            <p className="text-muted-foreground">
+              Calcule automaticamente as datas das consultas pré-natais
+            </p>
+          </div>
         </div>
-      </div>
 
       <Card>
         <CardHeader>
@@ -231,6 +233,7 @@ export default function AgendamentoConsultas() {
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </GestantesLayout>
   );
 }

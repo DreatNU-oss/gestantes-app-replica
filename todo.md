@@ -586,3 +586,13 @@
 - [x] Corrigir componente frontend para acessar estrutura correta dos subcampos
 - [x] Validar que os 3 subcampos do TTGO (Jejum, 1h, 2h) são preenchidos corretamente
 - [x] Remover logs de debug após correção
+
+
+## Melhorias e Correções Solicitadas (10/12/2025)
+
+- [x] Simplificar EAS (Urina tipo 1) para NORMAL (verde) ou ALTERADO (amarelo)
+- [x] Simplificar Urocultura para POSITIVA (vermelho) ou NEGATIVA (verde)
+- [x] Corrigir menu lateral sumindo nas páginas de Ultrassom e Agendamento de Consultas
+- [x] Padronizar botão Voltar em todas as páginas (mesmo estilo e posição)
+- [ ] Investigar e corrigir bug do MF não salvando nas consultas pré-natais
+- [ ] Melhorar gráfico de peso para mostrar evidentemente quanto está acima/abaixo da curva
