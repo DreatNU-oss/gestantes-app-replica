@@ -248,7 +248,7 @@ export default function Dashboard() {
                   <SelectValue placeholder="Tipo de parto" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos os tipos</SelectItem>
+                  <SelectItem value="todos">Tipo de parto</SelectItem>
                   <SelectItem value="normal">Normal</SelectItem>
                   <SelectItem value="cesariana">Cesárea</SelectItem>
                   <SelectItem value="a_definir">A definir</SelectItem>
@@ -260,7 +260,7 @@ export default function Dashboard() {
                   <SelectValue placeholder="Médico" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos os médicos</SelectItem>
+                  <SelectItem value="todos">Médico</SelectItem>
                   {medicos.map(m => (
                     <SelectItem key={m.id} value={m.id.toString()}>{m.nome}</SelectItem>
                   ))}
@@ -272,7 +272,7 @@ export default function Dashboard() {
                   <SelectValue placeholder="Plano de Saúde" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos os planos</SelectItem>
+                  <SelectItem value="todos">Plano de saúde</SelectItem>
                   {planos.map(p => (
                     <SelectItem key={p.id} value={p.id.toString()}>{p.nome}</SelectItem>
                   ))}

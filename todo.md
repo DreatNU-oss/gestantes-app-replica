@@ -197,3 +197,10 @@
 - [x] Implementar badges coloridos por trimestre (verde=1º, azul=2º, rosa=3º)
 - [x] Atualizar backend para calcular e retornar IG (DUM) e IG (US)
 - [x] Implementar lógica de filtros no backend
+
+
+## Ajustes de UX nos Filtros (Solicitado 09/12/2025)
+
+- [x] Alterar placeholder "Todos os tipos" para "Tipo de parto"
+- [x] Alterar placeholder "Todos os planos" para "Plano de saúde"
+- [x] Alterar placeholder "Todos os médicos" para "Médico"
