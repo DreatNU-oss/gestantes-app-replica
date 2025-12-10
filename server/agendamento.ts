@@ -120,24 +120,40 @@ export function calcularConsultasSugeridas(
     primeiraData = new Date(hoje);
   }
   
-  // Ajustar primeira consulta para dia permitido
-  const primeiraConsultaAjustada = ajustarParaDiaPermitido(primeiraData);
-  const igPrimeira = calcularIGNaData(dum, primeiraConsultaAjustada);
+  // Calcular IG na data da primeira consulta (que já foi agendada pelo usuário)
+  const igPrimeira = calcularIGNaData(dum, primeiraData);
   
-  // Adicionar primeira consulta
+  // NÃO incluir a primeira consulta - ela já foi agendada pelo usuário
+  // Começar a calcular a partir da SEGUNDA consulta
+  
+  // Determinar intervalo para a segunda consulta baseado na IG da primeira
+  let intervaloInicial: number;
+  if (igPrimeira.semanas <= 31) {
+    intervaloInicial = 30; // Mensal até 31 semanas
+  } else if (igPrimeira.semanas <= 35) {
+    intervaloInicial = 14; // Quinzenal de 32 a 35 semanas
+  } else {
+    intervaloInicial = 7; // Semanal após 36 semanas
+  }
+  
+  // Calcular segunda consulta
+  let dataAtual = new Date(primeiraData.getFullYear(), primeiraData.getMonth(), primeiraData.getDate() + intervaloInicial);
+  dataAtual = ajustarParaDiaPermitido(dataAtual);
+  const igSegunda = calcularIGNaData(dum, dataAtual);
+  
+  // Adicionar segunda consulta
   consultas.push({
-    dataAgendada: new Date(primeiraConsultaAjustada),
-    igSemanas: igPrimeira.semanas,
-    igDias: igPrimeira.dias,
-    exameComplementar: determinarExameComplementar(igPrimeira.semanas),
-    ehFeriado: ehFeriado(primeiraConsultaAjustada),
-    observacao: ehFeriado(primeiraConsultaAjustada) ? "⚠️ Data cai em feriado - considere reagendar" : undefined,
+    dataAgendada: new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dataAtual.getDate()),
+    igSemanas: igSegunda.semanas,
+    igDias: igSegunda.dias,
+    exameComplementar: determinarExameComplementar(igSegunda.semanas),
+    ehFeriado: ehFeriado(dataAtual),
+    observacao: ehFeriado(dataAtual) ? "⚠️ Data cai em feriado - considere reagendar" : undefined,
   });
   
-  // Calcular consultas seguintes até 41 semanas
-  let dataAtual = new Date(primeiraConsultaAjustada.getFullYear(), primeiraConsultaAjustada.getMonth(), primeiraConsultaAjustada.getDate());
-  let igAtual = igPrimeira.semanas;
+  let igAtual = igSegunda.semanas;
   
+  // Calcular demais consultas até 41 semanas
   while (igAtual < 41) {
     // Determinar intervalo baseado na IG
     let intervalo: number;

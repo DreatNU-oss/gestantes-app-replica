@@ -1,0 +1,676 @@
+{
+  "query": "SELECT id, nome, dum, dataPartoProgramado FROM gestantes ORDER BY nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dum, dataPartoProgramado FROM gestantes ORDER BY nome;",
+  "rows": [
+    {
+      "id": "30001",
+      "nome": "Adrieli Rezende Barros",
+      "dum": "2025-09-29",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330011",
+      "nome": "Aline Aparecida Ribeiro Reis",
+      "dum": "2025-04-20",
+      "dataPartoProgramado": "2026-01-19"
+    },
+    {
+      "id": "330012",
+      "nome": "Aline Clara Silva",
+      "dum": "2025-09-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330013",
+      "nome": "Aline Cristina Soares Gallo",
+      "dum": "2025-08-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "dum": "2025-05-08",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "dum": "2025-06-07",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330016",
+      "nome": "Amanda Paula da Costa Silva",
+      "dum": "2025-08-06",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330017",
+      "nome": "Amanda Tavares Amado",
+      "dum": "2025-09-13",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330018",
+      "nome": "Ana Clara Borges da Silva",
+      "dum": "2025-06-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "dum": "2025-07-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330020",
+      "nome": "Anna Clara Sousa Borges",
+      "dum": "2025-06-03",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "dum": "2025-06-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "dum": "2025-07-09",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330023",
+      "nome": "Bruna do Carmo Cunha",
+      "dum": "2025-08-28",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330024",
+      "nome": "Bruna Fernandes Fonseca Oliveira",
+      "dum": "2025-05-14",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330025",
+      "nome": "Bruna Ribeiro Costa",
+      "dum": "2025-07-15",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330026",
+      "nome": "Bruna Tertuliano de Souza",
+      "dum": "2025-08-28",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330027",
+      "nome": "Camila Dias Vicente",
+      "dum": "2025-07-27",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "720002",
+      "nome": "Camila Paiva do Nascimento",
+      "dum": "2025-10-06",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330028",
+      "nome": "Camila Rosa Carvalho",
+      "dum": "2025-06-25",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "dum": "2025-10-03",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira",
+      "dum": "2025-03-13",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330029",
+      "nome": "Carine Rosário Pereira Galvão",
+      "dum": "2025-06-09",
+      "dataPartoProgramado": "2026-03-09"
+    },
+    {
+      "id": "330031",
+      "nome": "Cecília de Salles Amaral Olímpio",
+      "dum": "2025-04-12",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330032",
+      "nome": "Cinthia dos Anjos Antonietto Drumond",
+      "dum": "2025-05-14",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330033",
+      "nome": "Cintia de Oliveira Souza Rosa",
+      "dum": "2025-05-03",
+      "dataPartoProgramado": "2026-01-31"
+    },
+    {
+      "id": "330034",
+      "nome": "Crislaine Aparecida da Costa Soares",
+      "dum": "2025-07-16",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330035",
+      "nome": "Crislayne Eleniz de Andrade",
+      "dum": "2025-09-22",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "dum": "2025-04-04",
+      "dataPartoProgramado": "2025-12-19"
+    },
+    {
+      "id": "330036",
+      "nome": "Danielle Barbosa Lopes de Moraes",
+      "dum": "2025-07-21",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330037",
+      "nome": "Danielle Fliegner Enout Nadur",
+      "dum": "2025-06-14",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330039",
+      "nome": "Débora Gouvea Rocha de Jesus",
+      "dum": "2025-04-04",
+      "dataPartoProgramado": "2025-12-26"
+    },
+    {
+      "id": "330038",
+      "nome": "Denise Bittencourt Siqueira",
+      "dum": "2025-09-18",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330040",
+      "nome": "Eliane Gomes de Noronha",
+      "dum": "2025-07-03",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330041",
+      "nome": "Eliane Tolentino Silva",
+      "dum": "2025-06-14",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "720001",
+      "nome": "Elisangela da Silva",
+      "dum": "2025-10-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330042",
+      "nome": "Ellem Ribeiro Lemes",
+      "dum": "2025-07-25",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330043",
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "dum": "2025-08-04",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330044",
+      "nome": "Erica Aparecida Luz",
+      "dum": "2025-08-01",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330045",
+      "nome": "Fabrícia Paulino Luciano da Silva",
+      "dum": "2025-04-20",
+      "dataPartoProgramado": "2026-01-14"
+    },
+    {
+      "id": "840001",
+      "nome": "Fernanda Angélica Mafra",
+      "dum": "NULL",
+      "dataPartoProgramado": "2026-07-29"
+    },
+    {
+      "id": "330046",
+      "nome": "Fernanda Carmem de Souza",
+      "dum": "2025-08-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "dum": "2025-08-26",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330048",
+      "nome": "Gabriela das Graças Arantes Lemos",
+      "dum": "2025-06-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330049",
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "dum": "2025-09-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330050",
+      "nome": "Giovanna Alexsandra Mecia",
+      "dum": "2025-09-05",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330051",
+      "nome": "Gisele Silva Batista",
+      "dum": "2025-07-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "300006",
+      "nome": "Graziela Mazoni",
+      "dum": "2025-04-21",
+      "dataPartoProgramado": "2025-12-15"
+    },
+    {
+      "id": "330052",
+      "nome": "Helena Resende Andrade",
+      "dum": "2025-08-06",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330053",
+      "nome": "Heloísa Lemes Silva",
+      "dum": "2025-05-23",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330054",
+      "nome": "Iara Silva Miguel",
+      "dum": "2025-07-14",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330055",
+      "nome": "Iris Fonseca de Morais",
+      "dum": "2025-07-17",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330056",
+      "nome": "Isis Milena Gomes",
+      "dum": "2025-05-12",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330057",
+      "nome": "Janaína Helena Machado",
+      "dum": "2025-08-08",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "690018",
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "dum": "2025-08-23",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330009",
+      "nome": "Jenilda Aparecida Souza Santos",
+      "dum": "2025-09-27",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330058",
+      "nome": "Jéssica Aparecida de Souza",
+      "dum": "2025-04-18",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "dum": "2025-03-20",
+      "dataPartoProgramado": "2025-12-18"
+    },
+    {
+      "id": "330059",
+      "nome": "Joyce Mirelle Costa Silva",
+      "dum": "2025-05-10",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "870001",
+      "nome": "Julia Prates Gonçalves",
+      "dum": "2025-05-20",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330060",
+      "nome": "Juliana da Silva Tavares",
+      "dum": "2025-07-28",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330061",
+      "nome": "Kassiara Batista Borges",
+      "dum": "2025-08-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330062",
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "dum": "2025-07-07",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330063",
+      "nome": "Kerolainy Aparecida Faria Jorge",
+      "dum": "2025-05-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "dum": "2025-04-02",
+      "dataPartoProgramado": "2025-12-30"
+    },
+    {
+      "id": "330064",
+      "nome": "Lara Carolyne Miguel de Paula",
+      "dum": "2025-06-29",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330065",
+      "nome": "Larissa Santos Santana",
+      "dum": "2025-06-12",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330066",
+      "nome": "Laura Antônia Marques Correa",
+      "dum": "2025-05-26",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330067",
+      "nome": "Laura Stefany Quintiliano da Silva",
+      "dum": "2025-05-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "dum": "2025-09-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330068",
+      "nome": "Letícia Campos Calderaro Dias",
+      "dum": "2025-04-11",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330069",
+      "nome": "Letícia Celeste Caetano",
+      "dum": "2025-06-05",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330070",
+      "nome": "Letícia Dias de Souza",
+      "dum": "2025-08-16",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330071",
+      "nome": "Letícia Nogueira Chauke",
+      "dum": "2025-06-01",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "780001",
+      "nome": "Leticia Petrin",
+      "dum": "2025-10-07",
+      "dataPartoProgramado": "2026-06-29"
+    },
+    {
+      "id": "330075",
+      "nome": "Lívia Caldas Marins",
+      "dum": "2025-09-22",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330072",
+      "nome": "Lorena Luísa da Costa",
+      "dum": "2025-09-06",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "810001",
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "dum": "2025-09-15",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330073",
+      "nome": "Luciana Maria Silva",
+      "dum": "2025-07-22",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330074",
+      "nome": "Luciany Aparecida Vilela",
+      "dum": "2025-09-21",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "dum": "2025-10-01",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330076",
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "dum": "2025-09-04",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "660001",
+      "nome": "Meireceli Batista Teixeira",
+      "dum": "2025-09-20",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330077",
+      "nome": "Meirielen Santiago Levy de Souza",
+      "dum": "2025-08-05",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330078",
+      "nome": "Milene de Souza Braga",
+      "dum": "2025-09-16",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330079",
+      "nome": "Naiane Kelly de Oliveira Vale",
+      "dum": "2025-05-26",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330080",
+      "nome": "Natália da Silva Silveira",
+      "dum": "2025-07-02",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330081",
+      "nome": "Patrícia Aparecida Camilo",
+      "dum": "2025-05-05",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330002",
+      "nome": "Paula Marques de Oliveira",
+      "dum": "2025-03-25",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330082",
+      "nome": "Poliane Amado Silva do Prado",
+      "dum": "2025-04-24",
+      "dataPartoProgramado": "2026-01-22"
+    },
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram",
+      "dum": "2025-08-10",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330083",
+      "nome": "Raquel Couto e Silva",
+      "dum": "2025-06-02",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330084",
+      "nome": "Rayane Aparecida Zanin",
+      "dum": "2025-08-18",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330085",
+      "nome": "Rayssa Aparecida Oliveira Martins",
+      "dum": "2025-05-23",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330086",
+      "nome": "Roana Borges Nascimento",
+      "dum": "2025-05-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330087",
+      "nome": "Samanta Silva Maciel",
+      "dum": "2025-07-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330089",
+      "nome": "Sophy Marie Ferreira Martins",
+      "dum": "2025-08-03",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330090",
+      "nome": "Suelen Gandza Gomes",
+      "dum": "2025-09-24",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330095",
+      "nome": "Tainara dos Reis Oliveira",
+      "dum": "2025-05-12",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330096",
+      "nome": "Tamiris Cristina Moreira Gomes",
+      "dum": "2025-04-09",
+      "dataPartoProgramado": "2025-12-29"
+    },
+    {
+      "id": "330098",
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "dum": "2025-07-19",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330099",
+      "nome": "Taynara Magalhães Porfirio",
+      "dum": "2025-05-26",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "dum": "2025-10-04",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330100",
+      "nome": "Thaiane Massarim do Nascimento",
+      "dum": "2025-08-17",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330101",
+      "nome": "Thainá Batista Valim",
+      "dum": "2025-07-07",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330097",
+      "nome": "Thaina Cristiane Marques",
+      "dum": "2025-05-08",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330102",
+      "nome": "Thaynara Evelyn Souza Galo",
+      "dum": "2025-06-01",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330094",
+      "nome": "Valéria Aparecida Palmeira",
+      "dum": "2025-04-26",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330093",
+      "nome": "Vanessa Gomes Ferreira",
+      "dum": "2025-06-10",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330092",
+      "nome": "Vivian Mantovani Lopes e Silva",
+      "dum": "2025-06-04",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330091",
+      "nome": "Wanna Marya Coelho Rosa Borges",
+      "dum": "2025-06-10",
+      "dataPartoProgramado": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataPartoProgramado\n30001\tAdrieli Rezende Barros\t2025-09-29\tNULL\n330011\tAline Aparecida Ribeiro Reis\t2025-04-20\t2026-01-19\n330012\tAline Clara Silva\t2025-09-24\tNULL\n330013\tAline Cristina Soares Gallo\t2025-08-24\tNULL\n330014\tAmanda Cristina Souza Oliveira\t2025-05-08\tNULL\n330015\tAmanda Junqueira Vilela\t2025-06-07\tNULL\n330016\tAmanda Paula da Costa Silva\t2025-08-06\tNULL\n330017\tAmanda Tavares Amado\t2025-09-13\tNULL\n330018\tAna Clara Borges da Silva\t2025-06-19\tNULL\n330019\tAndressa Helena Silva Fonseca\t2025-07-11\tNULL\n330020\tAnna Clara Sousa Borges\t2025-06-03\tNULL\n330021\tBianca Aparecida Marcolino do Carmo\t2025-06-24\tNULL\n330022\tBianca Fonseca Moreno da Cruz\t2025-07-09\tNULL\n330023\tBruna do Carmo Cunha\t2025-08-28\tNULL\n330024\tBruna Fernandes Fonseca Oliveira\t2025-05-14\tNULL\n330025\tBruna Ribeiro Costa\t2025-07-15\tNULL\n330026\tBruna Tertuliano de Souza\t2025-08-28\tNULL\n330027\tCamila Dias Vicente\t2025-07-27\tNULL\n720002\tCamila Paiva do Nascimento\t2025-10-06\tNULL\n330028\tCamila Rosa Carvalho\t2025-06-25\tNULL\n330007\tCamila Soares Ferreira Sidrin\t2025-10-03\tNULL\n300004\tCamila Zanco Pereira\t2025-03-13\tNULL\n330029\tCarine Rosário Pereira Galvão\t2025-06-09\t2026-03-09\n330031\tCecília de Salles Amaral Olímpio\t2025-04-12\tNULL\n330032\tCinthia dos Anjos Antonietto Drumond\t2025-05-14\tNULL\n330033\tCintia de Oliveira Souza Rosa\t2025-05-03\t2026-01-31\n330034\tCrislaine Aparecida da Costa Soares\t2025-07-16\tNULL\n330035\tCrislayne Eleniz de Andrade\t2025-09-22\tNULL\n330005\tDaniela Aparecida Françoso\t2025-04-04\t2025-12-19\n330036\tDanielle Barbosa Lopes de Moraes\t2025-07-21\tNULL\n330037\tDanielle Fliegner Enout Nadur\t2025-06-14\tNULL\n330039\tDébora Gouvea Rocha de Jesus\t2025-04-04\t2025-12-26\n330038\tDenise Bittencourt Siqueira\t2025-09-18\tNULL\n330040\tEliane Gomes de Noronha\t2025-07-03\tNULL\n330041\tEliane Tolentino Silva\t2025-06-14\tNULL\n720001\tElisangela da Silva\t2025-10-11\tNULL\n330042\tEllem Ribeiro Lemes\t2025-07-25\tNULL\n330043\tEllen Aparecida Ferreira Batista\t2025-08-04\tNULL\n330044\tErica Aparecida Luz\t2025-08-01\tNULL\n330045\tFabrícia Paulino Luciano da Silva\t2025-04-20\t2026-01-14\n840001\tFernanda Angélica Mafra\tNULL\t2026-07-29\n330046\tFernanda Carmem de Souza\t2025-08-11\tNULL\n330047\tFernanda Luciano Santos Gonçalves\t2025-08-26\tNULL\n330048\tGabriela das Graças Arantes Lemos\t2025-06-19\tNULL\n330049\tGabriela dos Santos Batista Figueiredo\t2025-09-24\tNULL\n330050\tGiovanna Alexsandra Mecia\t2025-09-05\tNULL\n330051\tGisele Silva Batista\t2025-07-11\tNULL\n300006\tGraziela Mazoni\t2025-04-21\t2025-12-15\n330052\tHelena Resende Andrade\t2025-08-06\tNULL\n330053\tHeloísa Lemes Silva\t2025-05-23\tNULL\n330054\tIara Silva Miguel\t2025-07-14\tNULL\n330055\tIris Fonseca de Morais\t2025-07-17\tNULL\n330056\tIsis Milena Gomes\t2025-05-12\tNULL\n330057\tJanaína Helena Machado\t2025-08-08\tNULL\n690018\tJeniffer Catrine Alves de Souza\t2025-08-23\tNULL\n330009\tJenilda Aparecida Souza Santos\t2025-09-27\tNULL\n330058\tJéssica Aparecida de Souza\t2025-04-18\tNULL\n300005\tJosiane Alves Batista\t2025-03-20\t2025-12-18\n330059\tJoyce Mirelle Costa Silva\t2025-05-10\tNULL\n870001\tJulia Prates Gonçalves\t2025-05-20\tNULL\n330060\tJuliana da Silva Tavares\t2025-07-28\tNULL\n330061\tKassiara Batista Borges\t2025-08-11\tNULL\n330062\tKayane Ketnny Gomes Branquinho\t2025-07-07\tNULL\n330063\tKerolainy Aparecida Faria Jorge\t2025-05-19\tNULL\n330004\tKetlin Pereira Ferreira\t2025-04-02\t2025-12-30\n330064\tLara Carolyne Miguel de Paula\t2025-06-29\tNULL\n330065\tLarissa Santos Santana\t2025-06-12\tNULL\n330066\tLaura Antônia Marques Correa\t2025-05-26\tNULL\n330067\tLaura Stefany Quintiliano da Silva\t2025-05-24\tNULL\n330010\tLetícia Aparecida Silveira\t2025-09-24\tNULL\n330068\tLetícia Campos Calderaro Dias\t2025-04-11\tNULL\n330069\tLetícia Celeste Caetano\t2025-06-05\tNULL\n330070\tLetícia Dias de Souza\t2025-08-16\tNULL\n330071\tLetícia Nogueira Chauke\t2025-06-01\tNULL\n780001\tLeticia Petrin\t2025-10-07\t2026-06-29\n330075\tLívia Caldas Marins\t2025-09-22\tNULL\n330072\tLorena Luísa da Costa\t2025-09-06\tNULL\n810001\tLuana Maria Oliveira Ribeiro Bernardes\t2025-09-15\tNULL\n330073\tLuciana Maria Silva\t2025-07-22\tNULL\n330074\tLuciany Aparecida Vilela\t2025-09-21\tNULL\n330008\tLucíola Viviane Achilles Medeiros Araújo\t2025-10-01\tNULL\n330076\tMakisleide Ferreira de Souza Santos\t2025-09-04\tNULL\n660001\tMeireceli Batista Teixeira\t2025-09-20\tNULL\n330077\tMeirielen Santiago Levy de Souza\t2025-08-05\tNULL\n330078\tMilene de Souza Braga\t2025-09-16\tNULL\n330079\tNaiane Kelly de Oliveira Vale\t2025-05-26\tNULL\n330080\tNatália da Silva Silveira\t2025-07-02\tNULL\n330081\tPatrícia Aparecida Camilo\t2025-05-05\tNULL\n330002\tPaula Marques de Oliveira\t2025-03-25\tNULL\n330082\tPoliane Amado Silva do Prado\t2025-04-24\t2026-01-22\n270001\tRaissa Andrade Gibram\t2025-08-10\tNULL\n330083\tRaquel Couto e Silva\t2025-06-02\tNULL\n330084\tRayane Aparecida Zanin\t2025-08-18\tNULL\n330085\tRayssa Aparecida Oliveira Martins\t2025-05-23\tNULL\n330086\tRoana Borges Nascimento\t2025-05-19\tNULL\n330087\tSamanta Silva Maciel\t2025-07-19\tNULL\n330089\tSophy Marie Ferreira Martins\t2025-08-03\tNULL\n330090\tSuelen Gandza Gomes\t2025-09-24\tNULL\n330095\tTainara dos Reis Oliveira\t2025-05-12\tNULL\n330096\tTamiris Cristina Moreira Gomes\t2025-04-09\t2025-12-29\n330098\tTassiana Tonioli Craveiro Chagas\t2025-07-19\tNULL\n330099\tTaynara Magalhães Porfirio\t2025-05-26\tNULL\n330006\tThabata Aline de Oliveira Costa\t2025-10-04\tNULL\n330100\tThaiane Massarim do Nascimento\t2025-08-17\tNULL\n330101\tThainá Batista Valim\t2025-07-07\tNULL\n330097\tThaina Cristiane Marques\t2025-05-08\tNULL\n330102\tThaynara Evelyn Souza Galo\t2025-06-01\tNULL\n330094\tValéria Aparecida Palmeira\t2025-04-26\tNULL\n330093\tVanessa Gomes Ferreira\t2025-06-10\tNULL\n330092\tVivian Mantovani Lopes e Silva\t2025-06-04\tNULL\n330091\tWanna Marya Coelho Rosa Borges\t2025-06-10\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
