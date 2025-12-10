@@ -561,3 +561,10 @@
 - [x] Atualizar cabeçalho da tabela para 7 colunas (Nome, Data 1º, Resultado 1º, Data 2º, Resultado 2º, Data 3º, Resultado 3º)
 - [x] Reorganizar renderização dos campos para separar data e resultado em colunas distintas
 - [x] Testar visualização no navegador (validado com Camila Sidrin)
+
+
+## Correção de Erro React - Key Prop (Reportado 10/12/2025)
+
+- [x] Identificar elementos sem key prop na renderização de exames (Fragment sem key em exames com subcampos)
+- [x] Adicionar key prop única para cada elemento da lista (React.Fragment key={exame.nome})
+- [x] Testar no navegador para confirmar que o erro foi resolvido (sem erros no console)

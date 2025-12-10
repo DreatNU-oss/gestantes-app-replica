@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
@@ -101,7 +102,7 @@ export default function ExamesLaboratoriais() {
     // Se o exame tem subcampos (ex: TTGO), renderizar múltiplas linhas
     if (exame.subcampos) {
       return (
-        <>
+        <React.Fragment key={exame.nome}>
           {exame.subcampos.map((subcampo, index) => (
             <TableRow key={`${exame.nome}-${subcampo}`}>
               <TableCell className="font-medium">
@@ -194,7 +195,7 @@ export default function ExamesLaboratoriais() {
               </TableCell>
             </TableRow>
           ))}
-        </>
+        </React.Fragment>
       );
     }
 
