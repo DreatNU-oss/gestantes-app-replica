@@ -1,0 +1,19 @@
+{
+  "query": "SELECT id, nome, dataPartoProgramado, dum, dataUltrassom, igUltrassomSemanas, igUltrassomDias FROM gestantes WHERE nome LIKE '%Graziela%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataPartoProgramado, dum, dataUltrassom, igUltrassomSemanas, igUltrassomDias FROM gestantes WHERE nome LIKE '%Graziela%';",
+  "rows": [
+    {
+      "id": "300006",
+      "nome": "Graziela Mazoni",
+      "dataPartoProgramado": "2025-12-15",
+      "dum": "2025-04-21",
+      "dataUltrassom": "2025-05-19",
+      "igUltrassomSemanas": "38",
+      "igUltrassomDias": "4"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataPartoProgramado\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\n300006\tGraziela Mazoni\t2025-12-15\t2025-04-21\t2025-05-19\t38\t4\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

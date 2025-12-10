@@ -178,40 +178,25 @@ export const appRouter = router({
         let idade = null;
         
         if (g.dum) {
-          // Criar data local sem conversão UTC
-          let dumDate: Date;
-          if (g.dum instanceof Date) {
-            // Se já é Date, extrair componentes locais
-            dumDate = new Date(g.dum.getFullYear(), g.dum.getMonth(), g.dum.getDate());
-          } else {
-            // Se é string, parsear YYYY-MM-DD
-            const dumStr = String(g.dum).split('T')[0];
-            const [year, month, day] = dumStr.split('-').map(Number);
-            dumDate = new Date(year, month - 1, day);
-          }
+          // Parsear YYYY-MM-DD como data local
+          const [year, month, day] = g.dum.split('-').map(Number);
+          const dumDate = new Date(year, month - 1, day);
           igDUM = calcularIdadeGestacionalPorDUM(dumDate);
           dpp = calcularDPP(dumDate);
         }
         
         if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
-          // Criar data local sem conversão UTC
-          let dataUS: Date;
-          if (g.dataUltrassom instanceof Date) {
-            // Se já é Date, extrair componentes locais
-            dataUS = new Date(g.dataUltrassom.getFullYear(), g.dataUltrassom.getMonth(), g.dataUltrassom.getDate());
-          } else {
-            // Se é string, parsear YYYY-MM-DD
-            const usStr = String(g.dataUltrassom).split('T')[0];
-            const [year, month, day] = usStr.split('-').map(Number);
-            dataUS = new Date(year, month - 1, day);
-          }
+          // Parsear YYYY-MM-DD como data local
+          const [year, month, day] = g.dataUltrassom.split('-').map(Number);
+          const dataUS = new Date(year, month - 1, day);
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
         
         if (g.dataNascimento) {
-          idade = calcularIdade(new Date(g.dataNascimento));
+          const [year, month, day] = g.dataNascimento.split('-').map(Number);
+          idade = calcularIdade(new Date(year, month - 1, day));
         }
         
         return {
@@ -240,40 +225,25 @@ export const appRouter = router({
         let idade = null;
         
         if (g.dum) {
-          // Criar data local sem conversão UTC
-          let dumDate: Date;
-          if (g.dum instanceof Date) {
-            // Se já é Date, extrair componentes locais
-            dumDate = new Date(g.dum.getFullYear(), g.dum.getMonth(), g.dum.getDate());
-          } else {
-            // Se é string, parsear YYYY-MM-DD
-            const dumStr = String(g.dum).split('T')[0];
-            const [year, month, day] = dumStr.split('-').map(Number);
-            dumDate = new Date(year, month - 1, day);
-          }
+          // Parsear YYYY-MM-DD como data local
+          const [year, month, day] = g.dum.split('-').map(Number);
+          const dumDate = new Date(year, month - 1, day);
           igDUM = calcularIdadeGestacionalPorDUM(dumDate);
           dpp = calcularDPP(dumDate);
         }
         
         if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
-          // Criar data local sem conversão UTC
-          let dataUS: Date;
-          if (g.dataUltrassom instanceof Date) {
-            // Se já é Date, extrair componentes locais
-            dataUS = new Date(g.dataUltrassom.getFullYear(), g.dataUltrassom.getMonth(), g.dataUltrassom.getDate());
-          } else {
-            // Se é string, parsear YYYY-MM-DD
-            const usStr = String(g.dataUltrassom).split('T')[0];
-            const [year, month, day] = usStr.split('-').map(Number);
-            dataUS = new Date(year, month - 1, day);
-          }
+          // Parsear YYYY-MM-DD como data local
+          const [year, month, day] = g.dataUltrassom.split('-').map(Number);
+          const dataUS = new Date(year, month - 1, day);
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
         
         if (g.dataNascimento) {
-          idade = calcularIdade(new Date(g.dataNascimento));
+          const [year, month, day] = g.dataNascimento.split('-').map(Number);
+          idade = calcularIdade(new Date(year, month - 1, day));
         }
         
         return {

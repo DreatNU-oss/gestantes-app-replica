@@ -98,8 +98,6 @@ export async function enviarEmail(params: {
       html: htmlContent,
     });
     
-    console.log('Resend API response:', JSON.stringify(result, null, 2));
-    
     // Registrar log de sucesso
     await db.insert(logsEmails).values({
       gestanteId: params.gestanteId,

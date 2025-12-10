@@ -73,7 +73,7 @@ export const gestantes = mysqlTable("gestantes", {
   nome: varchar("nome", { length: 255 }).notNull(),
   telefone: varchar("telefone", { length: 20 }),
   email: varchar("email", { length: 320 }),
-  dataNascimento: date("dataNascimento"),
+  dataNascimento: varchar("dataNascimento", { length: 10 }), // YYYY-MM-DD
   
   // Dados administrativos
   planoSaudeId: int("planoSaudeId"),
@@ -89,11 +89,11 @@ export const gestantes = mysqlTable("gestantes", {
   abortos: int("abortos"),
   
   // Dados obstétricos
-  dum: date("dum"),
+  dum: varchar("dum", { length: 10 }), // YYYY-MM-DD
   igUltrassomSemanas: int("igUltrassomSemanas"),
   igUltrassomDias: int("igUltrassomDias"),
-  dataUltrassom: date("dataUltrassom"),
-  dataPartoProgramado: date("dataPartoProgramado"),
+  dataUltrassom: varchar("dataUltrassom", { length: 10 }), // YYYY-MM-DD
+  dataPartoProgramado: varchar("dataPartoProgramado", { length: 10 }), // YYYY-MM-DD
   
   // Dados antropométricos
   altura: int("altura"), // altura em cm

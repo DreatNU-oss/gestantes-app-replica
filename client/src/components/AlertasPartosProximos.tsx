@@ -53,7 +53,13 @@ export function AlertasPartosProximos({
   };
 
   const parseLocalDate = (dateStr: string | Date): Date => {
-    if (dateStr instanceof Date) return dateStr;
+    if (dateStr instanceof Date) {
+      // Se for Date object do banco, extrair apenas ano/mês/dia e criar nova data local
+      const year = dateStr.getUTCFullYear();
+      const month = dateStr.getUTCMonth();
+      const day = dateStr.getUTCDate();
+      return new Date(year, month, day, 12, 0, 0);
+    }
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day, 12, 0, 0);
   };
@@ -68,7 +74,8 @@ export function AlertasPartosProximos({
   const obterDataParto = (gestante: Gestante): { data: Date; tipo: "programado" | "usg" | "dum" } | null => {
     // Prioridade 1: Parto Programado
     if (gestante.dataPartoProgramado) {
-      return { data: parseLocalDate(gestante.dataPartoProgramado as string), tipo: "programado" };
+      const dataParsed = parseLocalDate(gestante.dataPartoProgramado as string);
+      return { data: dataParsed, tipo: "programado" };
     }
 
     // Prioridade 2: DPP por Ultrassom
