@@ -17,7 +17,7 @@ import {
 
 export default function ExamesLaboratoriais() {
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
-  const [resultados, setResultados] = useState<Record<string, Record<string, string>>>({});
+  const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -27,7 +27,7 @@ export default function ExamesLaboratoriais() {
     setResultados((prev) => ({
       ...prev,
       [exame]: {
-        ...prev[exame],
+        ...(typeof prev[exame] === 'object' && prev[exame] !== null ? prev[exame] : {}),
         [trimestre]: valor,
       },
     }));
@@ -49,7 +49,7 @@ export default function ExamesLaboratoriais() {
                   <Input
                     type="text"
                     placeholder="Resultado"
-                    value={resultados[`${exame.nome}-${subcampo}`]?.["1"] || ""}
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""}
                     onChange={(e) =>
                       handleResultadoChange(`${exame.nome}-${subcampo}`, "1", e.target.value)
                     }
@@ -64,7 +64,7 @@ export default function ExamesLaboratoriais() {
                   <Input
                     type="text"
                     placeholder="Resultado"
-                    value={resultados[`${exame.nome}-${subcampo}`]?.["2"] || ""}
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""}
                     onChange={(e) =>
                       handleResultadoChange(`${exame.nome}-${subcampo}`, "2", e.target.value)
                     }
@@ -79,7 +79,7 @@ export default function ExamesLaboratoriais() {
                   <Input
                     type="text"
                     placeholder="Resultado"
-                    value={resultados[`${exame.nome}-${subcampo}`]?.["3"] || ""}
+                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""}
                     onChange={(e) =>
                       handleResultadoChange(`${exame.nome}-${subcampo}`, "3", e.target.value)
                     }
@@ -104,7 +104,7 @@ export default function ExamesLaboratoriais() {
             <Input
               type="text"
               placeholder="Resultado"
-              value={resultados[exame.nome]?.["1"] || ""}
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""}
               onChange={(e) =>
                 handleResultadoChange(exame.nome, "1", e.target.value)
               }
@@ -119,7 +119,7 @@ export default function ExamesLaboratoriais() {
             <Input
               type="text"
               placeholder="Resultado"
-              value={resultados[exame.nome]?.["2"] || ""}
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""}
               onChange={(e) =>
                 handleResultadoChange(exame.nome, "2", e.target.value)
               }
@@ -134,7 +134,7 @@ export default function ExamesLaboratoriais() {
             <Input
               type="text"
               placeholder="Resultado"
-              value={resultados[exame.nome]?.["3"] || ""}
+              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""}
               onChange={(e) =>
                 handleResultadoChange(exame.nome, "3", e.target.value)
               }
@@ -218,6 +218,17 @@ export default function ExamesLaboratoriais() {
                 {renderTabelaExames("Exames de Urina", examesUrina)}
                 {renderTabelaExames("Exames de Fezes", examesFezes)}
                 {renderTabelaExames("Outros Exames", outrosExames)}
+
+                {/* Campo de texto livre para outros exames */}
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-lg">Observações / Outros Exames</h3>
+                  <textarea
+                    className="w-full min-h-[120px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    placeholder="Digite aqui observações ou outros exames não listados acima..."
+                    value={(typeof resultados['outros_observacoes'] === 'string' ? resultados['outros_observacoes'] : '') || ''}
+                    onChange={(e) => setResultados({ ...resultados, outros_observacoes: e.target.value })}
+                  />
+                </div>
 
                 <div className="flex justify-end mt-6">
                   <Button className="bg-rose-600 hover:bg-rose-700">

@@ -397,3 +397,8 @@
 - [x] EPF apenas no 1º trimestre
 - [x] Dividir Hemograma em Hemoglobina/Hematócrito e Plaquetas
 - [x] TTGO com 3 campos (Jejum, 1h, 2h)
+
+- [ ] Remover HIV do 2º trimestre
+- [ ] IgG de Toxoplasmose, Rubéola, Citomegalovírus e FTA-ABS nos 3 trimestres
+- [ ] Adicionar campo de texto livre "Outros Exames"
+- [x] Adicionar Proteinúria de 24 horas no 3º trimestre
