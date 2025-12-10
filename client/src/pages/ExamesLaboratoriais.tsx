@@ -6,6 +6,8 @@ import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { InputExameValidado } from "@/components/InputExameValidado";
+import { obterIdValidacao } from "@/data/mapeamentoExames";
 import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { Sparkles } from "lucide-react";
@@ -72,12 +74,12 @@ export default function ExamesLaboratoriais() {
               </TableCell>
               <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
-                  <Input
-                    type="text"
-                    placeholder="Resultado"
+                  <InputExameValidado
+                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
+                    trimestre={1}
                     value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "1", e.target.value)
+                    onChange={(valor) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "1", valor)
                     }
                     className="w-full"
                   />
@@ -87,12 +89,12 @@ export default function ExamesLaboratoriais() {
               </TableCell>
               <TableCell className="text-center">
                 {exame.trimestres.segundo ? (
-                  <Input
-                    type="text"
-                    placeholder="Resultado"
+                  <InputExameValidado
+                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
+                    trimestre={2}
                     value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "2", e.target.value)
+                    onChange={(valor) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "2", valor)
                     }
                     className="w-full"
                   />
@@ -102,12 +104,12 @@ export default function ExamesLaboratoriais() {
               </TableCell>
               <TableCell className="text-center">
                 {exame.trimestres.terceiro ? (
-                  <Input
-                    type="text"
-                    placeholder="Resultado"
+                  <InputExameValidado
+                    nomeExame={obterIdValidacao(`${exame.nome}-${subcampo}`) || exame.nome}
+                    trimestre={3}
                     value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "3", e.target.value)
+                    onChange={(valor) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "3", valor)
                     }
                     className="w-full"
                   />
@@ -127,12 +129,12 @@ export default function ExamesLaboratoriais() {
         <TableCell className="font-medium">{exame.nome}</TableCell>
         <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
-            <Input
-              type="text"
-              placeholder="Resultado"
+            <InputExameValidado
+              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
+              trimestre={1}
               value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "1", e.target.value)
+              onChange={(valor) =>
+                handleResultadoChange(exame.nome, "1", valor)
               }
               className="w-full"
             />
@@ -142,12 +144,12 @@ export default function ExamesLaboratoriais() {
         </TableCell>
         <TableCell className="text-center">
           {exame.trimestres.segundo ? (
-            <Input
-              type="text"
-              placeholder="Resultado"
+            <InputExameValidado
+              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
+              trimestre={2}
               value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "2", e.target.value)
+              onChange={(valor) =>
+                handleResultadoChange(exame.nome, "2", valor)
               }
               className="w-full"
             />
@@ -157,12 +159,12 @@ export default function ExamesLaboratoriais() {
         </TableCell>
         <TableCell className="text-center">
           {exame.trimestres.terceiro ? (
-            <Input
-              type="text"
-              placeholder="Resultado"
+            <InputExameValidado
+              nomeExame={obterIdValidacao(exame.nome) || exame.nome}
+              trimestre={3}
               value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "3", e.target.value)
+              onChange={(valor) =>
+                handleResultadoChange(exame.nome, "3", valor)
               }
               className="w-full"
             />

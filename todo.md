@@ -440,3 +440,13 @@
 - [x] Implementar preenchimento automático dos campos de exames (exceto "Observações / Outros Exames")
 - [ ] Testar com PDFs e imagens de exames reais
 - [x] Escrever testes automatizados
+
+
+## Sistema de Destaque de Valores Anormais em Exames (Solicitado 10/12/2025)
+
+- [x] Analisar PDF de valores de referência e extrair faixas normais por trimestre
+- [x] Criar arquivo de configuração com faixas de referência para cada exame
+- [x] Implementar função de validação de resultados (comparar valor com faixa normal)
+- [x] Adicionar destaque visual para valores fora da faixa (cor vermelha/laranja + ícone de alerta)
+- [x] Implementar destaque especial para RH negativo na tipagem sanguínea
+- [x] Testar com dados reais de exames
