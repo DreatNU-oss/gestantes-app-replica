@@ -386,6 +386,25 @@ export default function CartaoPrenatal() {
                     />
                   </div>
                   <div>
+                    <Label>Idade Gestacional</Label>
+                    <div className="bg-muted p-3 rounded-md space-y-1">
+                      <p className="text-sm">
+                        <span className="font-medium">DUM:</span>{" "}
+                        {(() => {
+                          const ig = calcularIG(formData.dataConsulta);
+                          return ig ? `${ig.semanas} semanas e ${ig.dias} dias` : "-";
+                        })()}
+                      </p>
+                      <p className="text-sm">
+                        <span className="font-medium">Ultrassom:</span>{" "}
+                        {(() => {
+                          const igUS = calcularIGPorUS(formData.dataConsulta);
+                          return igUS ? `${igUS.semanas} semanas e ${igUS.dias} dias` : "-";
+                        })()}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
                     <Label>Peso (kg)</Label>
                     <Input
                       type="number"

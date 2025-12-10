@@ -241,3 +241,12 @@
 - [x] Implementar botão de editar consulta funcional (ícone de lápis)
 - [x] Criar formulário de edição de consulta (já existe)
 - [x] Testar todas as melhorias no navegador
+
+
+## Card de Idade Gestacional no Formulário de Consulta (Solicitado 09/12/2025)
+
+- [x] Adicionar card "Idade Gestacional" no formulário de Nova Consulta
+- [x] Mostrar IG pela DUM calculada automaticamente (X semanas e X dias)
+- [x] Mostrar IG pelo Ultrassom calculada automaticamente (X semanas e X dias)
+- [x] Atualizar cálculo quando a data da consulta mudar (automático via React)
+- [x] Testar com diferentes datas de consulta
