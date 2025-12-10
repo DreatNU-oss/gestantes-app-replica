@@ -58,6 +58,13 @@ export function AlertasPartosProximos({
     return new Date(year, month - 1, day, 12, 0, 0);
   };
 
+  const formatarDataSegura = (date: Date): string => {
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const ano = date.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  };
+
   const obterDataParto = (gestante: Gestante): { data: Date; tipo: "programado" | "usg" | "dum" } | null => {
     // Prioridade 1: Parto Programado
     if (gestante.dataPartoProgramado) {
@@ -166,7 +173,7 @@ export function AlertasPartosProximos({
               <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {alerta.dataParto.toLocaleDateString("pt-BR")}
+                  {formatarDataSegura(alerta.dataParto)}
                 </div>
                 {alerta.medico && (
                   <span>Médico: {alerta.medico.nome}</span>
