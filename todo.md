@@ -450,3 +450,11 @@
 - [x] Adicionar destaque visual para valores fora da faixa (cor vermelha/laranja + ícone de alerta)
 - [x] Implementar destaque especial para RH negativo na tipagem sanguínea
 - [x] Testar com dados reais de exames
+
+
+## Correção do Gráfico de Ganho de Peso (Reportado 10/12/2025)
+
+- [x] Corrigir eixo Y para mostrar valores em kg (peso absoluto) ao invés de ganho de peso
+- [x] Corrigir sobreposição de textos nas legendas abaixo do gráfico
+- [x] Melhorar espaçamento e rotação das legendas
+- [x] Testar visualização no navegador

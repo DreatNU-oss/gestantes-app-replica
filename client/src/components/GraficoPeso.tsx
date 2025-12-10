@@ -129,7 +129,7 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
           />
           <YAxis
             label={{ value: 'Peso (kg)', angle: -90, position: 'insideLeft' }}
-            domain={['dataMin - 2', 'dataMax + 2']}
+            domain={[pesoInicial - 5, 'dataMax + 5']}
           />
           <Tooltip
             content={({ active, payload }) => {
@@ -152,7 +152,10 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
               return null;
             }}
           />
-          <Legend />
+          <Legend 
+            wrapperStyle={{ paddingTop: '20px' }}
+            iconType="line"
+          />
 
           {/* Área sombreada da faixa ideal */}
           <Area
@@ -161,7 +164,7 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             stroke="none"
             fill={cor.faixa}
             fillOpacity={0.3}
-            name="Faixa ideal (máx)"
+            name="Faixa ideal"
           />
           <Area
             type="monotone"
@@ -169,7 +172,8 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             stroke="none"
             fill="#ffffff"
             fillOpacity={1}
-            name="Faixa ideal (mín)"
+            name=""
+            legendType="none"
           />
 
           {/* Linhas de limite da faixa */}
@@ -180,7 +184,8 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             strokeWidth={1}
             strokeDasharray="5 5"
             dot={false}
-            name="Limite inferior"
+            name=""
+            legendType="none"
           />
           <Line
             type="monotone"
@@ -189,7 +194,8 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             strokeWidth={1}
             strokeDasharray="5 5"
             dot={false}
-            name="Limite superior"
+            name=""
+            legendType="none"
           />
 
           {/* Linha de peso real */}
