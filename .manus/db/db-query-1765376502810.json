@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO planosSaude (id, nome, ativo) VALUES \n(1, 'Particular', 1),\n(2, 'Unimed (ambulatorial)', 1),\n(3, 'Unimed (inclui o parto)', 1),\n(4, 'S.P.A. Saúde', 1),\n(5, 'FUSEX', 1),\n(6, 'COPASS', 1),\n(30001, 'CORTESIA', 1);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO planosSaude (id, nome, ativo) VALUES \n(1, 'Particular', 1),\n(2, 'Unimed (ambulatorial)', 1),\n(3, 'Unimed (inclui o parto)', 1),\n(4, 'S.P.A. Saúde', 1),\n(5, 'FUSEX', 1),\n(6, 'COPASS', 1),\n(30001, 'CORTESIA', 1);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 68
+}

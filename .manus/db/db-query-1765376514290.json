@@ -1,0 +1,42 @@
+{
+  "query": "SELECT * FROM medicos ORDER BY ordem;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM medicos ORDER BY ordem;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Dr. André",
+      "ativo": "1",
+      "ordem": "1",
+      "createdAt": "2025-12-10 14:21:33",
+      "updatedAt": "2025-12-10 14:21:33"
+    },
+    {
+      "id": "2",
+      "nome": "Dra. Fabiana",
+      "ativo": "1",
+      "ordem": "2",
+      "createdAt": "2025-12-10 14:21:33",
+      "updatedAt": "2025-12-10 14:21:33"
+    },
+    {
+      "id": "3",
+      "nome": "Plantonista do SUS",
+      "ativo": "1",
+      "ordem": "3",
+      "createdAt": "2025-12-10 14:21:33",
+      "updatedAt": "2025-12-10 14:21:33"
+    },
+    {
+      "id": "30001",
+      "nome": "Dr. André Luis Schlemper",
+      "ativo": "0",
+      "ordem": "10",
+      "createdAt": "2025-12-10 14:21:33",
+      "updatedAt": "2025-12-10 14:21:33"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tativo\tordem\tcreatedAt\tupdatedAt\n1\tDr. André\t1\t1\t2025-12-10 14:21:33\t2025-12-10 14:21:33\n2\tDra. Fabiana\t1\t2\t2025-12-10 14:21:33\t2025-12-10 14:21:33\n3\tPlantonista do SUS\t1\t3\t2025-12-10 14:21:33\t2025-12-10 14:21:33\n30001\tDr. André Luis Schlemper\t0\t10\t2025-12-10 14:21:33\t2025-12-10 14:21:33\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

@@ -1,0 +1,59 @@
+{
+  "query": "SELECT * FROM planosSaude ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM planosSaude ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Particular",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "2",
+      "nome": "Unimed (ambulatorial)",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "3",
+      "nome": "Unimed (inclui o parto)",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "4",
+      "nome": "S.P.A. Saúde",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "5",
+      "nome": "FUSEX",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "6",
+      "nome": "COPASS",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    },
+    {
+      "id": "30001",
+      "nome": "CORTESIA",
+      "ativo": "1",
+      "createdAt": "2025-12-10 14:21:42",
+      "updatedAt": "2025-12-10 14:21:42"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tativo\tcreatedAt\tupdatedAt\n1\tParticular\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n2\tUnimed (ambulatorial)\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n3\tUnimed (inclui o parto)\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n4\tS.P.A. Saúde\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n5\tFUSEX\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n6\tCOPASS\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n30001\tCORTESIA\t1\t2025-12-10 14:21:42\t2025-12-10 14:21:42\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
