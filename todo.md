@@ -277,3 +277,12 @@
 - [x] Implementar área sombreada mostrando faixa ideal de ganho de peso
 - [x] Diferenciar cores por categoria de IMC (baixo peso, adequado, sobrepeso, obesidade)
 - [x] Validar funcionamento completo com dados da Vivian (IMC 21.3, Peso Adequado)
+
+
+## Bugs Críticos Reportados (09/12/2025 - 21:30)
+
+- [x] Investigar por que histórico de consultas da Graziela Mazoni sumiu - RESOLVIDO: Ela nunca teve consultas cadastradas no banco
+- [x] Verificar se outras gestantes também perderam consultas - RESOLVIDO: Apenas Vivian tem consulta no banco (1 consulta)
+- [x] Corrigir problema de fuso horário em datas programadas (ex: 15/12 aparece como 14/12) - RESOLVIDO: parseLocalDate agora retorna string diretamente
+- [x] Corrigir problema de fuso horário em todas as datas do sistema (DUM, dataUltrassom, dataPartoProgramado, dataConsulta) - RESOLVIDO
+- [x] Validar que todas as datas estão sendo salvas e exibidas corretamente - RESOLVIDO: Graziela agora mostra 15/12/2025 corretamente

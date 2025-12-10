@@ -1,0 +1,8 @@
+{
+  "query": "SELECT c.id, c.gestanteId, c.dataConsulta, c.peso, c.pressaoArterial, c.alturaUterina, c.bcf, c.mf, c.observacoes, g.nome \nFROM consultas_prenatal c \nJOIN gestantes g ON c.gestanteId = g.id \nWHERE g.nome LIKE '%Graziela%Mazoni%' \nORDER BY c.dataConsulta DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT c.id, c.gestanteId, c.dataConsulta, c.peso, c.pressaoArterial, c.alturaUterina, c.bcf, c.mf, c.observacoes, g.nome \nFROM consultas_prenatal c \nJOIN gestantes g ON c.gestanteId = g.id \nWHERE g.nome LIKE '%Graziela%Mazoni%' \nORDER BY c.dataConsulta DESC;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'bsa4q7amjsjesmafoocq7a.consultas_prenatal' doesn't exist"
+  ]
+}

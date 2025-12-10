@@ -45,10 +45,10 @@ import {
   getAlertasByGestanteId
 } from "./db";
 
-// Função auxiliar para converter string de data (YYYY-MM-DD) para Date
-function parseLocalDate(dateString: string): Date {
-  const [year, month, day] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day, 12, 0, 0, 0);
+// Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
+// Retorna a string diretamente para o MySQL interpretar como DATE local
+function parseLocalDate(dateString: string): string {
+  return dateString; // MySQL interpreta YYYY-MM-DD como data local, sem conversão UTC
 }
 
 // Funções auxiliares para cálculos obstétricos
