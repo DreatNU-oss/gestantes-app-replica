@@ -568,3 +568,21 @@
 - [x] Identificar elementos sem key prop na renderização de exames (Fragment sem key em exames com subcampos)
 - [x] Adicionar key prop única para cada elemento da lista (React.Fragment key={exame.nome})
 - [x] Testar no navegador para confirmar que o erro foi resolvido (sem erros no console)
+
+
+## Correção de Interpretação de TOTG pela IA (Reportado 10/12/2025)
+
+- [ ] Analisar PDF de exemplo (Patricia.pdf) para identificar formato dos dados
+- [ ] Identificar por que a IA não está extraindo valores de TOTG corretamente
+- [ ] Corrigir prompt e schema da IA para melhorar extração de TOTG
+- [ ] Testar com PDF real no navegador
+- [ ] Atualizar testes automatizados para validar TOTG
+
+
+## Correção de Bug do TTGO (10/12/2025)
+
+- [x] Investigar por que TTGO não estava sendo preenchido pela IA
+- [x] Identificar incompatibilidade de chaves entre backend e frontend
+- [x] Corrigir componente frontend para acessar estrutura correta dos subcampos
+- [x] Validar que os 3 subcampos do TTGO (Jejum, 1h, 2h) são preenchidos corretamente
+- [x] Remover logs de debug após correção

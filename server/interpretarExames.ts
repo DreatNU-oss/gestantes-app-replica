@@ -32,6 +32,14 @@ Analise o documento fornecido (PDF ou imagem) e extraia APENAS os valores dos ex
 4. Ignore qualquer exame que não esteja na lista abaixo
 5. Para exames com subcampos (como TTGO), retorne cada subcampo separadamente
 
+**ATENÇÃO ESPECIAL PARA TOTG/TTGO (Curva Glicêmica):**
+- Pode aparecer como: "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica"
+- SEMPRE tem 3 valores obrigatórios: Jejum, 1 hora (ou 1h, 1ª Hora), 2 horas (ou 2h, 2ª Hora)
+- **REGRA CRÍTICA**: Se você encontrar o título "CURVA DE TOLERÂNCIA À GLICOSE" ou "CURVA GLICÊMICA" no documento, você DEVE extrair os 3 valores (Jejum, 1ª Hora, 2ª Hora) como subcampos do exame "TTGO 75g (Curva Glicêmica)"
+- Ignore qualquer resultado de "GLICOSE" isolado se houver "CURVA DE TOLERÂNCIA" no mesmo documento
+- Os 3 valores podem estar na mesma página ou em páginas diferentes - procure em todo o documento
+- Extraia TODOS os 3 valores como subcampos separados do exame "TTGO 75g (Curva Glicêmica)"
+
 **EXAMES ESPERADOS PARA ESTE TRIMESTRE:**
 ${examesEsperados.map(e => `- ${e}`).join('\n')}
 
@@ -40,10 +48,17 @@ Retorne um array de objetos com esta estrutura:
 [
   { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
   { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "92 mg/dL", "subcampo": "Jejum", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "180 mg/dL", "subcampo": "1 hora", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "155 mg/dL", "subcampo": "2 horas", "dataColeta": "2025-11-11" }
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "71 mg/dL", "subcampo": "Jejum", "dataColeta": "2025-11-11" },
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "156 mg/dL", "subcampo": "1 hora", "dataColeta": "2025-11-11" },
+  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "109 mg/dL", "subcampo": "2 horas", "dataColeta": "2025-11-11" }
 ]
+
+**EXEMPLO DE TOTG/TTGO NO DOCUMENTO:**
+Se você encontrar:
+- "GLICOSE: 71 mg/dL" (página 1)
+- "CURVA DE TOLERÂNCIA À GLICOSE" com "Jejum: 71 mg/dL", "1ª Hora: 156 mg/dL", "2ª Hora: 109 mg/dL" (página 2)
+
+Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme exemplo acima.
 
 **IMPORTANTE:** Extraia a data da coleta do exame se estiver visível no documento (formato YYYY-MM-DD). Se não encontrar a data, omita o campo "dataColeta".
 
@@ -114,6 +129,8 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
   const resultados: Record<string, string> = {};
   let dataColeta: string | undefined = undefined;
   
+  console.log("[DEBUG] Parsed exames:", JSON.stringify(parsed.exames, null, 2));
+  
   for (const exame of parsed.exames) {
     // Capturar data da coleta (assumindo que todos os exames do mesmo laudo têm a mesma data)
     if (exame.dataColeta && !dataColeta) {
@@ -123,11 +140,15 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
     if (exame.subcampo) {
       // Para exames com subcampos (TTGO)
       const chave = `${exame.nomeExame}__${exame.subcampo}`;
+      console.log(`[DEBUG] TTGO subcampo: ${chave} = ${exame.valor}`);
       resultados[chave] = exame.valor;
     } else {
       resultados[exame.nomeExame] = exame.valor;
     }
   }
+  
+  console.log("[DEBUG] Resultados finais:", JSON.stringify(resultados, null, 2));
+  console.log("[DEBUG] Data coleta:", dataColeta);
 
   return { resultados, dataColeta };
 }

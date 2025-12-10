@@ -114,9 +114,9 @@ export default function ExamesLaboratoriais() {
                 {exame.trimestres.primeiro ? (
                   <Input
                     type="date"
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data1"] : "") || ""}
+                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
                     onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data1", e.target.value)
+                      handleResultadoChange(exame.nome, "data1", e.target.value)
                     }
                     className="w-full text-xs"
                     placeholder="Data"
@@ -129,9 +129,9 @@ export default function ExamesLaboratoriais() {
               <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
                   renderCampoResultado(
-                    `${exame.nome}-${subcampo}`,
+                    exame.nome,
                     1,
-                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["1"] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`] : "") || ""
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -142,9 +142,9 @@ export default function ExamesLaboratoriais() {
                 {exame.trimestres.segundo ? (
                   <Input
                     type="date"
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data2"] : "") || ""}
+                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
                     onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data2", e.target.value)
+                      handleResultadoChange(exame.nome, "data2", e.target.value)
                     }
                     className="w-full text-xs"
                     placeholder="Data"
@@ -157,9 +157,9 @@ export default function ExamesLaboratoriais() {
               <TableCell className="text-center">
                 {exame.trimestres.segundo ? (
                   renderCampoResultado(
-                    `${exame.nome}-${subcampo}`,
+                    exame.nome,
                     2,
-                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["2"] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`] : "") || ""
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -170,9 +170,9 @@ export default function ExamesLaboratoriais() {
                 {exame.trimestres.terceiro ? (
                   <Input
                     type="date"
-                    value={(typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["data3"] : "") || ""}
+                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
                     onChange={(e) =>
-                      handleResultadoChange(`${exame.nome}-${subcampo}`, "data3", e.target.value)
+                      handleResultadoChange(exame.nome, "data3", e.target.value)
                     }
                     className="w-full text-xs"
                     placeholder="Data"
@@ -185,9 +185,9 @@ export default function ExamesLaboratoriais() {
               <TableCell className="text-center">
                 {exame.trimestres.terceiro ? (
                   renderCampoResultado(
-                    `${exame.nome}-${subcampo}`,
+                    exame.nome,
                     3,
-                    (typeof resultados[`${exame.nome}-${subcampo}`] === 'object' && resultados[`${exame.nome}-${subcampo}`] !== null ? (resultados[`${exame.nome}-${subcampo}`] as Record<string, string>)["3"] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`] : "") || ""
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -440,23 +440,59 @@ export default function ExamesLaboratoriais() {
                   open={modalAberto}
                   onOpenChange={setModalAberto}
                   onResultados={(novosResultados, trimestre, dataColeta) => {
+                    console.log('[DEBUG FRONTEND] onResultados chamado');
+                    console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
+                    console.log('[DEBUG FRONTEND] trimestre:', trimestre);
+                    console.log('[DEBUG FRONTEND] dataColeta:', dataColeta);
+                    
                     // Converter resultados da IA para o formato esperado
                     const trimestreNum = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
                     const resultadosFormatados: Record<string, Record<string, string> | string> = {};
                     
-                    for (const [nomeExame, valor] of Object.entries(novosResultados)) {
-                      resultadosFormatados[nomeExame] = {
-                        ...(typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? resultados[nomeExame] : {}),
-                        [trimestreNum]: valor,
-                        // Adicionar data extraída pela IA ao trimestre correspondente
-                        ...(dataColeta ? { [`data${trimestreNum}`]: dataColeta } : {}),
-                      };
+                    for (const [chave, valor] of Object.entries(novosResultados)) {
+                      console.log(`[DEBUG FRONTEND] Processando: ${chave} = ${valor}`);
+                      
+                      // Detectar se é um exame com subcampo (formato: "NomeExame__Subcampo")
+                      if (chave.includes('__')) {
+                        console.log(`[DEBUG FRONTEND] Detectado subcampo em: ${chave}`);
+                        const [nomeExame, subcampo] = chave.split('__');
+                        
+                        // Inicializar objeto do exame se não existir
+                        if (!resultadosFormatados[nomeExame]) {
+                          resultadosFormatados[nomeExame] = {
+                            ...(typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? resultados[nomeExame] : {}),
+                          };
+                        }
+                        
+                        // Adicionar subcampo ao trimestre correspondente
+                        const subcampoKey = `${subcampo}_${trimestreNum}`;
+                        console.log(`[DEBUG FRONTEND] subcampoKey: ${subcampoKey}`);
+                        (resultadosFormatados[nomeExame] as Record<string, string>)[subcampoKey] = valor;
+                        
+                        // Adicionar data para o trimestre (uma vez por exame)
+                        if (dataColeta && !(resultadosFormatados[nomeExame] as Record<string, string>)[`data${trimestreNum}`]) {
+                          (resultadosFormatados[nomeExame] as Record<string, string>)[`data${trimestreNum}`] = dataColeta;
+                        }
+                      } else {
+                        // Exame simples (sem subcampos)
+                        resultadosFormatados[chave] = {
+                          ...(typeof resultados[chave] === 'object' && resultados[chave] !== null ? resultados[chave] : {}),
+                          [trimestreNum]: valor,
+                          ...(dataColeta ? { [`data${trimestreNum}`]: dataColeta } : {}),
+                        };
+                      }
                     }
                     
-                    setResultados(prev => ({
-                      ...prev,
-                      ...resultadosFormatados,
-                    }));
+                    console.log('[DEBUG FRONTEND] resultadosFormatados:', resultadosFormatados);
+                    
+                    setResultados(prev => {
+                      const novoEstado = {
+                        ...prev,
+                        ...resultadosFormatados,
+                      };
+                      console.log('[DEBUG FRONTEND] Novo estado de resultados:', novoEstado);
+                      return novoEstado;
+                    });
                   }}
                 />
               </div>
