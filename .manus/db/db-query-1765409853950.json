@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, nome, pesoInicial, altura FROM gestantes WHERE nome LIKE '%Camila Zanco%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, pesoInicial, altura FROM gestantes WHERE nome LIKE '%Camila Zanco%'",
+  "rows": [
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira",
+      "pesoInicial": "60",
+      "altura": "165"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tpesoInicial\taltura\n300004\tCamila Zanco Pereira\t60\t165\n",
+  "stderr": "",
+  "execution_time_ms": 95
+}

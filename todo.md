@@ -596,3 +596,9 @@
 - [x] Padronizar botão Voltar em todas as páginas (mesmo estilo e posição)
 - [x] Investigar e corrigir bug do MF não salvando nas consultas pré-natais
 - [x] Melhorar gráfico de peso para mostrar evidentemente quanto está acima/abaixo da curva
+
+
+## Bug do Gráfico de Peso com pesoInicial NULL (Reportado 10/12/2025)
+
+- [x] Corrigir tratamento de pesoInicial NULL no CartaoPrenatal.tsx para evitar divisão NULL/1000
+- [x] Garantir que gráfico mostra mensagem "Dados insuficientes" quando pesoInicial for NULL

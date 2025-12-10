@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, nome, pesoInicial, altura FROM gestantes WHERE pesoInicial = 0.1 OR pesoInicial IS NULL ORDER BY nome",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, pesoInicial, altura FROM gestantes WHERE pesoInicial = 0.1 OR pesoInicial IS NULL ORDER BY nome",
+  "rows": [
+    {
+      "id": "930002",
+      "nome": "Patrícia de Melo Carvalho",
+      "pesoInicial": "NULL",
+      "altura": "NULL"
+    },
+    {
+      "id": "900002",
+      "nome": "Teste Data Coleta",
+      "pesoInicial": "NULL",
+      "altura": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tpesoInicial\taltura\n930002\tPatrícia de Melo Carvalho\tNULL\tNULL\n900002\tTeste Data Coleta\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 119
+}
