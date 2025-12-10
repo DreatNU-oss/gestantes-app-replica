@@ -595,4 +595,4 @@
 - [x] Corrigir menu lateral sumindo nas páginas de Ultrassom e Agendamento de Consultas
 - [x] Padronizar botão Voltar em todas as páginas (mesmo estilo e posição)
 - [x] Investigar e corrigir bug do MF não salvando nas consultas pré-natais
-- [ ] Melhorar gráfico de peso para mostrar evidentemente quanto está acima/abaixo da curva
+- [x] Melhorar gráfico de peso para mostrar evidentemente quanto está acima/abaixo da curva

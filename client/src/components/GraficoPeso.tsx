@@ -135,6 +135,25 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const data = payload[0].payload;
+                
+                // Calcular diferença se houver peso real
+                let diferenca: { valor: number; tipo: 'acima' | 'abaixo' | 'normal' } | null = null;
+                if (data.pesoReal) {
+                  if (data.pesoReal > data.pesoMax) {
+                    diferenca = {
+                      valor: data.pesoReal - data.pesoMax,
+                      tipo: 'acima'
+                    };
+                  } else if (data.pesoReal < data.pesoMin) {
+                    diferenca = {
+                      valor: data.pesoMin - data.pesoReal,
+                      tipo: 'abaixo'
+                    };
+                  } else {
+                    diferenca = { valor: 0, tipo: 'normal' };
+                  }
+                }
+                
                 return (
                   <div className="rounded-lg border bg-background p-3 shadow-lg">
                     <p className="font-semibold">Semana {data.semana}</p>
@@ -142,9 +161,30 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
                       Faixa ideal: {data.pesoMin.toFixed(1)} - {data.pesoMax.toFixed(1)} kg
                     </p>
                     {data.pesoReal && (
-                      <p className="text-sm font-semibold" style={{ color: cor.linha }}>
-                        Peso real: {data.pesoReal.toFixed(1)} kg
-                      </p>
+                      <>
+                        <p className="text-sm font-semibold" style={{ color: cor.linha }}>
+                          Peso real: {data.pesoReal.toFixed(1)} kg
+                        </p>
+                        {diferenca && diferenca.tipo !== 'normal' && (
+                          <p 
+                            className="text-sm font-bold mt-1"
+                            style={{ 
+                              color: diferenca.tipo === 'acima' ? '#ef4444' : '#f97316'
+                            }}
+                          >
+                            {diferenca.tipo === 'acima' ? '⚠️ ' : '⚠️ '}
+                            {diferenca.tipo === 'acima' 
+                              ? `+${diferenca.valor.toFixed(1)} kg acima` 
+                              : `-${diferenca.valor.toFixed(1)} kg abaixo`
+                            }
+                          </p>
+                        )}
+                        {diferenca && diferenca.tipo === 'normal' && (
+                          <p className="text-sm font-semibold mt-1" style={{ color: '#22c55e' }}>
+                            ✓ Dentro da faixa ideal
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                 );
@@ -204,7 +244,32 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             dataKey="pesoReal"
             stroke={cor.linha}
             strokeWidth={3}
-            dot={{ r: 5, fill: cor.linha }}
+            dot={(props: any) => {
+              const { cx, cy, payload, onMouseEnter, onMouseLeave } = props;
+              if (!payload.pesoReal) return null;
+              
+              // Determinar cor do ponto baseado na posição
+              let corPonto = cor.linha; // verde/azul padrão
+              if (payload.pesoReal > payload.pesoMax) {
+                corPonto = '#ef4444'; // vermelho se acima
+              } else if (payload.pesoReal < payload.pesoMin) {
+                corPonto = '#f97316'; // laranja se abaixo
+              }
+              
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={6}
+                  fill={corPonto}
+                  stroke="#ffffff"
+                  strokeWidth={2}
+                  onMouseEnter={onMouseEnter}
+                  onMouseLeave={onMouseLeave}
+                  style={{ cursor: 'pointer' }}
+                />
+              );
+            }}
             connectNulls={false}
             name="Peso real"
           />
