@@ -82,7 +82,7 @@ function calcularDPP(dum: Date): Date {
 function calcularDppUS(igUltrassomDias: number, dataUltrassom: Date): Date {
   const diasRestantes = 280 - igUltrassomDias;
   const dpp = new Date(dataUltrassom);
-  dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
+  dpp.setDate(dpp.getDate() + diasRestantes);
   return dpp;
 }
 
@@ -172,13 +172,33 @@ export const appRouter = router({
         let idade = null;
         
         if (g.dum) {
-          const dumDate = new Date(g.dum);
+          // Criar data local sem conversão UTC
+          let dumDate: Date;
+          if (g.dum instanceof Date) {
+            // Se já é Date, extrair componentes locais
+            dumDate = new Date(g.dum.getFullYear(), g.dum.getMonth(), g.dum.getDate());
+          } else {
+            // Se é string, parsear YYYY-MM-DD
+            const dumStr = String(g.dum).split('T')[0];
+            const [year, month, day] = dumStr.split('-').map(Number);
+            dumDate = new Date(year, month - 1, day);
+          }
           igDUM = calcularIdadeGestacionalPorDUM(dumDate);
           dpp = calcularDPP(dumDate);
         }
         
         if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
-          const dataUS = new Date(g.dataUltrassom);
+          // Criar data local sem conversão UTC
+          let dataUS: Date;
+          if (g.dataUltrassom instanceof Date) {
+            // Se já é Date, extrair componentes locais
+            dataUS = new Date(g.dataUltrassom.getFullYear(), g.dataUltrassom.getMonth(), g.dataUltrassom.getDate());
+          } else {
+            // Se é string, parsear YYYY-MM-DD
+            const usStr = String(g.dataUltrassom).split('T')[0];
+            const [year, month, day] = usStr.split('-').map(Number);
+            dataUS = new Date(year, month - 1, day);
+          }
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);
@@ -214,13 +234,33 @@ export const appRouter = router({
         let idade = null;
         
         if (g.dum) {
-          const dumDate = new Date(g.dum);
+          // Criar data local sem conversão UTC
+          let dumDate: Date;
+          if (g.dum instanceof Date) {
+            // Se já é Date, extrair componentes locais
+            dumDate = new Date(g.dum.getFullYear(), g.dum.getMonth(), g.dum.getDate());
+          } else {
+            // Se é string, parsear YYYY-MM-DD
+            const dumStr = String(g.dum).split('T')[0];
+            const [year, month, day] = dumStr.split('-').map(Number);
+            dumDate = new Date(year, month - 1, day);
+          }
           igDUM = calcularIdadeGestacionalPorDUM(dumDate);
           dpp = calcularDPP(dumDate);
         }
         
         if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
-          const dataUS = new Date(g.dataUltrassom);
+          // Criar data local sem conversão UTC
+          let dataUS: Date;
+          if (g.dataUltrassom instanceof Date) {
+            // Se já é Date, extrair componentes locais
+            dataUS = new Date(g.dataUltrassom.getFullYear(), g.dataUltrassom.getMonth(), g.dataUltrassom.getDate());
+          } else {
+            // Se é string, parsear YYYY-MM-DD
+            const usStr = String(g.dataUltrassom).split('T')[0];
+            const [year, month, day] = usStr.split('-').map(Number);
+            dataUS = new Date(year, month - 1, day);
+          }
           const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);

@@ -250,3 +250,12 @@
 - [x] Mostrar IG pelo Ultrassom calculada automaticamente (X semanas e X dias)
 - [x] Atualizar cálculo quando a data da consulta mudar (automático via React)
 - [x] Testar com diferentes datas de consulta
+
+
+## Bug de Datas DPP (Reportado 09/12/2025)
+
+- [x] Investigar por que DPP pela DUM está aparecendo 1 dia antes
+- [x] Investigar por que DPP pelo US está aparecendo 1 dia antes
+- [x] Corrigir problema de fuso horário nos cálculos de data (instanceof Date check)
+- [x] Testar com exemplos reais - Vivian agora mostra datas (antes era NaN)
+- [ ] Aguardando confirmação do usuário se datas estão corretas ou ainda 1 dia antes
