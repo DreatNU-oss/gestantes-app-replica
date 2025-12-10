@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
@@ -22,6 +22,29 @@ export default function ExamesLaboratoriais() {
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
   const gestante = gestantes?.find((g) => g.id === gestanteSelecionada);
+
+  // Query para buscar resultados salvos
+  const { data: resultadosSalvos, isLoading: loadingResultados } = trpc.examesLab.buscar.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+
+  // Mutation para salvar resultados
+  const salvarMutation = trpc.examesLab.salvar.useMutation({
+    onSuccess: (data) => {
+      alert(`Resultados salvos com sucesso! (${data.count} registros)`);
+    },
+    onError: (error) => {
+      alert(`Erro ao salvar resultados: ${error.message}`);
+    },
+  });
+
+  // Carregar resultados quando gestante é selecionada
+  useEffect(() => {
+    if (resultadosSalvos) {
+      setResultados(resultadosSalvos);
+    }
+  }, [resultadosSalvos]);
 
   const handleResultadoChange = (exame: string, trimestre: string, valor: string) => {
     setResultados((prev) => ({
@@ -231,8 +254,19 @@ export default function ExamesLaboratoriais() {
                 </div>
 
                 <div className="flex justify-end mt-6">
-                  <Button className="bg-rose-600 hover:bg-rose-700">
-                    Salvar Resultados
+                  <Button 
+                    className="bg-rose-600 hover:bg-rose-700"
+                    onClick={() => {
+                      if (gestanteSelecionada) {
+                        salvarMutation.mutate({
+                          gestanteId: gestanteSelecionada,
+                          resultados,
+                        });
+                      }
+                    }}
+                    disabled={salvarMutation.isPending}
+                  >
+                    {salvarMutation.isPending ? 'Salvando...' : 'Salvar Resultados'}
                   </Button>
                 </div>
               </div>

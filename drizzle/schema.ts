@@ -262,3 +262,19 @@ export const logsEmails = mysqlTable("logsEmails", {
 
 export type LogEmail = typeof logsEmails.$inferSelect;
 export type InsertLogEmail = typeof logsEmails.$inferInsert;
+
+/**
+ * Tabela de resultados de exames laboratoriais
+ */
+export const resultadosExames = mysqlTable("resultadosExames", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  nomeExame: varchar("nomeExame", { length: 255 }).notNull(),
+  trimestre: int("trimestre").notNull(), // 1, 2 ou 3
+  resultado: text("resultado"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ResultadoExame = typeof resultadosExames.$inferSelect;
+export type InsertResultadoExame = typeof resultadosExames.$inferInsert;

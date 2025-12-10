@@ -46,7 +46,7 @@ import {
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails } from '../drizzle/schema';
+import { configuracoesEmail, logsEmails, resultadosExames, type InsertResultadoExame } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
@@ -676,6 +676,86 @@ export const appRouter = router({
         
         const logs = await query.limit(input.limit).orderBy(desc(logsEmails.dataEnvio));
         return logs;
+      }),
+  }),
+
+  examesLab: router({
+    salvar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        resultados: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        // Primeiro, deletar todos os resultados existentes desta gestante
+        await db.delete(resultadosExames).where(eq(resultadosExames.gestanteId, input.gestanteId));
+        
+        // Preparar array de resultados para inserir
+        const resultadosParaInserir: InsertResultadoExame[] = [];
+        
+        for (const [nomeExame, valor] of Object.entries(input.resultados)) {
+          if (nomeExame === 'outros_observacoes') {
+            // Campo de texto livre - salvar como trimestre 0
+            if (typeof valor === 'string' && valor.trim()) {
+              resultadosParaInserir.push({
+                gestanteId: input.gestanteId,
+                nomeExame,
+                trimestre: 0,
+                resultado: valor,
+              });
+            }
+          } else if (typeof valor === 'object' && valor !== null) {
+            // Exame com trimestres
+            for (const [trimestre, resultado] of Object.entries(valor)) {
+              if (resultado && resultado.trim()) {
+                resultadosParaInserir.push({
+                  gestanteId: input.gestanteId,
+                  nomeExame,
+                  trimestre: parseInt(trimestre),
+                  resultado,
+                });
+              }
+            }
+          }
+        }
+        
+        // Inserir todos os resultados de uma vez
+        if (resultadosParaInserir.length > 0) {
+          await db.insert(resultadosExames).values(resultadosParaInserir);
+        }
+        
+        return { success: true, count: resultadosParaInserir.length };
+      }),
+
+    buscar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return {};
+        
+        const resultados = await db.select()
+          .from(resultadosExames)
+          .where(eq(resultadosExames.gestanteId, input.gestanteId));
+        
+        // Converter array de resultados em objeto estruturado
+        const resultadosEstruturados: Record<string, Record<string, string> | string> = {};
+        
+        for (const resultado of resultados) {
+          if (resultado.nomeExame === 'outros_observacoes') {
+            resultadosEstruturados[resultado.nomeExame] = resultado.resultado || '';
+          } else {
+            if (!resultadosEstruturados[resultado.nomeExame]) {
+              resultadosEstruturados[resultado.nomeExame] = {};
+            }
+            (resultadosEstruturados[resultado.nomeExame] as Record<string, string>)[resultado.trimestre.toString()] = resultado.resultado || '';
+          }
+        }
+        
+        return resultadosEstruturados;
       }),
   }),
 });

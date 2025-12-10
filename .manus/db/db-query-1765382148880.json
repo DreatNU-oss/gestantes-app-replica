@@ -1,0 +1,28 @@
+{
+  "query": "SELECT * FROM resultadosExames WHERE gestanteId = 330092 LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM resultadosExames WHERE gestanteId = 330092 LIMIT 10",
+  "rows": [
+    {
+      "id": "1",
+      "gestanteId": "330092",
+      "nomeExame": "Plaquetas",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL / 37%",
+      "createdAt": "2025-12-10 15:55:22",
+      "updatedAt": "2025-12-10 15:55:22"
+    },
+    {
+      "id": "2",
+      "gestanteId": "330092",
+      "nomeExame": "Coombs indireto",
+      "trimestre": "1",
+      "resultado": "O+",
+      "createdAt": "2025-12-10 15:55:22",
+      "updatedAt": "2025-12-10 15:55:22"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeExame\ttrimestre\tresultado\tcreatedAt\tupdatedAt\n1\t330092\tPlaquetas\t1\t12.5 g/dL / 37%\t2025-12-10 15:55:22\t2025-12-10 15:55:22\n2\t330092\tCoombs indireto\t1\tO+\t2025-12-10 15:55:22\t2025-12-10 15:55:22\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

@@ -53,7 +53,7 @@
 
 - [x] Implementar página de Marcos Importantes completa
 - [x] Implementar página de Previsão de Partos completa
-- [ ] Implementar página de Exames Laboratoriais completa
+- [x] Implementar página de Exames Laboratoriais completa
 - [ ] Implementar página de Exames Estruturados completa
 - [ ] Implementar página de Cartão Pré-Natal com geração de PDF
 - [ ] Implementar página de Estatísticas completa
@@ -402,3 +402,6 @@
 - [ ] IgG de Toxoplasmose, Rubéola, Citomegalovírus e FTA-ABS nos 3 trimestres
 - [ ] Adicionar campo de texto livre "Outros Exames"
 - [x] Adicionar Proteinúria de 24 horas no 3º trimestre
+- [ ] Criar tabela no banco para armazenar resultados de exames
+- [ ] Implementar tRPC procedures para salvar e recuperar resultados
+- [ ] Conectar botão "Salvar Resultados" ao backend
