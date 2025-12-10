@@ -131,7 +131,7 @@ export default function GestantesLayout({
           <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
             <SidebarTrigger />
             <h1 className="text-lg font-semibold text-foreground">
-              APP Gestantes - Mais Mulher
+              Gestão de Pré-Natal - Clínica Mais Mulher
             </h1>
           </header>
           <main className="flex-1 p-6">
