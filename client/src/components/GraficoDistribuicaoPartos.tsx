@@ -31,10 +31,11 @@ import {
 interface Gestante {
   id: number;
   nome: string;
-  dum?: Date | null;
+  dum?: Date | string | null;
   igUltrassomSemanas?: number | null;
   igUltrassomDias?: number | null;
-  dataUltrassom?: Date | null;
+  dataUltrassom?: Date | string | null;
+  dataPartoProgramado?: Date | string | null;
 }
 
 interface GestanteModal {
@@ -54,6 +55,12 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
   const [mesSelecionado, setMesSelecionado] = useState("");
 
   const calcularDPP = (gestante: Gestante): Date | null => {
+    // Prioridade 1: Data Programada
+    if (gestante.dataPartoProgramado) {
+      return new Date(gestante.dataPartoProgramado);
+    }
+
+    // Prioridade 2: DPP pelo Ultrassom
     if (
       gestante.dataUltrassom &&
       gestante.igUltrassomSemanas !== null &&
@@ -67,6 +74,7 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
       return dpp;
     }
 
+    // Prioridade 3: DPP pela DUM
     if (gestante.dum) {
       const dpp = new Date(gestante.dum);
       dpp.setDate(dpp.getDate() + 280);
