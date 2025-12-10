@@ -59,10 +59,6 @@ export default function AgendamentoConsultas() {
     });
   };
 
-  const handleMarcarRealizado = (id: number) => {
-    updateStatusMutation.mutate({ id, status: "realizado" });
-  };
-
   const getExameLabel = (exame: string) => {
     if (exame === "us_obstetrico") return "US Obstétrico";
     if (exame === "cardiotocografia") return "Cardiotocografia";
@@ -73,13 +69,6 @@ export default function AgendamentoConsultas() {
     if (exame === "us_obstetrico") return <Stethoscope className="h-4 w-4" />;
     if (exame === "cardiotocografia") return <Activity className="h-4 w-4" />;
     return null;
-  };
-
-  const getStatusColor = (status: string) => {
-    if (status === "realizado") return "text-green-600 bg-green-50";
-    if (status === "cancelado") return "text-gray-600 bg-gray-50";
-    if (status === "remarcado") return "text-yellow-600 bg-yellow-50";
-    return "text-blue-600 bg-blue-50";
   };
 
   const formatDate = (dateString: string) => {
@@ -205,29 +194,7 @@ export default function AgendamentoConsultas() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        agendamento.status
-                      )}`}
-                    >
-                      {agendamento.status === "agendado" && "Agendado"}
-                      {agendamento.status === "realizado" && "Realizado"}
-                      {agendamento.status === "cancelado" && "Cancelado"}
-                      {agendamento.status === "remarcado" && "Remarcado"}
-                    </span>
-
-                    {agendamento.status === "agendado" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleMarcarRealizado(agendamento.id)}
-                        disabled={updateStatusMutation.isPending}
-                      >
-                        Marcar Realizado
-                      </Button>
-                    )}
-                  </div>
+                  {/* Removido badge de status e botão Marcar Realizado - são apenas sugestões */}
                 </div>
               ))}
             </div>
