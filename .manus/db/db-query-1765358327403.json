@@ -1,0 +1,30 @@
+{
+  "query": "SHOW CREATE TABLE consultasPrenatal",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW CREATE TABLE consultasPrenatal",
+  "rows": [
+    {
+      "Table": "consultasPrenatal",
+      "Create Table": "CREATE TABLE `consultasPrenatal` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `gestanteId` int(11) NOT NULL,",
+    "  `dataConsulta` date NOT NULL,",
+    "  `igSemanas` int(11) DEFAULT NULL,",
+    "  `igDias` int(11) DEFAULT NULL,",
+    "  `peso` int(11) DEFAULT NULL,",
+    "  `pressaoArterial` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `alturaUterina` int(11) DEFAULT NULL,",
+    "  `bcf` int(11) DEFAULT NULL,",
+    "  `observacoes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  `mf` int(11) DEFAULT NULL,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1770002"
+  ],
+  "stdout": "Table\tCreate Table\nconsultasPrenatal\tCREATE TABLE `consultasPrenatal` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `gestanteId` int(11) NOT NULL,\n  `dataConsulta` date NOT NULL,\n  `igSemanas` int(11) DEFAULT NULL,\n  `igDias` int(11) DEFAULT NULL,\n  `peso` int(11) DEFAULT NULL,\n  `pressaoArterial` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `alturaUterina` int(11) DEFAULT NULL,\n  `bcf` int(11) DEFAULT NULL,\n  `observacoes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `mf` int(11) DEFAULT NULL,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1770002\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

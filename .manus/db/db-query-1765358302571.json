@@ -1,0 +1,49 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'consultasPrenatal' AND TABLE_SCHEMA = DATABASE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'consultasPrenatal' AND TABLE_SCHEMA = DATABASE()",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "COLUMN_NAME": "dataConsulta"
+    },
+    {
+      "COLUMN_NAME": "igSemanas"
+    },
+    {
+      "COLUMN_NAME": "igDias"
+    },
+    {
+      "COLUMN_NAME": "peso"
+    },
+    {
+      "COLUMN_NAME": "pressaoArterial"
+    },
+    {
+      "COLUMN_NAME": "alturaUterina"
+    },
+    {
+      "COLUMN_NAME": "bcf"
+    },
+    {
+      "COLUMN_NAME": "observacoes"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "mf"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\ngestanteId\ndataConsulta\nigSemanas\nigDias\npeso\npressaoArterial\nalturaUterina\nbcf\nobservacoes\ncreatedAt\nupdatedAt\nmf\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

@@ -313,3 +313,13 @@
 - [x] Investigar código dos alertas no dashboard (AlertasPartosProximos.tsx) - RESOLVIDO: Problema na conversão de string para Date
 - [x] Corrigir problema de fuso horário na exibição das datas nos alertas - RESOLVIDO: Adicionada função parseLocalDate
 - [x] Validar que a data 15/12 aparece corretamente nos alertas - RESOLVIDO: Graziela agora mostra 15/12/2025
+
+
+## Importação de Consultas Pré-Natais (Solicitado 10/12/2025 - 01:15)
+
+- [x] Ler e analisar arquivo CSV de consultas atualizado (77 consultas no arquivo)
+- [x] Criar script de importação de consultas (Python com mysql-connector)
+- [x] Mapear IDs de gestantes do CSV para IDs do novo banco (usando nome como chave)
+- [x] Executar importação de todas as consultas
+- [x] Validar quantidade de consultas importadas (48 importadas, 28 sem gestante correspondente)
+- [x] Testar visualização no Cartão Pré-Natal - SUCESSO: Graziela Mazoni mostra 2 consultas
