@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/select";
 import { 
   Plus, 
-  Search, 
   Edit, 
   Trash2, 
   Eye,
@@ -31,6 +30,7 @@ import { toast } from "sonner";
 import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
+import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 
 type SortOption = "nome" | "dpp-dum" | "dpp-us";
 
@@ -222,15 +222,12 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar por nome..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+              <AutocompleteGestante
+                gestantes={gestantes || []}
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Buscar por nome..."
+              />
               
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                 <SelectTrigger>

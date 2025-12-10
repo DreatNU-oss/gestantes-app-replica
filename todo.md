@@ -204,3 +204,17 @@
 - [x] Alterar placeholder "Todos os tipos" para "Tipo de parto"
 - [x] Alterar placeholder "Todos os planos" para "Plano de saúde"
 - [x] Alterar placeholder "Todos os médicos" para "Médico"
+
+
+## Alteração de Título (Solicitado 09/12/2025)
+
+- [ ] Alterar título de "APP Gestantes - Mais Mulher" para "Gestão de Pré-Natal da Clínica Mais Mulher"
+
+
+## Autocomplete de Busca por Nome (Solicitado 09/12/2025)
+
+- [x] Implementar autocomplete com sugestões na página de Gestantes (Filtros e Busca)
+- [x] Implementar autocomplete com sugestões na página de Marcos Importantes (seletor de gestante)
+- [x] Implementar autocomplete com sugestões na página de Cartão de Pré-Natal (seletor de gestante)
+- [x] Mostrar dropdown com nomes compatíveis ao digitar
+- [x] Permitir clicar diretamente no nome sugerido

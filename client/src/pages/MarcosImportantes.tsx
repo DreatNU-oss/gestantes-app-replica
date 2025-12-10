@@ -1,6 +1,6 @@
 import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -182,18 +182,12 @@ export default function MarcosImportantes() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="gestante">Gestante</Label>
-                <Select value={gestanteSelecionada} onValueChange={setGestanteSelecionada}>
-                  <SelectTrigger id="gestante">
-                    <SelectValue placeholder="Selecione uma gestante..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {gestantes?.map((g) => (
-                      <SelectItem key={g.id} value={g.id.toString()}>
-                        {g.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <AutocompleteSelect
+                  options={gestantes || []}
+                  value={gestanteSelecionada}
+                  onChange={setGestanteSelecionada}
+                  placeholder="Selecione uma gestante..."
+                />
               </div>
 
               <div className="space-y-3">
