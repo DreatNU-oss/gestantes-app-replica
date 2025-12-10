@@ -44,13 +44,12 @@ import {
   createAlertaEnviado,
   getAlertasByGestanteId
 } from "./db";
-import {
-  calcularConsultasSugeridas,
-  salvarAgendamentos,
-  buscarAgendamentos,
-  atualizarStatusAgendamento,
-  remarcarAgendamento
-} from "./agendamento";
+import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
+import { processarLembretes } from './lembretes';
+import { configuracoesEmail, logsEmails } from '../drizzle/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getDb } from './db';
+import { TRPCError } from '@trpc/server';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -632,6 +631,81 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await remarcarAgendamento(input.id, new Date(input.novaData));
         return { success: true };
+      }),
+  }),
+
+  email: router({
+    configurar: protectedProcedure
+      .input(z.object({
+        emailUser: z.string().email(),
+        emailPass: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        // Inserir ou atualizar EMAIL_USER
+        const existingUser = await db.select().from(configuracoesEmail).where(eq(configuracoesEmail.chave, 'EMAIL_USER'));
+        if (existingUser.length > 0) {
+          await db.update(configuracoesEmail)
+            .set({ valor: input.emailUser, updatedAt: new Date() })
+            .where(eq(configuracoesEmail.chave, 'EMAIL_USER'));
+        } else {
+          await db.insert(configuracoesEmail).values({
+            chave: 'EMAIL_USER',
+            valor: input.emailUser,
+            descricao: 'E-mail do Gmail para envio de lembretes',
+          });
+        }
+        
+        // Inserir ou atualizar EMAIL_PASS
+        const existingPass = await db.select().from(configuracoesEmail).where(eq(configuracoesEmail.chave, 'EMAIL_PASS'));
+        if (existingPass.length > 0) {
+          await db.update(configuracoesEmail)
+            .set({ valor: input.emailPass, updatedAt: new Date() })
+            .where(eq(configuracoesEmail.chave, 'EMAIL_PASS'));
+        } else {
+          await db.insert(configuracoesEmail).values({
+            chave: 'EMAIL_PASS',
+            valor: input.emailPass,
+            descricao: 'Senha de App do Gmail',
+          });
+        }
+        
+        return { success: true };
+      }),
+    
+    obterConfig: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return { emailUser: null };
+        
+        const configs = await db.select().from(configuracoesEmail).where(eq(configuracoesEmail.chave, 'EMAIL_USER'));
+        return { emailUser: configs.length > 0 ? configs[0].valor : null };
+      }),
+    
+    processarLembretes: protectedProcedure
+      .mutation(async () => {
+        const resultado = await processarLembretes();
+        return resultado;
+      }),
+    
+    logs: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number().optional(),
+        limit: z.number().default(50),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        let query = db.select().from(logsEmails);
+        if (input.gestanteId) {
+          query = query.where(eq(logsEmails.gestanteId, input.gestanteId)) as any;
+        }
+        
+        const logs = await query.limit(input.limit).orderBy(desc(logsEmails.dataEnvio));
+        return logs;
       }),
   }),
 });

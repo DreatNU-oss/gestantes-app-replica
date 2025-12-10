@@ -323,3 +323,26 @@
 - [x] Executar importação de todas as consultas
 - [x] Validar quantidade de consultas importadas (48 importadas, 28 sem gestante correspondente)
 - [x] Testar visualização no Cartão Pré-Natal - SUCESSO: Graziela Mazoni mostra 2 consultas
+
+
+## Sistema de E-mails Automáticos para Gestantes (Solicitado 10/12/2025 - 04:30)
+
+### Lembretes Implementados:
+- Vacina dTpa: exatamente com 27 semanas
+- Vacina Bronquiolite: com 32 semanas
+- Morfológico 1º Tri: com 10 semanas (1 semana antes de 11-14 semanas)
+- Morfológico 2º Tri: com 18 e 19 semanas (2 e 1 semana antes de 20-24 semanas)
+
+### Tarefas:
+- [x] Instalar e configurar Nodemailer para Gmail
+- [x] Criar tabela no banco para armazenar configurações de e-mail (configuracoesEmail)
+- [x] Criar tabela para log de e-mails enviados (logsEmails)
+- [x] Implementar templates de e-mail com rodapé padrão de notificação (server/email.ts)
+- [x] Criar função para calcular datas de lembretes baseado em DUM/IG (server/lembretes.ts)
+- [x] Implementar procedures tRPC (email.configurar, processarLembretes, logs)
+- [x] Criar interface para configurar credenciais do Gmail (/gerenciar-emails)
+- [x] Adicionar campo de e-mail no cadastro de gestantes (já existia)
+- [x] Configurar credenciais do Gmail (prenatalmaismulher@gmail.com)
+- [x] Testar envio de e-mails com conta Gmail do usuário - SUCESSO: E-mail de dTpa enviado
+- [x] Validar que e-mails não são enviados duplicados (tabela logsEmails + verificação)
+- [ ] Implementar job automático diário (opcional - pode ser executado manualmente)

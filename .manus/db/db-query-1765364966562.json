@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, nome, email FROM gestantes WHERE nome LIKE '%Graziela%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, email FROM gestantes WHERE nome LIKE '%Graziela%';",
+  "rows": [
+    {
+      "id": "300006",
+      "nome": "Graziela Mazoni",
+      "email": "andreschlemper@me.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\temail\n300006\tGraziela Mazoni\tandreschlemper@me.com\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}

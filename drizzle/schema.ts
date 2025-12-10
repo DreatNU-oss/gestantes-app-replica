@@ -228,3 +228,37 @@ export const agendamentosConsultas = mysqlTable("agendamentosConsultas", {
 
 export type AgendamentoConsulta = typeof agendamentosConsultas.$inferSelect;
 export type InsertAgendamentoConsulta = typeof agendamentosConsultas.$inferInsert;
+
+/**
+ * Tabela de configurações de e-mail
+ */
+export const configuracoesEmail = mysqlTable("configuracoesEmail", {
+  id: int("id").autoincrement().primaryKey(),
+  chave: varchar("chave", { length: 100 }).notNull().unique(),
+  valor: text("valor").notNull(),
+  descricao: text("descricao"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ConfiguracaoEmail = typeof configuracoesEmail.$inferSelect;
+export type InsertConfiguracaoEmail = typeof configuracoesEmail.$inferInsert;
+
+/**
+ * Tabela de log de e-mails enviados
+ */
+export const logsEmails = mysqlTable("logsEmails", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  tipoLembrete: varchar("tipoLembrete", { length: 100 }).notNull(), // dtpa, bronquiolite, morfo1tri_1sem, morfo2tri_2sem, morfo2tri_1sem
+  emailDestinatario: varchar("emailDestinatario", { length: 320 }).notNull(),
+  assunto: varchar("assunto", { length: 500 }).notNull(),
+  corpo: text("corpo").notNull(),
+  status: mysqlEnum("status", ["enviado", "erro"]).default("enviado").notNull(),
+  mensagemErro: text("mensagemErro"),
+  dataEnvio: timestamp("dataEnvio").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LogEmail = typeof logsEmails.$inferSelect;
+export type InsertLogEmail = typeof logsEmails.$inferInsert;
