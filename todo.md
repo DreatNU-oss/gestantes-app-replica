@@ -514,3 +514,9 @@
 - [x] Atualizar lógica de carregamento para exibir datas
 - [x] Testar salvamento e carregamento de datas no navegador
 - [x] Atualizar testes automatizados para validar datas (4 testes passando em examesLab.dataColeta.test.ts)
+
+
+## Correção de Acentuação no Cartão de Pré-Natal (Reportado 10/12/2025)
+
+- [x] Corrigir texto "Útero não palpável" no campo AUF que estava com problema de acentuação (estava como "Úter--snip--o")
+- [x] Testar visualização no navegador (dropdown e tabela corrigidos)

@@ -432,7 +432,7 @@ export default function CartaoPrenatal() {
                       onChange={(e) => setFormData({ ...formData, alturaUterina: e.target.value })}
                     >
                       <option value="">Selecione...</option>
-                      <option value="nao_palpavel">Úter--snip--o não palpável</option>
+                      <option value="nao_palpavel">Útero não palpável</option>
                       {Array.from({ length: 31 }, (_, i) => i + 10).map(cm => (
                         <option key={cm} value={String(cm)}>{cm} cm</option>
                       ))}
@@ -593,7 +593,7 @@ export default function CartaoPrenatal() {
                         <TableCell>{consulta.pressaoArterial || "-"}</TableCell>
                         <TableCell>
                           {consulta.alturaUterina === -1 ? (
-                            <span className="text-muted-foreground italic">Úter--snip--o não palpável</span>
+                            <span className="text-muted-foreground italic">Útero não palpável</span>
                           ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
                         </TableCell>
                         <TableCell>
