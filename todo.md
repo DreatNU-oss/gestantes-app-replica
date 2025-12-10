@@ -391,3 +391,9 @@
 - [ ] Atualizar schema do banco para armazenar resultados de exames
 - [ ] Implementar backend para salvar e recuperar resultados de exames
 
+
+- [x] IgM de Toxoplasmose, Rubéola e Citomegalovírus em 2º e 3º trimestres
+- [x] Separar IgG e IgM em linhas diferentes
+- [x] EPF apenas no 1º trimestre
+- [x] Dividir Hemograma em Hemoglobina/Hematócrito e Plaquetas
+- [x] TTGO com 3 campos (Jejum, 1h, 2h)

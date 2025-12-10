@@ -33,56 +33,120 @@ export default function ExamesLaboratoriais() {
     }));
   };
 
-  const renderExameRow = (exame: ExameConfig) => (
-    <TableRow key={exame.nome}>
-      <TableCell className="font-medium">{exame.nome}</TableCell>
-      <TableCell className="text-center">
-        {exame.trimestres.primeiro ? (
-          <Input
-            type="text"
-            placeholder="Resultado"
-            value={resultados[exame.nome]?.["1"] || ""}
-            onChange={(e) =>
-              handleResultadoChange(exame.nome, "1", e.target.value)
-            }
-            className="w-full"
-          />
-        ) : (
-          <div className="text-gray-400">-</div>
-        )}
-      </TableCell>
-      <TableCell className="text-center">
-        {exame.trimestres.segundo ? (
-          <Input
-            type="text"
-            placeholder="Resultado"
-            value={resultados[exame.nome]?.["2"] || ""}
-            onChange={(e) =>
-              handleResultadoChange(exame.nome, "2", e.target.value)
-            }
-            className="w-full"
-          />
-        ) : (
-          <div className="text-gray-400">-</div>
-        )}
-      </TableCell>
-      <TableCell className="text-center">
-        {exame.trimestres.terceiro ? (
-          <Input
-            type="text"
-            placeholder="Resultado"
-            value={resultados[exame.nome]?.["3"] || ""}
-            onChange={(e) =>
-              handleResultadoChange(exame.nome, "3", e.target.value)
-            }
-            className="w-full"
-          />
-        ) : (
-          <div className="text-gray-400">-</div>
-        )}
-      </TableCell>
-    </TableRow>
-  );
+  const renderExameRow = (exame: ExameConfig) => {
+    // Se o exame tem subcampos (ex: TTGO), renderizar múltiplas linhas
+    if (exame.subcampos) {
+      return (
+        <>
+          {exame.subcampos.map((subcampo, index) => (
+            <TableRow key={`${exame.nome}-${subcampo}`}>
+              <TableCell className="font-medium">
+                {index === 0 ? exame.nome : ""}
+                <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
+              </TableCell>
+              <TableCell className="text-center">
+                {exame.trimestres.primeiro ? (
+                  <Input
+                    type="text"
+                    placeholder="Resultado"
+                    value={resultados[`${exame.nome}-${subcampo}`]?.["1"] || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "1", e.target.value)
+                    }
+                    className="w-full"
+                  />
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+              <TableCell className="text-center">
+                {exame.trimestres.segundo ? (
+                  <Input
+                    type="text"
+                    placeholder="Resultado"
+                    value={resultados[`${exame.nome}-${subcampo}`]?.["2"] || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "2", e.target.value)
+                    }
+                    className="w-full"
+                  />
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+              <TableCell className="text-center">
+                {exame.trimestres.terceiro ? (
+                  <Input
+                    type="text"
+                    placeholder="Resultado"
+                    value={resultados[`${exame.nome}-${subcampo}`]?.["3"] || ""}
+                    onChange={(e) =>
+                      handleResultadoChange(`${exame.nome}-${subcampo}`, "3", e.target.value)
+                    }
+                    className="w-full"
+                  />
+                ) : (
+                  <div className="text-gray-400">-</div>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </>
+      );
+    }
+
+    // Renderização normal para exames sem subcampos
+    return (
+      <TableRow key={exame.nome}>
+        <TableCell className="font-medium">{exame.nome}</TableCell>
+        <TableCell className="text-center">
+          {exame.trimestres.primeiro ? (
+            <Input
+              type="text"
+              placeholder="Resultado"
+              value={resultados[exame.nome]?.["1"] || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "1", e.target.value)
+              }
+              className="w-full"
+            />
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+        <TableCell className="text-center">
+          {exame.trimestres.segundo ? (
+            <Input
+              type="text"
+              placeholder="Resultado"
+              value={resultados[exame.nome]?.["2"] || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "2", e.target.value)
+              }
+              className="w-full"
+            />
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+        <TableCell className="text-center">
+          {exame.trimestres.terceiro ? (
+            <Input
+              type="text"
+              placeholder="Resultado"
+              value={resultados[exame.nome]?.["3"] || ""}
+              onChange={(e) =>
+                handleResultadoChange(exame.nome, "3", e.target.value)
+              }
+              className="w-full"
+            />
+          ) : (
+            <div className="text-gray-400">-</div>
+          )}
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   const renderTabelaExames = (titulo: string, exames: ExameConfig[]) => (
     <div>
