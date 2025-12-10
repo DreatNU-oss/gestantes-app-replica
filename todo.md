@@ -382,3 +382,12 @@
 - [ ] Configurar chave API do Resend no banco
 - [ ] Testar envio de e-mail com Resend
 - [ ] Validar recebimento em ambos os e-mails (Yahoo e iCloud)
+
+## Melhorias na Página de Exames Laboratoriais (Solicitado 10/12/2025)
+
+- [x] Substituir checkboxes por campos de texto para inserir resultados de exames
+- [x] Mostrar apenas trimestres relevantes para cada exame (não mostrar campos vazios)
+- [x] Definir quais exames são solicitados em quais trimestres baseado no protocolo pré-natal
+- [ ] Atualizar schema do banco para armazenar resultados de exames
+- [ ] Implementar backend para salvar e recuperar resultados de exames
+

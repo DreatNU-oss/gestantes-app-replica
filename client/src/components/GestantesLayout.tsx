@@ -38,7 +38,7 @@ import { trpc } from "@/lib/trpc";
 const menuItems = [
   { icon: Users, label: "Gestantes", path: "/dashboard" },
   { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal" },
-  { icon: FileText, label: "Exames Laboratoriais", path: "/exames-laboratoriais" },
+  { icon: FileText, label: "Exames Laboratoriais", path: "/exames" },
   { icon: Calendar, label: "Marcos Importantes", path: "/marcos" },
   { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos" },
   { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas" },
