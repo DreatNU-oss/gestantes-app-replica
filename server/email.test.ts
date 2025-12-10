@@ -3,13 +3,13 @@ import { enviarEmail, templates } from './email';
 
 describe('Sistema de E-mails com Resend', () => {
   it('deve enviar e-mail de lembrete de vacina dTpa', async () => {
-    const nomeGestante = 'Vivian (Teste)';
-    const emailDestinatario = 'dreatnu@yahoo.com';
+    const nomeGestante = 'Teste Sistema';
+    const emailDestinatario = 'prenatalmaismulher@gmail.com';
     
     const template = templates.dtpa(nomeGestante);
     
     const resultado = await enviarEmail({
-      gestanteId: 330092, // ID da Vivian
+      gestanteId: 1,
       destinatario: emailDestinatario,
       assunto: template.assunto,
       titulo: template.titulo,
@@ -22,22 +22,22 @@ describe('Sistema de E-mails com Resend', () => {
     expect(resultado.erro).toBeUndefined();
   });
 
-  it('deve enviar e-mail de lembrete de Morfológico 1º Trimestre', async () => {
-    const nomeGestante = 'Paula Marques (Teste)';
-    const emailDestinatario = 'andreschlemper@me.com';
+  it('deve enviar e-mail de lembrete de Morfológico 2º Trimestre', async () => {
+    const nomeGestante = 'Teste Sistema';
+    const emailDestinatario = 'prenatalmaismulher@gmail.com';
     
-    const template = templates.morfo1tri(nomeGestante, 10);
+    const template = templates.morfo2tri(nomeGestante, 18, 2);
     
     const resultado = await enviarEmail({
-      gestanteId: 330093, // ID da Paula
+      gestanteId: 1,
       destinatario: emailDestinatario,
       assunto: template.assunto,
       titulo: template.titulo,
       conteudo: template.conteudo,
-      tipoLembrete: 'morfo1tri',
+      tipoLembrete: 'morfo2tri',
     });
     
-    console.log('Resultado do envio Morfológico:', resultado);
+    console.log('Resultado do envio Morfológico 2º Tri:', resultado);
     expect(resultado.sucesso).toBe(true);
     expect(resultado.erro).toBeUndefined();
   });

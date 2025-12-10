@@ -91,12 +91,14 @@ export async function enviarEmail(params: {
     const htmlContent = criarTemplateEmail(params.titulo, params.conteudo);
     
     const emailFrom = await getConfig('resend_from_email') || 'onboarding@resend.dev';
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: emailFrom,
       to: params.destinatario,
       subject: params.assunto,
       html: htmlContent,
     });
+    
+    console.log('Resend API response:', JSON.stringify(result, null, 2));
     
     // Registrar log de sucesso
     await db.insert(logsEmails).values({
