@@ -110,6 +110,28 @@ function calcularIdade(dataNascimento: Date): number {
   return idade;
 }
 
+// Função auxiliar para calcular idade a partir de string de data (para validação Zod)
+function calculateAgeFromDate(dateString: string): number | null {
+  try {
+    const birth = new Date(dateString);
+    const today = new Date();
+    
+    if (isNaN(birth.getTime())) return null;
+    if (birth > today) return null;
+    
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    
+    return age;
+  } catch {
+    return null;
+  }
+}
+
 export const appRouter = router({
   system: systemRouter,
   
@@ -279,7 +301,14 @@ export const appRouter = router({
           { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
         ),
         email: z.string().email({ message: "E-mail inválido" }).optional().or(z.literal("")),
-        dataNascimento: z.string().optional(),
+        dataNascimento: z.string().optional().refine(
+          (date) => {
+            if (!date) return true; // Opcional
+            const age = calculateAgeFromDate(date);
+            return age !== null && age >= 10 && age <= 60;
+          },
+          { message: "Idade deve estar entre 10 e 60 anos" }
+        ),
         planoSaudeId: z.number().optional(),
         carteirinhaUnimed: z.string().optional(),
         medicoId: z.number().optional(),
@@ -341,7 +370,14 @@ export const appRouter = router({
           { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
         ),
         email: z.string().email({ message: "E-mail inválido" }).optional().or(z.literal("")),
-        dataNascimento: z.string().optional(),
+        dataNascimento: z.string().optional().refine(
+          (date) => {
+            if (!date) return true; // Opcional
+            const age = calculateAgeFromDate(date);
+            return age !== null && age >= 10 && age <= 60;
+          },
+          { message: "Idade deve estar entre 10 e 60 anos" }
+        ),
         planoSaudeId: z.number().optional(),
         carteirinhaUnimed: z.string().optional(),
         medicoId: z.number().optional(),

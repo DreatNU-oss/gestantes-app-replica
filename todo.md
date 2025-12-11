@@ -809,3 +809,12 @@
 - [x] Implementar validação regex no backend
 - [x] Atualizar FormularioGestante para usar EmailInput
 - [x] Testar validação com e-mails válidos e inválidos
+
+
+## Validação de Data de Nascimento (11/12/2025)
+- [x] Criar componente DateOfBirthInput com cálculo automático de idade
+- [x] Adicionar validação de idade mínima (10 anos) e máxima (60 anos)
+- [ ] Mostrar idade calculada ao lado do campo - Pendente debug frontend
+- [x] Implementar validação no backend (10-60 anos)
+- [x] Atualizar FormularioGestante para usar DateOfBirthInput
+- [x] Testar validação backend

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/PhoneInput";
 import { EmailInput } from "@/components/EmailInput";
+import { DateOfBirthInput } from "@/components/DateOfBirthInput";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -176,11 +177,13 @@ export default function FormularioGestante({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
-                <Input
+                <DateOfBirthInput
                   id="dataNascimento"
-                  type="date"
                   value={formData.dataNascimento}
-                  onChange={(e) => setFormData({ ...formData, dataNascimento: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, dataNascimento: value })}
+                  showAge={true}
+                  minAge={10}
+                  maxAge={60}
                 />
               </div>
               <div className="space-y-2">
