@@ -777,3 +777,10 @@
 - [x] Configurar favicon personalizado com logo da clínica
 - [x] Atualizar título do site para "Gestão de Pré-Natal - Clínica Mais Mulher"
 - [ ] Testar compartilhamento no WhatsApp após publicação
+
+
+## Atualização de Descrição para Compartilhamento (11/12/2025)
+
+- [x] Remover referência "Manus é..." da descrição do site
+- [x] Atualizar descrição para "Sistema de gestão de pré-natal"
+- [ ] Testar compartilhamento no WhatsApp após publicação
