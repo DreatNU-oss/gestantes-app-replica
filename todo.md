@@ -752,3 +752,29 @@
 - [x] Incluir "Gerenciar Planos" e "Gerenciar Médicos" como itens do submenu
 - [x] Manter as páginas originais sem modificações
 - [x] Testar navegação e funcionamento completo
+
+## Integração WhatsApp Helena - Lembretes de Vacina (11/12/2025)
+
+### Backend
+- [x] Adicionar campo "telefone" na tabela gestantes (já existia)
+- [x] Criar tabela "mensagens_enviadas" para histórico
+- [x] Configurar credenciais da API Helena (token como secret)
+- [x] Criar helper de integração com API Helena
+- [x] Criar endpoint tRPC para enviar lembrete de vacina
+- [x] Criar endpoint tRPC para listar histórico de mensagens
+
+### Frontend
+- [x] Adicionar campo telefone no formulário de cadastro/edição de gestante (já existia)
+- [x] Criar botão "Enviar Lembrete de Vacina" na página de detalhes
+- [x] Criar modal de seleção de template de mensagem
+- [x] Implementar templates prontos de vacinas do pré-natal
+- [x] Mostrar histórico de mensagens enviadas
+- [x] Adicionar feedback visual de sucesso/erro no envio
+
+### Testes
+- [ ] Testar envio de mensagem via API
+- [ ] Verificar histórico de mensagens
+- [ ] Validar formatação de número de telefone
+- [x] Testar interface de envio de lembretes
+- [x] Testar histórico de mensagens
+- [x] Validar aviso de telefone não cadastrado

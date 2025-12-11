@@ -45,8 +45,9 @@ import {
   getAlertasByGestanteId
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
+import { sendWhatsAppMessage, TEMPLATES_VACINAS, type TemplateVacina } from './helena';
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails, resultadosExames, type InsertResultadoExame } from '../drizzle/schema';
+import { configuracoesEmail, logsEmails, resultadosExames, type InsertResultadoExame, mensagensWhatsapp, type InsertMensagemWhatsapp } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { getDb } from './db';
@@ -1008,6 +1009,135 @@ export const appRouter = router({
           pdf: pdfBuffer.toString('base64'),
           filename: `cartao-prenatal-${gestante.nome.replace(/\s+/g, '-').toLowerCase()}.pdf`,
         };
+      }),
+  }),
+
+  // Router de mensagens WhatsApp via Helena
+  whatsapp: router({
+    // Enviar mensagem de lembrete de vacina
+    enviarLembrete: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        templateId: z.enum([
+          'hepatite_b',
+          'dtpa',
+          'influenza',
+          'covid19',
+          'lembrete_consulta',
+          'lembrete_exame'
+        ]),
+        // Parâmetros opcionais para templates personalizados
+        dataConsulta: z.string().optional(),
+        horario: z.string().optional(),
+        tipoExame: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+
+        // Buscar gestante
+        const gestante = await getGestanteById(input.gestanteId);
+        if (!gestante) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Gestante não encontrada',
+          });
+        }
+
+        // Verificar se tem telefone
+        if (!gestante.telefone) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Gestante não possui telefone cadastrado',
+          });
+        }
+
+        // Gerar mensagem baseada no template
+        const template = TEMPLATES_VACINAS[input.templateId as TemplateVacina];
+        let mensagem: string;
+
+        if (input.templateId === 'lembrete_consulta' && input.dataConsulta && input.horario) {
+          mensagem = (template.mensagem as (nome: string, data: string, horario: string) => string)(gestante.nome, input.dataConsulta, input.horario);
+        } else if (input.templateId === 'lembrete_exame' && input.tipoExame) {
+          mensagem = (template.mensagem as (nome: string, tipo: string) => string)(gestante.nome, input.tipoExame);
+        } else {
+          mensagem = (template.mensagem as (nome: string) => string)(gestante.nome);
+        }
+
+        try {
+          // Enviar mensagem via Helena
+          const response = await sendWhatsAppMessage({
+            to: gestante.telefone,
+            message: mensagem,
+          });
+
+          // Salvar no banco de dados
+          const novaMensagem: InsertMensagemWhatsapp = {
+            gestanteId: input.gestanteId,
+            telefone: gestante.telefone,
+            tipoMensagem: input.templateId,
+            templateUsado: template.nome,
+            mensagem,
+            helenaMessageId: response.id,
+            helenaSessionId: response.sessionId,
+            status: 'processando',
+            enviadoPor: ctx.user!.id,
+          };
+
+          await db.insert(mensagensWhatsapp).values(novaMensagem);
+
+          return {
+            success: true,
+            messageId: response.id,
+            sessionId: response.sessionId,
+            message: 'Mensagem enviada com sucesso!',
+          };
+        } catch (error) {
+          // Salvar erro no banco
+          const mensagemErro: InsertMensagemWhatsapp = {
+            gestanteId: input.gestanteId,
+            telefone: gestante.telefone,
+            tipoMensagem: input.templateId,
+            templateUsado: template.nome,
+            mensagem,
+            status: 'erro',
+            mensagemErro: error instanceof Error ? error.message : 'Erro desconhecido',
+            enviadoPor: ctx.user!.id,
+          };
+
+          await db.insert(mensagensWhatsapp).values(mensagemErro);
+
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: error instanceof Error ? error.message : 'Erro ao enviar mensagem',
+          });
+        }
+      }),
+
+    // Listar histórico de mensagens de uma gestante
+    listarMensagens: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const mensagens = await db
+          .select()
+          .from(mensagensWhatsapp)
+          .where(eq(mensagensWhatsapp.gestanteId, input.gestanteId))
+          .orderBy(desc(mensagensWhatsapp.dataEnvio));
+
+        return mensagens;
+      }),
+
+    // Obter templates disponíveis
+    listarTemplates: protectedProcedure
+      .query(() => {
+        return Object.entries(TEMPLATES_VACINAS).map(([id, template]) => ({
+          id,
+          nome: template.nome,
+        }));
       }),
   }),
 });
