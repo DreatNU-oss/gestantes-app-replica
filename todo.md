@@ -710,3 +710,13 @@
 
 - [x] Adicionar peso da consulta por escrito no gráfico (simplificado - apenas peso)
 - [x] Testar gráfico para verificar se labels aparecem corretamente
+
+
+## Padronização Visual e de Navegação (11/12/2025)
+
+- [x] Suavizar cores dos marcos importantes no PDF (estão muito intensas)
+- [x] Ajustar posição do título na página Cartão de Pré-natal para ficar igual às outras
+- [x] Adicionar botão Voltar na página Gerenciar Planos
+- [x] Adicionar botão Voltar na página Gerenciar Médicos
+- [x] Testar navegação em todas as páginas
+- [x] Testar PDF com cores suavizadas

@@ -21,10 +21,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 
 export default function GerenciarPlanos() {
+  const [, setLocation] = useLocation();
   const [showDialog, setShowDialog] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [nome, setNome] = useState("");
@@ -94,8 +96,16 @@ export default function GerenciarPlanos() {
   return (
     <GestantesLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation("/dashboard")}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
             <h2 className="text-3xl font-bold text-foreground">Gerenciar Planos de Saúde</h2>
             <p className="text-muted-foreground">
               Cadastre e gerencie os planos de saúde

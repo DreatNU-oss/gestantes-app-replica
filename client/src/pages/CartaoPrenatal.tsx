@@ -238,15 +238,15 @@ export default function CartaoPrenatal() {
         concepcao.setDate(concepcao.getDate() - 280);
         
         const marcosData = [
-          { titulo: 'Concep\u00e7\u00e3o', data: concepcao, color: [168, 85, 247] }, // purple-500
-          { titulo: 'Morfol\u00f3gico 1\u00ba Tri (11-13s)', inicio: new Date(concepcao.getTime() + 77*24*60*60*1000), fim: new Date(concepcao.getTime() + 98*24*60*60*1000), color: [16, 185, 129] }, // emerald-500
-          { titulo: '13 Semanas', data: new Date(concepcao.getTime() + 91*24*60*60*1000), color: [59, 130, 246] }, // blue-500
-          { titulo: 'Morfol\u00f3gico 2\u00ba Tri (20-24s)', inicio: new Date(concepcao.getTime() + 140*24*60*60*1000), fim: new Date(concepcao.getTime() + 168*24*60*60*1000), color: [6, 182, 212] }, // cyan-500
-          { titulo: 'Vacina dTpa (27s)', data: new Date(concepcao.getTime() + 189*24*60*60*1000), color: [249, 115, 22] }, // orange-500
-          { titulo: 'Vacina Bronquiolite (32-36s)', inicio: new Date(concepcao.getTime() + 224*24*60*60*1000), fim: new Date(concepcao.getTime() + 252*24*60*60*1000), color: [234, 179, 8] }, // yellow-500
-          { titulo: 'Termo Precoce (37s)', data: new Date(concepcao.getTime() + 259*24*60*60*1000), color: [6, 182, 212] }, // cyan-500
-          { titulo: 'Termo Completo (39s)', data: new Date(concepcao.getTime() + 273*24*60*60*1000), color: [34, 197, 94] }, // green-500
-          { titulo: 'DPP (40 semanas)', data: dppUS, color: [244, 63, 94] }, // rose-500
+          { titulo: 'Concep\u00e7\u00e3o', data: concepcao, color: [216, 180, 254] }, // purple-300
+          { titulo: 'Morfol\u00f3gico 1\u00ba Tri (11-13s)', inicio: new Date(concepcao.getTime() + 77*24*60*60*1000), fim: new Date(concepcao.getTime() + 98*24*60*60*1000), color: [110, 231, 183] }, // emerald-300
+          { titulo: '13 Semanas', data: new Date(concepcao.getTime() + 91*24*60*60*1000), color: [147, 197, 253] }, // blue-300
+          { titulo: 'Morfol\u00f3gico 2\u00ba Tri (20-24s)', inicio: new Date(concepcao.getTime() + 140*24*60*60*1000), fim: new Date(concepcao.getTime() + 168*24*60*60*1000), color: [103, 232, 249] }, // cyan-300
+          { titulo: 'Vacina dTpa (27s)', data: new Date(concepcao.getTime() + 189*24*60*60*1000), color: [253, 186, 116] }, // orange-300
+          { titulo: 'Vacina Bronquiolite (32-36s)', inicio: new Date(concepcao.getTime() + 224*24*60*60*1000), fim: new Date(concepcao.getTime() + 252*24*60*60*1000), color: [253, 224, 71] }, // yellow-300
+          { titulo: 'Termo Precoce (37s)', data: new Date(concepcao.getTime() + 259*24*60*60*1000), color: [103, 232, 249] }, // cyan-300
+          { titulo: 'Termo Completo (39s)', data: new Date(concepcao.getTime() + 273*24*60*60*1000), color: [134, 239, 172] }, // green-300
+          { titulo: 'DPP (40 semanas)', data: dppUS, color: [253, 164, 175] }, // rose-300
         ];
         
         pdf.setFontSize(9);
@@ -685,11 +685,12 @@ export default function CartaoPrenatal() {
             variant="ghost"
             size="icon"
             onClick={() => setLocation("/dashboard")}
+            className="shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Cartão de Pré-natal</h1>
+            <h2 className="text-3xl font-bold text-foreground">Cartão de Pré-natal</h2>
             <p className="text-muted-foreground">Registre e acompanhe as consultas pré-natais</p>
           </div>
         </div>
