@@ -744,3 +744,10 @@
 - [x] Ajustar exibição de PA (Pressão Arterial) para mostrar "-" quando NULL
 - [x] Ajustar exibição de AU (Altura Uterina) para mostrar "-" quando NULL (com conversão mm para cm)
 - [x] Testar PDF com consultas
+
+
+## Gráfico de Evolução de Peso (11/12/2025)
+
+- [x] Decisão: Manter gráfico apenas na página web (interativo)
+- [x] PDF contém informações textuais (dados da gestante, consultas, marcos)
+- [x] Gráfico completo disponível na aba Cartão de Pré-natal com todas as funcionalidades

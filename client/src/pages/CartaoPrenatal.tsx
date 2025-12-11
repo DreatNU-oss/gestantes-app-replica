@@ -1053,7 +1053,7 @@ export default function CartaoPrenatal() {
 
         {/* Gráfico de Peso */}
         {gestante && consultas.length > 0 && gestante.altura && gestante.pesoInicial && (
-          <Card>
+          <Card id="grafico-peso-gestacional">
             <CardHeader>
               <CardTitle>Evolução de Peso Gestacional</CardTitle>
               <CardDescription>Acompanhamento do ganho de peso baseado no IMC pré-gestacional</CardDescription>
