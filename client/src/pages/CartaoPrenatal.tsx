@@ -129,8 +129,8 @@ export default function CartaoPrenatal() {
           logoImg.onerror = reject;
         });
         
-        // Adicionar logo (largura 50mm, altura 22.2mm - mantendo aspect ratio 2.25:1)
-        pdf.addImage(logoImg, 'PNG', 20, y, 50, 22.2);
+        // Adicionar logo (largura 60mm, altura 26.7mm - mantendo aspect ratio 2.25:1)
+        pdf.addImage(logoImg, 'PNG', 20, y, 60, 26.7);
       } catch (error) {
         console.warn('Erro ao carregar logo:', error);
       }
@@ -138,8 +138,8 @@ export default function CartaoPrenatal() {
       // Título ao lado do logo
       pdf.setFontSize(18);
       pdf.setTextColor(139, 64, 73);
-      pdf.text('Cartão de Pré-natal', 105, y + 11, { align: 'center' });
-      y += 27;
+      pdf.text('Cartão de Pré-natal', 105, y + 13, { align: 'center' });
+      y += 35;
       
       // Dados da Gestante
       pdf.setFontSize(14);
@@ -187,11 +187,23 @@ export default function CartaoPrenatal() {
             y = 20;
           }
           
+          // Calcular IG pela DUM
+          let igTexto = '-';
+          if (gestante.dum) {
+            const dum = new Date(gestante.dum);
+            const dataConsulta = new Date(consulta.dataConsulta);
+            const diffMs = dataConsulta.getTime() - dum.getTime();
+            const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const semanas = Math.floor(totalDias / 7);
+            const dias = totalDias % 7;
+            igTexto = `${semanas}s${dias}d`;
+          }
+          
           const pesoFormatado = consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : '-';
           const bcf = consulta.bcf ? 'Sim' : 'Não';
           const mf = consulta.mf ? 'Sim' : 'Não';
           
-          pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')}`, 20, y);
+          pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG: ${igTexto}`, 20, y);
           y += 5;
           pdf.text(`Peso: ${pesoFormatado} | PA: ${consulta.pressaoArterial} | AU: ${consulta.alturaUterina}cm`, 20, y);
           y += 5;

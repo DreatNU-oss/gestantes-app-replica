@@ -673,3 +673,11 @@
 - [x] Implementar notação médica padrão para dados obstétricos (ex: G5P3(2PC1PN)A1)
 - [x] Substituir linhas separadas por formato compacto em uma linha
 - [x] Testar PDF com nova formatação
+
+
+## Melhorias no PDF - Logo e IG (11/12/2025)
+
+- [x] Aumentar tamanho do logo no PDF
+- [x] Adicionar mais espaçamento abaixo do logo
+- [x] Adicionar coluna IG (Idade Gestacional) no histórico de consultas do PDF
+- [x] Testar PDF com todas as melhorias
