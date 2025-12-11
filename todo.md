@@ -15,7 +15,7 @@
 - [x] Histórico completo de consultas (estrutura backend)
 - [x] Registro de exames laboratoriais (estrutura backend)
 - [x] Parâmetros estruturados de exames (estrutura backend)
-- [ ] Geração de cartão pré-natal em PDF
+- [x] Geração de cartão pré-natal em PDF
 - [x] Gestão de planos de saúde (estrutura backend)
 - [x] Gestão de médicos responsáveis (estrutura backend)
 - [ ] Página de marcos importantes (UI completa)
@@ -602,3 +602,19 @@
 
 - [x] Corrigir tratamento de pesoInicial NULL no CartaoPrenatal.tsx para evitar divisão NULL/1000
 - [x] Garantir que gráfico mostra mensagem "Dados insuficientes" quando pesoInicial for NULL
+
+
+## Geração de PDF do Cartão Pré-natal (Solicitado 10/12/2025)
+
+- [ ] Instalar biblioteca de geração de PDF (PDFKit ou similar)
+- [ ] Preparar logo da clínica em formato adequado para PDF
+- [ ] Criar endpoint backend para geração do PDF (tRPC procedure)
+- [ ] Implementar layout do PDF com cabeçalho e logo
+- [ ] Adicionar seção de dados da gestante no PDF
+- [ ] Adicionar seção de histórico de consultas no PDF
+- [ ] Adicionar seção de marcos importantes no PDF
+- [ ] Adicionar seção de ultrassons no PDF
+- [ ] Adicionar seção de exames laboratoriais no PDF
+- [ ] Adicionar gráfico de evolução de peso no PDF (se disponível)
+- [ ] Criar botão "Gerar PDF" ao final da página do Cartão Pré-natal
+- [ ] Testar geração de PDF com dados reais de gestantes

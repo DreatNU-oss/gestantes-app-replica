@@ -885,5 +885,130 @@ export const appRouter = router({
         return { success: true, dados };
       }),
   }),
+
+  // Geração de PDF do Cartão Pré-natal
+  pdf: router({
+    gerarCartaoPrenatal: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { gerarPdfCartaoPrenatal } = await import('./gerarPdfCartao');
+        const { getGestanteById, getConsultasByGestanteId, getExamesByGestanteId } = await import('./db');
+        const { buscarUltrassons } = await import('./ultrassons');
+        const { calcularMarcosImportantes } = await import('./marcos');
+        
+        // Buscar dados da gestante
+        const gestante = await getGestanteById(input.gestanteId);
+        if (!gestante) {
+          throw new Error('Gestante não encontrada');
+        }
+
+        // Buscar consultas
+        const consultas = await getConsultasByGestanteId(input.gestanteId);
+
+        // Buscar ultrassons
+        const ultrassons = await buscarUltrassons(input.gestanteId);
+
+        // Buscar exames
+        const exames = await getExamesByGestanteId(input.gestanteId);
+
+        // Calcular marcos importantes
+        let marcos: any[] = [];
+        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+          const igFormatado = `${gestante.igUltrassomSemanas}s${gestante.igUltrassomDias || 0}d`;
+          marcos = calcularMarcosImportantes(gestante.dataUltrassom, igFormatado);
+        }
+
+        // Calcular idade
+        let idade: number | null = null;
+        if (gestante.dataNascimento) {
+          const nascimento = new Date(gestante.dataNascimento);
+          const hoje = new Date();
+          idade = hoje.getFullYear() - nascimento.getFullYear();
+          const m = hoje.getMonth() - nascimento.getMonth();
+          if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+          }
+        }
+
+        // Calcular DPP pela DUM (280 dias)
+        let dppDUM: string | null = null;
+        if (gestante.dum) {
+          const dum = new Date(gestante.dum);
+          const dpp = new Date(dum);
+          dpp.setDate(dpp.getDate() + 280);
+          dppDUM = dpp.toLocaleDateString('pt-BR');
+        }
+
+        // Calcular DPP pelo US
+        let dppUS: string | null = null;
+        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+          const dataUS = new Date(gestante.dataUltrassom);
+          const semanas = gestante.igUltrassomSemanas;
+          const dias = gestante.igUltrassomDias || 0;
+          const totalDiasIG = semanas * 7 + dias;
+          const dpp = new Date(dataUS);
+          dpp.setDate(dpp.getDate() + (280 - totalDiasIG));
+          dppUS = dpp.toLocaleDateString('pt-BR');
+        }
+
+        // Preparar dados para o PDF
+        const dadosPDF = {
+          gestante: {
+            nome: gestante.nome,
+            idade,
+            dum: gestante.dum,
+            dppDUM,
+            dppUS,
+            gesta: gestante.gesta,
+            para: gestante.para,
+            abortos: gestante.abortos,
+            partosNormais: gestante.partosNormais,
+            cesareas: gestante.cesareas,
+          },
+          consultas: consultas.map((c: any) => ({
+            dataConsulta: new Date(c.dataConsulta).toLocaleDateString('pt-BR'),
+            igDUM: c.igDUM || '-',
+            igUS: c.igUS || null,
+            peso: c.peso,
+            pa: c.pa,
+            bcf: c.bcf,
+            mf: c.mf,
+            observacoes: c.observacoes,
+          })),
+          marcos: marcos.map((m: any) => ({
+            titulo: m.titulo,
+            data: m.data,
+            periodo: m.periodo,
+          })),
+          ultrassons: ultrassons.map((u: any) => ({
+            data: new Date(u.data).toLocaleDateString('pt-BR'),
+            ig: u.igUS || u.igDUM || '-',
+            tipo: u.tipoUltrassom || '-',
+            observacoes: u.observacoes || null,
+          })),
+          exames: exames.flatMap((e: any) => {
+            const resultado = typeof e.resultado === 'string' ? JSON.parse(e.resultado) : e.resultado;
+            return Object.entries(resultado).map(([nome, valor]: [string, any]) => ({
+              tipo: nome,
+              data: new Date(e.data).toLocaleDateString('pt-BR'),
+              resultado: typeof valor === 'object' ? (valor?.resultado || '-') : (valor || '-'),
+              trimestre: e.trimestre || 1,
+            }));
+          }),
+        };
+
+        // Gerar PDF
+        const pdfBuffer = await gerarPdfCartaoPrenatal(dadosPDF);
+        
+        // Retornar PDF como base64
+        return {
+          success: true,
+          pdf: pdfBuffer.toString('base64'),
+          filename: `cartao-prenatal-${gestante.nome.replace(/\s+/g, '-').toLowerCase()}.pdf`,
+        };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

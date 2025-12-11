@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
 import {
@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/table";
 import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { GraficoPeso } from "@/components/GraficoPeso";
+import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function CartaoPrenatal() {
   const [, setLocation] = useLocation();
@@ -34,6 +37,8 @@ export default function CartaoPrenatal() {
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
+  const [isGerandoPDF, setIsGerandoPDF] = useState(false);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
 
   const [formData, setFormData] = useState({
@@ -88,6 +93,41 @@ export default function CartaoPrenatal() {
     },
   });
 
+  const handleGerarPDF = async () => {
+    if (!pdfRef.current || !gestante) return;
+    
+    setIsGerandoPDF(true);
+    try {
+      // Capturar o componente como imagem
+      const canvas = await html2canvas(pdfRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      
+      // Criar PDF
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, imgWidth, imgHeight);
+      
+      // Download
+      pdf.save(`cartao-prenatal-${gestante.nome.replace(/ /g, "-")}.pdf`);
+      toast.success("PDF gerado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      toast.error("Erro ao gerar PDF");
+    } finally {
+      setIsGerandoPDF(false);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       dataConsulta: getDataHoje(),
@@ -100,6 +140,64 @@ export default function CartaoPrenatal() {
     });
     setMostrarFormulario(false);
     setConsultaEditando(null);
+  };
+
+  const calcularMarcos = () => {
+    if (!gestante?.calculado?.dppUS) return [];
+    
+    const dppUS = new Date(gestante.calculado.dppUS);
+    const marcos = [];
+    
+    // Concepção
+    const concepcao = new Date(dppUS);
+    concepcao.setDate(concepcao.getDate() - 280);
+    marcos.push({ titulo: "Concepção", data: concepcao.toLocaleDateString("pt-BR") });
+    
+    // Morfológico 1º Tri (11-14 semanas)
+    const morf1Inicio = new Date(concepcao);
+    morf1Inicio.setDate(morf1Inicio.getDate() + 77);
+    const morf1Fim = new Date(concepcao);
+    morf1Fim.setDate(morf1Fim.getDate() + 98);
+    marcos.push({ titulo: "Morfológico 1º Tri", data: `${morf1Inicio.toLocaleDateString("pt-BR")} a ${morf1Fim.toLocaleDateString("pt-BR")}` });
+    
+    // 13 Semanas
+    const s13 = new Date(concepcao);
+    s13.setDate(s13.getDate() + 91);
+    marcos.push({ titulo: "13 Semanas", data: s13.toLocaleDateString("pt-BR") });
+    
+    // Morfológico 2º Tri (20-24 semanas)
+    const morf2Inicio = new Date(concepcao);
+    morf2Inicio.setDate(morf2Inicio.getDate() + 140);
+    const morf2Fim = new Date(concepcao);
+    morf2Fim.setDate(morf2Fim.getDate() + 168);
+    marcos.push({ titulo: "Morfológico 2º Tri", data: `${morf2Inicio.toLocaleDateString("pt-BR")} a ${morf2Fim.toLocaleDateString("pt-BR")}` });
+    
+    // Vacina dTpa (27 semanas)
+    const dtpa = new Date(concepcao);
+    dtpa.setDate(dtpa.getDate() + 189);
+    marcos.push({ titulo: "Vacina dTpa", data: dtpa.toLocaleDateString("pt-BR") });
+    
+    // Vacina Bronquiolite (32-36 semanas)
+    const bronqInicio = new Date(concepcao);
+    bronqInicio.setDate(bronqInicio.getDate() + 224);
+    const bronqFim = new Date(concepcao);
+    bronqFim.setDate(bronqFim.getDate() + 252);
+    marcos.push({ titulo: "Vacina Bronquiolite", data: `${bronqInicio.toLocaleDateString("pt-BR")} a ${bronqFim.toLocaleDateString("pt-BR")}` });
+    
+    // Termo Precoce (37 semanas)
+    const termoPrecoce = new Date(concepcao);
+    termoPrecoce.setDate(termoPrecoce.getDate() + 259);
+    marcos.push({ titulo: "Termo Precoce", data: termoPrecoce.toLocaleDateString("pt-BR") });
+    
+    // Termo Completo (39 semanas)
+    const termoCompleto = new Date(concepcao);
+    termoCompleto.setDate(termoCompleto.getDate() + 273);
+    marcos.push({ titulo: "Termo Completo", data: termoCompleto.toLocaleDateString("pt-BR") });
+    
+    // DPP (40 semanas)
+    marcos.push({ titulo: "DPP (40 semanas)", data: dppUS.toLocaleDateString("pt-BR") });
+    
+    return marcos;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -656,6 +754,48 @@ export default function CartaoPrenatal() {
               />
             </CardContent>
           </Card>
+        )}
+
+        {/* Botão Gerar PDF */}
+        {gestante && (
+          <div className="flex justify-end mt-6">
+            <Button
+              onClick={handleGerarPDF}
+              disabled={isGerandoPDF}
+              size="lg"
+              className="bg-[#8B4049] hover:bg-[#6d3239]"
+            >
+              {isGerandoPDF ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Gerando PDF...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                  </svg>
+                  Gerar Cartão Pré-natal em PDF
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
+        {/* Componente invisível para geração de PDF */}
+
+        {gestante && (
+          <CartaoPrenatalPDF
+            ref={pdfRef}
+            gestante={gestante}
+            consultas={consultas || []}
+            marcos={calcularMarcos()}
+            ultrassons={[]}
+            exames={[]}
+          />
         )}
       </div>
     </GestantesLayout>
