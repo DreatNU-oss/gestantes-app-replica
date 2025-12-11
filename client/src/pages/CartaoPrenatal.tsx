@@ -218,6 +218,65 @@ export default function CartaoPrenatal() {
         y += 5;
       }
       
+      // Marcos Importantes
+      if (gestante.calculado?.dppUS) {
+        if (y > 230) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Marcos Importantes da Gesta\u00e7\u00e3o', 20, y);
+        y += 10;
+        
+        const dppUS = new Date(gestante.calculado.dppUS);
+        const concepcao = new Date(dppUS);
+        concepcao.setDate(concepcao.getDate() - 280);
+        
+        const marcosData = [
+          { titulo: 'Concep\u00e7\u00e3o', data: concepcao, color: [168, 85, 247] }, // purple-500
+          { titulo: 'Morfol\u00f3gico 1\u00ba Tri (11-13s)', inicio: new Date(concepcao.getTime() + 77*24*60*60*1000), fim: new Date(concepcao.getTime() + 98*24*60*60*1000), color: [16, 185, 129] }, // emerald-500
+          { titulo: '13 Semanas', data: new Date(concepcao.getTime() + 91*24*60*60*1000), color: [59, 130, 246] }, // blue-500
+          { titulo: 'Morfol\u00f3gico 2\u00ba Tri (20-24s)', inicio: new Date(concepcao.getTime() + 140*24*60*60*1000), fim: new Date(concepcao.getTime() + 168*24*60*60*1000), color: [6, 182, 212] }, // cyan-500
+          { titulo: 'Vacina dTpa (27s)', data: new Date(concepcao.getTime() + 189*24*60*60*1000), color: [249, 115, 22] }, // orange-500
+          { titulo: 'Vacina Bronquiolite (32-36s)', inicio: new Date(concepcao.getTime() + 224*24*60*60*1000), fim: new Date(concepcao.getTime() + 252*24*60*60*1000), color: [234, 179, 8] }, // yellow-500
+          { titulo: 'Termo Precoce (37s)', data: new Date(concepcao.getTime() + 259*24*60*60*1000), color: [6, 182, 212] }, // cyan-500
+          { titulo: 'Termo Completo (39s)', data: new Date(concepcao.getTime() + 273*24*60*60*1000), color: [34, 197, 94] }, // green-500
+          { titulo: 'DPP (40 semanas)', data: dppUS, color: [244, 63, 94] }, // rose-500
+        ];
+        
+        pdf.setFontSize(9);
+        marcosData.forEach((marco: any) => {
+          if (y > 270) {
+            pdf.addPage();
+            y = 20;
+          }
+          
+          // Desenhar ret\u00e2ngulo colorido
+          pdf.setFillColor(marco.color[0], marco.color[1], marco.color[2]);
+          pdf.setDrawColor(marco.color[0] * 0.8, marco.color[1] * 0.8, marco.color[2] * 0.8);
+          pdf.roundedRect(20, y - 3, 170, 7, 1, 1, 'FD');
+          
+          // Texto do marco (branco para contraste)
+          pdf.setTextColor(255, 255, 255);
+          pdf.setFont(undefined, 'bold');
+          pdf.text(marco.titulo, 22, y + 2);
+          
+          // Data
+          const dataTexto = marco.inicio 
+            ? `${marco.inicio.toLocaleDateString('pt-BR')} a ${marco.fim.toLocaleDateString('pt-BR')}`
+            : marco.data.toLocaleDateString('pt-BR');
+          pdf.text(dataTexto, 180, y + 2, { align: 'right' });
+          
+          pdf.setFont(undefined, 'normal');
+          y += 9;
+        });
+        
+        pdf.setTextColor(0, 0, 0);
+        y += 5;
+      }
+      
       // Exames Laboratoriais
       if (exames && exames.length > 0) {
         if (y > 250) {

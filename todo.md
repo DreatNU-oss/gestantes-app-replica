@@ -681,3 +681,11 @@
 - [x] Adicionar mais espaçamento abaixo do logo
 - [x] Adicionar coluna IG (Idade Gestacional) no histórico de consultas do PDF
 - [x] Testar PDF com todas as melhorias
+
+
+## Adicionar Marcos Importantes ao PDF (11/12/2025)
+
+- [x] Verificar estrutura e cores dos marcos importantes no aplicativo
+- [x] Mapear cores RGB dos marcos para uso no PDF
+- [x] Implementar seção de Marcos Importantes no PDF com cores
+- [x] Testar PDF com Marcos Importantes coloridos
