@@ -720,3 +720,11 @@
 - [x] Adicionar botão Voltar na página Gerenciar Médicos
 - [x] Testar navegação em todas as páginas
 - [x] Testar PDF com cores suavizadas
+
+
+## Ajustes de Layout no PDF e Página (11/12/2025)
+
+- [x] Aumentar espaçamento entre logotipo e título "Cartão de Pré-natal" no PDF
+- [x] Centralizar logotipo no topo do PDF
+- [x] Testar PDF com ajustes de espaçamento e centralização
+- [x] Corrigir posicionamento do título na página Cartão de Pré-natal (adicionar mb-2)

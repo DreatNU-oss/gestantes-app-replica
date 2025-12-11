@@ -129,13 +129,16 @@ export default function CartaoPrenatal() {
           logoImg.onerror = reject;
         });
         
-        // Adicionar logo (largura 60mm, altura 26.7mm - mantendo aspect ratio 2.25:1)
-        pdf.addImage(logoImg, 'PNG', 20, y, 60, 26.7);
+        // Adicionar logo centralizado (largura 60mm, altura 26.7mm - mantendo aspect ratio 2.25:1)
+        const logoWidth = 60;
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const logoX = (pageWidth - logoWidth) / 2; // Centralizar horizontalmente
+        pdf.addImage(logoImg, 'PNG', logoX, y, logoWidth, 26.7);
       } catch (error) {
         console.warn('Erro ao carregar logo:', error);
       }
       
-      y += 30; // Espaço após o logo
+      y += 35; // Espaço após o logo (aumentado de 30 para 35)
       
       // Título abaixo do logo
       pdf.setFontSize(18);
@@ -690,7 +693,7 @@ export default function CartaoPrenatal() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h2 className="text-3xl font-bold text-foreground">Cartão de Pré-natal</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-2">Cartão de Pré-natal</h2>
             <p className="text-muted-foreground">Registre e acompanhe as consultas pré-natais</p>
           </div>
         </div>
