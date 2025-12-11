@@ -150,11 +150,21 @@ export default function CartaoPrenatal() {
       pdf.setTextColor(0, 0, 0);
       pdf.text(`Nome: ${gestante.nome}`, 20, y);
       y += 7;
-      pdf.text(`Gesta: ${gestante.gesta || '-'}`, 20, y);
-      y += 7;
-      pdf.text(`Para: ${gestante.para || '-'}`, 20, y);
-      y += 7;
-      pdf.text(`Abortos: ${gestante.abortos || '-'}`, 20, y);
+      
+      // Formatar dados obstétricos no padrão médico (ex: G5P3(2PC1PN)A1)
+      const gesta = gestante.gesta || 0;
+      const para = gestante.para || 0;
+      const cesareas = gestante.cesareas || 0;
+      const partosNormais = gestante.partosNormais || 0;
+      const abortos = gestante.abortos || 0;
+      
+      let notacaoObstetrica = `G${gesta}P${para}`;
+      if (para > 0) {
+        notacaoObstetrica += `(${cesareas}PC${partosNormais}PN)`;
+      }
+      notacaoObstetrica += `A${abortos}`;
+      
+      pdf.text(notacaoObstetrica, 20, y);
       y += 7;
       pdf.text(`DPP pela DUM: ${gestante.calculado.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}`, 20, y);
       y += 7;

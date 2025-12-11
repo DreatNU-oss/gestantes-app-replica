@@ -666,3 +666,10 @@
 - [x] Adicionar coluna BCF no histórico de consultas
 - [x] Adicionar coluna MF no histórico de consultas
 - [x] Testar PDF com todas as correções
+
+
+## Reformatar Dados Obstétricos no PDF (11/12/2025)
+
+- [x] Implementar notação médica padrão para dados obstétricos (ex: G5P3(2PC1PN)A1)
+- [x] Substituir linhas separadas por formato compacto em uma linha
+- [x] Testar PDF com nova formatação
