@@ -704,3 +704,9 @@
 - [x] Investigar onde a idade é calculada no backend (campo calculado.idade)
 - [x] Implementar cálculo correto baseado na data de nascimento
 - [x] Testar PDF para verificar se idade aparece corretamente
+
+
+## Melhorias no Gráfico de Acompanhamento de Peso (11/12/2025)
+
+- [x] Adicionar peso da consulta por escrito no gráfico (simplificado - apenas peso)
+- [x] Testar gráfico para verificar se labels aparecem corretamente

@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, ComposedChart } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, ComposedChart, Label, LabelList } from 'recharts';
 
 interface ConsultaComIG {
   data: string;
@@ -273,7 +273,43 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
             }}
             connectNulls={false}
             name="Peso real"
-          />
+          >
+            <LabelList
+              dataKey="pesoReal"
+              position="top"
+              content={(props: any) => {
+                const { x, y, value, index } = props;
+                if (!value) return null;
+                
+                const payload = dadosGrafico[index];
+                if (!payload || !payload.pesoReal) return null;
+                
+                // Mostrar apenas o peso
+                const textoLabel = `${value.toFixed(1)} kg`;
+                
+                // Determinar cor baseado na posição
+                let corTexto = '#22c55e'; // verde padrão
+                if (payload.pesoReal > payload.pesoMax) {
+                  corTexto = '#ef4444'; // vermelho se acima
+                } else if (payload.pesoReal < payload.pesoMin) {
+                  corTexto = '#f97316'; // laranja se abaixo
+                }
+                
+                return (
+                  <text
+                    x={x}
+                    y={y - 10}
+                    fill={corTexto}
+                    fontSize={12}
+                    fontWeight="bold"
+                    textAnchor="middle"
+                  >
+                    {textoLabel}
+                  </text>
+                );
+              }}
+            />
+          </Line>
         </ComposedChart>
       </ResponsiveContainer>
 
