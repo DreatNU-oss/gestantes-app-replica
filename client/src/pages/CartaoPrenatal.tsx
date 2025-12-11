@@ -135,11 +135,13 @@ export default function CartaoPrenatal() {
         console.warn('Erro ao carregar logo:', error);
       }
       
-      // Título ao lado do logo
+      y += 30; // Espaço após o logo
+      
+      // Título abaixo do logo
       pdf.setFontSize(18);
       pdf.setTextColor(139, 64, 73);
-      pdf.text('Cartão de Pré-natal', 105, y + 13, { align: 'center' });
-      y += 35;
+      pdf.text('Cartão de Pré-natal', 20, y);
+      y += 15;
       
       // Dados da Gestante
       pdf.setFontSize(14);
@@ -148,7 +150,8 @@ export default function CartaoPrenatal() {
       
       pdf.setFontSize(10);
       pdf.setTextColor(0, 0, 0);
-      pdf.text(`Nome: ${gestante.nome}`, 20, y);
+      const idade = gestante.calculado?.idade || '-';
+      pdf.text(`Nome: ${gestante.nome} - Idade: ${idade} anos`, 20, y);
       y += 7;
       
       // Formatar dados obstétricos no padrão médico (ex: G5P3(2PC1PN)A1)
@@ -247,31 +250,53 @@ export default function CartaoPrenatal() {
         ];
         
         pdf.setFontSize(9);
-        marcosData.forEach((marco: any) => {
-          if (y > 270) {
+        
+        // Organizar marcos em 2 colunas
+        let coluna = 0;
+        let xPos = 20;
+        const larguraColuna = 85;
+        const espacoEntreLinhas = 9;
+        
+        marcosData.forEach((marco: any, index: number) => {
+          if (y > 265 && coluna === 0) {
             pdf.addPage();
             y = 20;
           }
           
-          // Desenhar ret\u00e2ngulo colorido
+          // Calcular posição X baseado na coluna
+          xPos = coluna === 0 ? 20 : 110;
+          
+          // Desenhar retângulo colorido
           pdf.setFillColor(marco.color[0], marco.color[1], marco.color[2]);
           pdf.setDrawColor(marco.color[0] * 0.8, marco.color[1] * 0.8, marco.color[2] * 0.8);
-          pdf.roundedRect(20, y - 3, 170, 7, 1, 1, 'FD');
+          pdf.roundedRect(xPos, y - 3, larguraColuna, 7, 1, 1, 'FD');
           
           // Texto do marco (branco para contraste)
           pdf.setTextColor(255, 255, 255);
           pdf.setFont(undefined, 'bold');
-          pdf.text(marco.titulo, 22, y + 2);
+          pdf.text(marco.titulo, xPos + 2, y + 2);
           
-          // Data
+          // Data (ajustar para caber na coluna)
           const dataTexto = marco.inicio 
-            ? `${marco.inicio.toLocaleDateString('pt-BR')} a ${marco.fim.toLocaleDateString('pt-BR')}`
+            ? `${marco.inicio.toLocaleDateString('pt-BR').substring(0, 5)} a ${marco.fim.toLocaleDateString('pt-BR').substring(0, 5)}`
             : marco.data.toLocaleDateString('pt-BR');
-          pdf.text(dataTexto, 180, y + 2, { align: 'right' });
+          pdf.setFontSize(8);
+          pdf.text(dataTexto, xPos + larguraColuna - 2, y + 2, { align: 'right' });
+          pdf.setFontSize(9);
           
           pdf.setFont(undefined, 'normal');
-          y += 9;
+          
+          // Alternar entre colunas
+          coluna = coluna === 0 ? 1 : 0;
+          if (coluna === 0) {
+            y += espacoEntreLinhas;
+          }
         });
+        
+        // Se terminou em coluna 1, avançar y
+        if (coluna === 1) {
+          y += espacoEntreLinhas;
+        }
         
         pdf.setTextColor(0, 0, 0);
         y += 5;
@@ -402,10 +427,12 @@ export default function CartaoPrenatal() {
       }
       
       
-      // Download
-      const filename = `cartao-prenatal-${gestante.nome.replace(/ /g, "-").toLowerCase()}.pdf`;
-      pdf.save(filename);
-      toast.success("PDF gerado com sucesso!");
+      // Abrir PDF em nova aba ao invés de baixar
+      const pdfBlob = pdf.output('blob');
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+      
+      toast.success("PDF aberto em nova aba!");
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
       toast.error(`Erro ao gerar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);

@@ -689,3 +689,11 @@
 - [x] Mapear cores RGB dos marcos para uso no PDF
 - [x] Implementar seção de Marcos Importantes no PDF com cores
 - [x] Testar PDF com Marcos Importantes coloridos
+
+
+## Melhorias no Layout do PDF (11/12/2025)
+
+- [x] Mover título "Cartão de Pré-Natal" para baixo do logotipo
+- [x] Adicionar idade da gestante na mesma linha do nome
+- [x] Organizar marcos importantes em 2 colunas (2 por linha)
+- [x] Abrir PDF em nova aba para visualização antes de baixar
