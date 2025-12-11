@@ -28,9 +28,11 @@ import {
   Activity,
   BarChart3,
   Settings,
-  Baby
+  Baby,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { trpc } from "@/lib/trpc";
@@ -44,8 +46,11 @@ const menuItems = [
   { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos" },
   { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas" },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas" },
-  { icon: Settings, label: "Gerenciar Planos", path: "/gerenciar-planos" },
-  { icon: Settings, label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
+];
+
+const configMenuItems = [
+  { label: "Gerenciar Planos", path: "/gerenciar-planos" },
+  { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
 ];
 
 export default function GestantesLayout({
@@ -56,6 +61,7 @@ export default function GestantesLayout({
   const { loading, user } = useAuth();
   const [location, setLocation] = useLocation();
   const logoutMutation = trpc.auth.logout.useMutation();
+  const [configOpen, setConfigOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -98,6 +104,34 @@ export default function GestantesLayout({
                     isActive={location === item.path}
                   >
                     <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              
+              {/* Submenu Configurações */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setConfigOpen(!configOpen)}
+                  isActive={configMenuItems.some(item => location === item.path)}
+                >
+                  <Settings className="h-4 w-4" />
+                  <span>Configurações</span>
+                  {configOpen ? (
+                    <ChevronDown className="ml-auto h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="ml-auto h-4 w-4" />
+                  )}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              {/* Subitens de Configurações */}
+              {configOpen && configMenuItems.map((item) => (
+                <SidebarMenuItem key={item.path} className="pl-6">
+                  <SidebarMenuButton
+                    onClick={() => setLocation(item.path)}
+                    isActive={location === item.path}
+                  >
                     <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

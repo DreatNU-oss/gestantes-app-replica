@@ -744,3 +744,11 @@
 - [x] Ajustar exibição de PA (Pressão Arterial) para mostrar "-" quando NULL
 - [x] Ajustar exibição de AU (Altura Uterina) para mostrar "-" quando NULL (com conversão mm para cm)
 - [x] Testar PDF com consultas
+
+## Organização de Submenu - CONCLUÍDO (11/12/2025)
+
+- [x] Adicionar submenu "Configurações" no menu lateral do GestantesLayout
+- [x] Criar estrutura expansível com seta para mostrar/ocultar submenus
+- [x] Incluir "Gerenciar Planos" e "Gerenciar Médicos" como itens do submenu
+- [x] Manter as páginas originais sem modificações
+- [x] Testar navegação e funcionamento completo
