@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/PhoneInput";
+import { EmailInput } from "@/components/EmailInput";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -192,11 +193,10 @@ export default function FormularioGestante({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
-                <Input
+                <EmailInput
                   id="email"
-                  type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, email: value })}
                 />
               </div>
             </div>

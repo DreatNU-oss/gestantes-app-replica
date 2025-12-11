@@ -801,3 +801,11 @@
 - [x] Adicionar validação regex no backend (formato brasileiro)
 - [x] Atualizar FormularioGestante para usar PhoneInput
 - [x] Testar máscara automática no navegador
+
+
+## Validação de E-mail (11/12/2025)
+- [x] Criar componente EmailInput com validação em tempo real
+- [x] Adicionar feedback visual (ícone de check verde/X vermelho)
+- [x] Implementar validação regex no backend
+- [x] Atualizar FormularioGestante para usar EmailInput
+- [x] Testar validação com e-mails válidos e inválidos
