@@ -728,3 +728,11 @@
 - [x] Centralizar logotipo no topo do PDF
 - [x] Testar PDF com ajustes de espaçamento e centralização
 - [x] Corrigir posicionamento do título na página Cartão de Pré-natal (adicionar mb-2)
+
+
+## Ajuste Fino de Espaçamento - Cabeçalho Cartão de Pré-natal (11/12/2025)
+
+- [x] Comparar estrutura HTML completa entre Cartão de Pré-natal e Exames Laboratoriais
+- [x] Identificar todas as diferenças de classes CSS e espaçamentos
+- [x] Ajustar Cartão de Pré-natal para ficar exatamente igual (remover container mx-auto py-6)
+- [x] Testar e comparar visualmente lado a lado
