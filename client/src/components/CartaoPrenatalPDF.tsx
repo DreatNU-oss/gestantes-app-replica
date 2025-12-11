@@ -20,14 +20,17 @@ export const CartaoPrenatalPDF = forwardRef<HTMLDivElement, CartaoPrenatalPDFPro
       <div
         ref={ref}
         style={{
-          position: "absolute",
-          left: "-9999px",
+          position: "fixed",
+          top: 0,
+          left: 0,
           width: "210mm",
           padding: "20mm",
           backgroundColor: "white",
           fontFamily: "Arial, sans-serif",
           fontSize: "12px",
           lineHeight: "1.5",
+          visibility: "hidden",
+          pointerEvents: "none",
         }}
       >
         {/* Cabeçalho com Logo */}

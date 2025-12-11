@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
 import {
@@ -102,42 +102,84 @@ export default function CartaoPrenatal() {
   });
 
   const handleGerarPDF = async () => {
-    if (!pdfRef.current || !gestante) return;
+    if (!gestante) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
     
     setIsGerandoPDF(true);
     try {
-      // Capturar o componente como imagem
-      const canvas = await html2canvas(pdfRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        ignoreElements: (el) => {
-          // Ignorar elementos que podem ter cores OKLCH
-          const style = window.getComputedStyle(el);
-          const bgColor = style.backgroundColor;
-          const color = style.color;
-          return bgColor.includes('oklch') || color.includes('oklch');
-        },
-      });
-      
-      // Criar PDF
+      // Criar PDF diretamente com jsPDF
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
       });
       
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Adicionar conteúdo ao PDF
+      let y = 20;
       
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, imgWidth, imgHeight);
+      // Título
+      pdf.setFontSize(20);
+      pdf.setTextColor(139, 64, 73);
+      pdf.text('Cartão de Pré-natal', 105, y, { align: 'center' });
+      y += 15;
+      
+      // Dados da Gestante
+      pdf.setFontSize(14);
+      pdf.text('Dados da Gestante', 20, y);
+      y += 10;
+      
+      pdf.setFontSize(10);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`Nome: ${gestante.nome}`, 20, y);
+      y += 7;
+      pdf.text(`Gesta: ${gestante.gesta || '-'}`, 20, y);
+      y += 7;
+      pdf.text(`Para: ${gestante.para || '-'}`, 20, y);
+      y += 7;
+      pdf.text(`Abortos: ${gestante.abortos || '-'}`, 20, y);
+      y += 7;
+      pdf.text(`DPP pela DUM: ${gestante.calculado.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}`, 20, y);
+      y += 7;
+      pdf.text(`DPP pelo Ultrassom: ${gestante.calculado.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}`, 20, y);
+      y += 15;
+      
+      // Histórico de Consultas
+      if (consultas && consultas.length > 0) {
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Histórico de Consultas', 20, y);
+        y += 10;
+        
+        pdf.setFontSize(9);
+        pdf.setTextColor(0, 0, 0);
+        
+        consultas.forEach((consulta: any) => {
+          if (y > 270) {
+            pdf.addPage();
+            y = 20;
+          }
+          
+          pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')}`, 20, y);
+          y += 5;
+          pdf.text(`Peso: ${consulta.peso}kg | PA: ${consulta.pressaoArterial} | AU: ${consulta.alturaUterina}cm`, 20, y);
+          y += 5;
+          if (consulta.observacoes) {
+            pdf.text(`Obs: ${consulta.observacoes}`, 20, y);
+            y += 5;
+          }
+          y += 3;
+        });
+      }
       
       // Download
-      pdf.save(`cartao-prenatal-${gestante.nome.replace(/ /g, "-")}.pdf`);
+      const filename = `cartao-prenatal-${gestante.nome.replace(/ /g, "-").toLowerCase()}.pdf`;
+      pdf.save(filename);
       toast.success("PDF gerado com sucesso!");
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
-      toast.error("Erro ao gerar PDF");
+      toast.error(`Erro ao gerar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     } finally {
       setIsGerandoPDF(false);
     }
