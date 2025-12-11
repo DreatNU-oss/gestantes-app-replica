@@ -211,7 +211,9 @@ export default function CartaoPrenatal() {
           
           pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG: ${igTexto}`, 20, y);
           y += 5;
-          pdf.text(`Peso: ${pesoFormatado} | PA: ${consulta.pressaoArterial} | AU: ${consulta.alturaUterina}cm`, 20, y);
+          const paFormatado = consulta.pressaoArterial || '-';
+          const auFormatado = consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)}cm` : '-';
+          pdf.text(`Peso: ${pesoFormatado} | PA: ${paFormatado} | AU: ${auFormatado}`, 20, y);
           y += 5;
           pdf.text(`BCF: ${bcf} | MF: ${mf}`, 20, y);
           y += 5;

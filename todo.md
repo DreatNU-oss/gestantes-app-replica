@@ -736,3 +736,11 @@
 - [x] Identificar todas as diferenças de classes CSS e espaçamentos
 - [x] Ajustar Cartão de Pré-natal para ficar exatamente igual (remover container mx-auto py-6)
 - [x] Testar e comparar visualmente lado a lado
+
+
+## Ajuste de Valores NULL no PDF (11/12/2025)
+
+- [x] Localizar código de geração do histórico de consultas no PDF
+- [x] Ajustar exibição de PA (Pressão Arterial) para mostrar "-" quando NULL
+- [x] Ajustar exibição de AU (Altura Uterina) para mostrar "-" quando NULL (com conversão mm para cm)
+- [x] Testar PDF com consultas
