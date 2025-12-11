@@ -60,11 +60,11 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
-  const { data: ultrassons } = trpc.ultrassons.list.useQuery(
+  const { data: ultrassons } = trpc.ultrassom.listByGestante.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
-  const { data: exames } = trpc.exames.listByGestante.useQuery(
+  const { data: exames } = trpc.exames.list.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
@@ -107,10 +107,17 @@ export default function CartaoPrenatal() {
     setIsGerandoPDF(true);
     try {
       // Capturar o componente como imagem
-      const canvas = await html2canvas(pdfRef.current, {
+      const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
+        ignoreElements: (el) => {
+          // Ignorar elementos que podem ter cores OKLCH
+          const style = window.getComputedStyle(el);
+          const bgColor = style.backgroundColor;
+          const color = style.color;
+          return bgColor.includes('oklch') || color.includes('oklch');
+        },
       });
       
       // Criar PDF

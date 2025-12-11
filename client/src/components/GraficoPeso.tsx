@@ -258,6 +258,7 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
               
               return (
                 <circle
+                  key={`dot-${payload.semana}`}
                   cx={cx}
                   cy={cy}
                   r={6}

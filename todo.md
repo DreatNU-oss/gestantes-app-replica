@@ -626,3 +626,11 @@
 - [x] Adicionar seção de Ultrassons ao PDF
 - [x] Adicionar seção de Exames Laboratoriais ao PDF
 - [x] Testar PDF com dados completos (Camila Zanco não tem ultrassons/exames cadastrados)
+
+
+## Correção de Erros Críticos (11/12/2025)
+
+- [x] Corrigir procedure tRPC inexistente: `exames.listByGestante`
+- [x] Corrigir procedure tRPC inexistente: `ultrassons.list`
+- [x] Corrigir erro de cores OKLCH no html2canvas (componente CartaoPrenatalPDF)
+- [x] Corrigir warning de key prop no componente Line do gráfico
