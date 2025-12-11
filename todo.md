@@ -634,3 +634,11 @@
 - [x] Corrigir procedure tRPC inexistente: `ultrassons.list`
 - [x] Corrigir erro de cores OKLCH no html2canvas (componente CartaoPrenatalPDF)
 - [x] Corrigir warning de key prop no componente Line do gráfico
+
+
+## Melhorias no PDF do Cartão Pré-natal (11/12/2025)
+
+- [x] Adicionar tabela de exames laboratoriais ao PDF
+- [x] Adicionar tabela de ultrassons ao PDF
+- [x] Formatar tabelas com bordas e cabeçalhos
+- [x] Testar PDF com dados reais de gestantes

@@ -171,7 +171,133 @@ export default function CartaoPrenatal() {
           }
           y += 3;
         });
+        y += 5;
       }
+      
+      // Exames Laboratoriais
+      if (exames && exames.length > 0) {
+        if (y > 250) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Exames Laboratoriais', 20, y);
+        y += 10;
+        
+        // Cabeçalho da tabela
+        pdf.setFontSize(9);
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Data', 20, y);
+        pdf.text('Tipo de Exame', 50, y);
+        pdf.text('IG', 120, y);
+        pdf.text('Resultado', 140, y);
+        y += 5;
+        
+        // Linha separadora
+        pdf.setDrawColor(139, 64, 73);
+        pdf.line(20, y, 190, y);
+        y += 5;
+        
+        pdf.setFont(undefined, 'normal');
+        
+        exames.forEach((exame: any) => {
+          if (y > 270) {
+            pdf.addPage();
+            y = 20;
+            // Repetir cabeçalho na nova página
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Data', 20, y);
+            pdf.text('Tipo de Exame', 50, y);
+            pdf.text('IG', 120, y);
+            pdf.text('Resultado', 140, y);
+            y += 5;
+            pdf.line(20, y, 190, y);
+            y += 5;
+            pdf.setFont(undefined, 'normal');
+          }
+          
+          const dataExame = exame.dataExame ? new Date(exame.dataExame).toLocaleDateString('pt-BR') : '-';
+          const ig = exame.igSemanas !== null && exame.igDias !== null ? `${exame.igSemanas}s${exame.igDias}d` : '-';
+          const resultado = exame.resultado || '-';
+          
+          pdf.text(dataExame, 20, y);
+          pdf.text(exame.tipoExame, 50, y);
+          pdf.text(ig, 120, y);
+          pdf.text(resultado.substring(0, 30), 140, y); // Limitar tamanho do resultado
+          y += 5;
+        });
+        y += 5;
+      }
+      
+      // Ultrassons
+      if (ultrassons && ultrassons.length > 0) {
+        if (y > 250) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Ultrassons', 20, y);
+        y += 10;
+        
+        // Cabeçalho da tabela
+        pdf.setFontSize(9);
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Data', 20, y);
+        pdf.text('Tipo', 50, y);
+        pdf.text('IG', 100, y);
+        pdf.text('Dados', 120, y);
+        y += 5;
+        
+        // Linha separadora
+        pdf.setDrawColor(139, 64, 73);
+        pdf.line(20, y, 190, y);
+        y += 5;
+        
+        pdf.setFont(undefined, 'normal');
+        
+        ultrassons.forEach((us: any) => {
+          if (y > 270) {
+            pdf.addPage();
+            y = 20;
+            // Repetir cabeçalho na nova página
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Data', 20, y);
+            pdf.text('Tipo', 50, y);
+            pdf.text('IG', 100, y);
+            pdf.text('Dados', 120, y);
+            y += 5;
+            pdf.line(20, y, 190, y);
+            y += 5;
+            pdf.setFont(undefined, 'normal');
+          }
+          
+          const dataExame = us.dataExame ? new Date(us.dataExame).toLocaleDateString('pt-BR') : '-';
+          const tipo = us.tipoUltrassom?.replace(/_/g, ' ') || '-';
+          const ig = us.idadeGestacional || '-';
+          
+          // Extrair dados principais do JSON
+          let dadosTexto = '-';
+          if (us.dados) {
+            const dados = typeof us.dados === 'string' ? JSON.parse(us.dados) : us.dados;
+            if (dados.dpp) dadosTexto = `DPP: ${dados.dpp}`;
+            else if (dados.pesoFetal) dadosTexto = `Peso: ${dados.pesoFetal}g`;
+            else if (dados.bcf) dadosTexto = `BCF: ${dados.bcf}bpm`;
+          }
+          
+          pdf.text(dataExame, 20, y);
+          pdf.text(tipo.substring(0, 20), 50, y);
+          pdf.text(ig, 100, y);
+          pdf.text(dadosTexto.substring(0, 35), 120, y);
+          y += 5;
+        });
+      }
+      
       
       // Download
       const filename = `cartao-prenatal-${gestante.nome.replace(/ /g, "-").toLowerCase()}.pdf`;
