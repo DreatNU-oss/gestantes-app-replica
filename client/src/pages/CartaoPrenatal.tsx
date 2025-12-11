@@ -60,6 +60,14 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  const { data: ultrassons } = trpc.ultrassons.list.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+  const { data: exames } = trpc.exames.listByGestante.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
 
   const createMutation = trpc.consultasPrenatal.create.useMutation({
     onSuccess: () => {
@@ -793,8 +801,8 @@ export default function CartaoPrenatal() {
             gestante={gestante}
             consultas={consultas || []}
             marcos={calcularMarcos()}
-            ultrassons={[]}
-            exames={[]}
+            ultrassons={ultrassons || []}
+            exames={exames || []}
           />
         )}
       </div>

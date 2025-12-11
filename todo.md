@@ -618,3 +618,11 @@
 - [ ] Adicionar gráfico de evolução de peso no PDF (se disponível)
 - [ ] Criar botão "Gerar PDF" ao final da página do Cartão Pré-natal
 - [ ] Testar geração de PDF com dados reais de gestantes
+
+
+## Melhoria do PDF do Cartão Pré-natal (10/12/2025)
+- [x] Carregar dados de ultrassons cadastrados
+- [x] Carregar dados de exames laboratoriais cadastrados
+- [x] Adicionar seção de Ultrassons ao PDF
+- [x] Adicionar seção de Exames Laboratoriais ao PDF
+- [x] Testar PDF com dados completos (Camila Zanco não tem ultrassons/exames cadastrados)
