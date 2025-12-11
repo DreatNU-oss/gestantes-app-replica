@@ -778,3 +778,8 @@
 - [x] Testar interface de envio de lembretes
 - [x] Testar histórico de mensagens
 - [x] Validar aviso de telefone não cadastrado
+
+## Bug: Erro na página CartaoPrenatal (11/12/2025)
+- [x] Investigar erro "Cannot read properties of undefined (reading 'length')"
+- [x] Adicionar validações para prevenir acesso a propriedades undefined
+- [x] Testar correção na página /cartao-prenatal

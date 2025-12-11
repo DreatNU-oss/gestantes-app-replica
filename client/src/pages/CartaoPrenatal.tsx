@@ -1052,7 +1052,7 @@ export default function CartaoPrenatal() {
         )}
 
         {/* Gráfico de Peso */}
-        {gestante && consultas.length > 0 && gestante.altura && gestante.pesoInicial && (
+        {gestante && consultas && consultas.length > 0 && gestante.altura && gestante.pesoInicial && (
           <Card>
             <CardHeader>
               <CardTitle>Evolução de Peso Gestacional</CardTitle>
