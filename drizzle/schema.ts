@@ -307,21 +307,4 @@ export type InsertUltrassom = typeof ultrassons.$inferInsert;
 /**
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
-export const mensagensWhatsapp = mysqlTable("mensagensWhatsapp", {
-  id: int("id").autoincrement().primaryKey(),
-  gestanteId: int("gestanteId").notNull(),
-  telefone: varchar("telefone", { length: 20 }).notNull(),
-  tipoMensagem: varchar("tipoMensagem", { length: 100 }).notNull(), // Ex: "lembrete_vacina", "consulta", etc
-  templateUsado: varchar("templateUsado", { length: 100 }), // Nome do template
-  mensagem: text("mensagem").notNull(),
-  helenaMessageId: varchar("helenaMessageId", { length: 100 }), // ID retornado pela API Helena
-  helenaSessionId: varchar("helenaSessionId", { length: 100 }), // Session ID retornado pela API
-  status: mysqlEnum("status", ["processando", "enviado", "erro"]).default("processando").notNull(),
-  mensagemErro: text("mensagemErro"),
-  dataEnvio: timestamp("dataEnvio").defaultNow().notNull(),
-  enviadoPor: int("enviadoPor").notNull(), // userId de quem enviou
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
 
-export type MensagemWhatsapp = typeof mensagensWhatsapp.$inferSelect;
-export type InsertMensagemWhatsapp = typeof mensagensWhatsapp.$inferInsert;

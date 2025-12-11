@@ -783,3 +783,14 @@
 - [x] Investigar erro "Cannot read properties of undefined (reading 'length')"
 - [x] Adicionar validações para prevenir acesso a propriedades undefined
 - [x] Testar correção na página /cartao-prenatal
+
+## Remoção da funcionalidade WhatsApp (11/12/2025)
+- [x] Remover componente EnviarLembreteWhatsApp.tsx
+- [x] Remover componente HistoricoWhatsApp.tsx
+- [x] Remover imports de WhatsApp do DetalhesGestante.tsx
+- [x] Remover router whatsapp do routers.ts
+- [x] Remover arquivo server/helena.ts
+- [x] Remover arquivo server/helena.test.ts
+- [x] Remover tabela mensagensWhatsapp do schema
+- [x] Remover secret HELENA_API_TOKEN
+- [x] Testar sistema após remoção

@@ -2,8 +2,6 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Edit } from "lucide-react";
-import { EnviarLembreteWhatsApp } from "@/components/EnviarLembreteWhatsApp";
-import { HistoricoWhatsApp } from "@/components/HistoricoWhatsApp";
 
 interface DetalhesGestanteProps {
   gestanteId: number;
@@ -48,17 +46,10 @@ export default function DetalhesGestante({
             <p className="text-muted-foreground">Detalhes da gestante</p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <EnviarLembreteWhatsApp
-            gestanteId={gestanteId}
-            gestanteNome={gestante.nome}
-            telefone={gestante.telefone}
-          />
-          <Button onClick={onEdit}>
-            <Edit className="h-4 w-4 mr-2" />
-            Editar
-          </Button>
-        </div>
+        <Button onClick={onEdit}>
+          <Edit className="h-4 w-4 mr-2" />
+          Editar
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -174,9 +165,6 @@ export default function DetalhesGestante({
           </CardContent>
         </Card>
       </div>
-
-      {/* Histórico de Mensagens WhatsApp */}
-      <HistoricoWhatsApp gestanteId={gestanteId} />
     </div>
   );
 }
