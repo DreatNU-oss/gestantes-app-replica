@@ -263,7 +263,21 @@ export const appRouter = router({
     create: protectedProcedure
       .input(z.object({
         nome: z.string(),
-        telefone: z.string().optional(),
+        telefone: z.string().optional().refine(
+          (val) => {
+            if (!val) return true; // Telefone é opcional
+            const digits = val.replace(/\D/g, "");
+            // Deve ter 10 (fixo) ou 11 (celular) dígitos
+            if (digits.length !== 10 && digits.length !== 11) return false;
+            // DDD deve estar entre 11 e 99
+            const ddd = parseInt(digits.substring(0, 2));
+            if (ddd < 11 || ddd > 99) return false;
+            // Se for celular (11 dígitos), o primeiro dígito após o DDD deve ser 9
+            if (digits.length === 11 && digits[2] !== "9") return false;
+            return true;
+          },
+          { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
+        ),
         email: z.string().optional(),
         dataNascimento: z.string().optional(),
         planoSaudeId: z.number().optional(),
@@ -311,7 +325,21 @@ export const appRouter = router({
       .input(z.object({
         id: z.number(),
         nome: z.string().optional(),
-        telefone: z.string().optional(),
+        telefone: z.string().optional().refine(
+          (val) => {
+            if (!val) return true; // Telefone é opcional
+            const digits = val.replace(/\D/g, "");
+            // Deve ter 10 (fixo) ou 11 (celular) dígitos
+            if (digits.length !== 10 && digits.length !== 11) return false;
+            // DDD deve estar entre 11 e 99
+            const ddd = parseInt(digits.substring(0, 2));
+            if (ddd < 11 || ddd > 99) return false;
+            // Se for celular (11 dígitos), o primeiro dígito após o DDD deve ser 9
+            if (digits.length === 11 && digits[2] !== "9") return false;
+            return true;
+          },
+          { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
+        ),
         email: z.string().optional(),
         dataNascimento: z.string().optional(),
         planoSaudeId: z.number().optional(),

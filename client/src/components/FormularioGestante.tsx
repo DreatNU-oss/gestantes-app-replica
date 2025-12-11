@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/PhoneInput";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -183,10 +184,10 @@ export default function FormularioGestante({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="telefone">Telefone</Label>
-                <Input
+                <PhoneInput
                   id="telefone"
                   value={formData.telefone}
-                  onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, telefone: value })}
                 />
               </div>
               <div className="space-y-2">

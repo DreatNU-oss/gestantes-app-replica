@@ -794,3 +794,10 @@
 - [x] Remover tabela mensagensWhatsapp do schema
 - [x] Remover secret HELENA_API_TOKEN
 - [x] Testar sistema após remoção
+
+## Validação de Telefone (11/12/2025)
+- [x] Instalar biblioteca react-imask (compatível com React 19)
+- [x] Criar componente PhoneInput com máscara (00) 00000-0000
+- [x] Adicionar validação regex no backend (formato brasileiro)
+- [x] Atualizar FormularioGestante para usar PhoneInput
+- [x] Testar máscara automática no navegador
