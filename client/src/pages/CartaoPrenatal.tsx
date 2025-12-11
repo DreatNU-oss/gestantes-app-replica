@@ -129,8 +129,8 @@ export default function CartaoPrenatal() {
           logoImg.onerror = reject;
         });
         
-        // Adicionar logo (largura 40mm, altura proporcional)
-        pdf.addImage(logoImg, 'PNG', 20, y, 40, 10);
+        // Adicionar logo (largura 50mm, altura 22.2mm - mantendo aspect ratio 2.25:1)
+        pdf.addImage(logoImg, 'PNG', 20, y, 50, 22.2);
       } catch (error) {
         console.warn('Erro ao carregar logo:', error);
       }
@@ -138,8 +138,8 @@ export default function CartaoPrenatal() {
       // Título ao lado do logo
       pdf.setFontSize(18);
       pdf.setTextColor(139, 64, 73);
-      pdf.text('Cartão de Pré-natal', 105, y + 7, { align: 'center' });
-      y += 20;
+      pdf.text('Cartão de Pré-natal', 105, y + 11, { align: 'center' });
+      y += 27;
       
       // Dados da Gestante
       pdf.setFontSize(14);
@@ -177,9 +177,15 @@ export default function CartaoPrenatal() {
             y = 20;
           }
           
+          const pesoFormatado = consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : '-';
+          const bcf = consulta.bcf ? 'Sim' : 'Não';
+          const mf = consulta.mf ? 'Sim' : 'Não';
+          
           pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')}`, 20, y);
           y += 5;
-          pdf.text(`Peso: ${consulta.peso}kg | PA: ${consulta.pressaoArterial} | AU: ${consulta.alturaUterina}cm`, 20, y);
+          pdf.text(`Peso: ${pesoFormatado} | PA: ${consulta.pressaoArterial} | AU: ${consulta.alturaUterina}cm`, 20, y);
+          y += 5;
+          pdf.text(`BCF: ${bcf} | MF: ${mf}`, 20, y);
           y += 5;
           if (consulta.observacoes) {
             pdf.text(`Obs: ${consulta.observacoes}`, 20, y);

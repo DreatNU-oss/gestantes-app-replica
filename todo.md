@@ -651,3 +651,18 @@
 - [x] Adicionar logo ao cabeçalho do PDF
 - [x] Ajustar layout do cabeçalho para acomodar logo e título
 - [x] Testar PDF com logo em diferentes tamanhos
+
+
+## Correção de Logo no PDF (11/12/2025)
+
+- [x] Verificar dimensões originais do logo horizontal
+- [x] Ajustar proporções do logo no PDF para evitar distorção
+- [x] Aumentar tamanho do logo mantendo aspect ratio
+- [x] Testar PDF com logo corrigido
+
+## Correções no Histórico de Consultas do PDF (11/12/2025)
+
+- [x] Corrigir formatação do peso (mostrar em kg ao invés de gramas)
+- [x] Adicionar coluna BCF no histórico de consultas
+- [x] Adicionar coluna MF no histórico de consultas
+- [x] Testar PDF com todas as correções
