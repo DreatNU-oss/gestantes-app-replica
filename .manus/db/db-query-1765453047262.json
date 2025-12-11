@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, nome, dataNascimento FROM gestantes WHERE nome LIKE '%Vivian Mantovani%' LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataNascimento FROM gestantes WHERE nome LIKE '%Vivian Mantovani%' LIMIT 1",
+  "rows": [
+    {
+      "id": "330092",
+      "nome": "Vivian Mantovani Lopes e Silva",
+      "dataNascimento": "1990-01-15"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataNascimento\n330092\tVivian Mantovani Lopes e Silva\t1990-01-15\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

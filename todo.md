@@ -697,3 +697,10 @@
 - [x] Adicionar idade da gestante na mesma linha do nome
 - [x] Organizar marcos importantes em 2 colunas (2 por linha)
 - [x] Abrir PDF em nova aba para visualização antes de baixar
+
+
+## Correção do Cálculo de Idade da Gestante (11/12/2025)
+
+- [x] Investigar onde a idade é calculada no backend (campo calculado.idade)
+- [x] Implementar cálculo correto baseado na data de nascimento
+- [x] Testar PDF para verificar se idade aparece corretamente
