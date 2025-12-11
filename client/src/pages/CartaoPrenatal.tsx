@@ -117,13 +117,29 @@ export default function CartaoPrenatal() {
       });
       
       // Adicionar conteúdo ao PDF
-      let y = 20;
+      let y = 15;
       
-      // Título
-      pdf.setFontSize(20);
+      // Adicionar logo da clínica no cabeçalho
+      try {
+        // Logo horizontal da clínica Mais Mulher
+        const logoImg = new Image();
+        logoImg.src = '/logo-horizontal.png';
+        await new Promise((resolve, reject) => {
+          logoImg.onload = resolve;
+          logoImg.onerror = reject;
+        });
+        
+        // Adicionar logo (largura 40mm, altura proporcional)
+        pdf.addImage(logoImg, 'PNG', 20, y, 40, 10);
+      } catch (error) {
+        console.warn('Erro ao carregar logo:', error);
+      }
+      
+      // Título ao lado do logo
+      pdf.setFontSize(18);
       pdf.setTextColor(139, 64, 73);
-      pdf.text('Cartão de Pré-natal', 105, y, { align: 'center' });
-      y += 15;
+      pdf.text('Cartão de Pré-natal', 105, y + 7, { align: 'center' });
+      y += 20;
       
       // Dados da Gestante
       pdf.setFontSize(14);

@@ -642,3 +642,12 @@
 - [x] Adicionar tabela de ultrassons ao PDF
 - [x] Formatar tabelas com bordas e cabeçalhos
 - [x] Testar PDF com dados reais de gestantes
+
+
+## Adicionar Logo ao PDF do Cartão Pré-natal (11/12/2025)
+
+- [x] Localizar arquivo do logo da clínica Mais Mulher
+- [x] Converter logo para formato compatível com jsPDF (base64 ou URL)
+- [x] Adicionar logo ao cabeçalho do PDF
+- [x] Ajustar layout do cabeçalho para acomodar logo e título
+- [x] Testar PDF com logo em diferentes tamanhos
