@@ -60,7 +60,7 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
-  const { data: ultrassons } = trpc.ultrassom.listByGestante.useQuery(
+  const { data: ultrassons } = trpc.ultrassons.buscar.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
@@ -107,7 +107,7 @@ export default function CartaoPrenatal() {
     setIsGerandoPDF(true);
     try {
       // Capturar o componente como imagem
-      const canvas = await html2canvas(element, {
+      const canvas = await html2canvas(pdfRef.current, {
         scale: 2,
         useCORS: true,
         logging: false,
