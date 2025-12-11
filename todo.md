@@ -751,3 +751,29 @@
 - [x] Decisão: Manter gráfico apenas na página web (interativo)
 - [x] PDF contém informações textuais (dados da gestante, consultas, marcos)
 - [x] Gráfico completo disponível na aba Cartão de Pré-natal com todas as funcionalidades
+
+
+## Impressão de Cartão com Gráfico (11/12/2025)
+
+- [ ] Criar função para gerar página HTML completa com todas as informações do PDF
+- [ ] Capturar gráfico como imagem usando html2canvas
+- [ ] Incluir gráfico na página HTML gerada
+- [ ] Adicionar botão "Imprimir Cartão com Gráfico" na página
+- [ ] Abrir página HTML em nova aba para impressão
+- [ ] Testar impressão pelo navegador (Ctrl+P)
+
+
+## Configuração de Compartilhamento Social (11/12/2025)
+
+- [ ] Adicionar metadados Open Graph (og:image, og:title, og:description) no HTML
+- [ ] Configurar favicon personalizado com logo da clínica
+- [ ] Testar compartilhamento no WhatsApp para verificar se logo aparece corretamente
+
+
+## Configuração de Compartilhamento Social (11/12/2025)
+
+- [x] Copiar logo vertical para pasta pública do projeto
+- [x] Adicionar metadados Open Graph (og:image, og:title, og:description) no HTML
+- [x] Configurar favicon personalizado com logo da clínica
+- [x] Atualizar título do site para "Gestão de Pré-Natal - Clínica Mais Mulher"
+- [ ] Testar compartilhamento no WhatsApp após publicação

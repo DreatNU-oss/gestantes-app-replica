@@ -101,6 +101,247 @@ export default function CartaoPrenatal() {
     },
   });
 
+  const handleImprimirComGrafico = async () => {
+    if (!gestante) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
+
+    try {
+      // Capturar gráfico como imagem
+      const graficoElement = document.querySelector('.recharts-wrapper');
+      if (!graficoElement) {
+        toast.error('Gráfico não encontrado');
+        return;
+      }
+
+      const graficoCanvas = await html2canvas(graficoElement as HTMLElement, {
+        scale: 2,
+        backgroundColor: '#ffffff'
+      });
+      const graficoImg = graficoCanvas.toDataURL('image/png');
+
+      // Calcular marcos importantes
+      const marcosCalculados = [];
+      if (gestante.calculado?.dppUS) {
+        const dppUS = new Date(gestante.calculado.dppUS);
+        const concepcao = new Date(dppUS);
+        concepcao.setDate(concepcao.getDate() - 280);
+        
+        marcosCalculados.push(
+          { titulo: 'Concepção', dataFormatada: concepcao.toLocaleDateString('pt-BR'), cor: '#d8b4fe' },
+          { titulo: 'Morfológico 1º Tri (11-13s)', dataFormatada: `${new Date(concepcao.getTime() + 77*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)} a ${new Date(concepcao.getTime() + 98*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)}`, cor: '#6ee7b7' },
+          { titulo: '13 Semanas', dataFormatada: new Date(concepcao.getTime() + 91*24*60*60*1000).toLocaleDateString('pt-BR'), cor: '#93c5fd' },
+          { titulo: 'Morfológico 2º Tri (20-24s)', dataFormatada: `${new Date(concepcao.getTime() + 140*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)} a ${new Date(concepcao.getTime() + 168*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)}`, cor: '#67e8f9' },
+          { titulo: 'Vacina dTpa (27s)', dataFormatada: new Date(concepcao.getTime() + 189*24*60*60*1000).toLocaleDateString('pt-BR'), cor: '#fdba74' },
+          { titulo: 'Vacina Bronquiolite (32-36s)', dataFormatada: `${new Date(concepcao.getTime() + 224*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)} a ${new Date(concepcao.getTime() + 252*24*60*60*1000).toLocaleDateString('pt-BR').substring(0, 5)}`, cor: '#fde047' },
+          { titulo: 'Termo Precoce (37s)', dataFormatada: new Date(concepcao.getTime() + 259*24*60*60*1000).toLocaleDateString('pt-BR'), cor: '#67e8f9' },
+          { titulo: 'Termo Completo (39s)', dataFormatada: new Date(concepcao.getTime() + 273*24*60*60*1000).toLocaleDateString('pt-BR'), cor: '#86efac' },
+          { titulo: 'DPP (40 semanas)', dataFormatada: dppUS.toLocaleDateString('pt-BR'), cor: '#fda4af' }
+        );
+      }
+
+      // Gerar HTML completo
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cartão de Pré-natal - ${gestante.nomeCompleto}</title>
+  <style>
+    @media print {
+      @page { margin: 1cm; }
+      body { margin: 0; }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #8B4049;
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    h2 {
+      color: #8B4049;
+      font-size: 18px;
+      margin: 20px 0 10px 0;
+      border-bottom: 2px solid #8B4049;
+      padding-bottom: 5px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .info-item {
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #666;
+      font-size: 12px;
+    }
+    .info-value {
+      color: #333;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      font-size: 12px;
+    }
+    th {
+      background-color: #8B4049;
+      color: white;
+    }
+    .marcos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .marco-item {
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .marco-titulo {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .grafico {
+      margin: 20px 0;
+      text-align: center;
+      page-break-before: always;
+    }
+    .grafico img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="/logo-horizontal.png" alt="Mais Mulher" class="logo" />
+    <h1>Cartão de Pré-natal</h1>
+  </div>
+
+  <h2>Dados da Gestante</h2>
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-label">Nome Completo</div>
+      <div class="info-value">${gestante.nomeCompleto}</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Idade</div>
+      <div class="info-value">${gestante.calculado.idade || '-'} anos</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Telefone</div>
+      <div class="info-value">${gestante.telefone || '-'}</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Histórico Obstétrico</div>
+      <div class="info-value">G${gestante.gesta}P${gestante.para}${gestante.cesareas > 0 ? `(${gestante.cesareas})` : ''}A${gestante.abortos}</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">DPP pela DUM</div>
+      <div class="info-value">${gestante.calculado.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">DPP pelo Ultrassom</div>
+      <div class="info-value">${gestante.calculado.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}</div>
+    </div>
+  </div>
+
+  <h2>Histórico de Consultas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>IG</th>
+        <th>Peso</th>
+        <th>PA</th>
+        <th>AU</th>
+        <th>BCF</th>
+        <th>MF</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${(consultas || []).map(c => `
+        <tr>
+          <td>${new Date(c.dataConsulta).toLocaleDateString('pt-BR')}</td>
+          <td>${c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : '-'}</td>
+          <td>${c.peso ? (c.peso / 1000).toFixed(1) + ' kg' : '-'}</td>
+          <td>${c.pressaoArterial || '-'}</td>
+          <td>${c.alturaUterina ? (c.alturaUterina / 10).toFixed(1) + ' cm' : '-'}</td>
+          <td>${c.bcf ? 'Sim' : '-'}</td>
+          <td>${c.mf ? 'Sim' : '-'}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+
+  <h2>Marcos Importantes da Gestação</h2>
+  <div class="marcos-grid">
+    ${marcosCalculados.map(marco => `
+      <div class="marco-item" style="background-color: ${marco.cor}33; border-left: 4px solid ${marco.cor};">
+        <div class="marco-titulo">${marco.titulo}</div>
+        <div>${marco.dataFormatada}</div>
+      </div>
+    `).join('')}
+  </div>
+
+  <div class="grafico">
+    <h2>Evolução de Peso Gestacional</h2>
+    <img src="${graficoImg}" alt="Gráfico de Evolução de Peso" />
+  </div>
+
+  <script>
+    // Imprimir automaticamente ao carregar
+    window.onload = function() {
+      window.print();
+    };
+  </script>
+</body>
+</html>
+      `;
+
+      // Abrir em nova aba
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(html);
+        newWindow.document.close();
+      } else {
+        toast.error('Bloqueador de pop-ups impediu a abertura da página');
+      }
+    } catch (error: any) {
+      console.error('Erro ao gerar página:', error);
+      toast.error(`Erro ao gerar página: ${error.message}`);
+    }
+  };
+
   const handleGerarPDF = async () => {
     if (!gestante) {
       toast.error('Selecione uma gestante primeiro');
@@ -1078,29 +1319,44 @@ export default function CartaoPrenatal() {
         {/* Botão Gerar PDF */}
         {gestante && (
           <div className="flex justify-end mt-6">
-            <Button
-              onClick={handleGerarPDF}
-              disabled={isGerandoPDF}
-              size="lg"
-              className="bg-[#8B4049] hover:bg-[#6d3239]"
-            >
-              {isGerandoPDF ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Gerando PDF...
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-                  </svg>
-                  Gerar Cartão Pré-natal em PDF
-                </>
-              )}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleGerarPDF}
+                disabled={isGerandoPDF}
+                size="lg"
+                className="bg-[#8B4049] hover:bg-[#6d3239]"
+              >
+                {isGerandoPDF ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Gerando PDF...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                    </svg>
+                    Gerar Cartão Pré-natal em PDF
+                  </>
+                )}
+              </Button>
+              
+              <Button
+                onClick={handleImprimirComGrafico}
+                disabled={isGerandoPDF}
+                size="lg"
+                variant="outline"
+                className="border-[#8B4049] text-[#8B4049] hover:bg-[#8B4049] hover:text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+                </svg>
+                Imprimir Cartão com Gráfico
+              </Button>
+            </div>
           </div>
         )}
 
