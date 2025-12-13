@@ -818,3 +818,9 @@
 - [x] Implementar validação no backend (10-60 anos)
 - [x] Atualizar FormularioGestante para usar DateOfBirthInput
 - [x] Testar validação backend
+
+
+## Correção de Legibilidade no PDF (11/12/2025)
+- [x] Alterar cor do texto dos marcos importantes de branco para cor escura
+- [x] Testar legibilidade no PDF gerado
+- [x] Salvar checkpoint

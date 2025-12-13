@@ -276,8 +276,8 @@ export default function CartaoPrenatal() {
           pdf.setDrawColor(marco.color[0] * 0.8, marco.color[1] * 0.8, marco.color[2] * 0.8);
           pdf.roundedRect(xPos, y - 3, larguraColuna, 7, 1, 1, 'FD');
           
-          // Texto do marco (branco para contraste)
-          pdf.setTextColor(255, 255, 255);
+          // Texto do marco (cor escura para melhor legibilidade)
+          pdf.setTextColor(30, 30, 30);
           pdf.setFont(undefined, 'bold');
           pdf.text(marco.titulo, xPos + 2, y + 2);
           
