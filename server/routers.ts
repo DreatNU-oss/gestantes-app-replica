@@ -190,8 +190,10 @@ export const appRouter = router({
   }),
 
   gestantes: router({
-    list: protectedProcedure.query(async ({ ctx }) => {
-      const lista = await getGestantesByUserId(ctx.user.id);
+    list: protectedProcedure
+      .input(z.object({ searchTerm: z.string().optional() }).optional())
+      .query(async ({ ctx, input }) => {
+      const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm);
       
       // Adicionar cálculos para cada gestante
       return lista.map(g => {

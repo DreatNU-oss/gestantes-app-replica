@@ -128,12 +128,30 @@ export async function createGestante(data: InsertGestante): Promise<Gestante> {
   return getGestanteById(insertedId) as Promise<Gestante>;
 }
 
-export async function getGestantesByUserId(userId: number): Promise<Gestante[]> {
+// Função auxiliar para normalizar texto (remover acentos)
+function normalizeText(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+export async function getGestantesByUserId(userId: number, searchTerm?: string): Promise<Gestante[]> {
   const db = await getDb();
   if (!db) return [];
   
   // Retorna todas as gestantes (compartilhadas entre todos os usuários)
-  return db.select().from(gestantes);
+  const allGestantes = await db.select().from(gestantes);
+  
+  // Se houver termo de busca, filtrar por nome ignorando acentuação
+  if (searchTerm && searchTerm.trim()) {
+    const normalizedSearch = normalizeText(searchTerm.trim());
+    return allGestantes.filter(g => 
+      g.nome && normalizeText(g.nome).includes(normalizedSearch)
+    );
+  }
+  
+  return allGestantes;
 }
 
 export async function getGestanteById(id: number): Promise<Gestante | undefined> {

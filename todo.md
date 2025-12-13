@@ -824,3 +824,11 @@
 - [x] Alterar cor do texto dos marcos importantes de branco para cor escura
 - [x] Testar legibilidade no PDF gerado
 - [x] Salvar checkpoint
+
+
+## Busca Flexível sem Acentuação (13/12/2025)
+- [x] Criar função de normalização de texto (remover acentos)
+- [x] Atualizar endpoint de busca de gestantes no backend
+- [x] Atualizar Dashboard para usar busca do backend
+- [x] Testar busca com variações: Letícia/Leticia, Françoso/Francoso, Fabrícia/Fabricia
+- [x] Salvar checkpoint

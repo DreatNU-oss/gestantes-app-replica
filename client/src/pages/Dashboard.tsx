@@ -46,7 +46,7 @@ export default function Dashboard() {
   const [filterDppInicio, setFilterDppInicio] = useState<string>("");
   const [filterDppFim, setFilterDppFim] = useState<string>("");
   
-  const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();
+  const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm });
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
   const utils = trpc.useUtils();
@@ -65,7 +65,7 @@ export default function Dashboard() {
     if (!gestantes) return [];
     
     const filtered = gestantes.filter(g => {
-      const matchNome = g.nome.toLowerCase().includes(searchTerm.toLowerCase());
+      // Busca por nome já feita no backend (com normalização de acentos)
       const matchTipoParto = filterTipoParto === "todos" || g.tipoPartoDesejado === filterTipoParto;
       const matchMedico = filterMedico === "todos" || g.medicoId?.toString() === filterMedico;
       const matchPlano = filterPlano === "todos" || g.planoSaudeId?.toString() === filterPlano;
@@ -87,7 +87,7 @@ export default function Dashboard() {
         }
       }
       
-      return matchNome && matchTipoParto && matchMedico && matchPlano && matchDppPeriodo;
+      return matchTipoParto && matchMedico && matchPlano && matchDppPeriodo;
     });
     
     const sorted = [...filtered];
@@ -121,7 +121,7 @@ export default function Dashboard() {
       default:
         return sorted;
     }
-  }, [gestantes, sortBy, searchTerm, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim]);
+  }, [gestantes, sortBy, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim, searchTerm]);
 
   const handleSuccess = () => {
     setShowForm(false);
