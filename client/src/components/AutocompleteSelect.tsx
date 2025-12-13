@@ -16,6 +16,14 @@ interface AutocompleteSelectProps {
   className?: string;
 }
 
+// Função para normalizar texto removendo acentos
+function normalizeText(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
 export function AutocompleteSelect({
   options,
   value,
@@ -32,9 +40,9 @@ export function AutocompleteSelect({
   // Encontrar a opção selecionada
   const selectedOption = options.find((opt) => opt.id.toString() === value);
 
-  // Filtrar opções com base no termo de busca
+  // Filtrar opções com base no termo de busca (ignorando acentos)
   const filteredOptions = options.filter((opt) =>
-    opt.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeText(opt.nome).includes(normalizeText(searchTerm))
   );
 
   // Fechar dropdown ao clicar fora

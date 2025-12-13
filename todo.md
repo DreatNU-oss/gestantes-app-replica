@@ -832,3 +832,13 @@
 - [x] Atualizar Dashboard para usar busca do backend
 - [x] Testar busca com variações: Letícia/Leticia, Françoso/Francoso, Fabrícia/Fabricia
 - [x] Salvar checkpoint
+
+
+## Estender Busca Flexível para Outras Páginas (13/12/2025)
+- [x] Identificar componentes que usam busca de gestantes (AutocompleteSelect)
+- [x] Atualizar AutocompleteSelect para usar normalização de texto
+- [x] Testar busca no Cartão Pré-natal (Leticia → Letícia)
+- [x] Testar busca em Exames Laboratoriais (Francoso → Françoso)
+- [x] Testar busca em Ultrassons (Leticia → Leticia Petrin)
+- [x] Testar busca em Marcos Importantes (Francoso → Françoso)
+- [x] Salvar checkpoint
