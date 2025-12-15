@@ -123,6 +123,7 @@ export const CartaoPrenatalPDF = forwardRef<HTMLDivElement, CartaoPrenatalPDFPro
                   <th style={{ padding: "6px", border: "1px solid #ddd" }}>AU</th>
                   <th style={{ padding: "6px", border: "1px solid #ddd" }}>BCF</th>
                   <th style={{ padding: "6px", border: "1px solid #ddd" }}>MF</th>
+                  <th style={{ padding: "6px", border: "1px solid #ddd" }}>Conduta</th>
                   <th style={{ padding: "6px", border: "1px solid #ddd" }}>Observações</th>
                 </tr>
               </thead>
@@ -136,6 +137,27 @@ export const CartaoPrenatalPDF = forwardRef<HTMLDivElement, CartaoPrenatalPDFPro
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.au ? `${consulta.au} cm` : "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.bcf === 1 ? "Sim" : consulta.bcf === 0 ? "Não" : "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.mf === 1 ? "Sim" : consulta.mf === 0 ? "Não" : "-"}</td>
+                    <td style={{ padding: "6px", border: "1px solid #ddd" }}>
+                      {(() => {
+                        if (!consulta.conduta) return "-";
+                        try {
+                          const condutas = JSON.parse(consulta.conduta);
+                          if (condutas.length === 0) return "-";
+                          return (
+                            <div>
+                              {condutas.join(", ")}
+                              {consulta.condutaComplementacao && (
+                                <div style={{ marginTop: "4px", fontStyle: "italic" }}>
+                                  {consulta.condutaComplementacao}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        } catch {
+                          return "-";
+                        }
+                      })()}
+                    </td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.observacoes || "-"}</td>
                   </tr>
                 ))}

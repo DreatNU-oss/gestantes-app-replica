@@ -307,6 +307,21 @@ export type Ultrassom = typeof ultrassons.$inferSelect;
 export type InsertUltrassom = typeof ultrassons.$inferInsert;
 
 /**
+ * Tabela de condutas personalizadas
+ */
+export const condutasPersonalizadas = mysqlTable("condutasPersonalizadas", {
+  id: int("id").autoincrement().primaryKey(),
+  nome: varchar("nome", { length: 255 }).notNull(),
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  ordem: int("ordem").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CondutaPersonalizada = typeof condutasPersonalizadas.$inferSelect;
+export type InsertCondutaPersonalizada = typeof condutasPersonalizadas.$inferInsert;
+
+/**
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
 

@@ -29,7 +29,10 @@ import {
   CredencialHilum,
   alertasEnviados,
   InsertAlertaEnviado,
-  AlertaEnviado
+  AlertaEnviado,
+  condutasPersonalizadas,
+  InsertCondutaPersonalizada,
+  CondutaPersonalizada
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -465,4 +468,42 @@ export async function getAlertasByGestanteId(gestanteId: number): Promise<Alerta
   return db.select().from(alertasEnviados)
     .where(eq(alertasEnviados.gestanteId, gestanteId))
     .orderBy(desc(alertasEnviados.dataEnvio));
+}
+
+// ============ CONDUTAS PERSONALIZADAS ============
+
+export async function getCondutasPersonalizadas(): Promise<CondutaPersonalizada[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(condutasPersonalizadas)
+    .where(eq(condutasPersonalizadas.ativo, 1))
+    .orderBy(asc(condutasPersonalizadas.ordem), asc(condutasPersonalizadas.nome));
+}
+
+export async function createCondutaPersonalizada(data: InsertCondutaPersonalizada): Promise<CondutaPersonalizada> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(condutasPersonalizadas).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(condutasPersonalizadas).where(eq(condutasPersonalizadas.id, insertedId)).limit(1);
+  return inserted[0] as CondutaPersonalizada;
+}
+
+export async function updateCondutaPersonalizada(id: number, data: Partial<InsertCondutaPersonalizada>): Promise<CondutaPersonalizada | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(condutasPersonalizadas).set(data).where(eq(condutasPersonalizadas.id, id));
+  const updated = await db.select().from(condutasPersonalizadas).where(eq(condutasPersonalizadas.id, id)).limit(1);
+  return updated[0] || null;
+}
+
+export async function deleteCondutaPersonalizada(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(condutasPersonalizadas).set({ ativo: 0 }).where(eq(condutasPersonalizadas.id, id));
 }

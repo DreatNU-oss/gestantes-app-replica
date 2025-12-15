@@ -859,3 +859,12 @@
 - [x] Testar funcionalidade completa
 - [x] Corrigir textos dos checkboxes (remover hífens e ajustar ortografia)
 - [x] Salvar checkpoint
+
+## Condutas no PDF e Condutas Personalizadas (15/12/2025)
+- [x] Adicionar condutas ao componente PDF do Cartão Pré-natal
+- [x] Criar tabela no banco para condutas personalizadas
+- [x] Criar router para CRUD de condutas personalizadas
+- [x] Implementar interface para adicionar condutas personalizadas
+- [x] Combinar condutas predefinidas com personalizadas no formulário
+- [x] Testar funcionalidades (parcial - condutas salvando corretamente)
+- [x] Salvar checkpoint

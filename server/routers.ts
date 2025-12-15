@@ -42,7 +42,11 @@ import {
   updatePedidoExame,
   getCredencialByMedicoId,
   createAlertaEnviado,
-  getAlertasByGestanteId
+  getAlertasByGestanteId,
+  getCondutasPersonalizadas,
+  createCondutaPersonalizada,
+  updateCondutaPersonalizada,
+  deleteCondutaPersonalizada
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -1044,8 +1048,11 @@ export const appRouter = router({
             igUS: c.igUS || null,
             peso: c.peso,
             pa: c.pa,
+            au: c.au,
             bcf: c.bcf,
             mf: c.mf,
+            conduta: c.conduta,
+            condutaComplementacao: c.condutaComplementacao,
             observacoes: c.observacoes,
           })),
           marcos: marcos.map((m: any) => ({
@@ -1080,6 +1087,35 @@ export const appRouter = router({
           filename: `cartao-prenatal-${gestante.nome.replace(/\s+/g, '-').toLowerCase()}.pdf`,
         };
       }),
+  }),
+
+  // Condutas personalizadas
+  condutas: router({
+    list: protectedProcedure
+      .query(() => getCondutasPersonalizadas()),
+    
+    create: protectedProcedure
+      .input(z.object({
+        nome: z.string().min(1),
+        ordem: z.number().optional(),
+      }))
+      .mutation(({ input }) => createCondutaPersonalizada(input)),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        nome: z.string().optional(),
+        ordem: z.number().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return updateCondutaPersonalizada(id, data);
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteCondutaPersonalizada(input.id)),
   }),
 });
 export type AppRouter = typeof appRouter;

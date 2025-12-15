@@ -21,8 +21,11 @@ interface Consulta {
   igUS: string | null;
   peso: number | null;
   pa: string | null;
+  au: number | null;
   bcf: number | null;
   mf: number | null;
+  conduta: string | null;
+  condutaComplementacao: string | null;
   observacoes: string | null;
 }
 
@@ -252,26 +255,46 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
         <th>IG US</th>
         <th>Peso (kg)</th>
         <th>PA</th>
+        <th>AU (cm)</th>
         <th>BCF</th>
         <th>MF</th>
+        <th>Conduta</th>
         <th>Observações</th>
       </tr>
     </thead>
     <tbody>
       ${dados.consultas
         .map(
-          (c) => `
+          (c) => {
+            let condutaStr = "-";
+            if (c.conduta) {
+              try {
+                const condutas = JSON.parse(c.conduta);
+                if (condutas.length > 0) {
+                  condutaStr = condutas.join(", ");
+                  if (c.condutaComplementacao) {
+                    condutaStr += " | " + c.condutaComplementacao;
+                  }
+                }
+              } catch {
+                condutaStr = "-";
+              }
+            }
+            return `
         <tr>
           <td>${c.dataConsulta}</td>
           <td>${c.igDUM}</td>
           <td>${c.igUS || "-"}</td>
           <td>${c.peso ? (c.peso / 1000).toFixed(1) : "-"}</td>
           <td>${c.pa || "-"}</td>
+          <td>${c.au || "-"}</td>
           <td>${c.bcf === 1 ? "Sim" : c.bcf === 0 ? "Não" : "-"}</td>
           <td>${c.mf === 1 ? "Sim" : c.mf === 0 ? "Não" : "-"}</td>
+          <td style="max-width: 150px; word-wrap: break-word;">${condutaStr}</td>
           <td>${c.observacoes || "-"}</td>
         </tr>
-      `
+      `;
+          }
         )
         .join("")}
     </tbody>

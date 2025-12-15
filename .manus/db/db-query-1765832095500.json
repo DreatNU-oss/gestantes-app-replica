@@ -1,0 +1,45 @@
+{
+  "query": "SELECT id, gestanteId, dataConsulta, conduta, condutaComplementacao FROM consultasPrenatal ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, dataConsulta, conduta, condutaComplementacao FROM consultasPrenatal ORDER BY id DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "2220003",
+      "gestanteId": "330098",
+      "dataConsulta": "2025-12-15",
+      "conduta": "NULL",
+      "condutaComplementacao": "NULL"
+    },
+    {
+      "id": "2190002",
+      "gestanteId": "300004",
+      "dataConsulta": "2025-12-15",
+      "conduta": "NULL",
+      "condutaComplementacao": "NULL"
+    },
+    {
+      "id": "2160002",
+      "gestanteId": "330097",
+      "dataConsulta": "2025-12-15",
+      "conduta": "NULL",
+      "condutaComplementacao": "NULL"
+    },
+    {
+      "id": "2130002",
+      "gestanteId": "330058",
+      "dataConsulta": "2025-12-15",
+      "conduta": "NULL",
+      "condutaComplementacao": "NULL"
+    },
+    {
+      "id": "2100002",
+      "gestanteId": "330094",
+      "dataConsulta": "2025-12-15",
+      "conduta": "NULL",
+      "condutaComplementacao": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tdataConsulta\tconduta\tcondutaComplementacao\n2220003\t330098\t2025-12-15\tNULL\tNULL\n2190002\t300004\t2025-12-15\tNULL\tNULL\n2160002\t330097\t2025-12-15\tNULL\tNULL\n2130002\t330058\t2025-12-15\tNULL\tNULL\n2100002\t330094\t2025-12-15\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 120
+}

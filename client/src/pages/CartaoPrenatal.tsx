@@ -93,6 +93,35 @@ export default function CartaoPrenatal() {
     { enabled: !!gestanteSelecionada }
   );
 
+  // Buscar condutas personalizadas
+  const { data: condutasPersonalizadas, refetch: refetchCondutas } = trpc.condutas.list.useQuery();
+  const createCondutaMutation = trpc.condutas.create.useMutation({
+    onSuccess: () => {
+      toast.success("Conduta personalizada adicionada!");
+      refetchCondutas();
+      setNovaConduta("");
+      setMostrarAddConduta(false);
+    },
+    onError: (error) => {
+      toast.error("Erro ao adicionar conduta: " + error.message);
+    },
+  });
+  const deleteCondutaMutation = trpc.condutas.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Conduta removida!");
+      refetchCondutas();
+    },
+  });
+
+  const [novaConduta, setNovaConduta] = useState("");
+  const [mostrarAddConduta, setMostrarAddConduta] = useState(false);
+
+  // Combinar condutas predefinidas com personalizadas
+  const todasCondutas = [
+    ...OPCOES_CONDUTA,
+    ...(condutasPersonalizadas?.map(c => c.nome) || [])
+  ];
+
   const createMutation = trpc.consultasPrenatal.create.useMutation({
     onSuccess: () => {
       toast.success("Consulta registrada com sucesso!");
@@ -241,6 +270,41 @@ export default function CartaoPrenatal() {
           y += 5;
           pdf.text(`BCF: ${bcf} | MF: ${mf}`, 20, y);
           y += 5;
+          
+          // Adicionar condutas
+          if (consulta.conduta) {
+            try {
+              const condutas = JSON.parse(consulta.conduta);
+              if (condutas.length > 0) {
+                const condutaTexto = condutas.join(', ');
+                // Quebrar texto longo em múltiplas linhas
+                const maxWidth = 170;
+                const linhas = pdf.splitTextToSize(`Conduta: ${condutaTexto}`, maxWidth);
+                linhas.forEach((linha: string) => {
+                  if (y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                  }
+                  pdf.text(linha, 20, y);
+                  y += 5;
+                });
+              }
+            } catch (e) {
+              // Ignorar erro de parse
+            }
+          }
+          if (consulta.condutaComplementacao) {
+            const linhasCompl = pdf.splitTextToSize(`Complementação: ${consulta.condutaComplementacao}`, 170);
+            linhasCompl.forEach((linha: string) => {
+              if (y > 270) {
+                pdf.addPage();
+                y = 20;
+              }
+              pdf.text(linha, 20, y);
+              y += 5;
+            });
+          }
+          
           if (consulta.observacoes) {
             pdf.text(`Obs: ${consulta.observacoes}`, 20, y);
             y += 5;
@@ -931,8 +995,57 @@ export default function CartaoPrenatal() {
                 
                 {/* Seção de Conduta com Checkboxes */}
                 <div className="border rounded-lg p-4 bg-muted/30">
-                  <Label className="text-base font-semibold mb-3 block">Conduta:</Label>
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-base font-semibold">Conduta:</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setMostrarAddConduta(!mostrarAddConduta)}
+                      className="text-xs"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Adicionar Conduta
+                    </Button>
+                  </div>
+
+                  {/* Formulário para adicionar nova conduta */}
+                  {mostrarAddConduta && (
+                    <div className="mb-4 p-3 bg-background rounded-lg border flex gap-2">
+                      <Input
+                        value={novaConduta}
+                        onChange={(e) => setNovaConduta(e.target.value)}
+                        placeholder="Nome da nova conduta..."
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          if (novaConduta.trim()) {
+                            createCondutaMutation.mutate({ nome: novaConduta.trim() });
+                          }
+                        }}
+                        disabled={!novaConduta.trim() || createCondutaMutation.isPending}
+                      >
+                        Salvar
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setNovaConduta("");
+                          setMostrarAddConduta(false);
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {/* Condutas predefinidas */}
                     {OPCOES_CONDUTA.map((opcao) => (
                       <label
                         key={opcao}
@@ -947,6 +1060,42 @@ export default function CartaoPrenatal() {
                         <span className="text-sm text-muted-foreground">{opcao}</span>
                       </label>
                     ))}
+
+                    {/* Condutas personalizadas */}
+                    {condutasPersonalizadas && condutasPersonalizadas.length > 0 && (
+                      <>
+                        <div className="col-span-full border-t my-2 pt-2">
+                          <span className="text-xs text-muted-foreground font-medium">Condutas Personalizadas:</span>
+                        </div>
+                        {condutasPersonalizadas.map((conduta) => (
+                          <label
+                            key={`custom-${conduta.id}`}
+                            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors group"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={formData.conduta.includes(conduta.nome)}
+                              onChange={() => toggleConduta(conduta.nome)}
+                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            />
+                            <span className="text-sm text-muted-foreground flex-1">{conduta.nome}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (confirm(`Remover conduta "${conduta.nome}"?`)) {
+                                  deleteCondutaMutation.mutate({ id: conduta.id });
+                                }
+                              }}
+                              className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive/80 transition-opacity"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </label>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </div>
 
