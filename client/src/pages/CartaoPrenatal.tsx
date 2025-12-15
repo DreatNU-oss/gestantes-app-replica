@@ -41,6 +41,28 @@ export default function CartaoPrenatal() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
 
+  // Lista de opções de conduta predefinidas
+  const OPCOES_CONDUTA = [
+    "Rotina Laboratorial 1º Trimestre",
+    "Rotina Laboratorial 2º Trimestre",
+    "Rotina Laboratorial 3º Trimestre",
+    "Outros Exames Laboratoriais Específicos",
+    "US Obstétrico Endovaginal",
+    "US Morfológico 1º Trimestre",
+    "US Morfológico 2º Trimestre",
+    "US Obstétrico com Doppler",
+    "Ecocardiograma Fetal",
+    "Colhido Cultura para EGB",
+    "Antibioticoterapia",
+    "Progesterona Micronizada",
+    "Vacinas (Prescrevo ou Oriento)",
+    "Levotiroxina",
+    "AAS",
+    "Agendamento Cesárea",
+    "Indico Curetagem Uterina",
+    "Acompanhamento Rotina",
+  ];
+
   const [formData, setFormData] = useState({
     dataConsulta: getDataHoje(),
     peso: "",
@@ -48,6 +70,8 @@ export default function CartaoPrenatal() {
     alturaUterina: "",
     bcf: "",
     mf: "",
+    conduta: [] as string[],
+    condutaComplementacao: "",
     observacoes: "",
   });
 
@@ -454,10 +478,22 @@ export default function CartaoPrenatal() {
       alturaUterina: "",
       bcf: "",
       mf: "",
+      conduta: [],
+      condutaComplementacao: "",
       observacoes: "",
     });
     setMostrarFormulario(false);
     setConsultaEditando(null);
+  };
+
+  // Função para toggle de conduta no checkbox
+  const toggleConduta = (opcao: string) => {
+    setFormData(prev => ({
+      ...prev,
+      conduta: prev.conduta.includes(opcao)
+        ? prev.conduta.filter(c => c !== opcao)
+        : [...prev.conduta, opcao]
+    }));
   };
 
   const calcularMarcos = () => {
@@ -534,6 +570,8 @@ export default function CartaoPrenatal() {
       alturaUterina: formData.alturaUterina === "nao_palpavel" ? -1 : (formData.alturaUterina ? parseInt(formData.alturaUterina) * 10 : undefined), // -1 = não palpável, converter cm para mm
       bcf: formData.bcf ? parseInt(formData.bcf) : undefined,
       mf: formData.mf ? parseInt(formData.mf) : undefined,
+      conduta: formData.conduta.length > 0 ? JSON.stringify(formData.conduta) : undefined,
+      condutaComplementacao: formData.condutaComplementacao || undefined,
       observacoes: formData.observacoes || undefined,
     };
 
@@ -546,6 +584,14 @@ export default function CartaoPrenatal() {
 
   const handleEdit = (consulta: any) => {
     setConsultaEditando(consulta.id);
+    let condutaArray: string[] = [];
+    if (consulta.conduta) {
+      try {
+        condutaArray = JSON.parse(consulta.conduta);
+      } catch {
+        condutaArray = [];
+      }
+    }
     setFormData({
       dataConsulta: new Date(consulta.dataConsulta).toISOString().split('T')[0],
       peso: consulta.peso ? String(consulta.peso / 1000) : "",
@@ -553,6 +599,8 @@ export default function CartaoPrenatal() {
       alturaUterina: consulta.alturaUterina === -1 ? "nao_palpavel" : (consulta.alturaUterina ? String(consulta.alturaUterina / 10) : ""),
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
+      conduta: condutaArray,
+      condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
     });
     setMostrarFormulario(true);
@@ -880,6 +928,39 @@ export default function CartaoPrenatal() {
                     </select>
                   </div>
                 </div>
+                
+                {/* Seção de Conduta com Checkboxes */}
+                <div className="border rounded-lg p-4 bg-muted/30">
+                  <Label className="text-base font-semibold mb-3 block">Conduta:</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {OPCOES_CONDUTA.map((opcao) => (
+                      <label
+                        key={opcao}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.conduta.includes(opcao)}
+                          onChange={() => toggleConduta(opcao)}
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-muted-foreground">{opcao}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Conduta Complementação */}
+                <div>
+                  <Label>Conduta (complementação):</Label>
+                  <Textarea
+                    value={formData.condutaComplementacao}
+                    onChange={(e) => setFormData({ ...formData, condutaComplementacao: e.target.value })}
+                    placeholder="Complementação da conduta..."
+                    rows={2}
+                  />
+                </div>
+
                 <div>
                   <Label>Observações</Label>
                   <Textarea
@@ -989,6 +1070,7 @@ export default function CartaoPrenatal() {
                     <TableHead>AU</TableHead>
                     <TableHead>BCF</TableHead>
                     <TableHead>MF</TableHead>
+                    <TableHead>Conduta</TableHead>
                     <TableHead>Observações</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
@@ -1022,6 +1104,31 @@ export default function CartaoPrenatal() {
                           {consulta.mf === 1 ? (
                             <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
                           ) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {(() => {
+                            if (!consulta.conduta) return "-";
+                            try {
+                              const condutas = JSON.parse(consulta.conduta);
+                              if (condutas.length === 0) return "-";
+                              return (
+                                <div className="space-y-1">
+                                  {condutas.map((c: string, idx: number) => (
+                                    <span key={idx} className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 mr-1">
+                                      {c}
+                                    </span>
+                                  ))}
+                                  {consulta.condutaComplementacao && (
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                      {consulta.condutaComplementacao}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            } catch {
+                              return "-";
+                            }
+                          })()}
                         </TableCell>
                         <TableCell>{consulta.observacoes || "-"}</TableCell>
                         <TableCell>

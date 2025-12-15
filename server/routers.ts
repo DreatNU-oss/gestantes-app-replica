@@ -434,6 +434,8 @@ export const appRouter = router({
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
         mf: z.number().optional(),
+        conduta: z.string().optional(),
+        condutaComplementacao: z.string().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(({ input }) => {
@@ -455,6 +457,8 @@ export const appRouter = router({
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
         mf: z.number().optional(),
+        conduta: z.string().optional(),
+        condutaComplementacao: z.string().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(({ input }) => {

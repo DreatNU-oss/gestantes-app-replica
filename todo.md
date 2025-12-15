@@ -849,3 +849,13 @@
 - [x] Corrigir formatação de data na tabela (problema de timezone)
 - [x] Testar com dados da Camila Zanco
 - [x] Salvar checkpoint
+
+## Checkboxes para Conduta no Cartão Pré-natal (15/12/2025)
+- [x] Analisar estrutura atual do formulário de consultas
+- [x] Criar lista de opções de conduta predefinidas
+- [x] Implementar checkboxes no formulário de nova consulta
+- [x] Atualizar lógica de salvamento para filtrar apenas opções marcadas
+- [x] Exibir apenas condutas selecionadas no registro salvo
+- [x] Testar funcionalidade completa
+- [x] Corrigir textos dos checkboxes (remover hífens e ajustar ortografia)
+- [x] Salvar checkpoint

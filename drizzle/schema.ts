@@ -128,6 +128,8 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   alturaUterina: int("alturaUterina"), // em mm
   bcf: int("bcf"), // batimentos cardíacos fetais
   mf: int("mf"), // movimento fetal (1 = sim, 0 = não)
+  conduta: text("conduta"), // JSON array com condutas selecionadas
+  condutaComplementacao: text("condutaComplementacao"), // texto livre para complementação
   observacoes: text("observacoes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
