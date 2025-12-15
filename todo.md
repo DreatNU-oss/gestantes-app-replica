@@ -842,3 +842,10 @@
 - [x] Testar busca em Ultrassons (Leticia → Leticia Petrin)
 - [x] Testar busca em Marcos Importantes (Francoso → Françoso)
 - [x] Salvar checkpoint
+
+## Bug DPP 1 Dia Antes na Tabela do Dashboard (13/12/2025)
+- [x] Investigar código de formatação de DPP na tabela do Dashboard
+- [x] Comparar com código dos Alertas que está funcionando corretamente
+- [x] Corrigir formatação de data na tabela (problema de timezone)
+- [x] Testar com dados da Camila Zanco
+- [x] Salvar checkpoint

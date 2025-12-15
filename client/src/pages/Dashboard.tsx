@@ -34,6 +34,28 @@ import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 
 type SortOption = "nome" | "dpp-dum" | "dpp-us";
 
+// Função para formatar data de forma segura, evitando problemas de timezone
+const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
+  if (!dateValue) return "-";
+  
+  // Se for string no formato YYYY-MM-DD, parsear manualmente
+  if (typeof dateValue === 'string') {
+    const [year, month, day] = dateValue.split('T')[0].split('-').map(Number);
+    if (year && month && day) {
+      return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+    }
+  }
+  
+  // Se for Date object, usar getUTC para evitar shift de timezone
+  const date = new Date(dateValue);
+  if (isNaN(date.getTime())) return "-";
+  
+  const dia = String(date.getUTCDate()).padStart(2, '0');
+  const mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const ano = date.getUTCFullYear();
+  return `${dia}/${mes}/${ano}`;
+};
+
 export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -339,9 +361,7 @@ export default function Dashboard() {
                           ) : "-"}
                         </TableCell>
                         <TableCell>
-                          {g.calculado?.dpp 
-                            ? new Date(g.calculado.dpp).toLocaleDateString('pt-BR')
-                            : "-"}
+                          {formatarDataSegura(g.calculado?.dpp)}
                         </TableCell>
                         <TableCell>
                           {igUsBadge ? (
@@ -353,9 +373,7 @@ export default function Dashboard() {
                           ) : "-"}
                         </TableCell>
                         <TableCell>
-                          {g.calculado?.dppUS 
-                            ? new Date(g.calculado.dppUS).toLocaleDateString('pt-BR')
-                            : "-"}
+                          {formatarDataSegura(g.calculado?.dppUS)}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
