@@ -1053,3 +1053,10 @@
 - [x] Atualizar prompt para mencionar múltiplas páginas
 - [x] Aumentar limite de tokens para 4096 (permite mais exames)
 - [ ] Testar com PDF real de múltiplas páginas
+
+## Refatoração de Arquivos Backend (16/12/2025)
+- [x] Criar server/gestante-db.ts com funções de banco de dados
+- [x] Criar server/email-service.ts com lógica de envio de emails
+- [x] Criar server/gestante-router.ts com endpoints da API
+- [x] Registrar gestanteRouter no server/routers.ts
+- [x] Testar funcionamento da API refatorada (8 testes passando)

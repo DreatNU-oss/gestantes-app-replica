@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { gestanteRouter } from "./gestante-router";
 import { z } from "zod";
 import { 
   createGestante, 
@@ -138,6 +139,7 @@ function calculateAgeFromDate(dateString: string): number | null {
 
 export const appRouter = router({
   system: systemRouter,
+  gestante: gestanteRouter,
   
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
