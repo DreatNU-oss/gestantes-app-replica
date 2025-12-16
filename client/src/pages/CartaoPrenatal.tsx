@@ -759,7 +759,9 @@ export default function CartaoPrenatal() {
   };
 
   const formatarData = (data: Date | string) => {
-    const d = new Date(data);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dataStr = typeof data === 'string' ? data : data.toISOString().split('T')[0];
+    const d = new Date(dataStr + 'T12:00:00');
     return d.toLocaleDateString('pt-BR');
   };
 

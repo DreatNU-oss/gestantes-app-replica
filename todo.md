@@ -1021,3 +1021,8 @@
 - [x] Corrigir cálculo de DPP (erro de 1 dia - DUM 20/10/25 deve dar 27/07/26, não 26/07/26)
 - [x] Corrigir alteração de IG no Cartão de Pré-natal (usar campo idadeGestacional correto)
 - [x] Adicionar T12:00:00 em todas as conversões de data para evitar problemas de fuso horário
+
+## Correção de Data no Card do Cartão de Pré-natal (16/12/2025)
+- [x] Identificar onde a data está incorreta no card do topo (função formatarData)
+- [x] Corrigir conversão de data no card (adicionar T12:00:00)
+- [x] Aplicado em CartaoPrenatal.tsx linha 761-766
