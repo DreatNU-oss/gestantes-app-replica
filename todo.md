@@ -993,3 +993,11 @@
 - [x] Gerar ícone 1024x1024px para iOS (icon-ios-1024.png)
 - [x] Gerar versões alternativas com fundo vinho (icon-android-512-dark.png, icon-ios-1024-dark.png)
 - [x] Salvar na pasta app-assets/
+
+## Favicon do Site (16/12/2025)
+- [x] Gerar favicon.ico a partir da silhueta
+- [x] Gerar favicon em múltiplos tamanhos (16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
+- [x] Gerar apple-touch-icon (180x180)
+- [x] Gerar android-chrome icons (192x192, 512x512)
+- [x] Atualizar index.html com referências ao favicon
+- [x] Adicionar theme-color (vinho marsala #722F37)
