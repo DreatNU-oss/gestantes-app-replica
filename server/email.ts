@@ -168,6 +168,7 @@ export const templates = {
         <li>Rastreamento de anomalias cromossômicas</li>
       </ul>
       <p><strong>Por favor, agende seu exame com antecedência.</strong></p>
+      <p style="color: #666; font-size: 0.9em; margin-top: 15px;"><em>📌 Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem.</em></p>
     `,
   }),
   
@@ -186,6 +187,7 @@ export const templates = {
         <li>Análise da placenta e líquido amniótico</li>
       </ul>
       <p><strong>Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.</strong></p>
+      <p style="color: #666; font-size: 0.9em; margin-top: 15px;"><em>📌 Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem.</em></p>
     `,
   }),
 };
