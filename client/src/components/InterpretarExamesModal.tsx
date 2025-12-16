@@ -31,14 +31,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [allResultados, setAllResultados] = useState<Record<string, string>>({});
   const [lastDataColeta, setLastDataColeta] = useState<string | undefined>();
+  const [isDragging, setIsDragging] = useState(false);
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    
+  const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+  const validateAndAddFiles = (selectedFiles: File[]) => {
     const validFiles: FileWithStatus[] = [];
-    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     
     for (const file of selectedFiles) {
       // Validar tipo de arquivo
@@ -59,7 +59,36 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
     if (validFiles.length > 0) {
       setFiles(prev => [...prev, ...validFiles]);
     }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isProcessing) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
     
+    if (isProcessing) return;
+    
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    validateAndAddFiles(droppedFiles);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    validateAndAddFiles(selectedFiles);
     // Limpar input para permitir selecionar os mesmos arquivos novamente
     e.target.value = '';
   };
@@ -264,26 +293,44 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
             <Label htmlFor="file-upload" className="text-base font-semibold">
               Arquivos dos Exames
             </Label>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => document.getElementById('file-upload')?.click()}
-                className="w-full"
-                disabled={isProcessing}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                {files.length > 0 ? 'Adicionar Mais Arquivos' : 'Selecionar Arquivos'}
-              </Button>
-              <input
-                id="file-upload"
-                type="file"
-                accept=".pdf,image/jpeg,image/jpg,image/png,image/webp"
-                onChange={handleFileChange}
-                className="hidden"
-                multiple
-              />
+            
+            {/* Zona de Drag-and-Drop */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => !isProcessing && document.getElementById('file-upload')?.click()}
+              className={`
+                border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all
+                ${isDragging 
+                  ? 'border-primary bg-primary/10 scale-[1.02]' 
+                  : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50'
+                }
+                ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}
+              `}
+            >
+              <Upload className={`mx-auto h-8 w-8 mb-2 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
+              <p className="text-sm font-medium">
+                {isDragging ? 'Solte os arquivos aqui' : 'Arraste arquivos ou clique para selecionar'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                PDF, JPEG, PNG, WEBP (máx. 10MB cada)
+              </p>
+              {files.length > 0 && (
+                <p className="text-xs text-primary mt-2 font-medium">
+                  {files.length} arquivo(s) selecionado(s)
+                </p>
+              )}
             </div>
+            
+            <input
+              id="file-upload"
+              type="file"
+              accept=".pdf,image/jpeg,image/jpg,image/png,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
+              multiple
+            />
             
             {/* Lista de arquivos selecionados */}
             {files.length > 0 && (

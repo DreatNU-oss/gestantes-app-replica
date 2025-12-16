@@ -926,3 +926,9 @@
 - [x] Exibir informações de compressão (tamanho original → comprimido)
 - [ ] Testar funcionalidade (pendente - usuário testará depois)
 - [x] Salvar checkpoint
+
+## Drag-and-Drop para Upload de Arquivos (15/12/2025)
+- [x] Adicionar drag-and-drop no InterpretarUltrassomModal
+- [x] Adicionar drag-and-drop no InterpretarExamesModal
+- [ ] Testar funcionalidade (pendente - usuário testará depois)
+- [x] Salvar checkpoint
