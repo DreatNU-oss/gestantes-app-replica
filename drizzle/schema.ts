@@ -339,6 +339,58 @@ export type HistoricoInterpretacao = typeof historicoInterpretacoes.$inferSelect
 export type InsertHistoricoInterpretacao = typeof historicoInterpretacoes.$inferInsert;
 
 /**
+ * Tabela de códigos de acesso para gestantes (App Mobile)
+ */
+export const codigosAcessoGestante = mysqlTable("codigosAcessoGestante", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  codigo: varchar("codigo", { length: 6 }).notNull(), // Código de 6 dígitos
+  tipo: mysqlEnum("tipo", ["email", "sms", "whatsapp"]).notNull(),
+  destino: varchar("destino", { length: 320 }).notNull(), // Email ou telefone
+  usado: int("usado").default(0).notNull(), // 0 = não usado, 1 = usado
+  expiraEm: timestamp("expiraEm").notNull(), // Expira em 15 minutos
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type CodigoAcessoGestante = typeof codigosAcessoGestante.$inferSelect;
+export type InsertCodigoAcessoGestante = typeof codigosAcessoGestante.$inferInsert;
+
+/**
+ * Tabela de sessões de gestantes (App Mobile)
+ */
+export const sessoesGestante = mysqlTable("sessoesGestante", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  token: varchar("token", { length: 500 }).notNull(),
+  dispositivo: varchar("dispositivo", { length: 255 }), // Info do dispositivo
+  ip: varchar("ip", { length: 45 }),
+  ativo: int("ativo").default(1).notNull(),
+  ultimoAcesso: timestamp("ultimoAcesso").defaultNow().notNull(),
+  expiraEm: timestamp("expiraEm").notNull(), // Expira em 30 dias
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SessaoGestante = typeof sessoesGestante.$inferSelect;
+export type InsertSessaoGestante = typeof sessoesGestante.$inferInsert;
+
+/**
+ * Tabela de logs de acesso de gestantes (LGPD)
+ */
+export const logsAcessoGestante = mysqlTable("logsAcessoGestante", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  sessaoId: int("sessaoId"),
+  acao: varchar("acao", { length: 100 }).notNull(), // ex: "login", "visualizar_exames", "visualizar_consultas"
+  recurso: varchar("recurso", { length: 255 }), // ex: "/api/gestante/exames"
+  ip: varchar("ip", { length: 45 }),
+  userAgent: text("userAgent"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LogAcessoGestante = typeof logsAcessoGestante.$inferSelect;
+export type InsertLogAcessoGestante = typeof logsAcessoGestante.$inferInsert;
+
+/**
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
 

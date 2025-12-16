@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { uploadLaudoRouter } from "../uploadLaudo";
 import { processarLembretes } from "../lembretes";
+import gestanteApiRouter from "../gestanteApi";
 import { serveStatic, setupVite } from "./vite";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -39,6 +40,9 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Upload de laudos
   app.use(uploadLaudoRouter);
+  
+  // API REST para App da Gestante (Mobile)
+  app.use('/api/gestante', gestanteApiRouter);
   
   // Endpoint para processamento automático de lembretes (chamado por cron/scheduler)
   app.get('/api/cron/processar-lembretes', async (req, res) => {

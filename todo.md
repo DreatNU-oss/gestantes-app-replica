@@ -952,3 +952,30 @@
 - [x] Salvar interpretações no histórico (Ultrassons)
 - [x] Salvar interpretações no histórico (Exames Laboratoriais)
 - [x] Interface de visualização do histórico
+
+
+## API REST para App Nativo da Gestante - LGPD (15/12/2025)
+
+### Autenticação
+- [x] Endpoint de solicitação de código (email/telefone)
+- [x] Endpoint de validação de código
+- [x] Geração de JWT para gestante
+- [x] Tabela de códigos de acesso temporários
+
+### Endpoints da API
+- [x] GET /api/gestante/me - Dados da gestante logada
+- [x] GET /api/gestante/marcos - Marcos importantes
+- [x] GET /api/gestante/consultas - Consultas pré-natais
+- [x] GET /api/gestante/exames - Exames laboratoriais
+- [x] GET /api/gestante/ultrassons - Ultrassons
+- [x] GET /api/gestante/peso - Dados para curva de peso
+
+### Segurança e LGPD
+- [x] Middleware de autenticação para gestantes
+- [x] Isolamento de dados por gestanteId do token
+- [x] Logs de acesso para auditoria
+
+### Documentação
+- [x] Documentação completa da API (API_DOCUMENTACAO.md)
+- [x] Exemplos de requisições e respostas (React Native e Flutter)
+- [x] Guia de integração para desenvolvedor mobile
