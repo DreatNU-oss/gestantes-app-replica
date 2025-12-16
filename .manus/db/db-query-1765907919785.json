@@ -1,0 +1,20 @@
+{
+  "query": "SELECT * FROM ultrassons LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM ultrassons LIMIT 1",
+  "rows": [
+    {
+      "id": "60001",
+      "gestanteId": "330063",
+      "tipoUltrassom": "ecocardiograma_fetal",
+      "dataExame": "2025-12-08",
+      "idadeGestacional": "29 semanas",
+      "dados": "{\"conclusao\": \"REMODELAMENTO MIOCÁRDICO\"}",
+      "createdAt": "2025-12-10 21:12:55",
+      "updatedAt": "2025-12-10 21:12:55"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\tcreatedAt\tupdatedAt\n60001\t330063\tecocardiograma_fetal\t2025-12-08\t29 semanas\t{\"conclusao\": \"REMODELAMENTO MIOCÁRDICO\"}\t2025-12-10 21:12:55\t2025-12-10 21:12:55\n",
+  "stderr": "",
+  "execution_time_ms": 72
+}

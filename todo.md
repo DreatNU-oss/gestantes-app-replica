@@ -1016,3 +1016,8 @@
 - [x] Integrar feedback no histórico de interpretações (ultrassons e exames)
 - [x] Botão "Avaliar Precisão" em cada registro do histórico
 - [x] Endpoint de estatísticas de feedback disponível
+
+## Correção de Bugs - Cálculos (16/12/2025)
+- [x] Corrigir cálculo de DPP (erro de 1 dia - DUM 20/10/25 deve dar 27/07/26, não 26/07/26)
+- [x] Corrigir alteração de IG no Cartão de Pré-natal (usar campo idadeGestacional correto)
+- [x] Adicionar T12:00:00 em todas as conversões de data para evitar problemas de fuso horário

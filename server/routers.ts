@@ -1010,7 +1010,8 @@ export const appRouter = router({
         // Calcular DPP pela DUM (280 dias)
         let dppDUM: string | null = null;
         if (gestante.dum) {
-          const dum = new Date(gestante.dum);
+          // Adicionar T12:00:00 para evitar problemas de fuso horário
+          const dum = new Date(gestante.dum + 'T12:00:00');
           const dpp = new Date(dum);
           dpp.setDate(dpp.getDate() + 280);
           dppDUM = dpp.toLocaleDateString('pt-BR');
@@ -1019,7 +1020,8 @@ export const appRouter = router({
         // Calcular DPP pelo US
         let dppUS: string | null = null;
         if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-          const dataUS = new Date(gestante.dataUltrassom);
+          // Adicionar T12:00:00 para evitar problemas de fuso horário
+          const dataUS = new Date(gestante.dataUltrassom + 'T12:00:00');
           const semanas = gestante.igUltrassomSemanas;
           const dias = gestante.igUltrassomDias || 0;
           const totalDiasIG = semanas * 7 + dias;
@@ -1061,10 +1063,10 @@ export const appRouter = router({
             periodo: m.periodo,
           })),
           ultrassons: ultrassons.map((u: any) => ({
-            data: new Date(u.data).toLocaleDateString('pt-BR'),
-            ig: u.igUS || u.igDUM || '-',
+            data: u.dataExame ? new Date(u.dataExame + 'T12:00:00').toLocaleDateString('pt-BR') : '-',
+            ig: u.idadeGestacional || '-',
             tipo: u.tipoUltrassom || '-',
-            observacoes: u.observacoes || null,
+            observacoes: u.dados?.observacoes || null,
           })),
           exames: exames.flatMap((e: any) => {
             const resultado = typeof e.resultado === 'string' ? JSON.parse(e.resultado) : e.resultado;
