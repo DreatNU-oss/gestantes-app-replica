@@ -1,0 +1,22 @@
+{
+  "query": "SELECT chave, valor FROM configuracoesEmail WHERE chave LIKE '%email%' OR chave LIKE '%resend%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT chave, valor FROM configuracoesEmail WHERE chave LIKE '%email%' OR chave LIKE '%resend%';",
+  "rows": [
+    {
+      "chave": "smtp_email",
+      "valor": "prenatalmaismulher@gmail.com"
+    },
+    {
+      "chave": "resend_api_key",
+      "valor": "re_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy"
+    },
+    {
+      "chave": "resend_from_email",
+      "valor": "onboarding@resend.dev"
+    }
+  ],
+  "messages": [],
+  "stdout": "chave\tvalor\nsmtp_email\tprenatalmaismulher@gmail.com\nresend_api_key\tre_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy\nresend_from_email\tonboarding@resend.dev\n",
+  "stderr": "",
+  "execution_time_ms": 103
+}

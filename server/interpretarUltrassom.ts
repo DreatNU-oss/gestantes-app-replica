@@ -1,5 +1,8 @@
-import { invokeLLM } from "./_core/llm";
+// Usando OpenAI GPT-4o Vision para melhor extração de dados
+// import { invokeLLM } from "./_core/llm";
 import { storagePut } from "./storage";
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 // Tipos de ultrassom suportados
 export type TipoUltrassom =
@@ -107,52 +110,69 @@ EXEMPLO de formato de resposta:
 Agora analise o laudo e extraia os dados:`;
 
   try {
-    // Determinar tipo de conteúdo para o LLM
-    let content: any;
+    // Usar OpenAI GPT-4o Vision para melhor extração
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY não configurada');
+    }
+
+    // Construir mensagem com imagem para GPT-4o
+    const userContent: any[] = [
+      { type: 'text', text: prompt }
+    ];
+
     if (mimeType.startsWith("image/")) {
-      content = [
-        { type: "text", text: prompt },
-        {
-          type: "image_url",
-          image_url: {
-            url: fileUrl,
-            detail: "high",
-          },
-        },
-      ];
+      userContent.push({
+        type: 'image_url',
+        image_url: { url: fileUrl, detail: 'high' }
+      });
     } else if (mimeType === "application/pdf") {
-      content = [
-        { type: "text", text: prompt },
-        {
-          type: "file_url",
-          file_url: {
-            url: fileUrl,
-            mime_type: "application/pdf",
-          },
-        },
-      ];
+      userContent.push({
+        type: 'image_url',
+        image_url: { url: fileUrl, detail: 'high' }
+      });
     } else if (mimeType === "text/plain" && fileUrl.startsWith("data:")) {
       // Para testes: extrair texto do data URL
       const base64Data = fileUrl.split(",")[1];
       const textoLaudo = Buffer.from(base64Data, "base64").toString("utf-8");
-      content = `${prompt}\n\nLAUDO:\n${textoLaudo}`;
+      userContent[0] = { type: 'text', text: `${prompt}\n\nLAUDO:\n${textoLaudo}` };
     } else {
       throw new Error(`Tipo de arquivo não suportado: ${mimeType}`);
     }
 
-    // Chamar LLM
-    const response = await invokeLLM({
-      messages: [
-        {
-          role: "user",
-          content,
-        },
-      ],
+    // Chamar OpenAI GPT-4o
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'system',
+            content: 'Você é um assistente médico especializado em análise de laudos de ultrassom obstétrico. IMPORTANTE: Sempre extraia a DATA DO EXAME do documento. Responda em JSON válido.'
+          },
+          {
+            role: 'user',
+            content: userContent
+          }
+        ],
+        max_tokens: 4096,
+        temperature: 0.1,
+      }),
     });
 
+    if (!openaiResponse.ok) {
+      const errorText = await openaiResponse.text();
+      console.error('OpenAI API error:', errorText);
+      throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+    }
+
+    const response = await openaiResponse.json();
     const resultText = response.choices[0]?.message?.content;
     if (!resultText) {
-      throw new Error("LLM não retornou conteúdo");
+      throw new Error("OpenAI não retornou conteúdo");
     }
 
     // Garantir que resultText é string

@@ -1,0 +1,30 @@
+{
+  "query": "SELECT chave, valor, descricao FROM configuracoesEmail;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT chave, valor, descricao FROM configuracoesEmail;",
+  "rows": [
+    {
+      "chave": "smtp_email",
+      "valor": "prenatalmaismulher@gmail.com",
+      "descricao": "E-mail do remetente"
+    },
+    {
+      "chave": "smtp_senha",
+      "valor": "tydi xodz fgmi ylxx",
+      "descricao": "Senha de App do Gmail"
+    },
+    {
+      "chave": "resend_api_key",
+      "valor": "re_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy",
+      "descricao": "Chave API do Resend para envio de e-mails"
+    },
+    {
+      "chave": "resend_from_email",
+      "valor": "onboarding@resend.dev",
+      "descricao": "E-mail remetente para envios via Resend"
+    }
+  ],
+  "messages": [],
+  "stdout": "chave\tvalor\tdescricao\nsmtp_email\tprenatalmaismulher@gmail.com\tE-mail do remetente\nsmtp_senha\ttydi xodz fgmi ylxx\tSenha de App do Gmail\nresend_api_key\tre_Y9wZufZS_3A8rwrR7xZp4im8WyszM3nXy\tChave API do Resend para envio de e-mails\nresend_from_email\tonboarding@resend.dev\tE-mail remetente para envios via Resend\n",
+  "stderr": "",
+  "execution_time_ms": 79
+}

@@ -1001,3 +1001,10 @@
 - [x] Gerar android-chrome icons (192x192, 512x512)
 - [x] Atualizar index.html com referências ao favicon
 - [x] Adicionar theme-color (vinho marsala #722F37)
+
+## Integração ChatGPT para Interpretação de Exames (16/12/2025)
+- [x] Configurar API Key da OpenAI como secret
+- [x] Criar módulo de integração com OpenAI (GPT-4o Vision)
+- [x] Atualizar interpretação de ultrassons para usar OpenAI
+- [x] Atualizar interpretação de exames laboratoriais para usar OpenAI
+- [x] Melhorar extração de datas dos exames (prompt otimizado)

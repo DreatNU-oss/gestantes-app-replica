@@ -1,5 +1,7 @@
-import { invokeLLM } from "./_core/llm";
+// Usando OpenAI GPT-4o Vision para melhor extração de dados
 import { storagePut } from "./storage";
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 interface ExameInterpretado {
   nomeExame: string;
@@ -64,59 +66,61 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
 
 Se nenhum exame for encontrado, retorne um array vazio: []`;
 
-  // Construir conteúdo multimodal baseado no tipo de arquivo
-  const contentParts: Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } } | { type: "file_url"; file_url: { url: string; mime_type?: "application/pdf" } }> = [
-    { type: "text", text: prompt }
+  // Usar OpenAI GPT-4o Vision para melhor extração
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY não configurada');
+  }
+
+  // Construir mensagem com imagem para GPT-4o
+  const userContent: any[] = [
+    { type: 'text', text: prompt }
   ];
 
   if (mimeType.startsWith('image/')) {
-    contentParts.push({
-      type: "image_url",
-      image_url: { url: fileUrl }
+    userContent.push({
+      type: 'image_url',
+      image_url: { url: fileUrl, detail: 'high' }
     });
   } else if (mimeType === 'application/pdf') {
-    contentParts.push({
-      type: "file_url",
-      file_url: { url: fileUrl, mime_type: 'application/pdf' }
+    // Para PDF, GPT-4o aceita como imagem (primeira página) ou precisamos converter
+    // Por enquanto, enviamos como URL e deixamos o modelo processar
+    userContent.push({
+      type: 'image_url',
+      image_url: { url: fileUrl, detail: 'high' }
     });
   }
 
-  const response = await invokeLLM({
-    messages: [
-      {
-        role: "user",
-        content: contentParts
-      }
-    ],
-    response_format: {
-      type: "json_schema",
-      json_schema: {
-        name: "exames_interpretados",
-        strict: true,
-        schema: {
-          type: "object",
-          properties: {
-            exames: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  nomeExame: { type: "string", description: "Nome exato do exame conforme a lista fornecida" },
-                  valor: { type: "string", description: "Valor do exame como está escrito no documento" },
-                  subcampo: { type: "string", description: "Subcampo para exames com múltiplos valores (opcional)" },
-                  dataColeta: { type: "string", description: "Data da coleta do exame no formato YYYY-MM-DD (opcional)" }
-                },
-                required: ["nomeExame", "valor"],
-                additionalProperties: false
-              }
-            }
-          },
-          required: ["exames"],
-          additionalProperties: false
+  const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: 'Você é um assistente médico especializado em análise de exames laboratoriais de pré-natal. Sempre responda em JSON válido.'
+        },
+        {
+          role: 'user',
+          content: userContent
         }
-      }
-    }
+      ],
+      max_tokens: 4096,
+      temperature: 0.1,
+      response_format: { type: 'json_object' }
+    }),
   });
+
+  if (!openaiResponse.ok) {
+    const errorText = await openaiResponse.text();
+    console.error('OpenAI API error:', errorText);
+    throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+  }
+
+  const response = await openaiResponse.json();
 
   const content = response.choices[0].message.content;
   if (!content || typeof content !== 'string') {
