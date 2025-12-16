@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { History, Eye, Trash2, FileText, Stethoscope, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { FeedbackInterpretacao } from './FeedbackInterpretacao';
 import { toast } from 'sonner';
 
 interface HistoricoInterpretacoesProps {
@@ -134,6 +135,12 @@ export function HistoricoInterpretacoes({ gestanteId, tipo }: HistoricoInterpret
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
+                    <FeedbackInterpretacao
+                      historicoInterpretacaoId={item.id}
+                      gestanteId={gestanteId}
+                      tipoInterpretacao={tipo}
+                      onFeedbackEnviado={() => refetch()}
+                    />
                     <Button
                       variant="ghost"
                       size="sm"

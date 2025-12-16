@@ -1008,3 +1008,11 @@
 - [x] Atualizar interpretação de ultrassons para usar OpenAI
 - [x] Atualizar interpretação de exames laboratoriais para usar OpenAI
 - [x] Melhorar extração de datas dos exames (prompt otimizado)
+
+## Sistema de Feedback para Interpretações IA (16/12/2025)
+- [x] Criar tabela feedbackInterpretacoes no banco
+- [x] Implementar endpoints de feedback (criar, listar, estatísticas)
+- [x] Criar componente de avaliação (estrelas + comentário)
+- [x] Integrar feedback no histórico de interpretações (ultrassons e exames)
+- [x] Botão "Avaliar Precisão" em cada registro do histórico
+- [x] Endpoint de estatísticas de feedback disponível

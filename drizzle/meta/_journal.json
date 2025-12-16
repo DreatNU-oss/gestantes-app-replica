@@ -127,6 +127,13 @@
       "when": 1765851799275,
       "tag": "0017_solid_wolverine",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1765897354782,
+      "tag": "0018_old_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

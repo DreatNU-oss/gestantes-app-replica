@@ -51,7 +51,7 @@ import {
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, type InsertResultadoExame, type InsertHistoricoInterpretacao } from '../drizzle/schema';
+import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { getDb } from './db';
@@ -1168,6 +1168,117 @@ export const appRouter = router({
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
         await db.delete(historicoInterpretacoes).where(eq(historicoInterpretacoes.id, input.id));
         return { success: true };
+      }),
+  }),
+
+  // Feedback de interpretações de IA
+  feedback: router({
+    criar: protectedProcedure
+      .input(z.object({
+        historicoInterpretacaoId: z.number(),
+        gestanteId: z.number(),
+        tipoInterpretacao: z.enum(['exames_laboratoriais', 'ultrassom']),
+        avaliacao: z.number().min(1).max(5),
+        precisaoData: z.enum(['correta', 'incorreta', 'nao_extraiu']).optional(),
+        precisaoValores: z.enum(['todos_corretos', 'alguns_incorretos', 'maioria_incorreta']).optional(),
+        comentario: z.string().optional(),
+        camposIncorretos: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const result = await db.insert(feedbackInterpretacoes).values({
+          historicoInterpretacaoId: input.historicoInterpretacaoId,
+          gestanteId: input.gestanteId,
+          userId: ctx.user.id,
+          tipoInterpretacao: input.tipoInterpretacao,
+          avaliacao: input.avaliacao,
+          precisaoData: input.precisaoData,
+          precisaoValores: input.precisaoValores,
+          comentario: input.comentario,
+          camposIncorretos: input.camposIncorretos ? JSON.stringify(input.camposIncorretos) : null,
+        });
+        
+        return { success: true, id: result[0].insertId };
+      }),
+
+    buscarPorHistorico: protectedProcedure
+      .input(z.object({ historicoInterpretacaoId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const results = await db.select().from(feedbackInterpretacoes)
+          .where(eq(feedbackInterpretacoes.historicoInterpretacaoId, input.historicoInterpretacaoId));
+        
+        return results[0] || null;
+      }),
+
+    estatisticas: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const todos = await db.select().from(feedbackInterpretacoes);
+        
+        const total = todos.length;
+        const mediaAvaliacao = total > 0 
+          ? todos.reduce((acc: number, f: any) => acc + f.avaliacao, 0) / total 
+          : 0;
+        
+        const porTipo = {
+          exames_laboratoriais: todos.filter((f: any) => f.tipoInterpretacao === 'exames_laboratoriais'),
+          ultrassom: todos.filter((f: any) => f.tipoInterpretacao === 'ultrassom'),
+        };
+        
+        const precisaoData = {
+          correta: todos.filter((f: any) => f.precisaoData === 'correta').length,
+          incorreta: todos.filter((f: any) => f.precisaoData === 'incorreta').length,
+          nao_extraiu: todos.filter((f: any) => f.precisaoData === 'nao_extraiu').length,
+        };
+        
+        const precisaoValores = {
+          todos_corretos: todos.filter((f: any) => f.precisaoValores === 'todos_corretos').length,
+          alguns_incorretos: todos.filter((f: any) => f.precisaoValores === 'alguns_incorretos').length,
+          maioria_incorreta: todos.filter((f: any) => f.precisaoValores === 'maioria_incorreta').length,
+        };
+        
+        return {
+          total,
+          mediaAvaliacao: Math.round(mediaAvaliacao * 10) / 10,
+          porTipo: {
+            exames_laboratoriais: {
+              total: porTipo.exames_laboratoriais.length,
+              media: porTipo.exames_laboratoriais.length > 0
+                ? Math.round(porTipo.exames_laboratoriais.reduce((acc: number, f: any) => acc + f.avaliacao, 0) / porTipo.exames_laboratoriais.length * 10) / 10
+                : 0,
+            },
+            ultrassom: {
+              total: porTipo.ultrassom.length,
+              media: porTipo.ultrassom.length > 0
+                ? Math.round(porTipo.ultrassom.reduce((acc: number, f: any) => acc + f.avaliacao, 0) / porTipo.ultrassom.length * 10) / 10
+                : 0,
+            },
+          },
+          precisaoData,
+          precisaoValores,
+        };
+      }),
+
+    listarTodos: protectedProcedure
+      .input(z.object({
+        limite: z.number().optional().default(50),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const results = await db.select().from(feedbackInterpretacoes)
+          .orderBy(desc(feedbackInterpretacoes.createdAt))
+          .limit(input.limite);
+        
+        return results;
       }),
   }),
 });

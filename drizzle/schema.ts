@@ -391,6 +391,26 @@ export type LogAcessoGestante = typeof logsAcessoGestante.$inferSelect;
 export type InsertLogAcessoGestante = typeof logsAcessoGestante.$inferInsert;
 
 /**
+ * Tabela de feedback das interpretações de IA
+ */
+export const feedbackInterpretacoes = mysqlTable("feedbackInterpretacoes", {
+  id: int("id").autoincrement().primaryKey(),
+  historicoInterpretacaoId: int("historicoInterpretacaoId").notNull(), // Referência ao histórico
+  gestanteId: int("gestanteId").notNull(),
+  userId: int("userId").notNull(), // Usuário que deu o feedback
+  tipoInterpretacao: mysqlEnum("tipoInterpretacao", ["exames_laboratoriais", "ultrassom"]).notNull(),
+  avaliacao: int("avaliacao").notNull(), // 1-5 estrelas
+  precisaoData: mysqlEnum("precisaoData", ["correta", "incorreta", "nao_extraiu"]), // Feedback específico sobre data
+  precisaoValores: mysqlEnum("precisaoValores", ["todos_corretos", "alguns_incorretos", "maioria_incorreta"]),
+  comentario: text("comentario"), // Comentário livre do usuário
+  camposIncorretos: text("camposIncorretos"), // JSON array com nomes dos campos incorretos
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type FeedbackInterpretacao = typeof feedbackInterpretacoes.$inferSelect;
+export type InsertFeedbackInterpretacao = typeof feedbackInterpretacoes.$inferInsert;
+
+/**
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
 
