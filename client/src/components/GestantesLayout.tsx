@@ -51,6 +51,7 @@ const menuItems = [
 const configMenuItems = [
   { label: "Gerenciar Planos", path: "/gerenciar-planos" },
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
+  { label: "Logs de E-mails", path: "/logs-emails" },
 ];
 
 export default function GestantesLayout({

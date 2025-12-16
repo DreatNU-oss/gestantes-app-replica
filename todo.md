@@ -889,3 +889,12 @@
 - [x] Corrigir o problema (usar FileReader.readAsDataURL)
 - [ ] Testar upload de foto (pendente - usuário testará depois)
 - [x] Salvar checkpoint
+
+## Página de Logs de E-mails (15/12/2025)
+- [x] Criar router para buscar logs de e-mails (já existia)
+- [x] Criar página de Logs de E-mails com tabela
+- [x] Adicionar filtros por status, data e gestante
+- [x] Adicionar rota no App.tsx e menu
+- [x] Testar funcionalidade
+- [x] Apagar logs de teste do banco
+- [x] Salvar checkpoint
