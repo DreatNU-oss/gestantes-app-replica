@@ -1047,3 +1047,9 @@
 - [x] Adicionar logs detalhados para debug
 - [ ] Testar com PDF real e verificar logs
 - [ ] Corrigir se necessário
+
+## Melhoria de Extração de Exames (16/12/2025)
+- [x] Processar todas as páginas do PDF (até 10 páginas)
+- [x] Atualizar prompt para mencionar múltiplas páginas
+- [x] Aumentar limite de tokens para 4096 (permite mais exames)
+- [ ] Testar com PDF real de múltiplas páginas

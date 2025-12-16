@@ -25,7 +25,9 @@ export async function interpretarExamesComIA(
   // 3. Chamar LLM com visão para interpretar o documento
   const prompt = `Você é um assistente médico especializado em interpretar resultados de exames laboratoriais de pré-natal.
 
-Analise o documento fornecido (PDF ou imagem) e extraia APENAS os valores dos exames listados abaixo.
+Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENAS os valores dos exames listados abaixo.
+
+**IMPORTANTE:** Você receberá múltiplas imagens representando diferentes páginas do mesmo documento. Analise TODAS as imagens antes de responder.
 
 **REGRAS IMPORTANTES:**
 1. Retorne APENAS os exames que estão presentes no documento
@@ -102,25 +104,50 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
       // Salvar PDF temporário
       await fs.promises.writeFile(tempPdfPath, fileBuffer);
       
-      // Converter PDF para PNG usando pdftoppm (parte do poppler-utils)
-      await execPromise(`pdftoppm -png -f 1 -l 1 -singlefile "${tempPdfPath}" "${tempDir}/temp-${timestamp}"`);
+      // Converter TODAS as páginas do PDF para PNG
+      // Primeiro, descobrir quantas páginas o PDF tem
+      const { stdout: pdfInfoOutput } = await execPromise(`pdfinfo "${tempPdfPath}"`);
+      const pagesMatch = pdfInfoOutput.match(/Pages:\s+(\d+)/);
+      const totalPages = pagesMatch ? parseInt(pagesMatch[1], 10) : 1;
       
-      // Ler imagem gerada
-      const imageBuffer = await fs.promises.readFile(tempPngPath);
+      console.log(`[DEBUG] PDF tem ${totalPages} página(s)`);
+      
+      // Converter todas as páginas (máximo 10 para evitar custos excessivos)
+      const maxPages = Math.min(totalPages, 10);
+      await execPromise(`pdftoppm -png -f 1 -l ${maxPages} "${tempPdfPath}" "${tempDir}/temp-${timestamp}"`);
+      
+      // Ler e fazer upload de todas as imagens geradas
+      const imageFiles: string[] = [];
+      for (let i = 1; i <= maxPages; i++) {
+        const pageNum = String(i).padStart(maxPages > 9 ? 2 : 1, '0');
+        const pagePath = maxPages === 1 
+          ? `${tempDir}/temp-${timestamp}.png`
+          : `${tempDir}/temp-${timestamp}-${pageNum}.png`;
+        
+        try {
+          const imageBuffer = await fs.promises.readFile(pagePath);
+          
+          // Upload da imagem para S3
+          const imageKey = `exames-temp/${timestamp}-page${i}.png`;
+          const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
+          
+          // Adicionar imagem ao conteúdo
+          userContent.push({
+            type: 'image_url',
+            image_url: { url: imageUrl, detail: 'high' }
+          });
+          
+          imageFiles.push(pagePath);
+        } catch (err) {
+          console.warn(`[WARN] Não foi possível ler página ${i}:`, err);
+        }
+      }
       
       // Limpar arquivos temporários
       await fs.promises.unlink(tempPdfPath).catch(() => {});
-      await fs.promises.unlink(tempPngPath).catch(() => {});
-      
-      // Upload da imagem para S3
-      const imageKey = `exames-temp/${timestamp}-page1.png`;
-      const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
-      
-      // Adicionar imagem ao conteúdo
-      userContent.push({
-        type: 'image_url',
-        image_url: { url: imageUrl, detail: 'high' }
-      });
+      for (const imgFile of imageFiles) {
+        await fs.promises.unlink(imgFile).catch(() => {});
+      }
     } catch (error) {
       console.error('Erro ao converter PDF:', error);
       throw new Error('Não foi possível processar o PDF. Tente converter para imagem (JPG/PNG).');
@@ -135,6 +162,7 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
     },
     body: JSON.stringify({
       model: 'gpt-4o',
+      max_tokens: 4096, // Aumentar limite para permitir extração de muitos exames
       messages: [
         {
           role: 'system',
@@ -145,7 +173,6 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
           content: userContent
         }
       ],
-      max_tokens: 4096,
       temperature: 0.1,
       response_format: { type: 'json_object' }
     }),
