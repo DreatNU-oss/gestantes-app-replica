@@ -986,3 +986,10 @@
 - [x] Documentar especificações do ícone do app (silhueta sem texto)
 - [x] Documentar paleta de cores na API (vinho marsala + bege/pêssego)
 - [x] Atualizar documentação com guia de branding (React Native e Flutter)
+
+## Ícone do App - Extração da Silhueta (16/12/2025)
+- [x] Extrair silhueta da gestante do logo vertical (icon-silhouette.png)
+- [x] Gerar ícone 512x512px para Android (icon-android-512.png)
+- [x] Gerar ícone 1024x1024px para iOS (icon-ios-1024.png)
+- [x] Gerar versões alternativas com fundo vinho (icon-android-512-dark.png, icon-ios-1024-dark.png)
+- [x] Salvar na pasta app-assets/
