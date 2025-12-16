@@ -1026,3 +1026,9 @@
 - [x] Identificar onde a data está incorreta no card do topo (função formatarData)
 - [x] Corrigir conversão de data no card (adicionar T12:00:00)
 - [x] Aplicado em CartaoPrenatal.tsx linha 761-766
+
+## Correção de Erro OpenAI API (16/12/2025)
+- [x] Investigar erro 400 da OpenAI API (PDFs não suportados via URL)
+- [x] Implementar conversão de PDF para PNG usando pdftoppm
+- [x] Upload de imagem convertida para S3 e envio para OpenAI Vision
+- [ ] Testar interpretação de exames com PDF

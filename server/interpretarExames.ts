@@ -66,28 +66,63 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
 
 Se nenhum exame for encontrado, retorne um array vazio: []`;
 
-  // Usar OpenAI GPT-4o Vision para melhor extração
+  // Usar OpenAI GPT-4o para extração
   if (!OPENAI_API_KEY) {
     throw new Error('OPENAI_API_KEY não configurada');
   }
 
-  // Construir mensagem com imagem para GPT-4o
+  // Construir mensagem para GPT-4o
   const userContent: any[] = [
     { type: 'text', text: prompt }
   ];
 
   if (mimeType.startsWith('image/')) {
+    // Para imagens, usar Vision API
     userContent.push({
       type: 'image_url',
       image_url: { url: fileUrl, detail: 'high' }
     });
   } else if (mimeType === 'application/pdf') {
-    // Para PDF, GPT-4o aceita como imagem (primeira página) ou precisamos converter
-    // Por enquanto, enviamos como URL e deixamos o modelo processar
-    userContent.push({
-      type: 'image_url',
-      image_url: { url: fileUrl, detail: 'high' }
-    });
+    // Para PDF, converter para imagem usando ferramenta do sistema
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const os = await import('os');
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+      
+      const tempDir = os.tmpdir();
+      const timestamp = Date.now();
+      const tempPdfPath = path.join(tempDir, `temp-${timestamp}.pdf`);
+      const tempPngPath = path.join(tempDir, `temp-${timestamp}.png`);
+      
+      // Salvar PDF temporário
+      await fs.promises.writeFile(tempPdfPath, fileBuffer);
+      
+      // Converter PDF para PNG usando pdftoppm (parte do poppler-utils)
+      await execPromise(`pdftoppm -png -f 1 -l 1 -singlefile "${tempPdfPath}" "${tempDir}/temp-${timestamp}"`);
+      
+      // Ler imagem gerada
+      const imageBuffer = await fs.promises.readFile(tempPngPath);
+      
+      // Limpar arquivos temporários
+      await fs.promises.unlink(tempPdfPath).catch(() => {});
+      await fs.promises.unlink(tempPngPath).catch(() => {});
+      
+      // Upload da imagem para S3
+      const imageKey = `exames-temp/${timestamp}-page1.png`;
+      const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
+      
+      // Adicionar imagem ao conteúdo
+      userContent.push({
+        type: 'image_url',
+        image_url: { url: imageUrl, detail: 'high' }
+      });
+    } catch (error) {
+      console.error('Erro ao converter PDF:', error);
+      throw new Error('Não foi possível processar o PDF. Tente converter para imagem (JPG/PNG).');
+    }
   }
 
   const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
