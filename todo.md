@@ -1060,3 +1060,10 @@
 - [x] Criar server/gestante-router.ts com endpoints da API
 - [x] Registrar gestanteRouter no server/routers.ts
 - [x] Testar funcionamento da API refatorada (8 testes passando)
+
+## Substituição de Arquivos Backend (16/12/2025)
+- [x] Copiar novos arquivos para pasta server
+- [x] Corrigir imports e nomes de tabelas para compatibilidade com schema
+- [x] Corrigir inicialização do Resend para aceitar undefined
+- [x] Atualizar testes para nova estrutura de API (12 de 13 testes passando)
+- [ ] Investigar 1 teste falhando (validação de código)
