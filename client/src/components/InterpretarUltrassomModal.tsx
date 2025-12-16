@@ -4,13 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Upload, AlertCircle } from 'lucide-react';
-import { storagePut } from '../../../server/storage';
+import { Loader2, Upload, AlertCircle, X, CheckCircle, FileText, Image } from 'lucide-react';
 
 interface InterpretarUltrassomModalProps {
   open: boolean;
   onClose: () => void;
   onDadosExtraidos: (tipo: string, dados: Record<string, string>) => void;
+}
+
+interface FileWithStatus {
+  file: File;
+  status: 'pending' | 'uploading' | 'processing' | 'success' | 'error';
+  error?: string;
 }
 
 const tiposUltrassom = [
@@ -24,107 +29,161 @@ const tiposUltrassom = [
 
 export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: InterpretarUltrassomModalProps) {
   const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
-  const [arquivo, setArquivo] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [files, setFiles] = useState<FileWithStatus[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [error, setError] = useState<string>('');
 
-  const interpretarMutation = trpc.ultrassons.interpretar.useMutation({
-    onSuccess: (data) => {
-      onDadosExtraidos(tipoSelecionado, data.dados);
-      handleClose();
-    },
-    onError: (error) => {
-      setError(`Erro ao interpretar laudo: ${error.message}`);
-      setUploading(false);
-    },
-  });
+  const interpretarMutation = trpc.ultrassons.interpretar.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validar tipo de arquivo
+    const selectedFiles = Array.from(e.target.files || []);
+    
+    const validFiles: FileWithStatus[] = [];
     const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setError('Tipo de arquivo não suportado. Use PDF, JPEG, PNG ou WEBP.');
-      return;
+    
+    for (const file of selectedFiles) {
+      // Validar tipo de arquivo
+      if (!validTypes.includes(file.type)) {
+        setError(`${file.name}: Tipo inválido. Aceito: PDF, JPEG, PNG, WEBP`);
+        continue;
+      }
+      
+      // Validar tamanho (máximo 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError(`${file.name}: Arquivo muito grande. Máximo: 10MB`);
+        continue;
+      }
+      
+      validFiles.push({ file, status: 'pending' });
+    }
+    
+    if (validFiles.length > 0) {
+      setFiles(prev => [...prev, ...validFiles]);
+      setError('');
+    }
+    
+    // Limpar input para permitir selecionar os mesmos arquivos novamente
+    e.target.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<Record<string, string>> => {
+    // Atualizar status para uploading
+    setFiles(prev => prev.map((f, i) => 
+      i === index ? { ...f, status: 'uploading' } : f
+    ));
+
+    // 1. Converter arquivo para base64
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64Data = result.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+      reader.readAsDataURL(fileWithStatus.file);
+    });
+
+    // 2. Fazer upload do arquivo para S3
+    const uploadResponse = await fetch('/api/upload-laudo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fileName: fileWithStatus.file.name,
+        fileData: base64,
+        mimeType: fileWithStatus.file.type,
+      }),
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error('Erro ao fazer upload do arquivo');
     }
 
-    // Validar tamanho (máx 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      setError('Arquivo muito grande. Tamanho máximo: 10MB');
-      return;
-    }
+    const { url: fileUrl } = await uploadResponse.json();
 
-    setArquivo(file);
-    setError('');
+    // Atualizar status para processing
+    setFiles(prev => prev.map((f, i) => 
+      i === index ? { ...f, status: 'processing' } : f
+    ));
+
+    // 3. Chamar IA para interpretar
+    const result = await interpretarMutation.mutateAsync({
+      fileUrl,
+      tipoUltrassom: tipoSelecionado as any,
+      mimeType: fileWithStatus.file.type,
+    });
+
+    // Atualizar status para success
+    setFiles(prev => prev.map((f, i) => 
+      i === index ? { ...f, status: 'success' } : f
+    ));
+
+    return result.dados;
   };
 
   const handleInterpretar = async () => {
-    if (!arquivo || !tipoSelecionado) return;
+    if (files.length === 0 || !tipoSelecionado) return;
 
-    setUploading(true);
+    setIsProcessing(true);
+    setCurrentFileIndex(0);
     setError('');
+    
+    let combinedDados: Record<string, string> = {};
+    let successCount = 0;
+    let errorCount = 0;
 
-    try {
-      // 1. Fazer upload do arquivo para S3
-      // Usar FileReader para converter arquivo para base64 de forma eficiente
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result as string;
-          // Remover o prefixo "data:...;base64," para obter apenas o base64
-          const base64Data = result.split(',')[1];
-          resolve(base64Data);
-        };
-        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
-        reader.readAsDataURL(arquivo);
-      });
-      
-      // Chamar backend para fazer upload
-      const uploadResponse = await fetch('/api/upload-laudo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fileName: arquivo.name,
-          fileData: base64,
-          mimeType: arquivo.type,
-        }),
-      });
+    for (let i = 0; i < files.length; i++) {
+      setCurrentFileIndex(i);
 
-      if (!uploadResponse.ok) {
-        throw new Error('Erro ao fazer upload do arquivo');
+      try {
+        const dados = await processFile(files[i], i);
+        // Mesclar dados (valores posteriores sobrescrevem anteriores)
+        combinedDados = { ...combinedDados, ...dados };
+        successCount++;
+      } catch (err) {
+        errorCount++;
+        const errorMsg = err instanceof Error ? err.message : 'Erro desconhecido';
+        setFiles(prev => prev.map((f, idx) => 
+          idx === i ? { ...f, status: 'error', error: errorMsg } : f
+        ));
+        console.error(`Erro ao processar ${files[i].file.name}:`, err);
       }
+    }
 
-      const { url: fileUrl } = await uploadResponse.json();
+    setIsProcessing(false);
 
-      // 2. Chamar IA para interpretar
-      interpretarMutation.mutate({
-        fileUrl,
-        tipoUltrassom: tipoSelecionado as any,
-        mimeType: arquivo.type,
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
-      setUploading(false);
+    if (successCount > 0) {
+      // Aguardar um pouco para mostrar os status antes de fechar
+      setTimeout(() => {
+        onDadosExtraidos(tipoSelecionado, combinedDados);
+        handleClose();
+      }, 1500);
+    } else {
+      setError('Nenhum arquivo foi processado com sucesso');
     }
   };
 
   const handleClose = () => {
     setTipoSelecionado('');
-    setArquivo(null);
+    setFiles([]);
     setError('');
-    setUploading(false);
+    setIsProcessing(false);
+    setCurrentFileIndex(0);
     onClose();
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Interpretar Laudo de Ultrassom com IA</DialogTitle>
           <DialogDescription>
-            Faça upload de um PDF ou foto do laudo de ultrassom para preencher automaticamente os campos.
+            Faça upload de um ou mais arquivos (PDF ou fotos) do laudo de ultrassom para preencher automaticamente os campos.
           </DialogDescription>
         </DialogHeader>
 
@@ -132,7 +191,7 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
           {/* Seleção de Tipo de Ultrassom */}
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo de Ultrassom *</Label>
-            <Select value={tipoSelecionado} onValueChange={setTipoSelecionado}>
+            <Select value={tipoSelecionado} onValueChange={setTipoSelecionado} disabled={isProcessing}>
               <SelectTrigger id="tipo">
                 <SelectValue placeholder="Selecione o tipo de ultrassom" />
               </SelectTrigger>
@@ -146,18 +205,19 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
             </Select>
           </div>
 
-          {/* Upload de Arquivo */}
+          {/* Upload de Arquivos */}
           <div className="space-y-2">
-            <Label htmlFor="arquivo">Arquivo do Laudo *</Label>
+            <Label htmlFor="arquivo">Arquivos do Laudo *</Label>
             <div className="flex items-center gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => document.getElementById('arquivo')?.click()}
                 className="w-full"
+                disabled={isProcessing}
               >
                 <Upload className="mr-2 h-4 w-4" />
-                {arquivo ? arquivo.name : 'Selecionar Arquivo'}
+                {files.length > 0 ? 'Adicionar Mais Arquivos' : 'Selecionar Arquivos'}
               </Button>
               <input
                 id="arquivo"
@@ -165,22 +225,87 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
                 accept=".pdf,image/jpeg,image/png,image/webp"
                 onChange={handleFileChange}
                 className="hidden"
+                multiple
               />
             </div>
+            
+            {/* Lista de arquivos selecionados */}
+            {files.length > 0 && (
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                {files.map((fileWithStatus, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex items-center gap-2 p-3 rounded-md ${
+                      fileWithStatus.status === 'success' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' :
+                      fileWithStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' :
+                      (fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing') ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
+                      'bg-muted'
+                    }`}
+                  >
+                    {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing') ? (
+                      <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
+                    ) : fileWithStatus.status === 'success' ? (
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    ) : fileWithStatus.status === 'error' ? (
+                      <X className="h-5 w-5 text-red-500" />
+                    ) : fileWithStatus.file.type === 'application/pdf' ? (
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                    ) : (
+                      <Image className="h-5 w-5 text-muted-foreground" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{fileWithStatus.file.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(fileWithStatus.file.size / 1024 / 1024).toFixed(2)} MB
+                        {fileWithStatus.status === 'uploading' && ' - Enviando...'}
+                        {fileWithStatus.status === 'processing' && ' - Interpretando...'}
+                        {fileWithStatus.status === 'success' && ' - Concluído!'}
+                        {fileWithStatus.status === 'error' && ` - Erro: ${fileWithStatus.error}`}
+                      </p>
+                    </div>
+                    {!isProcessing && fileWithStatus.status === 'pending' && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFile(index)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
             <p className="text-xs text-muted-foreground">
-              Formatos aceitos: PDF, JPEG, PNG, WEBP (máx. 10MB)
+              Formatos aceitos: PDF, JPEG, PNG, WEBP (máx. 10MB cada). Você pode selecionar múltiplos arquivos.
             </p>
           </div>
 
-          {/* Aviso */}
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-blue-800">
-                A IA preencherá automaticamente os campos do ultrassom selecionado com base no laudo fornecido.
+          {/* Progresso */}
+          {isProcessing && (
+            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-3">
+              <p className="text-sm text-blue-900 dark:text-blue-100">
+                <Loader2 className="inline h-4 w-4 animate-spin mr-2" />
+                Processando arquivo {currentFileIndex + 1} de {files.length}...
               </p>
             </div>
-          </div>
+          )}
+
+          {/* Aviso */}
+          {!isProcessing && (
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-blue-800">
+                  A IA preencherá automaticamente os campos do ultrassom selecionado com base nos laudos fornecidos.
+                  Os resultados de múltiplos arquivos serão mesclados.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Erro */}
           {error && (
@@ -192,20 +317,23 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
 
         {/* Botões */}
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={handleClose} disabled={uploading}>
+          <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
             Cancelar
           </Button>
           <Button
             onClick={handleInterpretar}
-            disabled={!arquivo || !tipoSelecionado || uploading}
+            disabled={files.length === 0 || !tipoSelecionado || isProcessing}
           >
-            {uploading ? (
+            {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Interpretando...
+                Processando...
               </>
             ) : (
-              'Interpretar Laudo'
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                Interpretar {files.length > 0 ? `${files.length} Arquivo${files.length > 1 ? 's' : ''}` : 'Laudo'}
+              </>
             )}
           </Button>
         </div>

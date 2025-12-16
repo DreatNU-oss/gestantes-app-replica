@@ -912,3 +912,9 @@
 - [x] Exibir resultados na página (mesclagem automática)
 - [ ] Testar funcionalidade (pendente - usuário testará depois)
 - [x] Salvar checkpoint
+
+## Upload Múltiplo de Fotos de Ultrassons (15/12/2025)
+- [x] Analisar componente InterpretarUltrassomModal
+- [x] Atualizar para suportar múltiplos arquivos
+- [ ] Testar funcionalidade (pendente - usuário testará depois)
+- [x] Salvar checkpoint
