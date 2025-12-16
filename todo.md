@@ -1037,3 +1037,8 @@
 - [x] Adicionar validação se parsed.exames é array
 - [x] Tratar caso onde OpenAI retorna JSON inválido
 - [x] Adicionar logs para debug de resposta da IA
+
+## Melhoria do Prompt OpenAI (16/12/2025)
+- [x] Adicionar exemplo de resposta esperada no prompt
+- [x] Tornar instruções mais claras sobre formato JSON (objeto com chave exames)
+- [ ] Testar com PDF real

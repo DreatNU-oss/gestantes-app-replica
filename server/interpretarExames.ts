@@ -45,15 +45,16 @@ Analise o documento fornecido (PDF ou imagem) e extraia APENAS os valores dos ex
 **EXAMES ESPERADOS PARA ESTE TRIMESTRE:**
 ${examesEsperados.map(e => `- ${e}`).join('\n')}
 
-**FORMATO DE RESPOSTA (JSON):**
-Retorne um array de objetos com esta estrutura:
-[
-  { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
-  { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "71 mg/dL", "subcampo": "Jejum", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "156 mg/dL", "subcampo": "1 hora", "dataColeta": "2025-11-11" },
-  { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "109 mg/dL", "subcampo": "2 horas", "dataColeta": "2025-11-11" }
-]
+**FORMATO DE RESPOSTA (JSON OBRIGATÓRIO):**
+Você DEVE retornar um objeto JSON com a chave exames contendo um array.
+
+Exemplo de resposta correta:
+{
+  "exames": [
+    { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
+    { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" }
+  ]
+}
 
 **EXEMPLO DE TOTG/TTGO NO DOCUMENTO:**
 Se você encontrar:
@@ -62,9 +63,10 @@ Se você encontrar:
 
 Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme exemplo acima.
 
-**IMPORTANTE:** Extraia a data da coleta do exame se estiver visível no documento (formato YYYY-MM-DD). Se não encontrar a data, omita o campo "dataColeta".
-
-Se nenhum exame for encontrado, retorne um array vazio: []`;
+**IMPORTANTE:** 
+1. Extraia a data da coleta do exame se estiver visível no documento (formato YYYY-MM-DD).
+2. Se nenhum exame for encontrado retorne: { "exames": [] }
+3. SEMPRE retorne um objeto JSON com a chave exames`;
 
   // Usar OpenAI GPT-4o para extração
   if (!OPENAI_API_KEY) {
