@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Upload, FileText, Image, Loader2 } from "lucide-react";
+import { Upload, FileText, Image, Loader2, X, CheckCircle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
@@ -13,93 +13,175 @@ interface InterpretarExamesModalProps {
   onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string) => void;
 }
 
+interface FileWithStatus {
+  file: File;
+  status: 'pending' | 'processing' | 'success' | 'error';
+  error?: string;
+}
+
 export function InterpretarExamesModal({ open, onOpenChange, onResultados }: InterpretarExamesModalProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [trimestre, setTrimestre] = useState<"primeiro" | "segundo" | "terceiro">("primeiro");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const [allResultados, setAllResultados] = useState<Record<string, string>>({});
+  const [lastDataColeta, setLastDataColeta] = useState<string | undefined>();
 
-  const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation({
-    onSuccess: (data) => {
-      const mensagem = data.dataColeta 
-        ? `${Object.keys(data.resultados).length} exames interpretados (Data: ${data.dataColeta})!`
-        : `${Object.keys(data.resultados).length} exames interpretados com sucesso!`;
-      toast.success(mensagem);
-      onResultados(data.resultados, trimestre, data.dataColeta);
-      handleClose();
-    },
-    onError: (error) => {
-      toast.error(`Erro ao interpretar exames: ${error.message}`);
-      setIsProcessing(false);
-    },
-  });
+  const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
+    const selectedFiles = Array.from(e.target.files || []);
+    
+    const validFiles: FileWithStatus[] = [];
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    
+    for (const file of selectedFiles) {
       // Validar tipo de arquivo
-      const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      if (!validTypes.includes(selectedFile.type)) {
-        toast.error('Tipo de arquivo inválido. Aceito: PDF, JPEG, PNG, WEBP');
-        return;
+      if (!validTypes.includes(file.type)) {
+        toast.error(`${file.name}: Tipo inválido. Aceito: PDF, JPEG, PNG, WEBP`);
+        continue;
       }
       
       // Validar tamanho (máximo 10MB)
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        toast.error('Arquivo muito grande. Tamanho máximo: 10MB');
-        return;
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`${file.name}: Arquivo muito grande. Máximo: 10MB`);
+        continue;
       }
       
-      setFile(selectedFile);
+      validFiles.push({ file, status: 'pending' });
     }
+    
+    if (validFiles.length > 0) {
+      setFiles(prev => [...prev, ...validFiles]);
+    }
+    
+    // Limpar input para permitir selecionar os mesmos arquivos novamente
+    e.target.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<Record<string, string>> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target?.result as string;
+          const base64Data = base64.split(',')[1];
+
+          const result = await interpretarMutation.mutateAsync({
+            fileBase64: base64Data,
+            mimeType: fileWithStatus.file.type,
+            trimestre,
+          });
+
+          // Atualizar status do arquivo
+          setFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, status: 'success' } : f
+          ));
+
+          // Guardar data de coleta se encontrada
+          if (result.dataColeta) {
+            setLastDataColeta(result.dataColeta);
+          }
+
+          resolve(result.resultados);
+        } catch (error: any) {
+          setFiles(prev => prev.map((f, i) => 
+            i === index ? { ...f, status: 'error', error: error.message } : f
+          ));
+          reject(error);
+        }
+      };
+      reader.onerror = () => {
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? { ...f, status: 'error', error: 'Erro ao ler arquivo' } : f
+        ));
+        reject(new Error('Erro ao ler arquivo'));
+      };
+      reader.readAsDataURL(fileWithStatus.file);
+    });
   };
 
   const handleSubmit = async () => {
-    if (!file) {
-      toast.error('Selecione um arquivo');
+    if (files.length === 0) {
+      toast.error('Selecione pelo menos um arquivo');
       return;
     }
 
     setIsProcessing(true);
+    setCurrentFileIndex(0);
+    
+    let combinedResultados: Record<string, string> = {};
+    let successCount = 0;
+    let errorCount = 0;
 
-    try {
-      // Converter arquivo para base64
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64 = e.target?.result as string;
-        const base64Data = base64.split(',')[1]; // Remover prefixo "data:..."
+    // Marcar todos como processing
+    setFiles(prev => prev.map(f => ({ ...f, status: 'processing' as const })));
 
-        // Chamar mutation
-        await interpretarMutation.mutateAsync({
-          fileBase64: base64Data,
-          mimeType: file.type,
-          trimestre,
-        });
-      };
-      reader.onerror = () => {
-        toast.error('Erro ao ler arquivo');
-        setIsProcessing(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Erro ao processar arquivo:', error);
-      setIsProcessing(false);
+    for (let i = 0; i < files.length; i++) {
+      setCurrentFileIndex(i);
+      
+      // Marcar arquivo atual como processing
+      setFiles(prev => prev.map((f, idx) => 
+        idx === i ? { ...f, status: 'processing' } : f
+      ));
+
+      try {
+        const resultados = await processFile(files[i], i);
+        // Mesclar resultados (valores posteriores sobrescrevem anteriores)
+        combinedResultados = { ...combinedResultados, ...resultados };
+        successCount++;
+      } catch (error) {
+        errorCount++;
+        console.error(`Erro ao processar ${files[i].file.name}:`, error);
+      }
+    }
+
+    setIsProcessing(false);
+
+    if (successCount > 0) {
+      const totalExames = Object.keys(combinedResultados).length;
+      const mensagem = lastDataColeta 
+        ? `${totalExames} exames extraídos de ${successCount} arquivo(s) (Data: ${lastDataColeta})!`
+        : `${totalExames} exames extraídos de ${successCount} arquivo(s)!`;
+      
+      if (errorCount > 0) {
+        toast.warning(`${mensagem} (${errorCount} arquivo(s) com erro)`);
+      } else {
+        toast.success(mensagem);
+      }
+      
+      onResultados(combinedResultados, trimestre, lastDataColeta);
+      
+      // Aguardar um pouco para mostrar os status antes de fechar
+      setTimeout(() => {
+        handleClose();
+      }, 1500);
+    } else {
+      toast.error('Nenhum arquivo foi processado com sucesso');
     }
   };
 
   const handleClose = () => {
-    setFile(null);
+    setFiles([]);
     setTrimestre("primeiro");
     setIsProcessing(false);
+    setCurrentFileIndex(0);
+    setAllResultados({});
+    setLastDataColeta(undefined);
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Interpretar Exames com IA</DialogTitle>
           <DialogDescription>
-            Faça upload de um PDF ou foto dos exames laboratoriais. A IA irá extrair automaticamente os valores e preencher os campos.
+            Faça upload de um ou mais arquivos (PDF ou fotos) dos exames laboratoriais. A IA irá extrair automaticamente os valores e preencher os campos.
           </DialogDescription>
         </DialogHeader>
 
@@ -129,10 +211,10 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
             </RadioGroup>
           </div>
 
-          {/* Upload de Arquivo */}
+          {/* Upload de Arquivos */}
           <div className="space-y-3">
             <Label htmlFor="file-upload" className="text-base font-semibold">
-              Arquivo do Exame
+              Arquivos dos Exames
             </Label>
             <div className="flex items-center gap-3">
               <Button
@@ -140,9 +222,10 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
                 variant="outline"
                 onClick={() => document.getElementById('file-upload')?.click()}
                 className="w-full"
+                disabled={isProcessing}
               >
                 <Upload className="mr-2 h-4 w-4" />
-                {file ? 'Trocar Arquivo' : 'Selecionar Arquivo'}
+                {files.length > 0 ? 'Adicionar Mais Arquivos' : 'Selecionar Arquivos'}
               </Button>
               <input
                 id="file-upload"
@@ -150,44 +233,91 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
                 accept=".pdf,image/jpeg,image/jpg,image/png,image/webp"
                 onChange={handleFileChange}
                 className="hidden"
+                multiple
               />
             </div>
             
-            {file && (
-              <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
-                {file.type === 'application/pdf' ? (
-                  <FileText className="h-5 w-5 text-muted-foreground" />
-                ) : (
-                  <Image className="h-5 w-5 text-muted-foreground" />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                </div>
+            {/* Lista de arquivos selecionados */}
+            {files.length > 0 && (
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                {files.map((fileWithStatus, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex items-center gap-2 p-3 rounded-md ${
+                      fileWithStatus.status === 'success' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' :
+                      fileWithStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' :
+                      fileWithStatus.status === 'processing' ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
+                      'bg-muted'
+                    }`}
+                  >
+                    {fileWithStatus.status === 'processing' ? (
+                      <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
+                    ) : fileWithStatus.status === 'success' ? (
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    ) : fileWithStatus.status === 'error' ? (
+                      <X className="h-5 w-5 text-red-500" />
+                    ) : fileWithStatus.file.type === 'application/pdf' ? (
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                    ) : (
+                      <Image className="h-5 w-5 text-muted-foreground" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{fileWithStatus.file.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {(fileWithStatus.file.size / 1024 / 1024).toFixed(2)} MB
+                        {fileWithStatus.status === 'processing' && ' - Processando...'}
+                        {fileWithStatus.status === 'success' && ' - Concluído!'}
+                        {fileWithStatus.status === 'error' && ` - Erro: ${fileWithStatus.error}`}
+                      </p>
+                    </div>
+                    {!isProcessing && fileWithStatus.status === 'pending' && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFile(index)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
             
             <p className="text-xs text-muted-foreground">
-              Formatos aceitos: PDF, JPEG, PNG, WEBP (máx. 10MB)
+              Formatos aceitos: PDF, JPEG, PNG, WEBP (máx. 10MB cada). Você pode selecionar múltiplos arquivos.
             </p>
           </div>
 
+          {/* Progresso */}
+          {isProcessing && (
+            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-3">
+              <p className="text-sm text-blue-900 dark:text-blue-100">
+                <Loader2 className="inline h-4 w-4 animate-spin mr-2" />
+                Processando arquivo {currentFileIndex + 1} de {files.length}...
+              </p>
+            </div>
+          )}
+
           {/* Aviso */}
-          <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-3">
-            <p className="text-sm text-blue-900 dark:text-blue-100">
-              <strong>Nota:</strong> A IA irá preencher automaticamente todos os campos de exames, 
-              <strong> exceto o campo "Observações / Outros Exames"</strong>, que permanece exclusivo para digitação manual.
-            </p>
-          </div>
+          {!isProcessing && (
+            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-3">
+              <p className="text-sm text-blue-900 dark:text-blue-100">
+                <strong>Nota:</strong> A IA irá preencher automaticamente todos os campos de exames, 
+                <strong> exceto o campo "Observações / Outros Exames"</strong>, que permanece exclusivo para digitação manual.
+                Os resultados de múltiplos arquivos serão mesclados.
+              </p>
+            </div>
+          )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} disabled={!file || isProcessing}>
+          <Button onClick={handleSubmit} disabled={files.length === 0 || isProcessing}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -196,7 +326,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
             ) : (
               <>
                 <Upload className="mr-2 h-4 w-4" />
-                Interpretar Exames
+                Interpretar {files.length > 0 ? `${files.length} Arquivo${files.length > 1 ? 's' : ''}` : 'Exames'}
               </>
             )}
           </Button>

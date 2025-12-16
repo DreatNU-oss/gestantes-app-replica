@@ -904,3 +904,11 @@
 - [x] Configurar agendamento diário às 8h da manhã
 - [x] Testar funcionamento
 - [x] Salvar checkpoint
+
+## Upload Múltiplo de Fotos de Exames Laboratoriais (15/12/2025)
+- [x] Analisar estrutura atual da página de Exames Laboratoriais
+- [x] Implementar seleção múltipla de fotos
+- [x] Processar múltiplas imagens com IA
+- [x] Exibir resultados na página (mesclagem automática)
+- [ ] Testar funcionalidade (pendente - usuário testará depois)
+- [x] Salvar checkpoint
