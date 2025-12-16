@@ -1032,3 +1032,8 @@
 - [x] Implementar conversão de PDF para PNG usando pdftoppm
 - [x] Upload de imagem convertida para S3 e envio para OpenAI Vision
 - [ ] Testar interpretação de exames com PDF
+
+## Correção de Validação de Resposta OpenAI (16/12/2025)
+- [x] Adicionar validação se parsed.exames é array
+- [x] Tratar caso onde OpenAI retorna JSON inválido
+- [x] Adicionar logs para debug de resposta da IA

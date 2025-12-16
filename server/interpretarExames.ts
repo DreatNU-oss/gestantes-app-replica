@@ -168,6 +168,14 @@ Se nenhum exame for encontrado, retorne um array vazio: []`;
   const resultados: Record<string, string> = {};
   let dataColeta: string | undefined = undefined;
   
+  console.log("[DEBUG] Resposta completa da OpenAI:", JSON.stringify(parsed, null, 2));
+  
+  // Validar se exames é um array
+  if (!parsed.exames || !Array.isArray(parsed.exames)) {
+    console.error("[ERROR] parsed.exames não é um array:", parsed);
+    throw new Error("A IA não retornou os exames no formato esperado. Tente novamente ou converta o PDF para imagem.");
+  }
+  
   console.log("[DEBUG] Parsed exames:", JSON.stringify(parsed.exames, null, 2));
   
   for (const exame of parsed.exames) {
