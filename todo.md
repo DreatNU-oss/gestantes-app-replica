@@ -874,3 +874,11 @@
 - [x] Corrigir exibição das condutas no PDF
 - [x] Testar geração do PDF com condutas
 - [x] Salvar checkpoint
+
+## Melhorar Formatação Visual das Condutas no PDF (15/12/2025)
+- [x] Adicionar destaque visual (negrito/cor) para título "Conduta"
+- [x] Adicionar caixa com fundo rosa claro e borda na cor da clínica
+- [x] Separar condutas com bullets (•) para melhor leitura
+- [x] Complementação em itálico e cor cinza para diferenciação
+- [x] Testar visual do PDF
+- [x] Salvar checkpoint

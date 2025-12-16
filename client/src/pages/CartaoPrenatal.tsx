@@ -271,38 +271,92 @@ export default function CartaoPrenatal() {
           pdf.text(`BCF: ${bcf} | MF: ${mf}`, 20, y);
           y += 5;
           
-          // Adicionar condutas
-          if (consulta.conduta) {
-            try {
-              const condutas = JSON.parse(consulta.conduta);
-              if (condutas.length > 0) {
-                const condutaTexto = condutas.join(', ');
-                // Quebrar texto longo em múltiplas linhas
-                const maxWidth = 170;
-                const linhas = pdf.splitTextToSize(`Conduta: ${condutaTexto}`, maxWidth);
-                linhas.forEach((linha: string) => {
-                  if (y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                  }
-                  pdf.text(linha, 20, y);
-                  y += 5;
-                });
-              }
-            } catch (e) {
-              // Ignorar erro de parse
-            }
-          }
-          if (consulta.condutaComplementacao) {
-            const linhasCompl = pdf.splitTextToSize(`Complementação: ${consulta.condutaComplementacao}`, 170);
-            linhasCompl.forEach((linha: string) => {
-              if (y > 270) {
+          // Adicionar condutas com formatação visual melhorada
+          if (consulta.conduta || consulta.condutaComplementacao) {
+            // Desenhar caixa de destaque para condutas
+            const hasConduta = consulta.conduta && JSON.parse(consulta.conduta).length > 0;
+            const hasComplementacao = consulta.condutaComplementacao;
+            
+            if (hasConduta || hasComplementacao) {
+              // Verificar se precisa de nova página
+              if (y > 255) {
                 pdf.addPage();
                 y = 20;
               }
-              pdf.text(linha, 20, y);
-              y += 5;
-            });
+              
+              // Fundo suave para a seção de conduta
+              pdf.setFillColor(248, 240, 241); // Rosa bem claro
+              pdf.setDrawColor(139, 64, 73); // Cor da clínica
+              
+              // Calcular altura da caixa baseado no conteúdo
+              let alturaBox = 8;
+              let condutaTexto = '';
+              let linhasConduta: string[] = [];
+              let linhasCompl: string[] = [];
+              
+              if (hasConduta) {
+                try {
+                  const condutas = JSON.parse(consulta.conduta);
+                  condutaTexto = condutas.join(' \u2022 '); // Separador com bullet
+                  linhasConduta = pdf.splitTextToSize(condutaTexto, 160);
+                  alturaBox += linhasConduta.length * 4.5;
+                } catch (e) {}
+              }
+              
+              if (hasComplementacao) {
+                linhasCompl = pdf.splitTextToSize(consulta.condutaComplementacao, 160);
+                alturaBox += linhasCompl.length * 4.5 + 3;
+              }
+              
+              // Desenhar retângulo com borda arredondada
+              pdf.roundedRect(20, y - 1, 170, alturaBox, 2, 2, 'FD');
+              
+              // Título "CONDUTA" em destaque
+              pdf.setFontSize(8);
+              pdf.setFont(undefined, 'bold');
+              pdf.setTextColor(139, 64, 73); // Cor da clínica
+              pdf.text('CONDUTA:', 23, y + 4);
+              
+              // Texto das condutas
+              pdf.setFont(undefined, 'normal');
+              pdf.setTextColor(60, 60, 60);
+              pdf.setFontSize(8);
+              
+              let yTexto = y + 4;
+              
+              if (hasConduta && linhasConduta.length > 0) {
+                // Primeira linha ao lado do título
+                pdf.text(linhasConduta[0], 48, yTexto);
+                yTexto += 4.5;
+                
+                // Linhas adicionais
+                for (let i = 1; i < linhasConduta.length; i++) {
+                  pdf.text(linhasConduta[i], 23, yTexto);
+                  yTexto += 4.5;
+                }
+              }
+              
+              // Complementação em itálico
+              if (hasComplementacao) {
+                yTexto += 1;
+                pdf.setFont(undefined, 'italic');
+                pdf.setTextColor(100, 100, 100);
+                pdf.text('Complementação:', 23, yTexto);
+                yTexto += 4.5;
+                
+                pdf.setFont(undefined, 'normal');
+                linhasCompl.forEach((linha: string) => {
+                  pdf.text(linha, 23, yTexto);
+                  yTexto += 4.5;
+                });
+              }
+              
+              // Resetar cores
+              pdf.setTextColor(0, 0, 0);
+              pdf.setFontSize(9);
+              
+              y += alturaBox + 3;
+            }
           }
           
           if (consulta.observacoes) {
