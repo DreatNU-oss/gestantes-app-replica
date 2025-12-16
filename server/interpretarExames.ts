@@ -175,7 +175,14 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
   // Validar se exames é um array
   if (!parsed.exames || !Array.isArray(parsed.exames)) {
     console.error("[ERROR] parsed.exames não é um array:", parsed);
+    console.error("[ERROR] Tipo de parsed.exames:", typeof parsed.exames);
+    console.error("[ERROR] Conteúdo completo do JSON:", content);
     throw new Error("A IA não retornou os exames no formato esperado. Tente novamente ou converta o PDF para imagem.");
+  }
+  
+  console.log(`[DEBUG] Total de exames extraídos: ${parsed.exames.length}`);
+  if (parsed.exames.length === 0) {
+    console.warn("[WARN] A IA retornou um array vazio de exames. Nenhum exame foi encontrado no documento.");
   }
   
   console.log("[DEBUG] Parsed exames:", JSON.stringify(parsed.exames, null, 2));

@@ -1042,3 +1042,8 @@
 - [x] Adicionar exemplo de resposta esperada no prompt
 - [x] Tornar instruções mais claras sobre formato JSON (objeto com chave exames)
 - [ ] Testar com PDF real
+
+## Correção de Inserção de Exames Extraídos (16/12/2025)
+- [x] Adicionar logs detalhados para debug
+- [ ] Testar com PDF real e verificar logs
+- [ ] Corrigir se necessário
