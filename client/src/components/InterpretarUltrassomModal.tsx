@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Upload, AlertCircle, X, CheckCircle, FileText, Image } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, X, CheckCircle, FileText, Image, Minimize2 } from 'lucide-react';
+import { compressImage, formatFileSize, calculateReduction } from '@/lib/imageCompression';
+import { toast } from 'sonner';
 
 interface InterpretarUltrassomModalProps {
   open: boolean;
@@ -14,8 +16,12 @@ interface InterpretarUltrassomModalProps {
 
 interface FileWithStatus {
   file: File;
-  status: 'pending' | 'uploading' | 'processing' | 'success' | 'error';
+  originalFile?: File;
+  status: 'pending' | 'compressing' | 'uploading' | 'processing' | 'success' | 'error';
   error?: string;
+  wasCompressed?: boolean;
+  originalSize?: number;
+  compressedSize?: number;
 }
 
 const tiposUltrassom = [
@@ -72,12 +78,50 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
   };
 
   const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<Record<string, string>> => {
-    // Atualizar status para uploading
+    let fileToUpload = fileWithStatus.file;
+    
+    // 1. Comprimir imagem se necessário
+    if (fileWithStatus.file.type.startsWith('image/')) {
+      setFiles(prev => prev.map((f, i) => 
+        i === index ? { ...f, status: 'compressing' } : f
+      ));
+      
+      try {
+        const compressionResult = await compressImage(fileWithStatus.file, {
+          maxWidth: 1920,
+          maxHeight: 1920,
+          quality: 0.85,
+        });
+        
+        fileToUpload = compressionResult.file;
+        
+        // Atualizar informações de compressão
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? { 
+            ...f, 
+            file: compressionResult.file,
+            originalFile: fileWithStatus.file,
+            wasCompressed: compressionResult.wasCompressed,
+            originalSize: compressionResult.originalSize,
+            compressedSize: compressionResult.compressedSize,
+          } : f
+        ));
+        
+        if (compressionResult.wasCompressed) {
+          const reduction = calculateReduction(compressionResult.originalSize, compressionResult.compressedSize);
+          console.log(`Imagem comprimida: ${formatFileSize(compressionResult.originalSize)} → ${formatFileSize(compressionResult.compressedSize)} (-${reduction}%)`);
+        }
+      } catch (err) {
+        console.warn('Falha ao comprimir imagem, usando original:', err);
+      }
+    }
+    
+    // 2. Atualizar status para uploading
     setFiles(prev => prev.map((f, i) => 
       i === index ? { ...f, status: 'uploading' } : f
     ));
 
-    // 1. Converter arquivo para base64
+    // 3. Converter arquivo para base64
     const base64 = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -238,11 +282,11 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
                     className={`flex items-center gap-2 p-3 rounded-md ${
                       fileWithStatus.status === 'success' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' :
                       fileWithStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' :
-                      (fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing') ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
+                      (fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
                       'bg-muted'
                     }`}
                   >
-                    {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing') ? (
+                    {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? (
                       <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
                     ) : fileWithStatus.status === 'success' ? (
                       <CheckCircle className="h-5 w-5 text-green-500" />
@@ -256,7 +300,18 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{fileWithStatus.file.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {(fileWithStatus.file.size / 1024 / 1024).toFixed(2)} MB
+                        {fileWithStatus.wasCompressed && fileWithStatus.originalSize ? (
+                          <>
+                            <span className="text-green-600">
+                              <Minimize2 className="inline h-3 w-3 mr-1" />
+                              {formatFileSize(fileWithStatus.originalSize)} → {formatFileSize(fileWithStatus.compressedSize || 0)}
+                              {' '}(-{calculateReduction(fileWithStatus.originalSize, fileWithStatus.compressedSize || 0)}%)
+                            </span>
+                          </>
+                        ) : (
+                          <>{(fileWithStatus.file.size / 1024 / 1024).toFixed(2)} MB</>
+                        )}
+                        {fileWithStatus.status === 'compressing' && ' - Comprimindo...'}
                         {fileWithStatus.status === 'uploading' && ' - Enviando...'}
                         {fileWithStatus.status === 'processing' && ' - Interpretando...'}
                         {fileWithStatus.status === 'success' && ' - Concluído!'}

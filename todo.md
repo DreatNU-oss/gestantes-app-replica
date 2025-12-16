@@ -918,3 +918,11 @@
 - [x] Atualizar para suportar múltiplos arquivos
 - [ ] Testar funcionalidade (pendente - usuário testará depois)
 - [x] Salvar checkpoint
+
+## Compressão Automática de Imagens (15/12/2025)
+- [x] Criar função de compressão de imagens usando Canvas (imageCompression.ts)
+- [x] Integrar compressão no InterpretarUltrassomModal
+- [x] Aplicar também no InterpretarExamesModal
+- [x] Exibir informações de compressão (tamanho original → comprimido)
+- [ ] Testar funcionalidade (pendente - usuário testará depois)
+- [x] Salvar checkpoint
