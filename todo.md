@@ -898,3 +898,9 @@
 - [x] Testar funcionalidade
 - [x] Apagar logs de teste do banco
 - [x] Salvar checkpoint
+
+## Envio Automático Diário de Lembretes (15/12/2025)
+- [x] Criar endpoint /api/cron/processar-lembretes com autenticação
+- [x] Configurar agendamento diário às 8h da manhã
+- [x] Testar funcionamento
+- [x] Salvar checkpoint
