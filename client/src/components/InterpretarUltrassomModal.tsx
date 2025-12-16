@@ -68,11 +68,18 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
 
     try {
       // 1. Fazer upload do arquivo para S3
-      const arrayBuffer = await arquivo.arrayBuffer();
-      const buffer = new Uint8Array(arrayBuffer);
-      
-      // Converter para base64 para enviar ao backend
-      const base64 = btoa(String.fromCharCode(...buffer));
+      // Usar FileReader para converter arquivo para base64 de forma eficiente
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          // Remover o prefixo "data:...;base64," para obter apenas o base64
+          const base64Data = result.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+        reader.readAsDataURL(arquivo);
+      });
       
       // Chamar backend para fazer upload
       const uploadResponse = await fetch('/api/upload-laudo', {

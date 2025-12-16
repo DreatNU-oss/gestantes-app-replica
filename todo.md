@@ -882,3 +882,10 @@
 - [x] Complementação em itálico e cor cinza para diferenciação
 - [x] Testar visual do PDF
 - [x] Salvar checkpoint
+
+## Bug: Erro "data stack" ao fazer upload de foto de ultrassom (15/12/2025)
+- [x] Investigar código de upload de imagens de ultrassom
+- [x] Identificar causa do erro "data stack" (spread operator em arquivos grandes)
+- [x] Corrigir o problema (usar FileReader.readAsDataURL)
+- [ ] Testar upload de foto (pendente - usuário testará depois)
+- [x] Salvar checkpoint
