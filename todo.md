@@ -979,3 +979,10 @@
 - [x] Documentação completa da API (API_DOCUMENTACAO.md)
 - [x] Exemplos de requisições e respostas (React Native e Flutter)
 - [x] Guia de integração para desenvolvedor mobile
+
+
+## Assets e Branding para App Nativo (16/12/2025)
+- [x] Copiar logos da marca para pasta de assets (app-assets/)
+- [x] Documentar especificações do ícone do app (silhueta sem texto)
+- [x] Documentar paleta de cores na API (vinho marsala + bege/pêssego)
+- [x] Atualizar documentação com guia de branding (React Native e Flutter)

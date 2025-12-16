@@ -10,12 +10,13 @@
 ## Sumário
 
 1. [Visão Geral](#visão-geral)
-2. [Autenticação](#autenticação)
-3. [Endpoints](#endpoints)
-4. [Modelos de Dados](#modelos-de-dados)
-5. [Códigos de Erro](#códigos-de-erro)
-6. [Exemplos de Integração](#exemplos-de-integração)
-7. [Conformidade LGPD](#conformidade-lgpd)
+2. [Branding e Assets](#branding-e-assets)
+3. [Autenticação](#autenticação)
+4. [Endpoints](#endpoints)
+5. [Modelos de Dados](#modelos-de-dados)
+6. [Códigos de Erro](#códigos-de-erro)
+7. [Exemplos de Integração](#exemplos-de-integração)
+8. [Conformidade LGPD](#conformidade-lgpd)
 
 ---
 
@@ -32,6 +33,172 @@ Esta API REST foi desenvolvida para permitir que gestantes acessem seus dados de
 | **Formato** | JSON |
 | **Segurança** | HTTPS obrigatório, isolamento de dados por gestante |
 | **LGPD** | Logs de acesso para auditoria |
+
+---
+
+## Branding e Assets
+
+Esta seção contém os recursos visuais e a paleta de cores oficial da marca **Mais Mulher - Clínica de Saúde Feminina** para uso no aplicativo móvel.
+
+### Arquivos de Logo
+
+Os arquivos de logo estão disponíveis na pasta `app-assets/` do projeto:
+
+| Arquivo | Descrição | Uso Recomendado |
+|---------|-----------|------------------|
+| `logo-horizontal.png` | Logo horizontal com texto | Splash screen, tela de login, cabeçalho |
+| `logo-vertical.png` | Logo vertical com texto | Tela de boas-vindas, sobre o app |
+
+### Ícone do App
+
+Para o ícone do aplicativo nas lojas (Google Play e App Store), utilize apenas a **silhueta da gestante** (sem o texto "Mais Mulher"). A silhueta pode ser extraída do arquivo `logo-vertical.png`.
+
+**Especificações do ícone:**
+
+| Plataforma | Tamanho | Formato |
+|------------|---------|----------|
+| Android | 512x512px | PNG (sem transparência) |
+| iOS | 1024x1024px | PNG (sem transparência) |
+| Adaptive Icon (Android) | 108x108dp | PNG com safe zone |
+
+### Paleta de Cores Oficial
+
+A identidade visual da marca utiliza tons de **vinho marsala** e **bege/pêssego**, transmitindo elegância e acolhimento.
+
+| Nome | HEX | RGB | Uso |
+|------|-----|-----|-----|
+| **Vinho Marsala** (Primária) | `#722F37` | rgb(114, 47, 55) | Textos principais, botões, cabeçalhos |
+| **Vinho Claro** | `#8B4049` | rgb(139, 64, 73) | Hover states, bordas |
+| **Vinho Escuro** | `#5A252C` | rgb(90, 37, 44) | Textos de ênfase |
+| **Bege Pêssego** (Secundária) | `#F5E6D3` | rgb(245, 230, 211) | Fundos, cards |
+| **Bege Claro** | `#FDF8F3` | rgb(253, 248, 243) | Fundo principal |
+| **Pêssego Suave** | `#FFECD2` | rgb(255, 236, 210) | Destaques, badges |
+| **Rosa Antigo** | `#D4A5A5` | rgb(212, 165, 165) | Elementos decorativos |
+| **Cinza Texto** | `#4A4A4A` | rgb(74, 74, 74) | Textos secundários |
+
+### Tipografia
+
+A marca utiliza fontes elegantes e legíveis:
+
+| Elemento | Fonte Sugerida | Alternativa |
+|----------|----------------|-------------|
+| Títulos | Playfair Display | Georgia |
+| Corpo | Lato | Open Sans |
+| Números | Roboto | SF Pro |
+
+### Exemplo de Implementação (React Native)
+
+```javascript
+// colors.js - Paleta de cores
+export const colors = {
+  primary: '#722F37',      // Vinho Marsala
+  primaryLight: '#8B4049', // Vinho Claro
+  primaryDark: '#5A252C',  // Vinho Escuro
+  secondary: '#F5E6D3',    // Bege Pêssego
+  background: '#FDF8F3',   // Bege Claro
+  accent: '#FFECD2',       // Pêssego Suave
+  decorative: '#D4A5A5',   // Rosa Antigo
+  text: '#4A4A4A',         // Cinza Texto
+  textLight: '#6B6B6B',
+  white: '#FFFFFF',
+  success: '#4CAF50',
+  warning: '#FF9800',
+  error: '#F44336',
+};
+
+// Exemplo de uso em componente
+import { colors } from './colors';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.background,
+  },
+  header: {
+    backgroundColor: colors.primary,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  buttonText: {
+    color: colors.white,
+    fontWeight: '600',
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+    shadowColor: colors.primaryDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+});
+```
+
+### Exemplo de Implementação (Flutter)
+
+```dart
+// lib/theme/colors.dart
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const Color primary = Color(0xFF722F37);      // Vinho Marsala
+  static const Color primaryLight = Color(0xFF8B4049); // Vinho Claro
+  static const Color primaryDark = Color(0xFF5A252C);  // Vinho Escuro
+  static const Color secondary = Color(0xFFF5E6D3);    // Bege Pêssego
+  static const Color background = Color(0xFFFDF8F3);   // Bege Claro
+  static const Color accent = Color(0xFFFFECD2);       // Pêssego Suave
+  static const Color decorative = Color(0xFFD4A5A5);   // Rosa Antigo
+  static const Color text = Color(0xFF4A4A4A);         // Cinza Texto
+  static const Color textLight = Color(0xFF6B6B6B);
+  static const Color white = Colors.white;
+  static const Color success = Color(0xFF4CAF50);
+  static const Color warning = Color(0xFFFF9800);
+  static const Color error = Color(0xFFF44336);
+}
+
+// lib/theme/theme.dart
+ThemeData appTheme() {
+  return ThemeData(
+    primaryColor: AppColors.primary,
+    scaffoldBackgroundColor: AppColors.background,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      elevation: 0,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 24,
+        ),
+      ),
+    ),
+    cardTheme: CardTheme(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
+      background: AppColors.background,
+    ),
+  );
+}
+```
 
 ---
 
