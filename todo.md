@@ -868,3 +868,9 @@
 - [x] Combinar condutas predefinidas com personalizadas no formulário
 - [x] Testar funcionalidades (parcial - condutas salvando corretamente)
 - [x] Salvar checkpoint
+
+## Finalizar Condutas no PDF (15/12/2025)
+- [x] Verificar código atual de geração do PDF
+- [x] Corrigir exibição das condutas no PDF
+- [x] Testar geração do PDF com condutas
+- [x] Salvar checkpoint
