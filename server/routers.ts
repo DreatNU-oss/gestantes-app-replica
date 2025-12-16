@@ -51,7 +51,7 @@ import {
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails, resultadosExames, type InsertResultadoExame } from '../drizzle/schema';
+import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, type InsertResultadoExame, type InsertHistoricoInterpretacao } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { getDb } from './db';
@@ -1116,6 +1116,59 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deleteCondutaPersonalizada(input.id)),
+  }),
+
+  // Histórico de interpretações de IA
+  historicoInterpretacoes: router({
+    salvar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoInterpretacao: z.enum(['exames_laboratoriais', 'ultrassom']),
+        tipoExame: z.string().optional(),
+        arquivosProcessados: z.number().default(1),
+        resultadoJson: z.any(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        const result = await db.insert(historicoInterpretacoes).values({
+          gestanteId: input.gestanteId,
+          tipoInterpretacao: input.tipoInterpretacao,
+          tipoExame: input.tipoExame,
+          arquivosProcessados: input.arquivosProcessados,
+          resultadoJson: input.resultadoJson,
+        });
+        return { success: true, id: result[0].insertId };
+      }),
+
+    listar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoInterpretacao: z.enum(['exames_laboratoriais', 'ultrassom']).optional(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        const results = await db.select().from(historicoInterpretacoes)
+          .where(eq(historicoInterpretacoes.gestanteId, input.gestanteId))
+          .orderBy(desc(historicoInterpretacoes.dataInterpretacao));
+        
+        // Filtrar por tipo se especificado
+        if (input.tipoInterpretacao) {
+          return results.filter((r: any) => r.tipoInterpretacao === input.tipoInterpretacao);
+        }
+        
+        return results;
+      }),
+
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        await db.delete(historicoInterpretacoes).where(eq(historicoInterpretacoes.id, input.id));
+        return { success: true };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 interface InterpretarUltrassomModalProps {
   open: boolean;
   onClose: () => void;
-  onDadosExtraidos: (tipo: string, dados: Record<string, string>) => void;
+  onDadosExtraidos: (tipo: string, dados: Record<string, string>, arquivosProcessados?: number) => void;
 }
 
 interface FileWithStatus {
@@ -22,6 +22,7 @@ interface FileWithStatus {
   wasCompressed?: boolean;
   originalSize?: number;
   compressedSize?: number;
+  previewUrl?: string; // URL para preview de imagens
 }
 
 const tiposUltrassom = [
@@ -61,7 +62,13 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
         continue;
       }
       
-      validFiles.push({ file, status: 'pending' });
+      // Gerar preview URL para imagens
+      let previewUrl: string | undefined;
+      if (file.type.startsWith('image/')) {
+        previewUrl = URL.createObjectURL(file);
+      }
+      
+      validFiles.push({ file, status: 'pending', previewUrl });
     }
     
     if (validFiles.length > 0) {
@@ -103,6 +110,11 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
   };
 
   const removeFile = (index: number) => {
+    // Revogar URL de preview para liberar memória
+    const fileToRemove = files[index];
+    if (fileToRemove?.previewUrl) {
+      URL.revokeObjectURL(fileToRemove.previewUrl);
+    }
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -233,7 +245,7 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
     if (successCount > 0) {
       // Aguardar um pouco para mostrar os status antes de fechar
       setTimeout(() => {
-        onDadosExtraidos(tipoSelecionado, combinedDados);
+        onDadosExtraidos(tipoSelecionado, combinedDados, successCount);
         handleClose();
       }, 1500);
     } else {
@@ -242,6 +254,12 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
   };
 
   const handleClose = () => {
+    // Revogar todas as URLs de preview para liberar memória
+    files.forEach(f => {
+      if (f.previewUrl) {
+        URL.revokeObjectURL(f.previewUrl);
+      }
+    });
     setTipoSelecionado('');
     setFiles([]);
     setError('');
@@ -322,27 +340,53 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
             
             {/* Lista de arquivos selecionados */}
             {files.length > 0 && (
-              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+              <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {files.map((fileWithStatus, index) => (
                   <div 
                     key={index} 
-                    className={`flex items-center gap-2 p-3 rounded-md ${
+                    className={`flex items-center gap-3 p-3 rounded-md ${
                       fileWithStatus.status === 'success' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' :
                       fileWithStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' :
                       (fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
                       'bg-muted'
                     }`}
                   >
-                    {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? (
-                      <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
-                    ) : fileWithStatus.status === 'success' ? (
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    ) : fileWithStatus.status === 'error' ? (
-                      <X className="h-5 w-5 text-red-500" />
-                    ) : fileWithStatus.file.type === 'application/pdf' ? (
-                      <FileText className="h-5 w-5 text-muted-foreground" />
+                    {/* Preview de imagem ou ícone */}
+                    {fileWithStatus.previewUrl ? (
+                      <div className="relative flex-shrink-0">
+                        <img 
+                          src={fileWithStatus.previewUrl} 
+                          alt={fileWithStatus.file.name}
+                          className="h-14 w-14 object-cover rounded-md border border-border"
+                        />
+                        {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') && (
+                          <div className="absolute inset-0 bg-black/50 rounded-md flex items-center justify-center">
+                            <Loader2 className="h-5 w-5 text-white animate-spin" />
+                          </div>
+                        )}
+                        {fileWithStatus.status === 'success' && (
+                          <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5">
+                            <CheckCircle className="h-3 w-3 text-white" />
+                          </div>
+                        )}
+                        {fileWithStatus.status === 'error' && (
+                          <div className="absolute -top-1 -right-1 bg-red-500 rounded-full p-0.5">
+                            <X className="h-3 w-3 text-white" />
+                          </div>
+                        )}
+                      </div>
                     ) : (
-                      <Image className="h-5 w-5 text-muted-foreground" />
+                      <div className="h-14 w-14 flex-shrink-0 flex items-center justify-center bg-muted rounded-md border border-border">
+                        {(fileWithStatus.status === 'uploading' || fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? (
+                          <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+                        ) : fileWithStatus.status === 'success' ? (
+                          <CheckCircle className="h-6 w-6 text-green-500" />
+                        ) : fileWithStatus.status === 'error' ? (
+                          <X className="h-6 w-6 text-red-500" />
+                        ) : (
+                          <FileText className="h-6 w-6 text-muted-foreground" />
+                        )}
+                      </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{fileWithStatus.file.name}</p>

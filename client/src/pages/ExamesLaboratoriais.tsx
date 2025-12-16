@@ -13,6 +13,7 @@ import { isExameSorologico } from "@/data/valoresReferencia";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
+import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
 import { Sparkles, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 import {
@@ -48,6 +49,9 @@ export default function ExamesLaboratoriais() {
       alert(`Erro ao salvar resultados: ${error.message}`);
     },
   });
+  
+  // Mutation para salvar histórico de interpretações
+  const salvarHistoricoMutation = trpc.historicoInterpretacoes.salvar.useMutation();
 
   // Carregar resultados quando gestante é selecionada
   useEffect(() => {
@@ -406,7 +410,10 @@ export default function ExamesLaboratoriais() {
               <CardTitle>Exames de {gestante.nome}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-8">
+              {/* Histórico de Interpretações */}
+              <HistoricoInterpretacoes gestanteId={gestanteSelecionada!} tipo="exames_laboratoriais" />
+              
+              <div className="space-y-8 mt-6">
                 {renderTabelaExames("Exames de Sangue", examesSangue)}
                 {renderTabelaExames("Exames de Urina", examesUrina)}
                 {renderTabelaExames("Exames de Fezes", examesFezes)}
@@ -476,7 +483,7 @@ export default function ExamesLaboratoriais() {
                 <InterpretarExamesModal
                   open={modalAberto}
                   onOpenChange={setModalAberto}
-                  onResultados={(novosResultados, trimestre, dataColeta) => {
+                  onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados) => {
                     console.log('[DEBUG FRONTEND] onResultados chamado');
                     console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
                     console.log('[DEBUG FRONTEND] trimestre:', trimestre);
@@ -530,6 +537,17 @@ export default function ExamesLaboratoriais() {
                       console.log('[DEBUG FRONTEND] Novo estado de resultados:', novoEstado);
                       return novoEstado;
                     });
+                    
+                    // Salvar no histórico de interpretações
+                    if (gestanteSelecionada) {
+                      salvarHistoricoMutation.mutate({
+                        gestanteId: gestanteSelecionada,
+                        tipoInterpretacao: 'exames_laboratoriais',
+                        tipoExame: trimestre,
+                        arquivosProcessados: arquivosProcessados || 1,
+                        resultadoJson: novosResultados,
+                      });
+                    }
                   }}
                 />
               </div>

@@ -932,3 +932,23 @@
 - [x] Adicionar drag-and-drop no InterpretarExamesModal
 - [ ] Testar funcionalidade (pendente - usuário testará depois)
 - [x] Salvar checkpoint
+
+## Preview de Imagens e Histórico de Interpretações (15/12/2025)
+- [ ] Criar tabela de histórico de interpretações no banco (historicoInterpretacoes)
+- [ ] Implementar preview de imagens no InterpretarUltrassomModal
+- [ ] Implementar preview de imagens no InterpretarExamesModal
+- [ ] Implementar salvamento de histórico de interpretações no backend
+- [ ] Criar interface de visualização do histórico de interpretações (Ultrassons)
+- [ ] Criar interface de visualização do histórico de interpretações (Exames Lab)
+- [ ] Testar funcionalidade
+- [ ] Salvar checkpoint
+
+
+## Preview de Imagens e Histórico de Interpretações (15/12/2025)
+
+- [x] Preview de imagens antes de enviar (Ultrassons)
+- [x] Preview de imagens antes de enviar (Exames Laboratoriais)
+- [x] Histórico de interpretações de IA (tabela no banco)
+- [x] Salvar interpretações no histórico (Ultrassons)
+- [x] Salvar interpretações no histórico (Exames Laboratoriais)
+- [x] Interface de visualização do histórico

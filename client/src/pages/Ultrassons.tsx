@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, ArrowLeft, Sparkles } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
+import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
 
 
 export default function Ultrassons() {
@@ -39,6 +40,9 @@ export default function Ultrassons() {
       alert(`Erro ao salvar ultrassom: ${error.message}`);
     },
   });
+  
+  // Mutation para salvar histórico de interpretações
+  const salvarHistoricoMutation = trpc.historicoInterpretacoes.salvar.useMutation();
   
   // Estados para cada tipo de ultrassom
   const [primeiroUS, setPrimeiroUS] = useState({
@@ -164,7 +168,7 @@ export default function Ultrassons() {
   }, [ultrassons]);
   
   // Função para preencher dados extraídos pela IA
-  const handleDadosExtraidos = (tipo: string, dados: Record<string, string>) => {
+  const handleDadosExtraidos = (tipo: string, dados: Record<string, string>, arquivosProcessados: number = 1) => {
     switch (tipo) {
       case 'primeiro_ultrassom':
         setPrimeiroUS(prev => ({ ...prev, ...dados }));
@@ -185,6 +189,18 @@ export default function Ultrassons() {
         setUsSeguimento(prev => ({ ...prev, ...dados }));
         break;
     }
+    
+    // Salvar no histórico de interpretações
+    if (gestanteSelecionada) {
+      salvarHistoricoMutation.mutate({
+        gestanteId: gestanteSelecionada,
+        tipoInterpretacao: 'ultrassom',
+        tipoExame: tipo,
+        arquivosProcessados,
+        resultadoJson: dados,
+      });
+    }
+    
     alert('Dados extraídos com sucesso! Revise os campos e salve.');
   };
 
@@ -293,6 +309,9 @@ export default function Ultrassons() {
       
       {gestanteSelecionada && (
         <div className="space-y-8">
+          {/* Histórico de Interpretações */}
+          <HistoricoInterpretacoes gestanteId={gestanteSelecionada} tipo="ultrassom" />
+          
           {/* 1º Ultrassom */}
           <Card>
             <CardHeader>

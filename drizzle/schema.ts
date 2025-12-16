@@ -322,6 +322,23 @@ export type CondutaPersonalizada = typeof condutasPersonalizadas.$inferSelect;
 export type InsertCondutaPersonalizada = typeof condutasPersonalizadas.$inferInsert;
 
 /**
+ * Tabela de histórico de interpretações de IA
+ */
+export const historicoInterpretacoes = mysqlTable("historicoInterpretacoes", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  tipoInterpretacao: mysqlEnum("tipoInterpretacao", ["exames_laboratoriais", "ultrassom"]).notNull(),
+  tipoExame: varchar("tipoExame", { length: 100 }), // Para ultrassom: primeiro_ultrassom, morfologico_1tri, etc. Para exames: trimestre
+  arquivosProcessados: int("arquivosProcessados").default(1).notNull(), // Quantidade de arquivos processados
+  resultadoJson: json("resultadoJson").notNull(), // JSON com os dados extraídos pela IA
+  dataInterpretacao: timestamp("dataInterpretacao").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type HistoricoInterpretacao = typeof historicoInterpretacoes.$inferSelect;
+export type InsertHistoricoInterpretacao = typeof historicoInterpretacoes.$inferInsert;
+
+/**
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
 
