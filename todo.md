@@ -1111,3 +1111,9 @@
 - [x] Atualizar Cartão de Pré-natal para usar gestante ativa
 - [x] Reiniciar servidor e testar fluxo completo
 - [x] Salvar checkpoint
+
+## Correção de Erro ao Salvar Exames (17/12/2025)
+- [x] Investigar erro de valores "?" sendo enviados para o banco
+- [x] Adicionar validação para filtrar valores "?" antes de salvar
+- [x] Reiniciar servidor e verificar funcionamento
+- [x] Salvar checkpoint

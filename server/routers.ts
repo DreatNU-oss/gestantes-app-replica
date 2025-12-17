@@ -796,7 +796,8 @@ export const appRouter = router({
           } else if (typeof valor === 'object' && valor !== null) {
             // Exame com trimestres
             for (const [trimestre, resultado] of Object.entries(valor)) {
-              if (resultado && resultado.trim()) {
+              // Validar que o resultado não seja vazio, "?", ou apenas espaços
+              if (resultado && resultado.trim() && resultado.trim() !== '?') {
                 // Buscar data específica do trimestre ou data única
                 let dataExame: Date | null = null;
                 if (datasExame) {
