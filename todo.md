@@ -1146,3 +1146,9 @@
 - [x] Passar DUM da gestante para o modal
 - [x] Reiniciar servidor e testar
 - [x] Salvar checkpoint
+
+## Correção de Erro handleSubmit (17/12/2025)
+- [x] Investigar erro ReferenceError: handleSubmit is not defined
+- [x] Corrigir referência incorreta (handleSubmit -> handleInterpretarTodos)
+- [x] Reiniciar servidor e testar
+- [x] Salvar checkpoint

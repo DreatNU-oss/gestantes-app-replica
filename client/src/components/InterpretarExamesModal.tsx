@@ -564,7 +564,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} disabled={files.length === 0 || isProcessing}>
+          <Button onClick={handleInterpretarTodos} disabled={files.length === 0 || isProcessing}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
