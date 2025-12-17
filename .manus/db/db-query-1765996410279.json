@@ -1,0 +1,16 @@
+{
+  "query": "SELECT \n  (SELECT COUNT(*) FROM consultasPrenatal WHERE gestanteId = 10) as total_consultas,\n  (SELECT COUNT(*) FROM resultadosExames WHERE gestanteId = 10) as total_exames,\n  (SELECT COUNT(*) FROM ultrassons WHERE gestanteId = 10) as total_ultrassons,\n  (SELECT dum FROM gestantes WHERE id = 10) as dum_atualizada;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  (SELECT COUNT(*) FROM consultasPrenatal WHERE gestanteId = 10) as total_consultas,\n  (SELECT COUNT(*) FROM resultadosExames WHERE gestanteId = 10) as total_exames,\n  (SELECT COUNT(*) FROM ultrassons WHERE gestanteId = 10) as total_ultrassons,\n  (SELECT dum FROM gestantes WHERE id = 10) as dum_atualizada;",
+  "rows": [
+    {
+      "total_consultas": "10",
+      "total_exames": "28",
+      "total_ultrassons": "4",
+      "dum_atualizada": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_consultas\ttotal_exames\ttotal_ultrassons\tdum_atualizada\n10\t28\t4\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 143
+}

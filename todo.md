@@ -1209,3 +1209,8 @@
 
 - [x] Aumentar fonte dos cabeçalhos "1º Trimestre", "2º Trimestre", "3º Trimestre" (fonte 11, negrito, uma vez no topo)
 - [x] Substituir texto "1º Tri", "2º Tri", "3º Tri" em cada exame pelas datas reais (DD/MM/AAAA em cinza e itálico)
+
+
+## Bug - Página Ultrassons (Reportado 17/12/2025)
+
+- [x] Corrigir erro de input controlado mudando para não controlado (adicionada função sanitizeDados e uso de prev state)

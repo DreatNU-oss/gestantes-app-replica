@@ -131,52 +131,67 @@ export default function Ultrassons() {
   });
   
   // Carregar dados quando gestante é selecionada
+  // Função helper para garantir que valores undefined sejam convertidos para string vazia
+  const sanitizeDados = (dados: Record<string, any>): Record<string, string> => {
+    const sanitized: Record<string, string> = {};
+    Object.keys(dados).forEach(key => {
+      sanitized[key] = dados[key] || '';
+    });
+    return sanitized;
+  };
+
   useEffect(() => {
     if (ultrassons && ultrassons.length > 0) {
       ultrassons.forEach((us: any) => {
-        const dados = us.dados || {};
+        const dados = sanitizeDados(us.dados || {});
         
         switch (us.tipoUltrassom) {
           case 'primeiro_ultrassom':
-            setPrimeiroUS({
+            setPrimeiroUS(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               idadeGestacional: us.idadeGestacional || '',
               ...dados,
-            });
+            }));
             break;
           case 'morfologico_1tri':
-            setMorfo1Tri({
+            setMorfo1Tri(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               idadeGestacional: us.idadeGestacional || '',
               ...dados,
-            });
+            }));
             break;
           case 'ultrassom_obstetrico':
-            setUsObstetrico({
+            setUsObstetrico(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               idadeGestacional: us.idadeGestacional || '',
               ...dados,
-            });
+            }));
             break;
           case 'morfologico_2tri':
-            setMorfo2Tri({
+            setMorfo2Tri(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               idadeGestacional: us.idadeGestacional || '',
               ...dados,
-            });
+            }));
             break;
           case 'ecocardiograma_fetal':
-            setEcocardiograma({
+            setEcocardiograma(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               ...dados,
-            });
+            }));
             break;
           case 'ultrassom_seguimento':
-            setUsSeguimento({
+            setUsSeguimento(prev => ({
+              ...prev,
               dataExame: us.dataExame || '',
               idadeGestacional: us.idadeGestacional || '',
               ...dados,
-            });
+            }));
             break;
         }
       });
