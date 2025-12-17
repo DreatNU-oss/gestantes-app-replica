@@ -1087,3 +1087,10 @@
 - [x] Substituir pdftoppm por biblioteca JavaScript pura (pdf-to-png-converter)
 - [x] Aplicar correção em exames laboratoriais e ultrassons
 - [ ] Testar com PDF real em produção
+
+## Correção de Mapeamento de Exames (17/12/2025)
+- [x] Investigar código de mapeamento entre nomes da IA e campos do banco
+- [x] Adicionar aceitação de variações de nomes de exames no prompt
+- [x] Melhorar prompt para enfatizar extração da data de cada exame
+- [x] Adicionar instrução para procurar TODOS os exames em todas as páginas
+- [ ] Testar com PDF real contendo 12 exames

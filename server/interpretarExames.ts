@@ -33,8 +33,20 @@ Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENA
 1. Retorne APENAS os exames que estão presentes no documento
 2. NÃO invente ou estime valores
 3. Para cada exame encontrado, extraia o valor exato como está escrito
-4. Ignore qualquer exame que não esteja na lista abaixo
+4. **ACEITE VARIAÇÕES DE NOMES** - Os exames podem aparecer com nomes ligeiramente diferentes no laudo:
+   * "Hemoglobina" ou "Hb" = "Hemoglobina/Hematócrito"
+   * "Anti-HIV" ou "HIV 1 e 2" = "HIV"
+   * "HBsAg" = "Hepatite B (HBsAg)"
+   * "Anti-HCV" = "Hepatite C (Anti-HCV)"
+   * "Toxo IgG" = "Toxoplasmose IgG"
+   * "Rubéola IgG" = "Rubéola IgG"
+   * "CMV IgG" = "Citomegalovírus IgG"
+   * "Glicose" ou "Glicemia" = "Glicemia de jejum"
+   * "EAS" ou "Urina I" ou "Urina tipo 1" = "EAS (Urina tipo 1)"
+   * "Urocultura" ou "Cultura de Urina" = "Urocultura"
+   * "EPF" ou "Parasitológico" = "EPF (Parasitológico de Fezes)"
 5. Para exames com subcampos (como TTGO), retorne cada subcampo separadamente
+6. **PROCURE TODOS OS EXAMES** - Não pare após encontrar alguns, continue procurando em todas as páginas
 
 **EXTRAÇÃO DE VALORES NUMÉRICOS:**
 - **SEMPRE extraia valores numéricos quando disponíveis**, mesmo que haja interpretação qualitativa
@@ -56,17 +68,19 @@ Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENA
 **EXAMES ESPERADOS PARA ESTE TRIMESTRE:**
 ${examesEsperados.map(e => `- ${e}`).join('\n')}
 
+**IMPORTANTE:** Os nomes acima são referência. No documento, os exames podem ter nomes ligeiramente diferentes. Use seu conhecimento médico para identificar qual exame da lista corresponde ao que está no documento.
+
 **FORMATO DE RESPOSTA (JSON OBRIGATÓRIO):**
 Você DEVE retornar um objeto JSON com a chave exames contendo um array.
 
-Exemplo de resposta correta:
+Exemplo de resposta correta (COM DATA):
 {
   "exames": [
     { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
     { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
-    { "nomeExame": "HIV", "valor": "0.15" },
-    { "nomeExame": "Toxoplasmose IgG", "valor": "125.5 UI/mL" },
-    { "nomeExame": "VDRL", "valor": "Não Reagente" }
+    { "nomeExame": "HIV", "valor": "0.15", "dataColeta": "2025-11-11" },
+    { "nomeExame": "Toxoplasmose IgG", "valor": "125.5 UI/mL", "dataColeta": "2025-11-11" },
+    { "nomeExame": "VDRL", "valor": "Não Reagente", "dataColeta": "2025-11-11" }
   ]
 }
 
@@ -77,10 +91,16 @@ Se você encontrar:
 
 Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme exemplo acima.
 
+**EXTRAÇÃO DA DATA DE COLETA - OBRIGATÓRIO:**
+1. **SEMPRE procure e extraia a data da coleta dos exames** - ela geralmente aparece no cabeçalho, rodapé ou próximo aos resultados
+2. A data pode aparecer como: "Data da Coleta", "Data", "Colhido em", "Recebido em", ou similar
+3. Formato da data: YYYY-MM-DD (ex: 2025-11-11)
+4. Se todos os exames tiverem a mesma data, inclua a mesma data para todos
+5. Se não encontrar a data em lugar nenhum, deixe o campo dataColeta vazio
+
 **IMPORTANTE:** 
-1. Extraia a data da coleta do exame se estiver visível no documento (formato YYYY-MM-DD).
-2. Se nenhum exame for encontrado retorne: { "exames": [] }
-3. SEMPRE retorne um objeto JSON com a chave exames`;
+1. Se nenhum exame for encontrado retorne: { "exames": [] }
+2. SEMPRE retorne um objeto JSON com a chave exames`;
 
   // Usar OpenAI GPT-4o para extração
   if (!OPENAI_API_KEY) {
