@@ -474,8 +474,25 @@ export default function CartaoPrenatal() {
         pdf.text('Exames Laboratoriais', 20, y);
         y += 10;
         
-        pdf.setFontSize(9);
+        // Cabeçalhos das colunas (uma única vez no topo)
+        const col1X = 22;
+        const col2X = 80;
+        const col3X = 138;
+        
+        pdf.setFontSize(11);
         pdf.setTextColor(0, 0, 0);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('1º Trimestre', col1X, y);
+        pdf.text('2º Trimestre', col2X, y);
+        pdf.text('3º Trimestre', col3X, y);
+        y += 6;
+        
+        // Linha separadora
+        pdf.setDrawColor(139, 64, 73);
+        pdf.line(20, y, 190, y);
+        y += 5;
+        
+        pdf.setFontSize(9);
         pdf.setFont(undefined, 'normal');
         
         // Iterar pelos exames estruturados
@@ -515,19 +532,31 @@ export default function CartaoPrenatal() {
               pdf.setFont(undefined, 'normal');
               pdf.setFontSize(8);
               
-              // Cabeçalhos das colunas
-              const col1X = 22;
-              const col2X = 80;
-              const col3X = 138;
+              // Extrair datas dos trimestres
+              const datas = trimestres.map(t => {
+                const dataKey = `data${t}`;
+                const dataValor = valor[dataKey];
+                if (dataValor && typeof dataValor === 'string') {
+                  // Converter YYYY-MM-DD para DD/MM/AAAA
+                  const partes = dataValor.split('-');
+                  if (partes.length === 3) {
+                    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                  }
+                }
+                return '-';
+              });
               
-              pdf.setFont(undefined, 'bold');
-              pdf.text('1º Tri', col1X, y);
-              pdf.text('2º Tri', col2X, y);
-              pdf.text('3º Tri', col3X, y);
+              // Mostrar datas em cinza e itálico
+              pdf.setFont(undefined, 'italic');
+              pdf.setTextColor(100, 100, 100);
+              pdf.text(datas[0], col1X, y);
+              pdf.text(datas[1], col2X, y);
+              pdf.text(datas[2], col3X, y);
               y += 4;
               
               // Resultados
               pdf.setFont(undefined, 'normal');
+              pdf.setTextColor(0, 0, 0);
               const linhas1 = pdf.splitTextToSize(resultadosTrimestres[0], 55);
               const linhas2 = pdf.splitTextToSize(resultadosTrimestres[1], 55);
               const linhas3 = pdf.splitTextToSize(resultadosTrimestres[2], 55);
