@@ -1080,3 +1080,10 @@
 - [x] Adicionar middleware CORS no servidor Express
 - [x] Configurar origens permitidas (incluindo domínios manusvm.computer)
 - [ ] Testar requisições do app mobile
+
+## Correção de Erro de Interpretação de Exames (17/12/2025)
+- [x] Investigar erro "Não foi possível processar o PDF" na interpretação de exames
+- [x] Verificar se pdftoppm está disponível no ambiente de produção (não está)
+- [x] Substituir pdftoppm por biblioteca JavaScript pura (pdf-to-png-converter)
+- [x] Aplicar correção em exames laboratoriais e ultrassons
+- [ ] Testar com PDF real em produção

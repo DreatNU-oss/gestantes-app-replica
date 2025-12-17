@@ -99,49 +99,42 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
       image_url: { url: fileUrl, detail: 'high' }
     });
   } else if (mimeType === 'application/pdf') {
-    // Para PDF, converter para imagem usando ferramenta do sistema
+    // Para PDF, converter para imagem usando biblioteca JavaScript pura
     try {
+      const { pdfToPng } = await import('pdf-to-png-converter');
       const fs = await import('fs');
       const path = await import('path');
       const os = await import('os');
-      const { exec } = await import('child_process');
-      const { promisify } = await import('util');
-      const execPromise = promisify(exec);
       
       const tempDir = os.tmpdir();
       const timestamp = Date.now();
-      const tempPdfPath = path.join(tempDir, `temp-${timestamp}.pdf`);
-      const tempPngPath = path.join(tempDir, `temp-${timestamp}.png`);
+      const tempPdfPath = path.join(tempDir, `exames-${timestamp}.pdf`);
       
       // Salvar PDF temporário
       await fs.promises.writeFile(tempPdfPath, fileBuffer);
       
-      // Converter TODAS as páginas do PDF para PNG
-      // Primeiro, descobrir quantas páginas o PDF tem
-      const { stdout: pdfInfoOutput } = await execPromise(`pdfinfo "${tempPdfPath}"`);
-      const pagesMatch = pdfInfoOutput.match(/Pages:\s+(\d+)/);
-      const totalPages = pagesMatch ? parseInt(pagesMatch[1], 10) : 1;
+      console.log('[Exames] Convertendo PDF para PNG...');
       
-      console.log(`[DEBUG] PDF tem ${totalPages} página(s)`);
+      // Converter PDF para PNG (máximo 10 páginas)
+      const pngPages = await pdfToPng(tempPdfPath, {
+        outputFolder: tempDir,
+        pagesToProcess: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      });
       
-      // Converter todas as páginas (máximo 10 para evitar custos excessivos)
-      const maxPages = Math.min(totalPages, 10);
-      await execPromise(`pdftoppm -png -f 1 -l ${maxPages} "${tempPdfPath}" "${tempDir}/temp-${timestamp}"`);
+      console.log(`[Exames] PDF convertido: ${pngPages.length} página(s)`);
       
-      // Ler e fazer upload de todas as imagens geradas
-      const imageFiles: string[] = [];
-      for (let i = 1; i <= maxPages; i++) {
-        const pageNum = String(i).padStart(maxPages > 9 ? 2 : 1, '0');
-        const pagePath = maxPages === 1 
-          ? `${tempDir}/temp-${timestamp}.png`
-          : `${tempDir}/temp-${timestamp}-${pageNum}.png`;
+      // Upload de todas as imagens para S3
+      for (let i = 0; i < pngPages.length; i++) {
+        const page = pngPages[i];
         
         try {
-          const imageBuffer = await fs.promises.readFile(pagePath);
-          
           // Upload da imagem para S3
-          const imageKey = `exames-temp/${timestamp}-page${i}.png`;
-          const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
+          const imageKey = `exames-temp/${timestamp}-page${i + 1}.png`;
+          if (!page.content) {
+            console.warn(`[Exames] Página ${i + 1} sem conteúdo`);
+            continue;
+          }
+          const { url: imageUrl } = await storagePut(imageKey, page.content, 'image/png');
           
           // Adicionar imagem ao conteúdo
           userContent.push({
@@ -149,19 +142,20 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
             image_url: { url: imageUrl, detail: 'high' }
           });
           
-          imageFiles.push(pagePath);
+          console.log(`[Exames] Página ${i + 1} enviada para S3`);
         } catch (err) {
-          console.warn(`[WARN] Não foi possível ler página ${i}:`, err);
+          console.warn(`[Exames] Não foi possível processar página ${i + 1}:`, err);
         }
       }
       
-      // Limpar arquivos temporários
+      // Limpar arquivo PDF temporário
       await fs.promises.unlink(tempPdfPath).catch(() => {});
-      for (const imgFile of imageFiles) {
-        await fs.promises.unlink(imgFile).catch(() => {});
+      
+      if (userContent.length === 1) {
+        throw new Error('Nenhuma página foi convertida com sucesso');
       }
     } catch (error) {
-      console.error('Erro ao converter PDF:', error);
+      console.error('[Exames] Erro ao converter PDF:', error);
       throw new Error('Não foi possível processar o PDF. Tente converter para imagem (JPG/PNG).');
     }
   }

@@ -129,17 +129,15 @@ Agora analise o laudo e extraia os dados:`;
         image_url: { url: fileUrl, detail: 'high' }
       });
     } else if (mimeType === "application/pdf") {
-      // Para PDF, converter TODAS as páginas para imagens
+      // Para PDF, converter TODAS as páginas para imagens usando biblioteca JavaScript pura
       try {
         const response = await fetch(fileUrl);
         const fileBuffer = Buffer.from(await response.arrayBuffer());
         
+        const { pdfToPng } = await import('pdf-to-png-converter');
         const fs = await import('fs');
         const path = await import('path');
         const os = await import('os');
-        const { exec } = await import('child_process');
-        const { promisify } = await import('util');
-        const execPromise = promisify(exec);
         
         const tempDir = os.tmpdir();
         const timestamp = Date.now();
@@ -148,31 +146,28 @@ Agora analise o laudo e extraia os dados:`;
         // Salvar PDF temporário
         await fs.promises.writeFile(tempPdfPath, fileBuffer);
         
-        // Descobrir quantas páginas o PDF tem
-        const { stdout: pdfInfoOutput } = await execPromise(`pdfinfo "${tempPdfPath}"`);
-        const pagesMatch = pdfInfoOutput.match(/Pages:\s+(\d+)/);
-        const totalPages = pagesMatch ? parseInt(pagesMatch[1], 10) : 1;
+        console.log('[Ultrassom] Convertendo PDF para PNG...');
         
-        console.log(`[Ultrassom] PDF tem ${totalPages} página(s)`);
+        // Converter PDF para PNG (máximo 10 páginas)
+        const pngPages = await pdfToPng(tempPdfPath, {
+          outputFolder: tempDir,
+          pagesToProcess: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        });
         
-        // Converter todas as páginas (máximo 10)
-        const maxPages = Math.min(totalPages, 10);
-        await execPromise(`pdftoppm -png -f 1 -l ${maxPages} "${tempPdfPath}" "${tempDir}/ultrassom-${timestamp}"`);
+        console.log(`[Ultrassom] PDF convertido: ${pngPages.length} página(s)`);
         
-        // Ler e fazer upload de todas as imagens geradas
-        const imageFiles: string[] = [];
-        for (let i = 1; i <= maxPages; i++) {
-          const pageNum = String(i).padStart(maxPages > 9 ? 2 : 1, '0');
-          const pagePath = maxPages === 1 
-            ? `${tempDir}/ultrassom-${timestamp}.png`
-            : `${tempDir}/ultrassom-${timestamp}-${pageNum}.png`;
+        // Upload de todas as imagens para S3
+        for (let i = 0; i < pngPages.length; i++) {
+          const page = pngPages[i];
           
           try {
-            const imageBuffer = await fs.promises.readFile(pagePath);
-            
             // Upload da imagem para S3
-            const imageKey = `ultrassom-temp/${timestamp}-page${i}.png`;
-            const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
+            const imageKey = `ultrassom-temp/${timestamp}-page${i + 1}.png`;
+            if (!page.content) {
+              console.warn(`[Ultrassom] Página ${i + 1} sem conteúdo`);
+              continue;
+            }
+            const { url: imageUrl } = await storagePut(imageKey, page.content, 'image/png');
             
             // Adicionar imagem ao conteúdo
             userContent.push({
@@ -180,16 +175,17 @@ Agora analise o laudo e extraia os dados:`;
               image_url: { url: imageUrl, detail: 'high' }
             });
             
-            imageFiles.push(pagePath);
+            console.log(`[Ultrassom] Página ${i + 1} enviada para S3`);
           } catch (err) {
-            console.warn(`[Ultrassom] Não foi possível ler página ${i}:`, err);
+            console.warn(`[Ultrassom] Não foi possível processar página ${i + 1}:`, err);
           }
         }
         
-        // Limpar arquivos temporários
+        // Limpar arquivo PDF temporário
         await fs.promises.unlink(tempPdfPath).catch(() => {});
-        for (const imgFile of imageFiles) {
-          await fs.promises.unlink(imgFile).catch(() => {});
+        
+        if (userContent.length === 1) {
+          throw new Error('Nenhuma página foi convertida com sucesso');
         }
       } catch (error) {
         console.error('[Ultrassom] Erro ao converter PDF:', error);
