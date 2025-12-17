@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { Label } from "@/components/ui/label";
@@ -37,6 +38,8 @@ export default function ExamesLaboratoriais() {
   }, [gestanteAtiva]);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
   const [modalAberto, setModalAberto] = useState(false);
+  const [trimestreEdicao, setTrimestreEdicao] = useState<number | null>(null);
+  const [novaDataTrimestre, setNovaDataTrimestre] = useState<string>("");
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -288,17 +291,55 @@ export default function ExamesLaboratoriais() {
 
   const renderTabelaExames = (titulo: string, exames: ExameConfig[]) => (
     <div>
-      <h3 className="text-lg font-semibold mb-4">{titulo}</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold">{titulo}</h3>
+      </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-1/6">Exame</TableHead>
-              <TableHead className="text-center w-1/12">Data 1º Tri</TableHead>
+              <TableHead className="text-center w-1/12">
+                <div className="flex flex-col items-center gap-1">
+                  <span>Data 1º Tri</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs"
+                    onClick={() => setTrimestreEdicao(1)}
+                  >
+                    Alterar
+                  </Button>
+                </div>
+              </TableHead>
               <TableHead className="text-center w-1/6">Resultado 1º Tri</TableHead>
-              <TableHead className="text-center w-1/12">Data 2º Tri</TableHead>
+              <TableHead className="text-center w-1/12">
+                <div className="flex flex-col items-center gap-1">
+                  <span>Data 2º Tri</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs"
+                    onClick={() => setTrimestreEdicao(2)}
+                  >
+                    Alterar
+                  </Button>
+                </div>
+              </TableHead>
               <TableHead className="text-center w-1/6">Resultado 2º Tri</TableHead>
-              <TableHead className="text-center w-1/12">Data 3º Tri</TableHead>
+              <TableHead className="text-center w-1/12">
+                <div className="flex flex-col items-center gap-1">
+                  <span>Data 3º Tri</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs"
+                    onClick={() => setTrimestreEdicao(3)}
+                  >
+                    Alterar
+                  </Button>
+                </div>
+              </TableHead>
               <TableHead className="text-center w-1/6">Resultado 3º Tri</TableHead>
             </TableRow>
           </TableHeader>
@@ -437,6 +478,7 @@ export default function ExamesLaboratoriais() {
                 <InterpretarExamesModal
                   open={modalAberto}
                   onOpenChange={setModalAberto}
+                  dumGestante={gestante?.dum ? new Date(gestante.dum) : null}
                   onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados) => {
                     console.log('[DEBUG FRONTEND] onResultados chamado');
                     console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
@@ -508,6 +550,65 @@ export default function ExamesLaboratoriais() {
             </CardContent>
           </Card>
         )}
+
+        {/* Modal de Edição Rápida de Data */}
+        <Dialog open={trimestreEdicao !== null} onOpenChange={(open) => !open && setTrimestreEdicao(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Alterar Data do {trimestreEdicao}º Trimestre</DialogTitle>
+              <DialogDescription>
+                Esta ação irá atualizar a data de todos os exames do {trimestreEdicao}º trimestre.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="nova-data">Nova Data</Label>
+                <input
+                  id="nova-data"
+                  type="date"
+                  value={novaDataTrimestre}
+                  onChange={(e) => setNovaDataTrimestre(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setTrimestreEdicao(null)}>
+                Cancelar
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!novaDataTrimestre) {
+                    alert('Por favor, informe uma data');
+                    return;
+                  }
+                  
+                  // Atualizar data de todos os exames do trimestre
+                  setResultados(prev => {
+                    const novosResultados = { ...prev };
+                    
+                    for (const [chave, valor] of Object.entries(novosResultados)) {
+                      if (typeof valor === 'object' && valor !== null) {
+                        novosResultados[chave] = {
+                          ...valor,
+                          [`data${trimestreEdicao}`]: novaDataTrimestre,
+                        };
+                      }
+                    }
+                    
+                    return novosResultados;
+                  });
+                  
+                  alert(`Data do ${trimestreEdicao}º trimestre atualizada para ${novaDataTrimestre}`);
+                  setTrimestreEdicao(null);
+                  setNovaDataTrimestre("");
+                }}
+              >
+                Atualizar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </GestantesLayout>
   );

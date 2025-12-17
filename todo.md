@@ -1134,3 +1134,15 @@
 - [x] Posicionar resultados na coluna do trimestre selecionado (já implementado)
 - [x] Reiniciar servidor e testar
 - [x] Salvar checkpoint
+
+## Edição Rápida de Data e Validação de Coerência (17/12/2025)
+- [x] Adicionar botão "Alterar" no cabeçalho de cada coluna de data
+- [x] Criar modal/dialog para edição rápida de data
+- [x] Atualizar todos os campos de data do trimestre simultaneamente
+- [x] Calcular trimestre esperado baseado na DUM da gestante
+- [x] Adicionar validação de coerência no modal de interpretação
+- [x] Mostrar alerta quando data não corresponde ao trimestre
+- [x] Permitir continuar mesmo com alerta (confirmação do usuário via checkbox)
+- [x] Passar DUM da gestante para o modal
+- [x] Reiniciar servidor e testar
+- [x] Salvar checkpoint
