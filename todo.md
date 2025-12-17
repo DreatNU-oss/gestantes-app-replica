@@ -1170,3 +1170,8 @@
 - [x] Aplicar loading state na página de Ultrassons
 - [x] Aplicar loading state na página de Cartão de Pré-natal
 - [x] Aplicar loading state na página de Exames Laboratoriais
+
+## Correção de Bugs - Pré-seleção de Gestante (Reportado 17/12/2025)
+
+- [x] Corrigir pré-seleção de gestante na página Ultrassons (nome não aparece no campo de busca)
+- [x] Verificar se o mesmo problema ocorre em outras páginas (Exames Laboratoriais usa AutocompleteSelect que já funciona corretamente)

@@ -25,9 +25,10 @@ export default function Ultrassons() {
   React.useEffect(() => {
     if (gestanteAtiva) {
       setGestanteSelecionada(gestanteAtiva.id);
+      setBusca(gestanteAtiva.nome); // Pré-preencher campo de busca com nome da gestante
     }
   }, [gestanteAtiva]);
-  const [busca, setBusca] = useState('');
+  const [busca, setBusca] = useState(gestanteAtiva?.nome || '');
   const [modalInterpretarAberto, setModalInterpretarAberto] = useState(false);
   
   // Buscar gestantes
