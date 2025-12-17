@@ -1117,3 +1117,10 @@
 - [x] Adicionar validação para filtrar valores "?" antes de salvar
 - [x] Reiniciar servidor e verificar funcionamento
 - [x] Salvar checkpoint
+
+## Remover Restrição Reagente/Não Reagente (17/12/2025)
+- [x] Identificar componentes que usam Select para exames sorológicos
+- [x] Substituir Select por Input de texto livre (InputExameValidado)
+- [x] Remover imports não utilizados
+- [x] Reiniciar servidor e verificar funcionamento
+- [x] Salvar checkpoint

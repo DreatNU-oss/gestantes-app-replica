@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { InputExameValidado } from "@/components/InputExameValidado";
 import { obterIdValidacao } from "@/data/mapeamentoExames";
 import { isExameSorologico } from "@/data/valoresReferencia";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
@@ -81,61 +80,7 @@ export default function ExamesLaboratoriais() {
 
   // Componente helper para renderizar campo de resultado (Select ou Input)
   const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string) => {
-    const isSorologico = isExameSorologico(nomeExame);
-    
-    if (isSorologico) {
-      // EAS tem opções específicas
-      if (nomeExame === "EAS (Urina tipo 1)") {
-        return (
-          <Select
-            value={valor || ""}
-            onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Normal">Normal</SelectItem>
-              <SelectItem value="Alterado">Alterado</SelectItem>
-            </SelectContent>
-          </Select>
-        );
-      }
-      
-      // Urocultura tem opções específicas
-      if (nomeExame === "Urocultura") {
-        return (
-          <Select
-            value={valor || ""}
-            onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Negativa">Negativa</SelectItem>
-              <SelectItem value="Positiva">Positiva</SelectItem>
-            </SelectContent>
-          </Select>
-        );
-      }
-      
-      // Exames sorológicos padrão
-      return (
-        <Select
-          value={valor || ""}
-          onValueChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Não reagente">Não reagente</SelectItem>
-            <SelectItem value="Reagente">Reagente</SelectItem>
-          </SelectContent>
-        </Select>
-      );
-    }
+    // Todos os exames agora usam input de texto livre para permitir valores numéricos e anotações
     
     return (
       <InputExameValidado
