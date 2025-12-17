@@ -1,0 +1,60 @@
+{
+  "query": "SELECT * FROM ultrassons WHERE gestanteId = (SELECT id FROM gestantes WHERE email = 'dreatnu@yahoo.com');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM ultrassons WHERE gestanteId = (SELECT id FROM gestantes WHERE email = 'dreatnu@yahoo.com');",
+  "rows": [
+    {
+      "id": "180001",
+      "gestanteId": "1110002",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2024-08-26",
+      "idadeGestacional": "6s 0d",
+      "dados": "{\"bcf\": \"Presente\", \"ccn\": \"5.2\", \"observacoes\": \"Gestação tópica única, embrião com BCF presente\", \"sacoGestacional\": \"18\", \"vesiculaVitelina\": \"Presente\"}",
+      "createdAt": "2025-12-16 11:03:27",
+      "updatedAt": "2025-12-16 11:03:27"
+    },
+    {
+      "id": "180002",
+      "gestanteId": "1110002",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2024-10-07",
+      "idadeGestacional": "12s 0d",
+      "dados": "{\"ccn\": \"58\", \"ductoVenoso\": \"Normal\", \"fcf\": \"155\", \"observacoes\": \"Morfologia de primeiro trimestre sem alterações\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco13\": \"1:15000\", \"risco18\": \"1:10000\", \"risco21\": \"1:5000\", \"tn\": \"1.5\"}",
+      "createdAt": "2025-12-16 11:03:27",
+      "updatedAt": "2025-12-16 11:03:27"
+    },
+    {
+      "id": "180003",
+      "gestanteId": "1110002",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2024-11-04",
+      "idadeGestacional": "16s 0d",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"ca\": \"110\", \"cc\": \"125\", \"cf\": \"22\", \"dbp\": \"35\", \"fcf\": \"145\", \"ila\": \"12\", \"observacoes\": \"Feto único, vivo, biometria compatível com IG\", \"pesoFetal\": \"150\", \"placenta\": \"Anterior grau 0\"}",
+      "createdAt": "2025-12-16 11:03:27",
+      "updatedAt": "2025-12-16 11:03:27"
+    },
+    {
+      "id": "180004",
+      "gestanteId": "1110002",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2024-11-25",
+      "idadeGestacional": "19s 0d",
+      "dados": "{\"abdome\": \"Normal\", \"ca\": \"145\", \"cc\": \"170\", \"cerebro\": \"Normal\", \"cf\": \"30\", \"coluna\": \"Normal\", \"coracao\": \"Normal - 4 câmaras\", \"cordaoUmbilical\": \"3 vasos\", \"dbp\": \"45\", \"face\": \"Normal\", \"ila\": \"14\", \"membros\": \"Normais\", \"observacoes\": \"Morfologia fetal sem alterações detectáveis\", \"pesoFetal\": \"280\", \"placenta\": \"Anterior grau 0\", \"rins\": \"Normais\", \"sexo\": \"Feminino\"}",
+      "createdAt": "2025-12-16 11:03:27",
+      "updatedAt": "2025-12-16 11:03:27"
+    },
+    {
+      "id": "180005",
+      "gestanteId": "1110002",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2024-12-16",
+      "idadeGestacional": "22s 0d",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"ca\": \"175\", \"cc\": \"200\", \"cf\": \"38\", \"dbp\": \"54\", \"fcf\": \"138\", \"ila\": \"15\", \"observacoes\": \"Crescimento fetal adequado, líquido amniótico normal\", \"pesoFetal\": \"480\", \"placenta\": \"Anterior grau I\"}",
+      "createdAt": "2025-12-16 11:03:27",
+      "updatedAt": "2025-12-16 11:03:27"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\tcreatedAt\tupdatedAt\n180001\t1110002\tprimeiro_ultrassom\t2024-08-26\t6s 0d\t{\"bcf\": \"Presente\", \"ccn\": \"5.2\", \"observacoes\": \"Gestação tópica única, embrião com BCF presente\", \"sacoGestacional\": \"18\", \"vesiculaVitelina\": \"Presente\"}\t2025-12-16 11:03:27\t2025-12-16 11:03:27\n180002\t1110002\tmorfologico_1tri\t2024-10-07\t12s 0d\t{\"ccn\": \"58\", \"ductoVenoso\": \"Normal\", \"fcf\": \"155\", \"observacoes\": \"Morfologia de primeiro trimestre sem alterações\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco13\": \"1:15000\", \"risco18\": \"1:10000\", \"risco21\": \"1:5000\", \"tn\": \"1.5\"}\t2025-12-16 11:03:27\t2025-12-16 11:03:27\n180003\t1110002\tultrassom_obstetrico\t2024-11-04\t16s 0d\t{\"apresentacao\": \"Cefálica\", \"ca\": \"110\", \"cc\": \"125\", \"cf\": \"22\", \"dbp\": \"35\", \"fcf\": \"145\", \"ila\": \"12\", \"observacoes\": \"Feto único, vivo, biometria compatível com IG\", \"pesoFetal\": \"150\", \"placenta\": \"Anterior grau 0\"}\t2025-12-16 11:03:27\t2025-12-16 11:03:27\n180004\t1110002\tmorfologico_2tri\t2024-11-25\t19s 0d\t{\"abdome\": \"Normal\", \"ca\": \"145\", \"cc\": \"170\", \"cerebro\": \"Normal\", \"cf\": \"30\", \"coluna\": \"Normal\", \"coracao\": \"Normal - 4 câmaras\", \"cordaoUmbilical\": \"3 vasos\", \"dbp\": \"45\", \"face\": \"Normal\", \"ila\": \"14\", \"membros\": \"Normais\", \"observacoes\": \"Morfologia fetal sem alterações detectáveis\", \"pesoFetal\": \"280\", \"placenta\": \"Anterior grau 0\", \"rins\": \"Normais\", \"sexo\": \"Feminino\"}\t2025-12-16 11:03:27\t2025-12-16 11:03:27\n180005\t1110002\tultrassom_obstetrico\t2024-12-16\t22s 0d\t{\"apresentacao\": \"Cefálica\", \"ca\": \"175\", \"cc\": \"200\", \"cf\": \"38\", \"dbp\": \"54\", \"fcf\": \"138\", \"ila\": \"15\", \"observacoes\": \"Crescimento fetal adequado, líquido amniótico normal\", \"pesoFetal\": \"480\", \"placenta\": \"Anterior grau I\"}\t2025-12-16 11:03:27\t2025-12-16 11:03:27\n",
+  "stderr": "",
+  "execution_time_ms": 167
+}

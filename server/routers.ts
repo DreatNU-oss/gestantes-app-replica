@@ -209,7 +209,7 @@ export const appRouter = router({
         let dppUS = null;
         let idade = null;
         
-        if (g.dum) {
+        if (g.dum && g.dum !== "Incerta" && g.dum !== "Incompatível com US") {
           // Parsear YYYY-MM-DD como data local
           const [year, month, day] = g.dum.split('-').map(Number);
           const dumDate = new Date(year, month - 1, day);
@@ -256,7 +256,7 @@ export const appRouter = router({
         let dppUS = null;
         let idade = null;
         
-        if (g.dum) {
+        if (g.dum && g.dum !== "Incerta" && g.dum !== "Incompatível com US") {
           // Parsear YYYY-MM-DD como data local
           const [year, month, day] = g.dum.split('-').map(Number);
           const dumDate = new Date(year, month - 1, day);
@@ -1012,7 +1012,7 @@ export const appRouter = router({
 
         // Calcular DPP pela DUM (280 dias)
         let dppDUM: string | null = null;
-        if (gestante.dum) {
+        if (gestante.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US") {
           // Adicionar T12:00:00 para evitar problemas de fuso horário
           const dum = new Date(gestante.dum + 'T12:00:00');
           const dpp = new Date(dum);

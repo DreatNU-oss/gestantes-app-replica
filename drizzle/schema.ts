@@ -89,7 +89,7 @@ export const gestantes = mysqlTable("gestantes", {
   abortos: int("abortos"),
   
   // Dados obstétricos
-  dum: varchar("dum", { length: 10 }), // YYYY-MM-DD
+  dum: varchar("dum", { length: 50 }), // YYYY-MM-DD ou "Incerta" ou "Incompatível com US"
   igUltrassomSemanas: int("igUltrassomSemanas"),
   igUltrassomDias: int("igUltrassomDias"),
   dataUltrassom: varchar("dataUltrassom", { length: 10 }), // YYYY-MM-DD

@@ -88,6 +88,18 @@ export default function DetalhesGestante({
             <CardTitle>Idade Gestacional</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
+            {gestante.dum === "Incerta" && (
+              <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded-md">
+                <span className="text-sm font-medium text-amber-700 dark:text-amber-300">DUM Incerta</span>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Cálculos baseados em DUM não disponíveis</p>
+              </div>
+            )}
+            {gestante.dum === "Incompatível com US" && (
+              <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded-md">
+                <span className="text-sm font-medium text-amber-700 dark:text-amber-300">DUM Incompatível com US</span>
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Cálculos baseados em DUM não disponíveis</p>
+              </div>
+            )}
             {gestante.calculado?.igDUM && (
               <div>
                 <span className="text-sm font-medium text-muted-foreground">IG pela DUM:</span>

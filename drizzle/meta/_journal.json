@@ -134,6 +134,13 @@
       "when": 1765897354782,
       "tag": "0018_old_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1765998204301,
+      "tag": "0019_easy_jack_power",
+      "breakpoints": true
     }
   ]
 }

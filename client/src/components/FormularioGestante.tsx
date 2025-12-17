@@ -28,6 +28,8 @@ export default function FormularioGestante({
   onSuccess,
   onCancel,
 }: FormularioGestanteProps) {
+  const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
+  
   const [formData, setFormData] = useState({
     nome: "",
     telefone: "",
@@ -36,7 +38,7 @@ export default function FormularioGestante({
     planoSaudeId: "",
     carteirinhaUnimed: "",
     medicoId: "",
-    tipoPartoDesejado: "a_definir" as "cesariana" | "normal" | "a_definir",
+    tipoParto: "",
     gesta: "",
     para: "",
     partosNormais: "",
@@ -82,6 +84,15 @@ export default function FormularioGestante({
 
   useEffect(() => {
     if (gestante) {
+      // Detectar tipo de DUM
+      if (gestante.dum === "Incerta") {
+        setTipoDUM("incerta");
+      } else if (gestante.dum === "Incompatível com US") {
+        setTipoDUM("incompativel");
+      } else if (gestante.dum) {
+        setTipoDUM("data");
+      }
+      
       setFormData({
         nome: gestante.nome || "",
         telefone: gestante.telefone || "",
@@ -90,13 +101,13 @@ export default function FormularioGestante({
         planoSaudeId: gestante.planoSaudeId?.toString() || "",
         carteirinhaUnimed: gestante.carteirinhaUnimed || "",
         medicoId: gestante.medicoId?.toString() || "",
-        tipoPartoDesejado: gestante.tipoPartoDesejado || "a_definir",
+        tipoParto: gestante.tipoParto || "",
         gesta: gestante.gesta?.toString() || "",
         para: gestante.para?.toString() || "",
         partosNormais: gestante.partosNormais?.toString() || "",
         cesareas: gestante.cesareas?.toString() || "",
         abortos: gestante.abortos?.toString() || "",
-        dum: gestante.dum ? (typeof gestante.dum === 'string' ? gestante.dum : gestante.dum.toISOString().split('T')[0]) : "",
+        dum: (gestante.dum === "Incerta" || gestante.dum === "Incompatível com US") ? "" : (gestante.dum ? (typeof gestante.dum === 'string' ? gestante.dum : gestante.dum.toISOString().split('T')[0]) : ""),
         igUltrassomSemanas: gestante.igUltrassomSemanas?.toString() || "",
         igUltrassomDias: gestante.igUltrassomDias?.toString() || "",
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom.toISOString().split('T')[0]) : "",
@@ -125,7 +136,7 @@ export default function FormularioGestante({
       partosNormais: formData.partosNormais ? parseInt(formData.partosNormais) : undefined,
       cesareas: formData.cesareas ? parseInt(formData.cesareas) : undefined,
       abortos: formData.abortos ? parseInt(formData.abortos) : undefined,
-      dum: formData.dum || undefined,
+      dum: tipoDUM === "incerta" ? "Incerta" : tipoDUM === "incompativel" ? "Incompatível com US" : (formData.dum || undefined),
       igUltrassomSemanas: formData.igUltrassomSemanas ? parseInt(formData.igUltrassomSemanas) : undefined,
       igUltrassomDias: formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : undefined,
       dataUltrassom: formData.dataUltrassom || undefined,
@@ -341,13 +352,37 @@ export default function FormularioGestante({
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="dum">DUM (Data da Última Menstruação)</Label>
-                <Input
-                  id="dum"
-                  type="date"
-                  value={formData.dum}
-                  onChange={(e) => setFormData({ ...formData, dum: e.target.value })}
-                />
+                <Label htmlFor="tipoDUM">DUM (Data da Última Menstruação)</Label>
+                <Select value={tipoDUM} onValueChange={(value: "data" | "incerta" | "incompativel") => {
+                  setTipoDUM(value);
+                  if (value !== "data") {
+                    setFormData({ ...formData, dum: "" });
+                  }
+                }}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo de DUM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="data">Data Conhecida</SelectItem>
+                    <SelectItem value="incerta">Incerta</SelectItem>
+                    <SelectItem value="incompativel">Incompatível com US</SelectItem>
+                  </SelectContent>
+                </Select>
+                {tipoDUM === "data" && (
+                  <Input
+                    id="dum"
+                    type="date"
+                    value={formData.dum}
+                    onChange={(e) => setFormData({ ...formData, dum: e.target.value })}
+                    className="mt-2"
+                  />
+                )}
+                {tipoDUM === "incerta" && (
+                  <p className="text-sm text-muted-foreground mt-2">DUM incerta - cálculos baseados em DUM não serão exibidos</p>
+                )}
+                {tipoDUM === "incompativel" && (
+                  <p className="text-sm text-muted-foreground mt-2">DUM incompatível com ultrassom - cálculos baseados em DUM não serão exibidos</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dataUltrassom">Data do Ultrassom</Label>

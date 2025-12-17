@@ -1,0 +1,46 @@
+{
+  "query": "SELECT \n  id,\n  gestanteId,\n  tipoUltrassom,\n  dataExame,\n  idadeGestacional,\n  dados,\n  createdAt\nFROM ultrassons \nWHERE gestanteId = 10\nORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  gestanteId,\n  tipoUltrassom,\n  dataExame,\n  idadeGestacional,\n  dados,\n  createdAt\nFROM ultrassons \nWHERE gestanteId = 10\nORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "270001",
+      "gestanteId": "10",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-05-21",
+      "idadeGestacional": "8s 0d",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação única, tópica, viável. Embrião com BCF presente. Idade gestacional compatível com DUM. Saco gestacional bem implantado.\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal\", \"placenta\": \"Anterior\", \"situacao\": \"Longitudinal\"}",
+      "createdAt": "2025-12-17 18:33:18"
+    },
+    {
+      "id": "270002",
+      "gestanteId": "10",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-06-25",
+      "idadeGestacional": "13s 0d",
+      "dados": "{\"anatomiaFetal\": \"Normal para idade gestacional\", \"conclusao\": \"Ultrassom morfológico de primeiro trimestre sem alterações. Translucência nucal dentro dos limites da normalidade. Osso nasal presente. Anatomia fetal adequada para idade gestacional. Baixo risco para cromossomopatias.\", \"ductoVenoso\": \"Normal\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"translucenciaNucal\": \"1.2 mm\"}",
+      "createdAt": "2025-12-17 18:33:18"
+    },
+    {
+      "id": "270003",
+      "gestanteId": "10",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-09-17",
+      "idadeGestacional": "25s 0d",
+      "dados": "{\"abdome\": \"Normal\", \"coluna\": \"Normal\", \"conclusao\": \"Ultrassom morfológico de segundo trimestre sem alterações estruturais. Anatomia fetal normal. Crescimento adequado para idade gestacional. Sexo fetal: feminino. Placenta anterior grau 0. Líquido amniótico normal.\", \"coracao\": \"Quatro câmaras visíveis, sem alterações\", \"cranio\": \"Normal\", \"face\": \"Normal\", \"liquidoAmniotico\": \"Normal (ILA: 14 cm)\", \"membros\": \"Normais\", \"pesoEstimado\": \"680g\", \"placenta\": \"Anterior, grau 0\", \"rins\": \"Normais bilateralmente\", \"sexoFetal\": \"Feminino\", \"torax\": \"Normal\"}",
+      "createdAt": "2025-12-17 18:33:18"
+    },
+    {
+      "id": "270004",
+      "gestanteId": "10",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2025-12-10",
+      "idadeGestacional": "37s 2d",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}",
+      "createdAt": "2025-12-17 18:33:18"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\tcreatedAt\n270001\t10\tultrassom_obstetrico\t2025-05-21\t8s 0d\t{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação única, tópica, viável. Embrião com BCF presente. Idade gestacional compatível com DUM. Saco gestacional bem implantado.\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal\", \"placenta\": \"Anterior\", \"situacao\": \"Longitudinal\"}\t2025-12-17 18:33:18\n270002\t10\tmorfologico_1tri\t2025-06-25\t13s 0d\t{\"anatomiaFetal\": \"Normal para idade gestacional\", \"conclusao\": \"Ultrassom morfológico de primeiro trimestre sem alterações. Translucência nucal dentro dos limites da normalidade. Osso nasal presente. Anatomia fetal adequada para idade gestacional. Baixo risco para cromossomopatias.\", \"ductoVenoso\": \"Normal\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"translucenciaNucal\": \"1.2 mm\"}\t2025-12-17 18:33:18\n270003\t10\tmorfologico_2tri\t2025-09-17\t25s 0d\t{\"abdome\": \"Normal\", \"coluna\": \"Normal\", \"conclusao\": \"Ultrassom morfológico de segundo trimestre sem alterações estruturais. Anatomia fetal normal. Crescimento adequado para idade gestacional. Sexo fetal: feminino. Placenta anterior grau 0. Líquido amniótico normal.\", \"coracao\": \"Quatro câmaras visíveis, sem alterações\", \"cranio\": \"Normal\", \"face\": \"Normal\", \"liquidoAmniotico\": \"Normal (ILA: 14 cm)\", \"membros\": \"Normais\", \"pesoEstimado\": \"680g\", \"placenta\": \"Anterior, grau 0\", \"rins\": \"Normais bilateralmente\", \"sexoFetal\": \"Feminino\", \"torax\": \"Normal\"}\t2025-12-17 18:33:18\n270004\t10\tultrassom_seguimento\t2025-12-10\t37s 2d\t{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}\t2025-12-17 18:33:18\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

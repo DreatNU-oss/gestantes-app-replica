@@ -1221,3 +1221,19 @@
 - [x] Implementar validação de campos obrigatórios (data do exame, idade gestacional)
 - [x] Adicionar mensagens de erro claras com toast
 - [x] Adicionar indicação visual de campos obrigatórios (asterisco vermelho em Data e Idade Gestacional)
+
+
+## Feature - DUM com Opções Especiais (Solicitado 17/12/2025)
+
+- [x] Modificar schema para aceitar DUM como texto (varchar expandido de 10 para 50 caracteres)
+- [x] Atualizar formulário de cadastro/edição com select para escolher tipo de DUM (Data Conhecida, Incerta, Incompatível com US)
+- [x] Implementar lógica para ocultar DPP DUM e IG DUM quando DUM for especial (modificado routers.ts)
+- [ ] Mostrar indicação "DUM Incerta" ou "DUM Incompatível com US" nas consultas
+- [ ] Aplicar mudanças em todas as abas:
+  - [x] Página Gestantes (DetalhesGestante atualizado)
+  - [ ] Página Gestantes (Dashboard - tabela)
+  - [ ] Cartão de Pré-natal
+  - [ ] Exames Laboratoriais
+  - [ ] Ultrassons
+  - [ ] Previsão de Partos
+  - [ ] Qualquer outro local que exiba DUM/DPP/IG
