@@ -13,6 +13,7 @@ import { obterIdValidacao } from "@/data/mapeamentoExames";
 import { isExameSorologico } from "@/data/valoresReferencia";
 import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
+import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
 import { Sparkles, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
@@ -54,10 +55,16 @@ export default function ExamesLaboratoriais() {
   // Mutation para salvar resultados
   const salvarMutation = trpc.examesLab.salvar.useMutation({
     onSuccess: (data) => {
-      alert(`Resultados salvos com sucesso! (${data.count} registros)`);
+      toast.success(`✅ Resultados salvos com sucesso!`, {
+        description: `${data.count} registro(s) de exames foram salvos para a gestante.`,
+        duration: 4000,
+      });
     },
     onError: (error) => {
-      alert(`Erro ao salvar resultados: ${error.message}`);
+      toast.error('Erro ao salvar resultados', {
+        description: error.message,
+        duration: 5000,
+      });
     },
   });
   

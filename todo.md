@@ -1152,3 +1152,10 @@
 - [x] Corrigir referência incorreta (handleSubmit -> handleInterpretarTodos)
 - [x] Reiniciar servidor e testar
 - [x] Salvar checkpoint
+
+## Mensagem de Confirmação ao Salvar Exames (17/12/2025)
+- [x] Substituir alert por toast notification ao salvar exames
+- [x] Adicionar feedback visual mais amigável (toast com ✅ e descrição)
+- [x] Adicionar import de toast
+- [x] Reiniciar servidor e testar
+- [x] Salvar checkpoint
