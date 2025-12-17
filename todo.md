@@ -1181,3 +1181,9 @@
 
 - [x] Corrigir exibição de dados do ecocardiograma fetal no PDF (mostra apenas "foi feito" ao invés dos dados completos)
 - [x] Verificar se outros tipos de ultrassom também têm o mesmo problema no PDF (melhorada extração de dados para todos os tipos)
+
+
+## Correção de Bugs - Layout do PDF (Reportado 17/12/2025)
+
+- [x] Corrigir sobreposição de texto em Conduta (Complementação fica por cima do texto de Conduta)
+- [x] Expandir exibição de conclusão do ecocardiograma (texto está sendo truncado, não mostra completo)

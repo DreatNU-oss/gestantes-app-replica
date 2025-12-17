@@ -347,7 +347,7 @@ export default function CartaoPrenatal() {
               
               // Complementação em itálico
               if (hasComplementacao) {
-                yTexto += 1;
+                yTexto += 2; // Aumentar espaço antes da complementação
                 pdf.setFont(undefined, 'italic');
                 pdf.setTextColor(100, 100, 100);
                 pdf.text('Complementação:', 23, yTexto);
@@ -567,10 +567,14 @@ export default function CartaoPrenatal() {
           
           // Extrair dados principais do JSON
           let dadosTexto = '-';
+          let usarMultiplasLinhas = false;
           if (us.dados) {
             const dados = typeof us.dados === 'string' ? JSON.parse(us.dados) : us.dados;
             // Priorizar dados mais relevantes de cada tipo de exame
-            if (dados.conclusao) dadosTexto = dados.conclusao; // Ecocardiograma e outros
+            if (dados.conclusao) {
+              dadosTexto = dados.conclusao; // Ecocardiograma e outros
+              usarMultiplasLinhas = dados.conclusao.length > 35; // Se for longo, usar múltiplas linhas
+            }
             else if (dados.dpp) dadosTexto = `DPP: ${dados.dpp}`;
             else if (dados.pesoFetal) dadosTexto = `Peso: ${dados.pesoFetal}g`;
             else if (dados.bcf) dadosTexto = `BCF: ${dados.bcf}bpm`;
@@ -581,8 +585,18 @@ export default function CartaoPrenatal() {
           pdf.text(dataExame, 20, y);
           pdf.text(tipo.substring(0, 20), 50, y);
           pdf.text(ig, 100, y);
-          pdf.text(dadosTexto.substring(0, 35), 120, y);
-          y += 5;
+          
+          // Se for texto longo (conclusão), quebrar em múltiplas linhas
+          if (usarMultiplasLinhas) {
+            const linhasDados = pdf.splitTextToSize(dadosTexto, 70); // Largura de 70mm para os dados
+            linhasDados.forEach((linha: string, idx: number) => {
+              pdf.text(linha, 120, y + (idx * 4));
+            });
+            y += Math.max(5, linhasDados.length * 4); // Avançar mais se tiver múltiplas linhas
+          } else {
+            pdf.text(dadosTexto.substring(0, 35), 120, y);
+            y += 5;
+          }
         });
       }
       
