@@ -1197,3 +1197,9 @@
 ## Bug - PDF Cartão Pré-natal (Reportado 17/12/2025)
 
 - [x] Adicionar exames laboratoriais ao PDF (implementado com estrutura por trimestre)
+
+
+## Ajuste de Formatação - Exames Laboratoriais no PDF (Reportado 17/12/2025)
+
+- [x] Reformatar exames laboratoriais no PDF para usar 3 colunas (1º Tri | 2º Tri | 3º Tri)
+- [x] Remover formatação confusa que mostra datas como "3º Tri: 2025-11-27" (filtradas com regex)

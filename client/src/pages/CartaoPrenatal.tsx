@@ -485,7 +485,7 @@ export default function CartaoPrenatal() {
             continue;
           }
           
-          if (y > 265) {
+          if (y > 260) {
             pdf.addPage();
             y = 20;
           }
@@ -494,23 +494,61 @@ export default function CartaoPrenatal() {
           pdf.setFont(undefined, 'bold');
           pdf.text(nomeExame.replace(/_/g, ' ').toUpperCase(), 20, y);
           y += 5;
-          pdf.setFont(undefined, 'normal');
           
-          // Se for objeto com trimestres
+          // Se for objeto com trimestres, mostrar em 3 colunas
           if (typeof valor === 'object' && valor !== null) {
-            for (const [trimestre, resultado] of Object.entries(valor)) {
-              if (resultado && resultado.trim()) {
-                if (y > 270) {
+            // Filtrar apenas trimestres (1, 2, 3), ignorar campos data1, data2, data3
+            const trimestres = ['1', '2', '3'];
+            const resultadosTrimestres = trimestres.map(t => {
+              const resultado = valor[t];
+              // Ignorar se for uma data (formato YYYY-MM-DD)
+              if (resultado && typeof resultado === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(resultado.trim())) {
+                return resultado;
+              }
+              return '-';
+            });
+            
+            // Verificar se tem pelo menos um resultado válido
+            const temResultado = resultadosTrimestres.some(r => r !== '-');
+            
+            if (temResultado) {
+              pdf.setFont(undefined, 'normal');
+              pdf.setFontSize(8);
+              
+              // Cabeçalhos das colunas
+              const col1X = 22;
+              const col2X = 80;
+              const col3X = 138;
+              
+              pdf.setFont(undefined, 'bold');
+              pdf.text('1º Tri', col1X, y);
+              pdf.text('2º Tri', col2X, y);
+              pdf.text('3º Tri', col3X, y);
+              y += 4;
+              
+              // Resultados
+              pdf.setFont(undefined, 'normal');
+              const linhas1 = pdf.splitTextToSize(resultadosTrimestres[0], 55);
+              const linhas2 = pdf.splitTextToSize(resultadosTrimestres[1], 55);
+              const linhas3 = pdf.splitTextToSize(resultadosTrimestres[2], 55);
+              
+              const maxLinhas = Math.max(linhas1.length, linhas2.length, linhas3.length);
+              
+              for (let i = 0; i < maxLinhas; i++) {
+                if (y > 275) {
                   pdf.addPage();
                   y = 20;
                 }
-                const trimestreLabel = trimestre === '1' ? '1º Tri' : trimestre === '2' ? '2º Tri' : '3º Tri';
-                pdf.text(`  ${trimestreLabel}: ${resultado}`, 22, y);
+                if (i < linhas1.length) pdf.text(linhas1[i], col1X, y);
+                if (i < linhas2.length) pdf.text(linhas2[i], col2X, y);
+                if (i < linhas3.length) pdf.text(linhas3[i], col3X, y);
                 y += 4;
               }
+              
+              pdf.setFontSize(9);
             }
           }
-          y += 3;
+          y += 2;
         }
         
         // Observações gerais
