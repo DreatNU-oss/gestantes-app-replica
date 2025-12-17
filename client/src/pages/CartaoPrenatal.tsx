@@ -101,6 +101,10 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  const { data: resultadosExamesLab } = trpc.examesLab.buscar.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
 
   // Buscar condutas personalizadas
   const { data: condutasPersonalizadas, refetch: refetchCondutas } = trpc.condutas.list.useQuery();
@@ -459,7 +463,7 @@ export default function CartaoPrenatal() {
       }
       
       // Exames Laboratoriais
-      if (exames && exames.length > 0) {
+      if (resultadosExamesLab && Object.keys(resultadosExamesLab).length > 0) {
         if (y > 250) {
           pdf.addPage();
           y = 20;
@@ -470,49 +474,66 @@ export default function CartaoPrenatal() {
         pdf.text('Exames Laboratoriais', 20, y);
         y += 10;
         
-        // Cabeçalho da tabela
         pdf.setFontSize(9);
         pdf.setTextColor(0, 0, 0);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Data', 20, y);
-        pdf.text('Tipo de Exame', 50, y);
-        pdf.text('IG', 120, y);
-        pdf.text('Resultado', 140, y);
-        y += 5;
-        
-        // Linha separadora
-        pdf.setDrawColor(139, 64, 73);
-        pdf.line(20, y, 190, y);
-        y += 5;
-        
         pdf.setFont(undefined, 'normal');
         
-        exames.forEach((exame: any) => {
-          if (y > 270) {
-            pdf.addPage();
-            y = 20;
-            // Repetir cabeçalho na nova página
-            pdf.setFont(undefined, 'bold');
-            pdf.text('Data', 20, y);
-            pdf.text('Tipo de Exame', 50, y);
-            pdf.text('IG', 120, y);
-            pdf.text('Resultado', 140, y);
-            y += 5;
-            pdf.line(20, y, 190, y);
-            y += 5;
-            pdf.setFont(undefined, 'normal');
+        // Iterar pelos exames estruturados
+        for (const [nomeExame, valor] of Object.entries(resultadosExamesLab)) {
+          if (nomeExame === 'outros_observacoes') {
+            // Pular observações gerais
+            continue;
           }
           
-          const dataExame = exame.dataExame ? new Date(exame.dataExame).toLocaleDateString('pt-BR') : '-';
-          const ig = exame.igSemanas !== null && exame.igDias !== null ? `${exame.igSemanas}s${exame.igDias}d` : '-';
-          const resultado = exame.resultado || '-';
+          if (y > 265) {
+            pdf.addPage();
+            y = 20;
+          }
           
-          pdf.text(dataExame, 20, y);
-          pdf.text(exame.tipoExame, 50, y);
-          pdf.text(ig, 120, y);
-          pdf.text(resultado.substring(0, 30), 140, y); // Limitar tamanho do resultado
+          // Nome do exame em negrito
+          pdf.setFont(undefined, 'bold');
+          pdf.text(nomeExame.replace(/_/g, ' ').toUpperCase(), 20, y);
           y += 5;
-        });
+          pdf.setFont(undefined, 'normal');
+          
+          // Se for objeto com trimestres
+          if (typeof valor === 'object' && valor !== null) {
+            for (const [trimestre, resultado] of Object.entries(valor)) {
+              if (resultado && resultado.trim()) {
+                if (y > 270) {
+                  pdf.addPage();
+                  y = 20;
+                }
+                const trimestreLabel = trimestre === '1' ? '1º Tri' : trimestre === '2' ? '2º Tri' : '3º Tri';
+                pdf.text(`  ${trimestreLabel}: ${resultado}`, 22, y);
+                y += 4;
+              }
+            }
+          }
+          y += 3;
+        }
+        
+        // Observações gerais
+        if (resultadosExamesLab.outros_observacoes && typeof resultadosExamesLab.outros_observacoes === 'string' && resultadosExamesLab.outros_observacoes.trim()) {
+          if (y > 260) {
+            pdf.addPage();
+            y = 20;
+          }
+          pdf.setFont(undefined, 'bold');
+          pdf.text('OBSERVAÇÕES:', 20, y);
+          y += 5;
+          pdf.setFont(undefined, 'normal');
+          const linhasObs = pdf.splitTextToSize(resultadosExamesLab.outros_observacoes, 170);
+          linhasObs.forEach((linha: string) => {
+            if (y > 275) {
+              pdf.addPage();
+              y = 20;
+            }
+            pdf.text(linha, 22, y);
+            y += 4;
+          });
+        }
+        
         y += 5;
       }
       

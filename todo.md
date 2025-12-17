@@ -1192,3 +1192,8 @@
 ## Ajuste de Layout - PDF (Reportado 17/12/2025)
 
 - [x] Aumentar espaçamento entre texto de Conduta e título "Complementação" (aumentado de 2 para 5 unidades)
+
+
+## Bug - PDF Cartão Pré-natal (Reportado 17/12/2025)
+
+- [x] Adicionar exames laboratoriais ao PDF (implementado com estrutura por trimestre)
