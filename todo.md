@@ -1187,3 +1187,8 @@
 
 - [x] Corrigir sobreposição de texto em Conduta (Complementação fica por cima do texto de Conduta)
 - [x] Expandir exibição de conclusão do ecocardiograma (texto está sendo truncado, não mostra completo)
+
+
+## Ajuste de Layout - PDF (Reportado 17/12/2025)
+
+- [x] Aumentar espaçamento entre texto de Conduta e título "Complementação" (aumentado de 2 para 5 unidades)

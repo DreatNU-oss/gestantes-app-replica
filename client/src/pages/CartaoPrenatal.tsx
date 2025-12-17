@@ -347,7 +347,7 @@ export default function CartaoPrenatal() {
               
               // Complementação em itálico
               if (hasComplementacao) {
-                yTexto += 2; // Aumentar espaço antes da complementação
+                yTexto += 5; // Aumentar espaço antes da complementação
                 pdf.setFont(undefined, 'italic');
                 pdf.setTextColor(100, 100, 100);
                 pdf.text('Complementação:', 23, yTexto);
