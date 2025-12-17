@@ -16,6 +16,7 @@ import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
 import { Sparkles, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
   examesSangue,
   examesUrina,
@@ -26,7 +27,15 @@ import {
 
 export default function ExamesLaboratoriais() {
   const [, setLocation] = useLocation();
-  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
+  const { gestanteAtiva } = useGestanteAtiva();
+  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(gestanteAtiva?.id || null);
+  
+  // Atualizar gestante selecionada quando gestante ativa mudar
+  React.useEffect(() => {
+    if (gestanteAtiva) {
+      setGestanteSelecionada(gestanteAtiva.id);
+    }
+  }, [gestanteAtiva]);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
   const [modalAberto, setModalAberto] = useState(false);
 

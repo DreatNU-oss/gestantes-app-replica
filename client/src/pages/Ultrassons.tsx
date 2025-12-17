@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { trpc } from '@/lib/trpc';
 import GestantesLayout from '@/components/GestantesLayout';
 import { Button } from '@/components/ui/button';
@@ -10,14 +10,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, ArrowLeft, Sparkles } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
 import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
 
 
 export default function Ultrassons() {
   const [, setLocation] = useLocation();
-
-  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
+  const { gestanteAtiva } = useGestanteAtiva();
+  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(gestanteAtiva?.id || null);
+  
+  // Atualizar gestante selecionada quando gestante ativa mudar
+  React.useEffect(() => {
+    if (gestanteAtiva) {
+      setGestanteSelecionada(gestanteAtiva.id);
+    }
+  }, [gestanteAtiva]);
   const [busca, setBusca] = useState('');
   const [modalInterpretarAberto, setModalInterpretarAberto] = useState(false);
   

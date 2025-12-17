@@ -1099,3 +1099,15 @@
 - [x] Modificar gestante-router.ts para retornar código quando email falhar em dev
 - [ ] Testar em ambiente de desenvolvimento
 - [ ] Salvar checkpoint
+
+## Sistema de Gestante Ativa (17/12/2025)
+- [x] Criar contexto React para gestante ativa (GestanteAtivaContext)
+- [x] Adicionar provider no App.tsx
+- [x] Modificar Dashboard para permitir seleção de gestante
+- [x] Adicionar destaque visual para gestante selecionada
+- [x] Atualizar Exames Laboratoriais para usar gestante ativa
+- [x] Atualizar Ultrassons para usar gestante ativa
+- [x] Atualizar Marcos Importantes para usar gestante ativa
+- [x] Atualizar Cartão de Pré-natal para usar gestante ativa
+- [x] Reiniciar servidor e testar fluxo completo
+- [x] Salvar checkpoint

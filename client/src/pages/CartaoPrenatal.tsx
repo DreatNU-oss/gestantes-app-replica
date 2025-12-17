@@ -8,6 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
   Table,
   TableBody,
@@ -25,6 +26,7 @@ import html2canvas from "html2canvas";
 
 export default function CartaoPrenatal() {
   const [, setLocation] = useLocation();
+  const { gestanteAtiva } = useGestanteAtiva();
   
   const getDataHoje = () => {
     const hoje = new Date();
@@ -34,7 +36,14 @@ export default function CartaoPrenatal() {
     return `${ano}-${mes}-${dia}`;
   };
 
-  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(null);
+  const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(gestanteAtiva?.id || null);
+  
+  // Atualizar gestante selecionada quando gestante ativa mudar
+  useEffect(() => {
+    if (gestanteAtiva) {
+      setGestanteSelecionada(gestanteAtiva.id);
+    }
+  }, [gestanteAtiva]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);

@@ -6,15 +6,24 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { trpc } from "@/lib/trpc";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
 type MetodoCalculo = "dum" | "ultrassom";
 
 export default function MarcosImportantes() {
   const [, setLocation] = useLocation();
-  const [gestanteSelecionada, setGestanteSelecionada] = useState<string>("");
+  const { gestanteAtiva } = useGestanteAtiva();
+  const [gestanteSelecionada, setGestanteSelecionada] = useState<string>(gestanteAtiva?.id.toString() || "");
+  
+  // Atualizar gestante selecionada quando gestante ativa mudar
+  React.useEffect(() => {
+    if (gestanteAtiva) {
+      setGestanteSelecionada(gestanteAtiva.id.toString());
+    }
+  }, [gestanteAtiva]);
   const [metodo, setMetodo] = useState<MetodoCalculo>("ultrassom");
 
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();

@@ -31,6 +31,7 @@ import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
 import { AutocompleteGestante } from "@/components/AutocompleteGestante";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
 type SortOption = "nome" | "dpp-dum" | "dpp-us";
 
@@ -57,6 +58,7 @@ const formatarDataSegura = (dateValue: Date | string | null | undefined): string
 };
 
 export default function Dashboard() {
+  const { gestanteAtiva, setGestanteAtiva } = useGestanteAtiva();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
@@ -335,6 +337,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>#</TableHead>
+                    <TableHead>Seleção</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>IG (DUM)</TableHead>
                     <TableHead>DPP (DUM)</TableHead>
@@ -348,8 +351,17 @@ export default function Dashboard() {
                     const igDumBadge = formatIGBadge(g.calculado?.igDUM);
                     const igUsBadge = formatIGBadge(g.calculado?.igUS);
                     return (
-                      <TableRow key={g.id}>
+                      <TableRow key={g.id} className={gestanteAtiva?.id === g.id ? "bg-primary/10" : ""}>
                         <TableCell className="font-medium">{idx + 1}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant={gestanteAtiva?.id === g.id ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setGestanteAtiva({ id: g.id, nome: g.nome })}
+                          >
+                            {gestanteAtiva?.id === g.id ? "Selecionada" : "Selecionar"}
+                          </Button>
+                        </TableCell>
                         <TableCell className="font-medium">{g.nome}</TableCell>
                         <TableCell>
                           {igDumBadge ? (
