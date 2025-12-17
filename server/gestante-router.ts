@@ -241,6 +241,8 @@ export const gestanteRouter = router({
           ? "Código enviado para seu email" 
           : "Código gerado (verifique os logs do servidor)",
         gestanteNome: gestante.nome.split(" ")[0],
+        // In development, return code when email fails
+        devCode: !emailResult.success ? codigo : undefined,
       };
     }),
   

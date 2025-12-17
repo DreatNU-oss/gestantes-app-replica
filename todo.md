@@ -1094,3 +1094,8 @@
 - [x] Melhorar prompt para enfatizar extração da data de cada exame
 - [x] Adicionar instrução para procurar TODOS os exames em todas as páginas
 - [ ] Testar com PDF real contendo 12 exames
+
+## Adicionar devCode para desenvolvimento (17/12/2025)
+- [x] Modificar gestante-router.ts para retornar código quando email falhar em dev
+- [ ] Testar em ambiente de desenvolvimento
+- [ ] Salvar checkpoint
