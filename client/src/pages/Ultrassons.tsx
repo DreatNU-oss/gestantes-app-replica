@@ -238,11 +238,47 @@ export default function Ultrassons() {
     });
   };
 
+  // Função para validar campos obrigatórios
+  const validarCamposObrigatorios = (tipoUltrassom: string, dados: any): { valido: boolean; mensagem?: string } => {
+    const { dataExame, idadeGestacional } = dados;
+    
+    // Data do exame é obrigatória para todos os tipos
+    if (!dataExame || dataExame.trim() === '') {
+      return {
+        valido: false,
+        mensagem: 'Data do exame é obrigatória',
+      };
+    }
+    
+    // Idade gestacional é obrigatória para todos exceto ecocardiograma
+    if (tipoUltrassom !== 'ecocardiograma_fetal') {
+      if (!idadeGestacional || idadeGestacional.trim() === '') {
+        return {
+          valido: false,
+          mensagem: 'Idade gestacional é obrigatória',
+        };
+      }
+    }
+    
+    return { valido: true };
+  };
+
   // Função para salvar ultrassom
   const handleSalvar = async (tipoUltrassom: string, dados: any) => {
     if (!gestanteSelecionada) {
       toast.error('⚠️ Gestante não selecionada', {
         description: 'Por favor, selecione uma gestante antes de salvar.',
+        duration: 4000,
+      });
+      return;
+    }
+    
+    // Validar campos obrigatórios
+    const validacao = validarCamposObrigatorios(tipoUltrassom, dados);
+    if (!validacao.valido) {
+      toast.error('❌ Campos obrigatórios não preenchidos', {
+        description: validacao.mensagem,
+        duration: 5000,
       });
       return;
     }
@@ -357,7 +393,7 @@ export default function Ultrassons() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data do Exame</Label>
+                  <Label>Data do Exame <span className="text-red-500">*</span></Label>
                   <Input
                     type="date"
                     value={primeiroUS.dataExame}
@@ -365,7 +401,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Idade Gestacional</Label>
+                  <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
                   <Input
                     placeholder="Ex: 7s 2d"
                     value={primeiroUS.idadeGestacional}
@@ -451,7 +487,7 @@ export default function Ultrassons() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data do Exame</Label>
+                  <Label>Data do Exame <span className="text-red-500">*</span></Label>
                   <Input
                     type="date"
                     value={morfo1Tri.dataExame}
@@ -459,7 +495,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Idade Gestacional</Label>
+                  <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
                   <Input
                     placeholder="Ex: 12s 3d"
                     value={morfo1Tri.idadeGestacional}
@@ -554,7 +590,7 @@ export default function Ultrassons() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data do Exame</Label>
+                  <Label>Data do Exame <span className="text-red-500">*</span></Label>
                   <Input
                     type="date"
                     value={usObstetrico.dataExame}
@@ -562,7 +598,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Idade Gestacional</Label>
+                  <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
                   <Input
                     placeholder="Ex: 20s 1d"
                     value={usObstetrico.idadeGestacional}
@@ -646,7 +682,7 @@ export default function Ultrassons() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data do Exame</Label>
+                  <Label>Data do Exame <span className="text-red-500">*</span></Label>
                   <Input
                     type="date"
                     value={morfo2Tri.dataExame}
@@ -654,7 +690,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Idade Gestacional</Label>
+                  <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
                   <Input
                     placeholder="Ex: 22s 4d"
                     value={morfo2Tri.idadeGestacional}
@@ -775,7 +811,7 @@ export default function Ultrassons() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label>Data do Exame</Label>
+                <Label>Data do Exame <span className="text-red-500">*</span></Label>
                 <Input
                   type="date"
                   value={ecocardiograma.dataExame}
@@ -813,7 +849,7 @@ export default function Ultrassons() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data do Exame</Label>
+                  <Label>Data do Exame <span className="text-red-500">*</span></Label>
                   <Input
                     type="date"
                     value={usSeguimento.dataExame}
@@ -821,7 +857,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Idade Gestacional</Label>
+                  <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
                   <Input
                     placeholder="Ex: 32s 1d"
                     value={usSeguimento.idadeGestacional}

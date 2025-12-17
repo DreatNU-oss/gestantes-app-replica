@@ -1214,3 +1214,10 @@
 ## Bug - Página Ultrassons (Reportado 17/12/2025)
 
 - [x] Corrigir erro de input controlado mudando para não controlado (adicionada função sanitizeDados e uso de prev state)
+
+
+## Feature - Validação de Ultrassons (Solicitado 17/12/2025)
+
+- [x] Implementar validação de campos obrigatórios (data do exame, idade gestacional)
+- [x] Adicionar mensagens de erro claras com toast
+- [x] Adicionar indicação visual de campos obrigatórios (asterisco vermelho em Data e Idade Gestacional)
