@@ -33,6 +33,46 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  
+  // Configure CORS para permitir requisições do app mobile
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    
+    // Lista de origens permitidas
+    const allowedOrigins = [
+      'https://gestantesapp.com',
+      'https://www.gestantesapp.com',
+      /https:\/\/.*\.manusvm\.computer$/, // Permite todos os subdomínios manusvm.computer
+      /https:\/\/.*\.manus\.space$/, // Permite todos os subdomínios manus.space
+    ];
+    
+    // Verificar se a origem está na lista de permitidas
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return origin === allowed;
+      } else if (allowed instanceof RegExp) {
+        return origin && allowed.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    }
+    
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+      return;
+    }
+    
+    next();
+  });
+  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

@@ -1075,3 +1075,8 @@
 - [x] Corrigir extração de valores em exames laboratoriais (extrair valores numéricos ao invés de apenas "Reagente/Não reagente")
 - [ ] Testar interpretação de ultrassom com PDF real
 - [ ] Testar interpretação de exames laboratoriais com PDF real
+
+## Configuração de CORS para App Mobile (17/12/2025)
+- [x] Adicionar middleware CORS no servidor Express
+- [x] Configurar origens permitidas (incluindo domínios manusvm.computer)
+- [ ] Testar requisições do app mobile
