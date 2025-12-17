@@ -569,9 +569,13 @@ export default function CartaoPrenatal() {
           let dadosTexto = '-';
           if (us.dados) {
             const dados = typeof us.dados === 'string' ? JSON.parse(us.dados) : us.dados;
-            if (dados.dpp) dadosTexto = `DPP: ${dados.dpp}`;
+            // Priorizar dados mais relevantes de cada tipo de exame
+            if (dados.conclusao) dadosTexto = dados.conclusao; // Ecocardiograma e outros
+            else if (dados.dpp) dadosTexto = `DPP: ${dados.dpp}`;
             else if (dados.pesoFetal) dadosTexto = `Peso: ${dados.pesoFetal}g`;
             else if (dados.bcf) dadosTexto = `BCF: ${dados.bcf}bpm`;
+            else if (dados.tn) dadosTexto = `TN: ${dados.tn}mm`;
+            else if (dados.ccn) dadosTexto = `CCN: ${dados.ccn}mm`;
           }
           
           pdf.text(dataExame, 20, y);

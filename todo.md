@@ -1175,3 +1175,9 @@
 
 - [x] Corrigir pré-seleção de gestante na página Ultrassons (nome não aparece no campo de busca)
 - [x] Verificar se o mesmo problema ocorre em outras páginas (Exames Laboratoriais usa AutocompleteSelect que já funciona corretamente)
+
+
+## Correção de Bug - PDF Cartão Pré-natal (Reportado 17/12/2025)
+
+- [x] Corrigir exibição de dados do ecocardiograma fetal no PDF (mostra apenas "foi feito" ao invés dos dados completos)
+- [x] Verificar se outros tipos de ultrassom também têm o mesmo problema no PDF (melhorada extração de dados para todos os tipos)
