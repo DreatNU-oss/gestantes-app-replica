@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { Sparkles, ArrowLeft, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -478,6 +478,9 @@ export default function ExamesLaboratoriais() {
                     }}
                     disabled={salvarMutation.isPending}
                   >
+                    {salvarMutation.isPending && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
                     {salvarMutation.isPending ? 'Salvando...' : 'Salvar Resultados'}
                   </Button>
                 </div>

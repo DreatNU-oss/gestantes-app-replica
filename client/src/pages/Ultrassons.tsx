@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, ArrowLeft, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
@@ -41,11 +42,17 @@ export default function Ultrassons() {
   // Mutation para salvar
   const salvarMutation = trpc.ultrassons.salvar.useMutation({
     onSuccess: () => {
-      alert('Ultrassom salvo com sucesso!');
+      toast.success('✅ Ultrassom salvo com sucesso!', {
+        description: 'Os dados do ultrassom foram salvos no sistema.',
+        duration: 4000,
+      });
       refetchUltrassons();
     },
     onError: (error) => {
-      alert(`Erro ao salvar ultrassom: ${error.message}`);
+      toast.error('❌ Erro ao salvar ultrassom', {
+        description: error.message,
+        duration: 5000,
+      });
     },
   });
   
@@ -209,13 +216,18 @@ export default function Ultrassons() {
       });
     }
     
-    alert('Dados extraídos com sucesso! Revise os campos e salve.');
+    toast.success('✅ Dados extraídos com sucesso!', {
+      description: 'Revise os campos preenchidos e clique em Salvar.',
+      duration: 4000,
+    });
   };
 
   // Função para salvar ultrassom
   const handleSalvar = async (tipoUltrassom: string, dados: any) => {
     if (!gestanteSelecionada) {
-      alert('Selecione uma gestante');
+      toast.error('⚠️ Gestante não selecionada', {
+        description: 'Por favor, selecione uma gestante antes de salvar.',
+      });
       return;
     }
     
@@ -404,8 +416,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('primeiro_ultrassom', primeiroUS)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar 1º Ultrassom
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar 1º Ultrassom'}
               </Button>
             </CardContent>
           </Card>
@@ -503,8 +519,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('morfologico_1tri', morfo1Tri)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar Morfológico 1º Tri
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 1º Tri'}
               </Button>
             </CardContent>
           </Card>
@@ -591,8 +611,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('ultrassom_obstetrico', usObstetrico)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar Ultrassom Obstétrico
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom Obstétrico'}
               </Button>
             </CardContent>
           </Card>
@@ -717,8 +741,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('morfologico_2tri', morfo2Tri)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar Morfológico 2º Tri
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 2º Tri'}
               </Button>
             </CardContent>
           </Card>
@@ -750,8 +778,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('ecocardiograma_fetal', ecocardiograma)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar Ecocardiograma
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ecocardiograma'}
               </Button>
             </CardContent>
           </Card>
@@ -876,8 +908,12 @@ export default function Ultrassons() {
               </div>
               
               <Button onClick={() => handleSalvar('ultrassom_seguimento', usSeguimento)} disabled={salvarMutation.isPending}>
-                <Save className="mr-2 h-4 w-4" />
-                Salvar Ultrassom de Seguimento
+                {salvarMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom de Seguimento'}
               </Button>
             </CardContent>
           </Card>

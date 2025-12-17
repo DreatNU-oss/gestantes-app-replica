@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -1185,8 +1185,13 @@ export default function CartaoPrenatal() {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit">
-                    {consultaEditando ? "Atualizar" : "Salvar"}
+                  <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+                    {(createMutation.isPending || updateMutation.isPending) && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {(createMutation.isPending || updateMutation.isPending) 
+                      ? 'Salvando...' 
+                      : (consultaEditando ? "Atualizar" : "Salvar")}
                   </Button>
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancelar

@@ -1159,3 +1159,14 @@
 - [x] Adicionar import de toast
 - [x] Reiniciar servidor e testar
 - [x] Salvar checkpoint
+
+
+## Melhorias de Feedback Visual (Solicitado 17/12/2025)
+
+- [x] Adicionar toast notification ao salvar exames laboratoriais
+- [x] Adicionar toast notification ao salvar ultrassons
+- [x] Adicionar toast notification ao salvar consultas no Cartão de Pré-natal
+- [x] Implementar indicador de loading durante salvamento (botão desabilitado + ícone "salvando...")
+- [x] Aplicar loading state na página de Ultrassons
+- [x] Aplicar loading state na página de Cartão de Pré-natal
+- [x] Aplicar loading state na página de Exames Laboratoriais
