@@ -36,6 +36,15 @@ Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENA
 4. Ignore qualquer exame que não esteja na lista abaixo
 5. Para exames com subcampos (como TTGO), retorne cada subcampo separadamente
 
+**EXTRAÇÃO DE VALORES NUMÉRICOS:**
+- **SEMPRE extraia valores numéricos quando disponíveis**, mesmo que haja interpretação qualitativa
+- Para exames sorológicos (HIV, Hepatites, Sífilis, Toxoplasmose, Rubéola, etc.):
+  * Se houver valor numérico (ex: "0.15", "1.2 UI/mL", "< 0.5"), extraia o valor numérico
+  * Se houver apenas resultado qualitativo ("Reagente", "Não Reagente", "Positivo", "Negativo"), extraia esse resultado
+  * Preferência: VALOR NUMÉRICO > Resultado qualitativo
+- Para exames de contagem (Hemoglobina, Plaquetas, etc.), SEMPRE extraia o valor numérico com unidade
+- Para exames de glicose, TSH, etc., SEMPRE extraia o valor numérico com unidade
+
 **ATENÇÃO ESPECIAL PARA TOTG/TTGO (Curva Glicêmica):**
 - Pode aparecer como: "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica"
 - SEMPRE tem 3 valores obrigatórios: Jejum, 1 hora (ou 1h, 1ª Hora), 2 horas (ou 2h, 2ª Hora)
@@ -54,7 +63,10 @@ Exemplo de resposta correta:
 {
   "exames": [
     { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
-    { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" }
+    { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
+    { "nomeExame": "HIV", "valor": "0.15" },
+    { "nomeExame": "Toxoplasmose IgG", "valor": "125.5 UI/mL" },
+    { "nomeExame": "VDRL", "valor": "Não Reagente" }
   ]
 }
 

@@ -87,17 +87,20 @@ export async function interpretarLaudoUltrassom(
   // Construir prompt para a IA
   const prompt = `Você é um assistente médico especializado em interpretar laudos de ultrassom pré-natal.
 
+**IMPORTANTE:** Você receberá múltiplas imagens representando diferentes páginas do mesmo documento. Analise TODAS as imagens antes de responder.
+
 Analise o laudo de ultrassom fornecido e extraia APENAS os seguintes dados:
 
 ${camposEsperados.map((campo) => `- ${campo}`).join("\n")}
 
 INSTRUÇÕES IMPORTANTES:
-1. Retorne APENAS os valores encontrados no laudo
-2. Se um campo não estiver presente no laudo, NÃO inclua no resultado
-3. Mantenha os valores EXATAMENTE como aparecem no laudo (com unidades de medida)
-4. Para campos de data, use formato DD/MM/AAAA
-5. Para idade gestacional, use formato "X semanas e X dias" ou "Xs Xd"
-6. Retorne um objeto JSON válido no formato: {"campo": "valor"}
+1. **SEMPRE extraia a data do exame (dataExame)** - procure por datas no cabeçalho, rodapé ou corpo do laudo
+2. Retorne APENAS os valores encontrados no laudo
+3. Se um campo não estiver presente no laudo, NÃO inclua no resultado
+4. Mantenha os valores EXATAMENTE como aparecem no laudo (com unidades de medida)
+5. Para campos de data, use formato DD/MM/AAAA
+6. Para idade gestacional, use formato "X semanas e X dias" ou "Xs Xd"
+7. Retorne um objeto JSON válido no formato: {"campo": "valor"}
 
 EXEMPLO de formato de resposta:
 {
@@ -126,10 +129,72 @@ Agora analise o laudo e extraia os dados:`;
         image_url: { url: fileUrl, detail: 'high' }
       });
     } else if (mimeType === "application/pdf") {
-      userContent.push({
-        type: 'image_url',
-        image_url: { url: fileUrl, detail: 'high' }
-      });
+      // Para PDF, converter TODAS as páginas para imagens
+      try {
+        const response = await fetch(fileUrl);
+        const fileBuffer = Buffer.from(await response.arrayBuffer());
+        
+        const fs = await import('fs');
+        const path = await import('path');
+        const os = await import('os');
+        const { exec } = await import('child_process');
+        const { promisify } = await import('util');
+        const execPromise = promisify(exec);
+        
+        const tempDir = os.tmpdir();
+        const timestamp = Date.now();
+        const tempPdfPath = path.join(tempDir, `ultrassom-${timestamp}.pdf`);
+        
+        // Salvar PDF temporário
+        await fs.promises.writeFile(tempPdfPath, fileBuffer);
+        
+        // Descobrir quantas páginas o PDF tem
+        const { stdout: pdfInfoOutput } = await execPromise(`pdfinfo "${tempPdfPath}"`);
+        const pagesMatch = pdfInfoOutput.match(/Pages:\s+(\d+)/);
+        const totalPages = pagesMatch ? parseInt(pagesMatch[1], 10) : 1;
+        
+        console.log(`[Ultrassom] PDF tem ${totalPages} página(s)`);
+        
+        // Converter todas as páginas (máximo 10)
+        const maxPages = Math.min(totalPages, 10);
+        await execPromise(`pdftoppm -png -f 1 -l ${maxPages} "${tempPdfPath}" "${tempDir}/ultrassom-${timestamp}"`);
+        
+        // Ler e fazer upload de todas as imagens geradas
+        const imageFiles: string[] = [];
+        for (let i = 1; i <= maxPages; i++) {
+          const pageNum = String(i).padStart(maxPages > 9 ? 2 : 1, '0');
+          const pagePath = maxPages === 1 
+            ? `${tempDir}/ultrassom-${timestamp}.png`
+            : `${tempDir}/ultrassom-${timestamp}-${pageNum}.png`;
+          
+          try {
+            const imageBuffer = await fs.promises.readFile(pagePath);
+            
+            // Upload da imagem para S3
+            const imageKey = `ultrassom-temp/${timestamp}-page${i}.png`;
+            const { url: imageUrl } = await storagePut(imageKey, imageBuffer, 'image/png');
+            
+            // Adicionar imagem ao conteúdo
+            userContent.push({
+              type: 'image_url',
+              image_url: { url: imageUrl, detail: 'high' }
+            });
+            
+            imageFiles.push(pagePath);
+          } catch (err) {
+            console.warn(`[Ultrassom] Não foi possível ler página ${i}:`, err);
+          }
+        }
+        
+        // Limpar arquivos temporários
+        await fs.promises.unlink(tempPdfPath).catch(() => {});
+        for (const imgFile of imageFiles) {
+          await fs.promises.unlink(imgFile).catch(() => {});
+        }
+      } catch (error) {
+        console.error('[Ultrassom] Erro ao converter PDF:', error);
+        throw new Error('Não foi possível processar o PDF. Tente converter para imagem (JPG/PNG).');
+      }
     } else if (mimeType === "text/plain" && fileUrl.startsWith("data:")) {
       // Para testes: extrair texto do data URL
       const base64Data = fileUrl.split(",")[1];

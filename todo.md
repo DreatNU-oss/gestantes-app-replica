@@ -1067,3 +1067,11 @@
 - [x] Corrigir inicialização do Resend para aceitar undefined
 - [x] Atualizar testes para nova estrutura de API (12 de 13 testes passando)
 - [ ] Investigar 1 teste falhando (validação de código)
+
+## Melhorias em Interpretação de Exames (17/12/2025)
+- [x] Aplicar melhorias de exames laboratoriais para ultrassons (múltiplas páginas)
+- [x] Converter PDF de ultrassom para imagens antes de enviar para GPT
+- [x] Extrair data correta do exame de ultrassom
+- [x] Corrigir extração de valores em exames laboratoriais (extrair valores numéricos ao invés de apenas "Reagente/Não reagente")
+- [ ] Testar interpretação de ultrassom com PDF real
+- [ ] Testar interpretação de exames laboratoriais com PDF real
