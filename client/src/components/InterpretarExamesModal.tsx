@@ -28,6 +28,7 @@ interface FileWithStatus {
 export function InterpretarExamesModal({ open, onOpenChange, onResultados }: InterpretarExamesModalProps) {
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [trimestre, setTrimestre] = useState<"primeiro" | "segundo" | "terceiro">("primeiro");
+  const [dataColeta, setDataColeta] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [allResultados, setAllResultados] = useState<Record<string, string>>({});
@@ -194,9 +195,15 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
     });
   };
 
-  const handleSubmit = async () => {
+  const handleInterpretarTodos = async () => {
     if (files.length === 0) {
-      toast.error('Selecione pelo menos um arquivo');
+      toast.error('Nenhum arquivo selecionado');
+      return;
+    }
+
+    // Validar data de coleta
+    if (!dataColeta) {
+      toast.error('Por favor, informe a data de coleta dos exames');
       return;
     }
 
@@ -243,7 +250,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
         toast.success(mensagem);
       }
       
-      onResultados(combinedResultados, trimestre, lastDataColeta, successCount);
+      // Usar data de coleta informada pelo usuário ao invés da extraída pela IA
+      onResultados(combinedResultados, trimestre, dataColeta, successCount);
       
       // Aguardar um pouco para mostrar os status antes de fechar
       setTimeout(() => {
@@ -263,6 +271,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
     });
     setFiles([]);
     setTrimestre("primeiro");
+    setDataColeta("");
     setIsProcessing(false);
     setCurrentFileIndex(0);
     setAllResultados({});
@@ -281,9 +290,26 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados }: Int
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Data de Coleta */}
+          <div className="space-y-3">
+            <Label htmlFor="data-coleta" className="text-base font-semibold">
+              Data de Coleta <span className="text-destructive">*</span>
+            </Label>
+            <input
+              id="data-coleta"
+              type="date"
+              value={dataColeta}
+              onChange={(e) => setDataColeta(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              required
+            />
+          </div>
+
           {/* Seleção de Trimestre */}
           <div className="space-y-3">
-            <Label className="text-base font-semibold">Trimestre dos Exames</Label>
+            <Label className="text-base font-semibold">
+              Trimestre dos Exames <span className="text-destructive">*</span>
+            </Label>
             <RadioGroup value={trimestre} onValueChange={(value) => setTrimestre(value as typeof trimestre)}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="primeiro" id="primeiro" />

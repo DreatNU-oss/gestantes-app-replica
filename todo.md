@@ -1124,3 +1124,13 @@
 - [x] Remover imports não utilizados
 - [x] Reiniciar servidor e verificar funcionamento
 - [x] Salvar checkpoint
+
+## Melhorar Fluxo de Interpretação de Exames (17/12/2025)
+- [x] Adicionar campo de data de coleta no modal (obrigatório)
+- [x] Adicionar seleção de trimestre no modal (já existia)
+- [x] Modificar InterpretarExamesModal para validar campos antes de upload
+- [x] Passar dataColeta informada pelo usuário para onResultados
+- [x] Atualizar lógica para preencher data automaticamente em todos os campos (já implementado)
+- [x] Posicionar resultados na coluna do trimestre selecionado (já implementado)
+- [x] Reiniciar servidor e testar
+- [x] Salvar checkpoint
