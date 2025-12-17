@@ -1237,3 +1237,26 @@
   - [ ] Ultrassons
   - [ ] Previsão de Partos
   - [ ] Qualquer outro local que exiba DUM/DPP/IG
+
+
+## Cálculo em Tempo Real no Formulário (Solicitado 17/12/2025)
+
+- [ ] Implementar cálculo automático de IG DUM ao preencher campo DUM
+- [ ] Implementar cálculo automático de DPP DUM ao preencher campo DUM
+- [ ] Implementar cálculo automático de IG US ao preencher 1º USG (data + IG)
+- [ ] Implementar cálculo automático de DPP US ao preencher 1º USG
+- [ ] Adicionar cards de visualização dos cálculos no formulário
+- [ ] Atualizar cálculos em tempo real conforme usuário digita
+- [ ] Tratar casos especiais (DUM Incerta, Incompatível com US)
+
+
+## Cálculo em Tempo Real no Formulário de Gestantes (Solicitado 17/12/2025)
+
+- [x] Implementar cálculo automático de IG e DPP em tempo real no formulário
+- [x] Mostrar card "Cálculos em Tempo Real" quando DUM ou Ultrassom são preenchidos
+- [x] Calcular IG pela DUM automaticamente (sem precisar salvar)
+- [x] Calcular DPP pela DUM automaticamente (sem precisar salvar)
+- [x] Calcular IG pelo Ultrassom automaticamente (sem precisar salvar)
+- [x] Calcular DPP pelo Ultrassom automaticamente (sem precisar salvar)
+- [x] Usar parseLocalDate para evitar problemas de fuso horário
+- [x] Testar funcionalidade no formulário de edição (SUCESSO - funciona perfeitamente)

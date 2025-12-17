@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
+import { parseLocalDate } from "@/lib/dateUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/PhoneInput";
@@ -15,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calendar, Baby } from "lucide-react";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
@@ -29,6 +30,12 @@ export default function FormularioGestante({
   onCancel,
 }: FormularioGestanteProps) {
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
+  const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
+    igDUM: { semanas: number; dias: number } | null;
+    dppDUM: string | null;
+    igUS: { semanas: number; dias: number } | null;
+    dppUS: string | null;
+  }>({ igDUM: null, dppDUM: null, igUS: null, dppUS: null });
   
   const [formData, setFormData] = useState({
     nome: "",
@@ -61,6 +68,68 @@ export default function FormularioGestante({
 
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
+
+  // Recalcular IG e DPP quando campos relevantes mudarem
+  useEffect(() => {
+    // Usar meio-dia local para evitar problemas de fuso horário
+    const hoje = new Date();
+    hoje.setHours(12, 0, 0, 0);
+    
+    let igDUM = null;
+    let dppDUM = null;
+    let igUS = null;
+    let dppUS = null;
+
+    // Calcular IG e DPP pela DUM (se data conhecida)
+    if (tipoDUM === "data" && formData.dum) {
+      try {
+        const dumDate = parseLocalDate(formData.dum);
+        
+        // Calcular IG DUM
+        const diffMs = hoje.getTime() - dumDate.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const semanas = Math.floor(diffDays / 7);
+        const dias = diffDays % 7;
+        igDUM = { semanas, dias };
+
+        // Calcular DPP DUM (DUM + 280 dias)
+        const dppDate = new Date(dumDate);
+        dppDate.setDate(dppDate.getDate() + 280);
+        dppDUM = dppDate.toLocaleDateString('pt-BR');
+      } catch (error) {
+        console.error('Erro ao calcular pela DUM:', error);
+      }
+    }
+
+    // Calcular IG e DPP pelo Ultrassom (se todos os campos preenchidos)
+    if (formData.dataUltrassom && formData.igUltrassomSemanas && formData.igUltrassomDias !== '') {
+      try {
+        const dataUS = parseLocalDate(formData.dataUltrassom);
+        const igSemanas = parseInt(formData.igUltrassomSemanas);
+        const igDias = parseInt(formData.igUltrassomDias);
+        
+        if (!isNaN(igSemanas) && !isNaN(igDias)) {
+          // Calcular IG US atual
+          const diffMs = hoje.getTime() - dataUS.getTime();
+          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const igTotalDiasUS = (igSemanas * 7) + igDias + diffDays;
+          const semanasUS = Math.floor(igTotalDiasUS / 7);
+          const diasUS = igTotalDiasUS % 7;
+          igUS = { semanas: semanasUS, dias: diasUS };
+
+          // Calcular DPP US (data do US + dias restantes até 40 semanas)
+          const diasRestantes = (40 * 7) - (igSemanas * 7 + igDias) + 1;
+          const dppDate = new Date(dataUS);
+          dppDate.setDate(dppDate.getDate() + diasRestantes);
+          dppUS = dppDate.toLocaleDateString('pt-BR');
+        }
+      } catch (error) {
+        console.error('Erro ao calcular pelo US:', error);
+      }
+    }
+
+    setCalculosEmTempoReal({ igDUM, dppDUM, igUS, dppUS });
+  }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
 
   const createMutation = trpc.gestantes.create.useMutation({
     onSuccess: () => {
@@ -442,6 +511,80 @@ export default function FormularioGestante({
                 <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Cards de Cálculos em Tempo Real */}
+        {(calculosEmTempoReal.igDUM || calculosEmTempoReal.igUS) && (
+          <Card className="bg-blue-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-blue-900">
+                <Baby className="h-5 w-5" />
+                Cálculos em Tempo Real
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Cálculos pela DUM */}
+                {tipoDUM === "data" && calculosEmTempoReal.igDUM && (
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Pela DUM
+                    </h4>
+                    <div className="bg-white rounded-lg p-3 space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">IG Atual:</span>
+                        <span className="font-semibold text-blue-900">
+                          {calculosEmTempoReal.igDUM.semanas}s {calculosEmTempoReal.igDUM.dias}d
+                        </span>
+                      </div>
+                      {calculosEmTempoReal.dppDUM && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">DPP:</span>
+                          <span className="font-semibold text-blue-900">{calculosEmTempoReal.dppDUM}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cálculos pelo Ultrassom */}
+                {calculosEmTempoReal.igUS && (
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Pelo Ultrassom
+                    </h4>
+                    <div className="bg-white rounded-lg p-3 space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">IG Atual:</span>
+                        <span className="font-semibold text-blue-900">
+                          {calculosEmTempoReal.igUS.semanas}s {calculosEmTempoReal.igUS.dias}d
+                        </span>
+                      </div>
+                      {calculosEmTempoReal.dppUS && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">DPP:</span>
+                          <span className="font-semibold text-blue-900">{calculosEmTempoReal.dppUS}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-blue-700 mt-3">
+                💡 Estes cálculos são atualizados automaticamente conforme você preenche os campos acima
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Data Planejada e Observações</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="dataPartoProgramado">Data Planejada para o Parto</Label>
               <Input
