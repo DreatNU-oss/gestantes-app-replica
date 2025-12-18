@@ -175,12 +175,13 @@ export function AlertasPartosProximos({
           {alertas.length} {alertas.length === 1 ? "gestante com parto previsto" : "gestantes com parto previsto"} nos próximos 21 dias
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2">
-        {alertas.map((alerta) => (
-          <div 
-            key={alerta.gestante.id} 
-            className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes)}`}
-          >
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {alertas.map((alerta) => (
+            <div 
+              key={alerta.gestante.id} 
+              className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes)}`}
+            >
             <div className="flex-1">
               <div className="font-semibold text-gray-900 mb-1">
                 {alerta.gestante.nome}
@@ -207,8 +208,9 @@ export function AlertasPartosProximos({
                 {getTipoTexto(alerta.tipo)}
               </Badge>
             </div>
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

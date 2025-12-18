@@ -1296,3 +1296,10 @@
 - [x] Buscar dados de plano de saúde das gestantes que tiveram partos registrados
 - [x] Implementar gráfico de barras horizontais mostrando partos por convênio
 - [x] Testar com dados reais
+
+
+## Ajuste de Layout dos Alertas de Partos Próximos (Solicitado 17/12/2025)
+
+- [x] Ajustar layout dos alertas de partos próximos para duas colunas
+- [x] Manter responsividade para mobile (1 coluna em telas pequenas)
+- [x] Testar visualização em diferentes tamanhos de tela
