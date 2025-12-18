@@ -18,6 +18,7 @@ import AgendamentoConsultas from "./pages/AgendamentoConsultas";
 import GerenciarEmails from "./pages/GerenciarEmails";
 import Ultrassons from "./pages/Ultrassons";
 import LogsEmails from "./pages/LogsEmails";
+import PartosRealizados from "./pages/PartosRealizados";
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function Router() {
       <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
       <Route path={"/gerenciar-emails"} component={GerenciarEmails} />
       <Route path={"/logs-emails"} component={LogsEmails} />
+      <Route path={"/partos-realizados"} component={PartosRealizados} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

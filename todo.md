@@ -1260,3 +1260,19 @@
 - [x] Calcular DPP pelo Ultrassom automaticamente (sem precisar salvar)
 - [x] Usar parseLocalDate para evitar problemas de fuso horário
 - [x] Testar funcionalidade no formulário de edição (SUCESSO - funciona perfeitamente)
+
+
+## Sistema de Partos Realizados (Solicitado 17/12/2025)
+
+- [x] Criar schema de banco para tabela partosRealizados
+- [x] Adicionar campos: gestanteId, dataParto, tipoParto, medicoId, pdfUrl, createdAt
+- [x] Implementar procedures tRPC (registrar, listar, detalhes, deletar)
+- [x] Implementar geração automática de PDF do cartão pré-natal
+- [x] Salvar PDF no S3 e armazenar URL no banco
+- [x] Adicionar ícone de "Parto Realizado" na lista de gestantes
+- [x] Criar modal para solicitar dados do parto (data, tipo, médico)
+- [x] Remover gestante da lista de Gestantes após registrar parto
+- [x] Criar nova página "Partos Realizados" com lista completa
+- [x] Exibir dados do parto e link para download do PDF
+- [x] Adicionar menu "Partos Realizados" no sidebar
+- [x] Testar fluxo completo de registro de parto

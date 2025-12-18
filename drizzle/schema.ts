@@ -414,3 +414,22 @@ export type InsertFeedbackInterpretacao = typeof feedbackInterpretacoes.$inferIn
  * Tabela de mensagens WhatsApp enviadas via Helena
  */
 
+
+/**
+ * Tabela de partos realizados
+ */
+export const partosRealizados = mysqlTable("partosRealizados", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  dataParto: date("dataParto").notNull(),
+  tipoParto: mysqlEnum("tipoParto", ["normal", "cesarea"]).notNull(),
+  medicoId: int("medicoId").notNull(),
+  pdfUrl: text("pdfUrl"), // URL do PDF do cartão pré-natal no S3
+  pdfKey: text("pdfKey"), // Key do arquivo no S3 para referência
+  observacoes: text("observacoes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PartoRealizado = typeof partosRealizados.$inferSelect;
+export type InsertPartoRealizado = typeof partosRealizados.$inferInsert;

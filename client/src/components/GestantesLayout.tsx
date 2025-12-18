@@ -45,6 +45,7 @@ const menuItems = [
   { icon: Calendar, label: "Marcos Importantes", path: "/marcos" },
   { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos" },
   { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas" },
+  { icon: Baby, label: "Partos Realizados", path: "/partos-realizados" },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas" },
 ];
 

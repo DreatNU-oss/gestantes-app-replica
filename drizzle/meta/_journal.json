@@ -141,6 +141,13 @@
       "when": 1765998204301,
       "tag": "0019_easy_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1766018173594,
+      "tag": "0020_big_darkstar",
+      "breakpoints": true
     }
   ]
 }

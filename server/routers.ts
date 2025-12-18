@@ -55,6 +55,7 @@ import { processarLembretes } from './lembretes';
 import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao } from '../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
+import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto } from './partosRealizados';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 
@@ -1284,6 +1285,40 @@ export const appRouter = router({
           .limit(input.limite);
         
         return results;
+      }),
+  }),
+
+  // Router de Partos Realizados
+  partos: router({
+    registrar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        dataParto: z.string(),
+        tipoParto: z.enum(["normal", "cesarea"]),
+        medicoId: z.number(),
+        pdfUrl: z.string().optional(),
+        pdfKey: z.string().optional(),
+        observacoes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await registrarParto(input);
+      }),
+
+    listar: protectedProcedure
+      .query(async () => {
+        return await listarPartosRealizados();
+      }),
+
+    buscarPorId: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await buscarPartoPorId(input.id);
+      }),
+
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deletarParto(input.id);
       }),
   }),
 });

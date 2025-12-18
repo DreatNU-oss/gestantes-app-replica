@@ -24,9 +24,19 @@ import {
   Edit, 
   Trash2, 
   Eye,
-  Filter
+  Filter,
+  Baby
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
@@ -70,6 +80,13 @@ export default function Dashboard() {
   const [filterDppInicio, setFilterDppInicio] = useState<string>("");
   const [filterDppFim, setFilterDppFim] = useState<string>("");
   
+  // Estados para modal de parto
+  const [showPartoModal, setShowPartoModal] = useState(false);
+  const [partoGestanteId, setPartoGestanteId] = useState<number | null>(null);
+  const [partoData, setPartoData] = useState<string>("");
+  const [partoTipo, setPartoTipo] = useState<"normal" | "cesarea">("normal");
+  const [partoMedicoId, setPartoMedicoId] = useState<string>("");
+  
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm });
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
@@ -82,6 +99,23 @@ export default function Dashboard() {
     },
     onError: (error) => {
       toast.error("Erro ao remover gestante: " + error.message);
+    },
+  });
+
+  const registrarPartoMutation = trpc.partos.registrar.useMutation({
+    onSuccess: (data) => {
+      toast.success("Parto registrado com sucesso! PDF gerado.");
+      setShowPartoModal(false);
+      // Limpar campos
+      setPartoGestanteId(null);
+      setPartoData("");
+      setPartoTipo("normal");
+      setPartoMedicoId("");
+      // Atualizar lista de gestantes
+      utils.gestantes.list.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao registrar parto: " + error.message);
     },
   });
 
@@ -170,6 +204,26 @@ export default function Dashboard() {
     if (confirm("Tem certeza que deseja remover esta gestante?")) {
       deleteMutation.mutate({ id });
     }
+  };
+
+  const handleRegistrarParto = (gestanteId: number) => {
+    setPartoGestanteId(gestanteId);
+    setPartoData(new Date().toISOString().split('T')[0]); // Data de hoje como padrão
+    setShowPartoModal(true);
+  };
+
+  const handleConfirmarParto = () => {
+    if (!partoGestanteId || !partoData || !partoMedicoId) {
+      toast.error("Preencha todos os campos obrigatórios");
+      return;
+    }
+
+    registrarPartoMutation.mutate({
+      gestanteId: partoGestanteId,
+      dataParto: partoData,
+      tipoParto: partoTipo,
+      medicoId: parseInt(partoMedicoId),
+    });
   };
 
   const getTrimestre = (semanas: number) => {
@@ -393,6 +447,7 @@ export default function Dashboard() {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleView(g.id)}
+                              title="Visualizar"
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
@@ -400,13 +455,24 @@ export default function Dashboard() {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleEdit(g.id)}
+                              title="Editar"
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
+                              onClick={() => handleRegistrarParto(g.id)}
+                              title="Registrar Parto"
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <Baby className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleDelete(g.id)}
+                              title="Excluir"
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
@@ -421,6 +487,75 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de Registro de Parto */}
+      <Dialog open={showPartoModal} onOpenChange={setShowPartoModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registrar Parto Realizado</DialogTitle>
+            <DialogDescription>
+              Preencha os dados do parto. O PDF do cartão pré-natal será gerado automaticamente.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="dataParto">Data do Parto *</Label>
+              <Input
+                id="dataParto"
+                type="date"
+                value={partoData}
+                onChange={(e) => setPartoData(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tipoParto">Tipo de Parto *</Label>
+              <Select value={partoTipo} onValueChange={(value: "normal" | "cesarea") => setPartoTipo(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="normal">Normal</SelectItem>
+                  <SelectItem value="cesarea">Cesárea</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="medicoId">Médico Responsável *</Label>
+              <Select value={partoMedicoId} onValueChange={setPartoMedicoId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o médico" />
+                </SelectTrigger>
+                <SelectContent>
+                  {medicos.map((medico) => (
+                    <SelectItem key={medico.id} value={medico.id.toString()}>
+                      {medico.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPartoModal(false)}
+              disabled={registrarPartoMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleConfirmarParto}
+              disabled={registrarPartoMutation.isPending}
+            >
+              {registrarPartoMutation.isPending ? "Gerando PDF..." : "Confirmar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </GestantesLayout>
   );
 }
