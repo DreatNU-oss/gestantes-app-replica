@@ -68,6 +68,21 @@ export default function EstatisticasPartos() {
   // Ordenar por total (decrescente)
   partosPorMedico.sort((a: { medico: string; total: number }, b: { medico: string; total: number }) => b.total - a.total);
 
+  // Dados para gráfico de partos por convênio
+  const partosPorConvenio = partos?.reduce((acc: { convenio: string; total: number }[], parto: any) => {
+    const nomeConvenio = parto.planoSaudeNome || 'Particular';
+    const existing = acc.find((item: { convenio: string; total: number }) => item.convenio === nomeConvenio);
+    if (existing) {
+      existing.total += 1;
+    } else {
+      acc.push({ convenio: nomeConvenio, total: 1 });
+    }
+    return acc;
+  }, [] as { convenio: string; total: number }[]) || [];
+
+  // Ordenar por total (decrescente)
+  partosPorConvenio.sort((a: { convenio: string; total: number }, b: { convenio: string; total: number }) => b.total - a.total);
+
   if (isLoading) {
     return (
       <GestantesLayout>
@@ -207,7 +222,7 @@ export default function EstatisticasPartos() {
           </Card>
 
           {/* Gráfico de Partos por Médico */}
-          <Card className="md:col-span-2">
+          <Card>
             <CardHeader>
               <CardTitle>Partos por Médico</CardTitle>
               <CardDescription>Distribuição de partos por profissional responsável</CardDescription>
@@ -219,6 +234,32 @@ export default function EstatisticasPartos() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
                     <YAxis dataKey="medico" type="category" width={150} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="total" fill="#722F37" name="Partos" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  Nenhum parto registrado ainda
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Gráfico de Partos por Convênio */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Partos por Convênio</CardTitle>
+              <CardDescription>Distribuição de partos por plano de saúde</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {partosPorConvenio.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={partosPorConvenio} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="convenio" type="category" width={150} />
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="total" fill="#722F37" name="Partos" />

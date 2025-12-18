@@ -1288,3 +1288,11 @@
 - [ ] Adicionar filtros por período (data inicial e final) - Opcional para versão futura
 - [x] Integrar página ao menu "Partos Realizados" (botão "Ver Estatísticas")
 - [x] Testar com dados reais de partos registrados
+
+
+## Gráfico de Partos por Convênio (Solicitado 17/12/2025)
+
+- [x] Adicionar gráfico de distribuição de partos por convênio na página de estatísticas
+- [x] Buscar dados de plano de saúde das gestantes que tiveram partos registrados
+- [x] Implementar gráfico de barras horizontais mostrando partos por convênio
+- [x] Testar com dados reais

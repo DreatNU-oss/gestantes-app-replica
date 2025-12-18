@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getDb } from "./db";
-import { partosRealizados, gestantes, medicos } from "../drizzle/schema";
+import { partosRealizados, gestantes, medicos, planosSaude } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { gerarEUploadPdfCartao } from "./gerarPdfParaParto";
@@ -79,12 +79,16 @@ export async function listarPartosRealizados() {
       gestanteNome: gestantes.nome,
       gestanteTelefone: gestantes.telefone,
       gestanteEmail: gestantes.email,
+      planoSaudeId: gestantes.planoSaudeId,
       // Dados do médico
       medicoNome: medicos.nome,
+      // Dados do plano de saúde
+      planoSaudeNome: planosSaude.nome,
     })
     .from(partosRealizados)
     .leftJoin(gestantes, eq(partosRealizados.gestanteId, gestantes.id))
     .leftJoin(medicos, eq(partosRealizados.medicoId, medicos.id))
+    .leftJoin(planosSaude, eq(gestantes.planoSaudeId, planosSaude.id))
     .orderBy(desc(partosRealizados.dataParto));
 
   return partos;
