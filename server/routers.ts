@@ -972,10 +972,8 @@ export const appRouter = router({
         gestanteId: z.number(),
       }))
       .mutation(async ({ input, ctx }) => {
-        const { gerarPdfCartaoPrenatal } = await import('./gerarPdfCartao');
-        const { getGestanteById, getConsultasByGestanteId, getExamesByGestanteId } = await import('./db');
-        const { buscarUltrassons } = await import('./ultrassons');
-        const { calcularMarcosImportantes } = await import('./marcos');
+        const { gerarEUploadPdfCartao } = await import('./gerarPdfParaParto');
+        const { getGestanteById } = await import('./db');
         
         // Buscar dados da gestante
         const gestante = await getGestanteById(input.gestanteId);
@@ -983,108 +981,13 @@ export const appRouter = router({
           throw new Error('Gestante não encontrada');
         }
 
-        // Buscar consultas
-        const consultas = await getConsultasByGestanteId(input.gestanteId);
-
-        // Buscar ultrassons
-        const ultrassons = await buscarUltrassons(input.gestanteId);
-
-        // Buscar exames
-        const exames = await getExamesByGestanteId(input.gestanteId);
-
-        // Calcular marcos importantes
-        let marcos: any[] = [];
-        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-          const igFormatado = `${gestante.igUltrassomSemanas}s${gestante.igUltrassomDias || 0}d`;
-          marcos = calcularMarcosImportantes(gestante.dataUltrassom, igFormatado);
-        }
-
-        // Calcular idade
-        let idade: number | null = null;
-        if (gestante.dataNascimento) {
-          const nascimento = new Date(gestante.dataNascimento);
-          const hoje = new Date();
-          idade = hoje.getFullYear() - nascimento.getFullYear();
-          const m = hoje.getMonth() - nascimento.getMonth();
-          if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-            idade--;
-          }
-        }
-
-        // Calcular DPP pela DUM (280 dias)
-        let dppDUM: string | null = null;
-        if (gestante.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US") {
-          // Adicionar T12:00:00 para evitar problemas de fuso horário
-          const dum = new Date(gestante.dum + 'T12:00:00');
-          const dpp = new Date(dum);
-          dpp.setDate(dpp.getDate() + 280);
-          dppDUM = dpp.toLocaleDateString('pt-BR');
-        }
-
-        // Calcular DPP pelo US
-        let dppUS: string | null = null;
-        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-          // Adicionar T12:00:00 para evitar problemas de fuso horário
-          const dataUS = new Date(gestante.dataUltrassom + 'T12:00:00');
-          const semanas = gestante.igUltrassomSemanas;
-          const dias = gestante.igUltrassomDias || 0;
-          const totalDiasIG = semanas * 7 + dias;
-          const dpp = new Date(dataUS);
-          dpp.setDate(dpp.getDate() + (280 - totalDiasIG));
-          dppUS = dpp.toLocaleDateString('pt-BR');
-        }
-
-        // Preparar dados para o PDF
-        const dadosPDF = {
-          gestante: {
-            nome: gestante.nome,
-            idade,
-            dum: gestante.dum,
-            dppDUM,
-            dppUS,
-            gesta: gestante.gesta,
-            para: gestante.para,
-            abortos: gestante.abortos,
-            partosNormais: gestante.partosNormais,
-            cesareas: gestante.cesareas,
-          },
-          consultas: consultas.map((c: any) => ({
-            dataConsulta: new Date(c.dataConsulta).toLocaleDateString('pt-BR'),
-            igDUM: c.igDUM || '-',
-            igUS: c.igUS || null,
-            peso: c.peso,
-            pa: c.pa,
-            au: c.au,
-            bcf: c.bcf,
-            mf: c.mf,
-            conduta: c.conduta,
-            condutaComplementacao: c.condutaComplementacao,
-            observacoes: c.observacoes,
-          })),
-          marcos: marcos.map((m: any) => ({
-            titulo: m.titulo,
-            data: m.data,
-            periodo: m.periodo,
-          })),
-          ultrassons: ultrassons.map((u: any) => ({
-            data: u.dataExame ? new Date(u.dataExame + 'T12:00:00').toLocaleDateString('pt-BR') : '-',
-            ig: u.idadeGestacional || '-',
-            tipo: u.tipoUltrassom || '-',
-            observacoes: u.dados?.observacoes || null,
-          })),
-          exames: exames.flatMap((e: any) => {
-            const resultado = typeof e.resultado === 'string' ? JSON.parse(e.resultado) : e.resultado;
-            return Object.entries(resultado).map(([nome, valor]: [string, any]) => ({
-              tipo: nome,
-              data: new Date(e.data).toLocaleDateString('pt-BR'),
-              resultado: typeof valor === 'object' ? (valor?.resultado || '-') : (valor || '-'),
-              trimestre: e.trimestre || 1,
-            }));
-          }),
-        };
-
-        // Gerar PDF
-        const pdfBuffer = await gerarPdfCartaoPrenatal(dadosPDF);
+        // Gerar PDF usando a mesma função dos partos realizados
+        const { pdfUrl, pdfKey } = await gerarEUploadPdfCartao(input.gestanteId);
+        
+        // Baixar o PDF do S3 para retornar como base64
+        const response = await fetch(pdfUrl);
+        const arrayBuffer = await response.arrayBuffer();
+        const pdfBuffer = Buffer.from(arrayBuffer);
         
         // Retornar PDF como base64
         return {

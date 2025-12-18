@@ -1303,3 +1303,12 @@
 - [x] Ajustar layout dos alertas de partos próximos para duas colunas
 - [x] Manter responsividade para mobile (1 coluna em telas pequenas)
 - [x] Testar visualização em diferentes tamanhos de tela
+
+
+## Unificação de Geração de PDF do Cartão Pré-Natal (Solicitado 17/12/2025)
+
+- [x] Localizar função de geração de PDF dos partos realizados (bonita)
+- [x] Localizar função de geração de PDF da aba Cartão de Pré-natal (atual)
+- [x] Substituir geração de PDF da aba para usar a mesma função dos partos
+- [x] Testar geração de PDF na aba Cartão de Pré-natal
+- [x] Validar que o PDF gerado é idêntico ao dos partos realizados
