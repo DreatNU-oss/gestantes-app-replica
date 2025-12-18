@@ -1276,3 +1276,15 @@
 - [x] Exibir dados do parto e link para download do PDF
 - [x] Adicionar menu "Partos Realizados" no sidebar
 - [x] Testar fluxo completo de registro de parto
+
+
+## Estatísticas de Partos Realizados (Solicitado 17/12/2025)
+
+- [x] Criar página de estatísticas de partos
+- [x] Implementar gráfico de partos por mês (barras)
+- [x] Implementar gráfico de distribuição por tipo de parto (pizza)
+- [x] Implementar gráfico de partos por médico (barras horizontais)
+- [x] Adicionar cards com totais (total de partos, normais, cesáreas)
+- [ ] Adicionar filtros por período (data inicial e final) - Opcional para versão futura
+- [x] Integrar página ao menu "Partos Realizados" (botão "Ver Estatísticas")
+- [x] Testar com dados reais de partos registrados

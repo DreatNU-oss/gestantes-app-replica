@@ -11,8 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FileText, Download, Trash2 } from "lucide-react";
+import { FileText, Download, Trash2, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 // Função para formatar data de forma segura
 const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
@@ -37,6 +38,7 @@ const formatarDataSegura = (dateValue: Date | string | null | undefined): string
 };
 
 export default function PartosRealizados() {
+  const [, setLocation] = useLocation();
   const { data: partos, isLoading } = trpc.partos.listar.useQuery();
   const utils = trpc.useUtils();
 
@@ -76,6 +78,10 @@ export default function PartosRealizados() {
               Histórico de partos realizados com cartões pré-natais
             </p>
           </div>
+          <Button onClick={() => setLocation("/estatisticas-partos")}>
+            <BarChart3 className="mr-2 h-4 w-4" />
+            Ver Estatísticas
+          </Button>
         </div>
 
         <Card>
