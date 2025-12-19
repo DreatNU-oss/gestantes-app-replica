@@ -32,7 +32,8 @@ import {
   AlertaEnviado,
   condutasPersonalizadas,
   InsertCondutaPersonalizada,
-  CondutaPersonalizada
+  CondutaPersonalizada,
+  partosRealizados
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -146,15 +147,22 @@ export async function getGestantesByUserId(userId: number, searchTerm?: string):
   // Retorna todas as gestantes (compartilhadas entre todos os usuários)
   const allGestantes = await db.select().from(gestantes);
   
+  // Buscar IDs de gestantes que já tiveram parto registrado
+  const partosRegistrados = await db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
+  const gestantesComParto = new Set(partosRegistrados.map(p => p.gestanteId));
+  
+  // Filtrar gestantes que NÃO têm parto registrado
+  let gestantesSemParto = allGestantes.filter(g => !gestantesComParto.has(g.id));
+  
   // Se houver termo de busca, filtrar por nome ignorando acentuação
   if (searchTerm && searchTerm.trim()) {
     const normalizedSearch = normalizeText(searchTerm.trim());
-    return allGestantes.filter(g => 
+    gestantesSemParto = gestantesSemParto.filter(g => 
       g.nome && normalizeText(g.nome).includes(normalizedSearch)
     );
   }
   
-  return allGestantes;
+  return gestantesSemParto;
 }
 
 export async function getGestanteById(id: number): Promise<Gestante | undefined> {

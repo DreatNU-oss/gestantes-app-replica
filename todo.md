@@ -1341,3 +1341,12 @@
 - [x] Priorizar IG pelo US sobre IG pela DUM para cálculo de pós-datismo
 - [x] Adicionar botão com ícone de bebê nos alertas para registrar parto
 - [x] Testar com gestantes em diferentes situações (antes da data, na data, após data, pós-datismo)
+
+
+## Correção: Remover Gestantes com Parto Registrado da Lista (Reportado 19/12/2025)
+
+- [x] Investigar query de listagem de gestantes no backend
+- [x] Adicionar filtro para excluir gestantes que já têm parto registrado
+- [x] Verificar se a exclusão funciona tanto na lista principal quanto nos alertas
+- [x] Testar com Josiane e Daniela (que já têm partos registrados)
+- [x] Validar que não aparecem mais em nenhuma lista
