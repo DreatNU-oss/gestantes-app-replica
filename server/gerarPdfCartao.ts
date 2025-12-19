@@ -1,5 +1,4 @@
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
 
@@ -59,382 +58,216 @@ interface DadosPDF {
 }
 
 export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
-  const logoPath = path.join(process.cwd(), "client/public/logo-horizontal.png");
-  const logoBase64 = fs.existsSync(logoPath)
-    ? `data:image/png;base64,${fs.readFileSync(logoPath).toString("base64")}`
-    : "";
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({ 
+        size: 'A4', 
+        margins: { top: 50, bottom: 50, left: 50, right: 50 },
+        bufferPages: true
+      });
 
-  const html = `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartão Pré-natal - ${dados.gestante.nome}</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 11pt;
-      line-height: 1.4;
-      color: #333;
-      padding: 20mm;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 3px solid #8B4049;
-    }
-    
-    .logo {
-      max-width: 200px;
-      margin-bottom: 10px;
-    }
-    
-    h1 {
-      color: #8B4049;
-      font-size: 20pt;
-      margin-bottom: 5px;
-    }
-    
-    h2 {
-      color: #8B4049;
-      font-size: 14pt;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
-      border-bottom: 2px solid #E8D4D6;
-    }
-    
-    h3 {
-      color: #6d3239;
-      font-size: 12pt;
-      margin-top: 15px;
-      margin-bottom: 8px;
-    }
-    
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    
-    .info-item {
-      background: #f9f9f9;
-      padding: 8px;
-      border-radius: 4px;
-    }
-    
-    .info-label {
-      font-weight: bold;
-      color: #666;
-      font-size: 9pt;
-      display: block;
-      margin-bottom: 2px;
-    }
-    
-    .info-value {
-      color: #333;
-      font-size: 11pt;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-      font-size: 9pt;
-    }
-    
-    th {
-      background: #8B4049;
-      color: white;
-      padding: 8px 5px;
-      text-align: left;
-      font-weight: 600;
-    }
-    
-    td {
-      padding: 6px 5px;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    tr:nth-child(even) {
-      background: #f9f9f9;
-    }
-    
-    .page-break {
-      page-break-after: always;
-    }
-    
-    .footer {
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 2px solid #E8D4D6;
-      text-align: center;
-      font-size: 9pt;
-      color: #666;
-    }
-    
-    @media print {
-      body {
-        padding: 10mm;
+      const chunks: Buffer[] = [];
+      doc.on('data', (chunk) => chunks.push(chunk));
+      doc.on('end', () => resolve(Buffer.concat(chunks)));
+      doc.on('error', reject);
+
+      // Cores
+      const corPrimaria = '#8B4049'; // Vinho
+      const corSecundaria = '#E8D4D6'; // Rosa claro
+      const corTexto = '#333333';
+      const corCinza = '#666666';
+
+      // Logo
+      const logoPath = path.join(process.cwd(), "client/public/logo-horizontal.png");
+      if (fs.existsSync(logoPath)) {
+        doc.image(logoPath, 50, 40, { width: 150 });
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Cabeçalho -->
-  <div class="header">
-    ${logoBase64 ? `<img src="${logoBase64}" alt="Logo Clínica" class="logo" />` : ""}
-    <h1>Cartão de Pré-natal</h1>
-    <p style="color: #666;">Clínica Mais Mulher</p>
-  </div>
 
-  <!-- Dados da Gestante -->
-  <h2>Dados da Gestante</h2>
-  <div class="info-grid">
-    <div class="info-item">
-      <span class="info-label">Nome Completo</span>
-      <span class="info-value">${dados.gestante.nome}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Idade</span>
-      <span class="info-value">${dados.gestante.idade || "-"} anos</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">DUM</span>
-      <span class="info-value">${dados.gestante.dum ? new Date(dados.gestante.dum).toLocaleDateString("pt-BR") : "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">DPP pela DUM</span>
-      <span class="info-value">${dados.gestante.dppDUM || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">DPP pelo US</span>
-      <span class="info-value">${dados.gestante.dppUS || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Gesta</span>
-      <span class="info-value">${dados.gestante.gesta || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Para</span>
-      <span class="info-value">${dados.gestante.para || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Abortos</span>
-      <span class="info-value">${dados.gestante.abortos || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Partos Normais</span>
-      <span class="info-value">${dados.gestante.partosNormais || "-"}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">Cesáreas</span>
-      <span class="info-value">${dados.gestante.cesareas || "-"}</span>
-    </div>
-  </div>
+      // Título
+      doc.moveDown(4);
+      doc.fontSize(24).fillColor(corPrimaria).text('Cartão de Pré-natal', { align: 'center' });
+      doc.fontSize(10).fillColor(corCinza).text('Clínica Mais Mulher', { align: 'center' });
+      doc.moveDown(1);
+      
+      // Linha separadora
+      doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor(corPrimaria).lineWidth(2).stroke();
+      doc.moveDown(1);
 
-  <!-- Consultas Pré-natais -->
-  ${
-    dados.consultas.length > 0
-      ? `
-  <h2>Consultas Pré-natais</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>IG DUM</th>
-        <th>IG US</th>
-        <th>Peso (kg)</th>
-        <th>PA</th>
-        <th>AU (cm)</th>
-        <th>BCF</th>
-        <th>MF</th>
-        <th>Conduta</th>
-        <th>Observações</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${dados.consultas
-        .map(
-          (c) => {
-            let condutaStr = "-";
-            if (c.conduta) {
-              try {
-                const condutas = JSON.parse(c.conduta);
-                if (condutas.length > 0) {
-                  condutaStr = condutas.join(", ");
-                  if (c.condutaComplementacao) {
-                    condutaStr += " | " + c.condutaComplementacao;
-                  }
-                }
-              } catch {
-                condutaStr = "-";
-              }
-            }
-            return `
-        <tr>
-          <td>${c.dataConsulta}</td>
-          <td>${c.igDUM}</td>
-          <td>${c.igUS || "-"}</td>
-          <td>${c.peso ? (c.peso / 1000).toFixed(1) : "-"}</td>
-          <td>${c.pa || "-"}</td>
-          <td>${c.au || "-"}</td>
-          <td>${c.bcf === 1 ? "Sim" : c.bcf === 0 ? "Não" : "-"}</td>
-          <td>${c.mf === 1 ? "Sim" : c.mf === 0 ? "Não" : "-"}</td>
-          <td style="max-width: 150px; word-wrap: break-word;">${condutaStr}</td>
-          <td>${c.observacoes || "-"}</td>
-        </tr>
-      `;
+      // Dados da Gestante
+      doc.fontSize(16).fillColor(corPrimaria).text('Dados da Gestante');
+      doc.moveDown(0.5);
+      
+      const yInicial = doc.y;
+      doc.fontSize(9).fillColor(corCinza);
+      
+      // Coluna 1
+      doc.text('Nome Completo', 50, yInicial);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.nome || '-', 50, yInicial + 12);
+      
+      doc.fontSize(9).fillColor(corCinza).text('Idade', 50, yInicial + 35);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.idade ? `${dados.gestante.idade} anos` : '-', 50, yInicial + 47);
+      
+      doc.fontSize(9).fillColor(corCinza).text('DUM', 50, yInicial + 70);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.dum || '-', 50, yInicial + 82);
+      
+      // Coluna 2
+      doc.fontSize(9).fillColor(corCinza).text('DPP pela DUM', 220, yInicial);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.dppDUM || '-', 220, yInicial + 12);
+      
+      doc.fontSize(9).fillColor(corCinza).text('DPP pelo US', 220, yInicial + 35);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.dppUS || '-', 220, yInicial + 47);
+      
+      doc.fontSize(9).fillColor(corCinza).text('Gesta', 220, yInicial + 70);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.gesta?.toString() || '-', 220, yInicial + 82);
+      
+      // Coluna 3
+      doc.fontSize(9).fillColor(corCinza).text('Para', 390, yInicial);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.para?.toString() || '-', 390, yInicial + 12);
+      
+      doc.fontSize(9).fillColor(corCinza).text('Abortos', 390, yInicial + 35);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.abortos?.toString() || '-', 390, yInicial + 47);
+      
+      doc.fontSize(9).fillColor(corCinza).text('Partos Normais', 390, yInicial + 70);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.partosNormais?.toString() || '-', 390, yInicial + 82);
+      
+      doc.fontSize(9).fillColor(corCinza).text('Cesáreas', 470, yInicial + 70);
+      doc.fontSize(11).fillColor(corTexto).text(dados.gestante.cesareas?.toString() || '-', 470, yInicial + 82);
+      
+      doc.y = yInicial + 110;
+      doc.moveDown(1);
+
+      // Consultas Pré-natais
+      if (dados.consultas.length > 0) {
+        doc.fontSize(14).fillColor(corPrimaria).text('Histórico de Consultas');
+        doc.moveDown(0.5);
+        
+        // Cabeçalho da tabela
+        const tableTop = doc.y;
+        doc.fontSize(8).fillColor('white');
+        doc.rect(50, tableTop, 495, 20).fillColor(corPrimaria).fill();
+        
+        doc.fillColor('white');
+        doc.text('Data', 55, tableTop + 6, { width: 45 });
+        doc.text('IG DUM', 105, tableTop + 6, { width: 40 });
+        doc.text('IG US', 150, tableTop + 6, { width: 40 });
+        doc.text('Peso', 195, tableTop + 6, { width: 35 });
+        doc.text('PA', 235, tableTop + 6, { width: 35 });
+        doc.text('AU', 275, tableTop + 6, { width: 25 });
+        doc.text('BCF', 305, tableTop + 6, { width: 25 });
+        doc.text('MF', 335, tableTop + 6, { width: 25 });
+        doc.text('Conduta', 365, tableTop + 6, { width: 80 });
+        doc.text('Obs', 450, tableTop + 6, { width: 90 });
+        
+        doc.y = tableTop + 20;
+        
+        // Linhas da tabela
+        dados.consultas.slice(0, 10).forEach((consulta, index) => {
+          const rowY = doc.y;
+          
+          // Fundo alternado
+          if (index % 2 === 0) {
+            doc.rect(50, rowY, 495, 25).fillColor('#f9f9f9').fill();
           }
-        )
-        .join("")}
-    </tbody>
-  </table>
-  `
-      : ""
-  }
+          
+          doc.fontSize(8).fillColor(corTexto);
+          doc.text(consulta.dataConsulta || '-', 55, rowY + 5, { width: 45 });
+          doc.text(consulta.igDUM || '-', 105, rowY + 5, { width: 40 });
+          doc.text(consulta.igUS || '-', 150, rowY + 5, { width: 40 });
+          doc.text(consulta.peso ? `${consulta.peso} kg` : '-', 195, rowY + 5, { width: 35 });
+          doc.text(consulta.pa || '-', 235, rowY + 5, { width: 35 });
+          doc.text(consulta.au ? `${consulta.au} cm` : '-', 275, rowY + 5, { width: 25 });
+          doc.text(consulta.bcf?.toString() || '-', 305, rowY + 5, { width: 25 });
+          doc.text(consulta.mf?.toString() || '-', 335, rowY + 5, { width: 25 });
+          
+          const condutaTexto = consulta.conduta || '-';
+          doc.text(condutaTexto.substring(0, 20), 365, rowY + 5, { width: 80 });
+          
+          const obsTexto = consulta.observacoes || '-';
+          doc.text(obsTexto.substring(0, 30), 450, rowY + 5, { width: 90 });
+          
+          doc.y = rowY + 25;
+          
+          // Nova página se necessário
+          if (doc.y > 700) {
+            doc.addPage();
+          }
+        });
+        
+        doc.moveDown(1);
+      }
 
-  <!-- Marcos Importantes -->
-  ${
-    dados.marcos.length > 0
-      ? `
-  <h2>Marcos Importantes da Gestação</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Marco</th>
-        <th>Data</th>
-        <th>Período</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${dados.marcos
-        .map(
-          (m) => `
-        <tr>
-          <td>${m.titulo}</td>
-          <td>${m.data}</td>
-          <td>${m.periodo}</td>
-        </tr>
-      `
-        )
-        .join("")}
-    </tbody>
-  </table>
-  `
-      : ""
-  }
+      // Marcos Importantes
+      if (dados.marcos.length > 0 && doc.y < 650) {
+        doc.fontSize(14).fillColor(corPrimaria).text('Marcos Importantes da Gestação');
+        doc.moveDown(0.5);
+        
+        const coresMarcos = ['#D8BFD8', '#B0E0E6', '#FFE4B5', '#98FB98', '#FFB6C1'];
+        
+        dados.marcos.slice(0, 8).forEach((marco, index) => {
+          if (doc.y > 720) {
+            doc.addPage();
+          }
+          
+          const marcoY = doc.y;
+          const cor = coresMarcos[index % coresMarcos.length];
+          
+          doc.rect(50, marcoY, 240, 30).fillColor(cor).fill();
+          doc.fontSize(10).fillColor(corTexto).text(marco.titulo, 60, marcoY + 8, { width: 220 });
+          doc.fontSize(9).fillColor(corCinza).text(marco.data, 60, marcoY + 20, { width: 220 });
+          
+          doc.y = marcoY + 35;
+        });
+        
+        doc.moveDown(1);
+      }
 
-  <!-- Quebra de página -->
-  <div class="page-break"></div>
+      // Ultrassons
+      if (dados.ultrassons.length > 0 && doc.y < 650) {
+        doc.fontSize(14).fillColor(corPrimaria).text('Ultrassons');
+        doc.moveDown(0.5);
+        
+        dados.ultrassons.slice(0, 5).forEach((us) => {
+          if (doc.y > 720) {
+            doc.addPage();
+          }
+          
+          doc.fontSize(9).fillColor(corCinza).text(`Data: ${us.data} | IG: ${us.ig} | Tipo: ${us.tipo}`);
+          doc.moveDown(0.3);
+        });
+        
+        doc.moveDown(0.5);
+      }
 
-  <!-- Ultrassons -->
-  ${
-    dados.ultrassons.length > 0
-      ? `
-  <h2>Ultrassons Realizados</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>IG</th>
-        <th>Tipo</th>
-        <th>Observações</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${dados.ultrassons
-        .map(
-          (u) => `
-        <tr>
-          <td>${u.data}</td>
-          <td>${u.ig}</td>
-          <td>${u.tipo}</td>
-          <td>${u.observacoes || "-"}</td>
-        </tr>
-      `
-        )
-        .join("")}
-    </tbody>
-  </table>
-  `
-      : ""
-  }
+      // Exames Laboratoriais
+      if (dados.exames.length > 0 && doc.y < 650) {
+        doc.fontSize(14).fillColor(corPrimaria).text('Exames Laboratoriais');
+        doc.moveDown(0.5);
+        
+        dados.exames.slice(0, 10).forEach((exame) => {
+          if (doc.y > 720) {
+            doc.addPage();
+          }
+          
+          doc.fontSize(9).fillColor(corTexto).text(`${exame.tipo}: ${exame.resultado} (${exame.data})`);
+          doc.moveDown(0.3);
+        });
+      }
 
-  <!-- Exames Laboratoriais -->
-  ${
-    dados.exames.length > 0
-      ? `
-  <h2>Exames Laboratoriais</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Exame</th>
-        <th>Data</th>
-        <th>Trimestre</th>
-        <th>Resultado</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${dados.exames
-        .map(
-          (e) => `
-        <tr>
-          <td>${e.tipo}</td>
-          <td>${e.data}</td>
-          <td>${e.trimestre}º Trimestre</td>
-          <td>${e.resultado}</td>
-        </tr>
-      `
-        )
-        .join("")}
-    </tbody>
-  </table>
-  `
-      : ""
-  }
+      // Rodapé em todas as páginas
+      const pages = doc.bufferedPageRange();
+      for (let i = 0; i < pages.count; i++) {
+        doc.switchToPage(i);
+        doc.fontSize(8).fillColor(corCinza).text(
+          `Página ${i + 1} de ${pages.count} - Clínica Mais Mulher`,
+          50,
+          doc.page.height - 40,
+          { align: 'center' }
+        );
+      }
 
-  <!-- Rodapé -->
-  <div class="footer">
-    <p>Documento gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}</p>
-    <p>Clínica Mais Mulher - Gestão de Pré-Natal</p>
-  </div>
-</body>
-</html>
-  `;
-
-  // Gerar PDF usando Puppeteer com Chromium otimizado
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath(),
-    headless: true,
+      doc.end();
+    } catch (error) {
+      reject(error);
+    }
   });
-
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
-
-  const pdfBuffer = await page.pdf({
-    format: "A4",
-    printBackground: true,
-    margin: {
-      top: "10mm",
-      right: "10mm",
-      bottom: "10mm",
-      left: "10mm",
-    },
-  });
-
-  await browser.close();
-
-  return Buffer.from(pdfBuffer);
 }

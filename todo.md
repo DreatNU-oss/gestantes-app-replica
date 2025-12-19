@@ -1321,3 +1321,12 @@
 - [x] Substituir código de geração de PDF para não depender do Chrome instalado
 - [x] Testar registro de parto da Josiane
 - [x] Validar que o PDF continua sendo gerado corretamente
+
+
+## Correção de Erro de Bibliotecas do Chromium (Reportado 19/12/2025)
+
+- [x] Investigar erro "libnss4.so: cannot open shared object file"
+- [x] Avaliar alternativas: instalar bibliotecas, usar API externa, ou biblioteca pura Node.js
+- [x] Implementar solução com PDFKit (biblioteca Node.js pura)
+- [x] Testar registro de parto da Daniela
+- [x] Validar geração de PDF em ambiente de produção
