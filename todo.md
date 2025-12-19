@@ -1312,3 +1312,12 @@
 - [x] Substituir geração de PDF da aba para usar a mesma função dos partos
 - [x] Testar geração de PDF na aba Cartão de Pré-natal
 - [x] Validar que o PDF gerado é idêntico ao dos partos realizados
+
+
+## Correção de Erro ao Registrar Parto - PDF (Reportado 17/12/2025)
+
+- [x] Investigar biblioteca atual de geração de PDF (Puppeteer)
+- [x] Identificar alternativa mais leve (@sparticuz/chromium + puppeteer-core)
+- [x] Substituir código de geração de PDF para não depender do Chrome instalado
+- [x] Testar registro de parto da Josiane
+- [x] Validar que o PDF continua sendo gerado corretamente
