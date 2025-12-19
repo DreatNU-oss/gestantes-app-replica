@@ -1330,3 +1330,14 @@
 - [x] Implementar solução com PDFKit (biblioteca Node.js pura)
 - [x] Testar registro de parto da Daniela
 - [x] Validar geração de PDF em ambiente de produção
+
+
+## Melhorias nos Alertas de Partos Próximos (Solicitado 19/12/2025)
+
+- [x] Manter gestantes nos alertas até que o parto seja registrado (até 30 dias após data prevista)
+- [x] Para partos programados que já passaram da data: mostrar "X dias após parto programado"
+- [x] Implementar detecção de pós-datismo (≥40 semanas = 280 dias)
+- [x] Mostrar indicação em vermelho quando pós-datismo, com número de dias que passou de 40 semanas
+- [x] Priorizar IG pelo US sobre IG pela DUM para cálculo de pós-datismo
+- [x] Adicionar botão com ícone de bebê nos alertas para registrar parto
+- [x] Testar com gestantes em diferentes situações (antes da data, na data, após data, pós-datismo)

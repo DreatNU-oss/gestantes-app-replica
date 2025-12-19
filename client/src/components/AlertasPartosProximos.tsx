@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Calendar } from "lucide-react";
+import { AlertCircle, Calendar, Baby } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface Gestante {
   id: number;
@@ -25,14 +26,18 @@ interface AlertaParto {
   diasRestantes: number;
   tipo: "programado" | "usg" | "dum";
   medico: Medico | undefined;
+  posDataismo: boolean;
+  diasPosDataismo: number;
 }
 
 export function AlertasPartosProximos({ 
   gestantes, 
-  medicos = [] 
+  medicos = [],
+  onRegistrarParto
 }: { 
   gestantes: Gestante[];
   medicos?: Medico[];
+  onRegistrarParto?: (gestanteId: number) => void;
 }) {
   const calcularDPP = (gestante: Gestante): Date | null => {
     if (!gestante.dum) return null;
@@ -93,7 +98,9 @@ export function AlertasPartosProximos({
     return null;
   };
 
-  const getCorDias = (diasRestantes: number): string => {
+  const getCorDias = (diasRestantes: number, posDataismo: boolean): string => {
+    if (posDataismo) return "bg-red-600 text-white";
+    if (diasRestantes <= 0) return "bg-red-500 text-white";
     if (diasRestantes <= 5) return "bg-orange-500 text-white";
     if (diasRestantes <= 8) return "bg-green-500 text-white";
     if (diasRestantes <= 10) return "bg-green-600 text-white";
@@ -101,12 +108,37 @@ export function AlertasPartosProximos({
     return "bg-green-800 text-white";
   };
 
-  const getCorFundoCard = (diasRestantes: number): string => {
+  const getCorFundoCard = (diasRestantes: number, posDataismo: boolean): string => {
+    if (posDataismo) return "bg-red-50 border-red-400";
+    if (diasRestantes <= 0) return "bg-red-50 border-red-300";
     if (diasRestantes <= 5) return "bg-orange-50 border-orange-300";
     if (diasRestantes <= 8) return "bg-green-50 border-green-300";
     if (diasRestantes <= 10) return "bg-emerald-50 border-emerald-300";
     if (diasRestantes <= 17) return "bg-teal-50 border-teal-300";
     return "bg-cyan-50 border-cyan-300";
+  };
+
+  const calcularIdadeGestacional = (gestante: Gestante): number | null => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    // Priorizar IG por US
+    if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+      const dataUS = new Date(gestante.dataUltrassom);
+      dataUS.setHours(0, 0, 0, 0);
+      const diasDesdeUS = Math.floor((hoje.getTime() - dataUS.getTime()) / (1000 * 60 * 60 * 24));
+      const diasGestacaoUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
+      return diasGestacaoUS + diasDesdeUS;
+    }
+
+    // Fallback para DUM
+    if (gestante.dum) {
+      const dum = new Date(gestante.dum);
+      dum.setHours(0, 0, 0, 0);
+      return Math.floor((hoje.getTime() - dum.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    return null;
   };
 
   const alertas: AlertaParto[] = gestantes
@@ -121,8 +153,14 @@ export function AlertasPartosProximos({
       
       const diasRestantes = Math.ceil((dataParto.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
 
-      // Filtrar apenas partos nos próximos 21 dias
-      if (diasRestantes < 0 || diasRestantes > 21) return null;
+      // Calcular IG atual para detectar pós-datismo
+      const igAtualDias = calcularIdadeGestacional(gestante);
+      const posDataismo = igAtualDias !== null && igAtualDias >= 280; // 40 semanas = 280 dias
+      const diasPosDataismo = igAtualDias !== null ? Math.max(0, igAtualDias - 280) : 0;
+
+      // Manter no alerta até que o parto seja registrado
+      // Filtrar apenas se ainda não passou muito tempo (até 30 dias após a data prevista)
+      if (diasRestantes < -30 || diasRestantes > 21) return null;
 
       const medico = medicos.find(m => m.id === gestante.medicoId);
 
@@ -132,10 +170,17 @@ export function AlertasPartosProximos({
         diasRestantes,
         tipo: resultado.tipo,
         medico,
+        posDataismo,
+        diasPosDataismo,
       };
     })
     .filter((alerta): alerta is AlertaParto => alerta !== null)
-    .sort((a, b) => a!.diasRestantes - b!.diasRestantes);
+    .sort((a, b) => {
+      // Priorizar pós-datismo no topo
+      if (a.posDataismo && !b.posDataismo) return -1;
+      if (!a.posDataismo && b.posDataismo) return 1;
+      return a.diasRestantes - b.diasRestantes;
+    });
 
   if (alertas.length === 0) {
     return null;
@@ -180,7 +225,7 @@ export function AlertasPartosProximos({
           {alertas.map((alerta) => (
             <div 
               key={alerta.gestante.id} 
-              className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes)}`}
+              className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes, alerta.posDataismo)}`}
             >
             <div className="flex-1">
               <div className="font-semibold text-gray-900 mb-1">
@@ -198,8 +243,16 @@ export function AlertasPartosProximos({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className={`${getCorDias(alerta.diasRestantes)} font-semibold px-2 py-1`}>
-                {alerta.diasRestantes} {alerta.diasRestantes === 1 ? "dia" : "dias"}
+              <Badge className={`${getCorDias(alerta.diasRestantes, alerta.posDataismo)} font-semibold px-2 py-1 whitespace-nowrap`}>
+                {alerta.posDataismo ? (
+                  <span>Pós-datismo: {alerta.diasPosDataismo} {alerta.diasPosDataismo === 1 ? "dia" : "dias"}</span>
+                ) : alerta.diasRestantes <= 0 && alerta.tipo === "programado" ? (
+                  <span>{Math.abs(alerta.diasRestantes)} {Math.abs(alerta.diasRestantes) === 1 ? "dia" : "dias"} após programado</span>
+                ) : alerta.diasRestantes === 0 ? (
+                  <span>Hoje</span>
+                ) : (
+                  <span>{alerta.diasRestantes} {alerta.diasRestantes === 1 ? "dia" : "dias"}</span>
+                )}
               </Badge>
               <Badge 
                 variant="outline" 
@@ -207,6 +260,17 @@ export function AlertasPartosProximos({
               >
                 {getTipoTexto(alerta.tipo)}
               </Badge>
+              {onRegistrarParto && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 w-8 p-0 hover:bg-primary/10"
+                  onClick={() => onRegistrarParto(alerta.gestante.id)}
+                  title="Registrar Parto"
+                >
+                  <Baby className="h-4 w-4 text-primary" />
+                </Button>
+              )}
             </div>
             </div>
           ))}
