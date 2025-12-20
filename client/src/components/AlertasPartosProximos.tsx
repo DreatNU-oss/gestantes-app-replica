@@ -126,16 +126,19 @@ export function AlertasPartosProximos({
     if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
       const dataUS = new Date(gestante.dataUltrassom);
       dataUS.setHours(0, 0, 0, 0);
+      // Correção: subtrair 1 dia para não contar o dia do ultrassom
       const diasDesdeUS = Math.floor((hoje.getTime() - dataUS.getTime()) / (1000 * 60 * 60 * 24));
       const diasGestacaoUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
-      return diasGestacaoUS + diasDesdeUS;
+      // Subtrair 1 dia do total para corrigir contagem inclusiva
+      return diasGestacaoUS + diasDesdeUS - 1;
     }
 
     // Fallback para DUM
     if (gestante.dum) {
       const dum = new Date(gestante.dum);
       dum.setHours(0, 0, 0, 0);
-      return Math.floor((hoje.getTime() - dum.getTime()) / (1000 * 60 * 60 * 24));
+      // Subtrair 1 dia para corrigir contagem inclusiva
+      return Math.floor((hoje.getTime() - dum.getTime()) / (1000 * 60 * 60 * 24)) - 1;
     }
 
     return null;

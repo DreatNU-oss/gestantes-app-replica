@@ -1350,3 +1350,22 @@
 - [x] Verificar se a exclusão funciona tanto na lista principal quanto nos alertas
 - [x] Testar com Josiane e Daniela (que já têm partos registrados)
 - [x] Validar que não aparecem mais em nenhuma lista
+
+
+## Correção: Cálculo de Pós-Datismo (Reportado 19/12/2025)
+
+- [x] Investigar dados da Camila (IG, DUM, US)
+- [x] Verificar lógica de cálculo de idade gestacional atual
+- [x] Identificar erro que está adicionando 1 dia extra
+- [x] Corrigir cálculo para mostrar pós-datismo correto
+- [x] Testar com Camila e validar que mostra 2 dias (não 3)
+
+
+## Correção: Cálculo de Pós-Datismo (Reportado 19/12/2025)
+
+- [x] Investigar dados da Camila (IG, DUM, US)
+- [x] Verificar lógica de cálculo de idade gestacional atual
+- [x] Identificar erro que está adicionando 1 dia extra
+- [x] Corrigir cálculo para mostrar pós-datismo correto
+- [x] Testar com Camila e validar que mostra 2 dias (não 3)
+- [x] Criar teste automatizado para validar cálculo de pós-datismo
