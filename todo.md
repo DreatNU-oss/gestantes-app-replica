@@ -1386,3 +1386,12 @@
 - [x] Adicionar botão "Nova Consulta" no card da gestante selecionada
 - [x] Testar navegação ao clicar nos botões
 - [x] Validar que os botões funcionam em todas as páginas
+
+
+## Botões de Exames e Ultrassons no Card (Solicitado 21/12/2025)
+
+- [x] Adicionar botão "Exames" no card da gestante selecionada
+- [x] Adicionar botão "Ultrassons" no card da gestante selecionada
+- [x] Reorganizar layout dos 4 botões (Ver Cartão, Consulta, Exames, Ultrassons)
+- [x] Testar navegação para Exames Laboratoriais
+- [x] Testar navegação para Ultrassons

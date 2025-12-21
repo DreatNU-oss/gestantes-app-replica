@@ -34,7 +34,9 @@ import {
   X,
   Search,
   Eye,
-  Plus
+  Plus,
+  TestTube,
+  Scan
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -151,26 +153,46 @@ export default function GestantesLayout({
                     <p className="text-sm font-medium text-primary truncate">
                       {gestanteAtiva.nome}
                     </p>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-2 gap-1.5">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 h-8 text-xs"
+                        className="h-8 text-xs"
                         onClick={() => setLocation('/cartao-prenatal')}
                         title="Ver Cartão de Pré-natal"
                       >
                         <Eye className="h-3 w-3 mr-1" />
-                        Ver Cartão
+                        Cartão
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 h-8 text-xs"
+                        className="h-8 text-xs"
                         onClick={() => setLocation('/cartao-prenatal')}
                         title="Nova Consulta"
                       >
                         <Plus className="h-3 w-3 mr-1" />
                         Consulta
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 text-xs"
+                        onClick={() => setLocation('/exames')}
+                        title="Exames Laboratoriais"
+                      >
+                        <TestTube className="h-3 w-3 mr-1" />
+                        Exames
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 text-xs"
+                        onClick={() => setLocation('/ultrassons')}
+                        title="Ultrassons"
+                      >
+                        <Scan className="h-3 w-3 mr-1" />
+                        Ultrassons
                       </Button>
                     </div>
                   </div>
