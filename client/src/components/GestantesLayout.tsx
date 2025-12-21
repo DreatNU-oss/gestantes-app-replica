@@ -30,12 +30,17 @@ import {
   Settings,
   Baby,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  X,
+  Search
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { trpc } from "@/lib/trpc";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { icon: Users, label: "Gestantes", path: "/dashboard" },
@@ -64,6 +69,32 @@ export default function GestantesLayout({
   const [location, setLocation] = useLocation();
   const logoutMutation = trpc.auth.logout.useMutation();
   const [configOpen, setConfigOpen] = useState(false);
+  const { gestanteAtiva, setGestanteAtiva, limparGestanteAtiva } = useGestanteAtiva();
+  const [busca, setBusca] = useState("");
+  const [sugestoes, setSugestoes] = useState<Array<{ id: number; nome: string }>>([]);
+  const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+
+  // Buscar gestantes para autocomplete
+  const { data: gestantes } = trpc.gestantes.list.useQuery({
+    searchTerm: busca,
+  });
+
+  // Atualizar sugestões quando a busca mudar
+  useEffect(() => {
+    if (busca.length > 0 && gestantes) {
+      setSugestoes(gestantes.slice(0, 5).map(g => ({ id: g.id, nome: g.nome })));
+      setMostrarSugestoes(true);
+    } else {
+      setSugestoes([]);
+      setMostrarSugestoes(false);
+    }
+  }, [busca, gestantes]);
+
+  const handleSelecionarGestante = (gestante: { id: number; nome: string }) => {
+    setGestanteAtiva(gestante);
+    setBusca("");
+    setMostrarSugestoes(false);
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -98,6 +129,61 @@ export default function GestantesLayout({
             </div>
           </SidebarHeader>
           <SidebarContent>
+            {/* Seletor de Gestante */}
+            <div className="border-b border-sidebar-border p-4 space-y-3">
+              {gestanteAtiva ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground">Gestante Selecionada:</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5"
+                      onClick={limparGestanteAtiva}
+                      title="Limpar seleção"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <div className="rounded-md bg-primary/10 px-3 py-2">
+                    <p className="text-sm font-medium text-primary truncate">
+                      {gestanteAtiva.nome}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Selecionar Gestante:
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Digite o nome..."
+                      value={busca}
+                      onChange={(e) => setBusca(e.target.value)}
+                      onFocus={() => busca.length > 0 && setMostrarSugestoes(true)}
+                      className="pl-8 h-9 text-sm"
+                    />
+                    {mostrarSugestoes && sugestoes.length > 0 && (
+                      <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
+                        {sugestoes.map((gestante) => (
+                          <button
+                            key={gestante.id}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                            onClick={() => handleSelecionarGestante(gestante)}
+                          >
+                            {gestante.nome}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>

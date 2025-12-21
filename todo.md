@@ -1369,3 +1369,12 @@
 - [x] Corrigir cálculo para mostrar pós-datismo correto
 - [x] Testar com Camila e validar que mostra 2 dias (não 3)
 - [x] Criar teste automatizado para validar cálculo de pós-datismo
+
+
+## Seletor de Gestante no Menu Lateral (Solicitado 21/12/2025)
+
+- [x] Adicionar indicador de gestante ativa no menu lateral (nome abaixo de "Gestantes")
+- [x] Implementar seletor de gestante (autocomplete) no menu lateral
+- [x] Adicionar ícone de "X" para limpar seleção
+- [x] Testar navegação entre páginas com gestante selecionada
+- [x] Validar que o nome permanece visível em todas as páginas
