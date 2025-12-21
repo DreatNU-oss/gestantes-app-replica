@@ -32,7 +32,9 @@ import {
   ChevronDown,
   ChevronRight,
   X,
-  Search
+  Search,
+  Eye,
+  Plus
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -145,10 +147,32 @@ export default function GestantesLayout({
                       <X className="h-3 w-3" />
                     </Button>
                   </div>
-                  <div className="rounded-md bg-primary/10 px-3 py-2">
+                  <div className="rounded-md bg-primary/10 px-3 py-2 space-y-2">
                     <p className="text-sm font-medium text-primary truncate">
                       {gestanteAtiva.nome}
                     </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-8 text-xs"
+                        onClick={() => setLocation('/cartao-prenatal')}
+                        title="Ver Cartão de Pré-natal"
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        Ver Cartão
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-8 text-xs"
+                        onClick={() => setLocation('/cartao-prenatal')}
+                        title="Nova Consulta"
+                      >
+                        <Plus className="h-3 w-3 mr-1" />
+                        Consulta
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (

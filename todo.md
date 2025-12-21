@@ -1378,3 +1378,11 @@
 - [x] Adicionar ícone de "X" para limpar seleção
 - [x] Testar navegação entre páginas com gestante selecionada
 - [x] Validar que o nome permanece visível em todas as páginas
+
+
+## Botões de Ação Rápida no Card da Gestante (Solicitado 21/12/2025)
+
+- [x] Adicionar botão "Ver Cartão" no card da gestante selecionada
+- [x] Adicionar botão "Nova Consulta" no card da gestante selecionada
+- [x] Testar navegação ao clicar nos botões
+- [x] Validar que os botões funcionam em todas as páginas
