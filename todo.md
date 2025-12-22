@@ -1461,3 +1461,29 @@
 - [x] Adicionar mensagem sugerindo revisão dos dados
 - [x] Testar com gestante que tem diferença > 5 dias
 - [x] Testar que alerta NÃO aparece quando diferença <= 5 dias
+
+
+## BUG: E-mails Automáticos Não Sendo Enviados (Reportado 22/12/2025)
+
+- [x] Investigar configuração de cron jobs ou agendamento de tarefas
+- [x] Verificar código de envio de e-mails de alertas de vacinas
+- [x] Verificar código de envio de lembretes de ultrassons
+- [x] Identificar por que não estão sendo enviados às 8:00h diariamente
+- [x] Corrigir agendamento para envio diário às 8:00h
+- [x] Testar envio manual de e-mails
+- [x] Validar que agendamento automático está funcionando
+
+
+## FEATURE: Dashboard de Monitoramento de E-mails (Solicitado 22/12/2025)
+
+- [x] Criar procedure tRPC para buscar histórico de e-mails
+- [x] Criar procedure tRPC para calcular estatísticas (taxa sucesso/erro)
+- [x] Criar procedure tRPC para listar próximos lembretes programados
+- [x] Desenvolver componente MonitoramentoEmails.tsx
+- [x] Implementar gráfico de taxa de sucesso/erro
+- [x] Implementar tabela de histórico de envios
+- [x] Implementar lista de próximos lembretes
+- [x] Adicionar filtros por período e tipo de lembrete
+- [x] Adicionar rota no App.tsx
+- [x] Adicionar item de menu na navegação
+- [x] Testar dashboard com dados reais

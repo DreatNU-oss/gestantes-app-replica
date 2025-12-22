@@ -52,8 +52,8 @@ import {
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao } from '../drizzle/schema';
-import { eq, desc } from 'drizzle-orm';
+import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, gestantes, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao } from '../drizzle/schema';
+import { eq, desc, and, sql, isNotNull } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto } from './partosRealizados';
 import { getDb } from './db';
@@ -759,6 +759,231 @@ export const appRouter = router({
         
         const logs = await query.limit(input.limit).orderBy(desc(logsEmails.dataEnvio));
         return logs;
+      }),
+    
+    // Buscar histórico completo de e-mails com informações da gestante
+    historico: protectedProcedure
+      .input(z.object({
+        dataInicio: z.string().optional(),
+        dataFim: z.string().optional(),
+        tipoLembrete: z.string().optional(),
+        status: z.enum(['enviado', 'erro']).optional(),
+        limit: z.number().default(100),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const conditions = [];
+        
+        if (input.dataInicio) {
+          conditions.push(sql`${logsEmails.dataEnvio} >= ${new Date(input.dataInicio)}`);
+        }
+        if (input.dataFim) {
+          conditions.push(sql`${logsEmails.dataEnvio} <= ${new Date(input.dataFim)}`);
+        }
+        if (input.tipoLembrete) {
+          conditions.push(eq(logsEmails.tipoLembrete, input.tipoLembrete));
+        }
+        if (input.status) {
+          conditions.push(eq(logsEmails.status, input.status));
+        }
+        
+        const logs = await db
+          .select({
+            id: logsEmails.id,
+            gestanteId: logsEmails.gestanteId,
+            gestanteNome: gestantes.nome,
+            tipoLembrete: logsEmails.tipoLembrete,
+            emailDestinatario: logsEmails.emailDestinatario,
+            assunto: logsEmails.assunto,
+            status: logsEmails.status,
+            mensagemErro: logsEmails.mensagemErro,
+            dataEnvio: logsEmails.dataEnvio,
+          })
+          .from(logsEmails)
+          .leftJoin(gestantes, eq(logsEmails.gestanteId, gestantes.id))
+          .where(conditions.length > 0 ? and(...conditions) : undefined)
+          .orderBy(desc(logsEmails.dataEnvio))
+          .limit(input.limit);
+        
+        return logs;
+      }),
+    
+    // Estatísticas de envio de e-mails
+    estatisticas: protectedProcedure
+      .input(z.object({
+        dataInicio: z.string().optional(),
+        dataFim: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return {
+          total: 0,
+          enviados: 0,
+          erros: 0,
+          taxaSucesso: 0,
+          porTipo: [],
+        };
+        
+        const conditions = [];
+        if (input.dataInicio) {
+          conditions.push(sql`${logsEmails.dataEnvio} >= ${new Date(input.dataInicio)}`);
+        }
+        if (input.dataFim) {
+          conditions.push(sql`${logsEmails.dataEnvio} <= ${new Date(input.dataFim)}`);
+        }
+        
+        // Total geral
+        const [totalResult] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(logsEmails)
+          .where(conditions.length > 0 ? and(...conditions) : undefined);
+        
+        // Enviados com sucesso
+        const [enviadosResult] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(logsEmails)
+          .where(and(
+            eq(logsEmails.status, 'enviado'),
+            ...(conditions.length > 0 ? conditions : [])
+          ));
+        
+        // Erros
+        const [errosResult] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(logsEmails)
+          .where(and(
+            eq(logsEmails.status, 'erro'),
+            ...(conditions.length > 0 ? conditions : [])
+          ));
+        
+        // Por tipo de lembrete
+        const porTipo = await db
+          .select({
+            tipo: logsEmails.tipoLembrete,
+            total: sql<number>`count(*)`,
+            enviados: sql<number>`sum(case when ${logsEmails.status} = 'enviado' then 1 else 0 end)`,
+            erros: sql<number>`sum(case when ${logsEmails.status} = 'erro' then 1 else 0 end)`,
+          })
+          .from(logsEmails)
+          .where(conditions.length > 0 ? and(...conditions) : undefined)
+          .groupBy(logsEmails.tipoLembrete);
+        
+        const total = Number(totalResult?.count || 0);
+        const enviados = Number(enviadosResult?.count || 0);
+        const erros = Number(errosResult?.count || 0);
+        const taxaSucesso = total > 0 ? (enviados / total) * 100 : 0;
+        
+        return {
+          total,
+          enviados,
+          erros,
+          taxaSucesso: Math.round(taxaSucesso * 10) / 10,
+          porTipo: porTipo.map(t => ({
+            tipo: t.tipo,
+            total: Number(t.total),
+            enviados: Number(t.enviados),
+            erros: Number(t.erros),
+          })),
+        };
+      }),
+    
+    // Próximos lembretes programados
+    proximosLembretes: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        // Buscar gestantes com e-mail e calcular próximos lembretes
+        const gestantesComEmail = await db
+          .select()
+          .from(gestantes)
+          .where(isNotNull(gestantes.email));
+        
+        const proximosLembretes: Array<{
+          gestanteId: number;
+          gestanteNome: string;
+          tipoLembrete: string;
+          descricao: string;
+          igAtual: string;
+          igAlvo: string;
+          diasRestantes: number;
+        }> = [];
+        
+        for (const gestante of gestantesComEmail) {
+          // Calcular IG atual (prioriza US, depois DUM)
+          let igAtual: { semanas: number; dias: number } | null = null;
+          
+          if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+            const dataUS = typeof gestante.dataUltrassom === 'string' 
+              ? new Date(gestante.dataUltrassom) 
+              : gestante.dataUltrassom;
+            const hoje = new Date();
+            const diffMs = hoje.getTime() - dataUS.getTime();
+            const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diasTotaisUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
+            const diasTotaisHoje = diasTotaisUS + diffDias;
+            igAtual = {
+              semanas: Math.floor(diasTotaisHoje / 7),
+              dias: diasTotaisHoje % 7,
+            };
+          } else if (gestante.dum) {
+            const dum = typeof gestante.dum === 'string' ? new Date(gestante.dum) : gestante.dum;
+            const hoje = new Date();
+            const diffMs = hoje.getTime() - dum.getTime();
+            const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            igAtual = {
+              semanas: Math.floor(diffDias / 7),
+              dias: diffDias % 7,
+            };
+          }
+          
+          if (!igAtual) continue;
+          
+          const diasAtual = igAtual.semanas * 7 + igAtual.dias;
+          
+          // Verificar lembretes pendentes
+          const lembretes = [
+            { tipo: 'morfo1tri_1sem', igAlvo: 10 * 7, descricao: 'Morfológico 1º Trimestre' },
+            { tipo: 'morfo2tri_2sem', igAlvo: 18 * 7, descricao: 'Morfológico 2º Trimestre (2 semanas antes)' },
+            { tipo: 'morfo2tri_1sem', igAlvo: 19 * 7, descricao: 'Morfológico 2º Trimestre (1 semana antes)' },
+            { tipo: 'dtpa', igAlvo: 27 * 7, descricao: 'Vacina dTpa' },
+            { tipo: 'bronquiolite', igAlvo: 32 * 7, descricao: 'Vacina Bronquiolite' },
+          ];
+          
+          for (const lembrete of lembretes) {
+            // Verificar se já foi enviado
+            const jaEnviou = await db
+              .select()
+              .from(logsEmails)
+              .where(and(
+                eq(logsEmails.gestanteId, gestante.id),
+                eq(logsEmails.tipoLembrete, lembrete.tipo),
+                eq(logsEmails.status, 'enviado')
+              ))
+              .limit(1);
+            
+            if (jaEnviou.length === 0 && diasAtual < lembrete.igAlvo) {
+              const diasRestantes = lembrete.igAlvo - diasAtual;
+              const igAlvoSemanas = Math.floor(lembrete.igAlvo / 7);
+              const igAlvoDias = lembrete.igAlvo % 7;
+              
+              proximosLembretes.push({
+                gestanteId: gestante.id,
+                gestanteNome: gestante.nome,
+                tipoLembrete: lembrete.tipo,
+                descricao: lembrete.descricao,
+                igAtual: `${igAtual.semanas}s ${igAtual.dias}d`,
+                igAlvo: `${igAlvoSemanas}s ${igAlvoDias}d`,
+                diasRestantes,
+              });
+            }
+          }
+        }
+        
+        // Ordenar por dias restantes (mais próximos primeiro)
+        return proximosLembretes.sort((a, b) => a.diasRestantes - b.diasRestantes).slice(0, 20);
       }),
   }),
 
