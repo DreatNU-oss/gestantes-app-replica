@@ -1431,3 +1431,12 @@
 - [x] Testar com gestante que tem ultrassom cadastrado
 - [x] Validar que semanas de gestação estão corretas no eixo X do gráfico
 
+
+
+## Indicador Visual no Gráfico de Peso (Solicitado 22/12/2025)
+
+- [x] Modificar componente GraficoPeso.tsx para aceitar prop indicando método de cálculo
+- [x] Adicionar badge visual mostrando "IG pelo Ultrassom" ou "IG pela DUM"
+- [x] Estilizar badge com cores distintas (azul para US, cinza para DUM)
+- [x] Atualizar CartaoPrenatal.tsx para passar informação do método usado
+- [x] Testar visualização com gestantes que têm US e gestantes sem US

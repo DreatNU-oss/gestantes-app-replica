@@ -10,6 +10,7 @@ interface GraficoPesoProps {
   consultas: ConsultaComIG[];
   altura: number; // em cm
   pesoInicial: number; // em kg
+  metodoCalculo: 'US' | 'DUM'; // Método usado para calcular IG
 }
 
 // Função para calcular IMC
@@ -63,7 +64,7 @@ function calcularFaixaIdeal(
   };
 }
 
-export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps) {
+export function GraficoPeso({ consultas, altura, pesoInicial, metodoCalculo }: GraficoPesoProps) {
   if (!altura || !pesoInicial || consultas.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-6 text-center text-muted-foreground">
@@ -111,7 +112,16 @@ export function GraficoPeso({ consultas, altura, pesoInicial }: GraficoPesoProps
   return (
     <div className="rounded-lg border bg-card p-6">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold">Curva de Ganho de Peso Gestacional</h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold">Curva de Ganho de Peso Gestacional</h3>
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            metodoCalculo === 'US' 
+              ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+              : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+          }`}>
+            {metodoCalculo === 'US' ? '📊 IG pelo Ultrassom' : '📅 IG pela DUM'}
+          </span>
+        </div>
         <p className="text-sm text-muted-foreground">
           IMC pré-gestacional: <strong>{imc.toFixed(1)}</strong> ({cor.nome})
         </p>

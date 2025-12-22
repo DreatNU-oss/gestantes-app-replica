@@ -1505,6 +1505,11 @@ export default function CartaoPrenatal() {
                 })}
                 altura={gestante.altura}
                 pesoInicial={gestante.pesoInicial / 1000} // converter gramas para kg
+                metodoCalculo={
+                  gestante?.dataUltrassom && gestante?.igUltrassomSemanas !== null 
+                    ? 'US' 
+                    : 'DUM'
+                }
               />
             </CardContent>
           </Card>
