@@ -1450,3 +1450,14 @@
 - [x] Exibir "desconsiderada" quando DUM for incerta ou incompatível com US
 - [x] Testar com gestante que tem DUM incerta
 - [x] Testar com gestante que tem DUM incompatível com US
+
+
+## FEATURE: Alerta de Divergência entre IG DUM e US (Solicitado 22/12/2025)
+
+- [x] Calcular diferença em dias entre IG pela DUM e IG pelo US
+- [x] Implementar lógica de verificação se diferença > 5 dias
+- [x] Criar componente de alerta visual (ícone + mensagem)
+- [x] Estilizar alerta com cor de atenção (amarelo/laranja)
+- [x] Adicionar mensagem sugerindo revisão dos dados
+- [x] Testar com gestante que tem diferença > 5 dias
+- [x] Testar que alerta NÃO aparece quando diferença <= 5 dias
