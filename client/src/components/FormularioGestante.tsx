@@ -118,7 +118,7 @@ export default function FormularioGestante({
           igUS = { semanas: semanasUS, dias: diasUS };
 
           // Calcular DPP US (data do US + dias restantes até 40 semanas)
-          const diasRestantes = (40 * 7) - (igSemanas * 7 + igDias) + 1;
+          const diasRestantes = (40 * 7) - (igSemanas * 7 + igDias);
           const dppDate = new Date(dataUS);
           dppDate.setDate(dppDate.getDate() + diasRestantes);
           dppUS = dppDate.toLocaleDateString('pt-BR');

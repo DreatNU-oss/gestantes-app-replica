@@ -1413,3 +1413,11 @@
 - [x] Adicionar meta tags Twitter Card para compatibilidade
 - [x] Testar preview do link no WhatsApp
 - [x] Verificar se logo e informações da Mais Mulher aparecem corretamente
+
+
+## BUG: Cálculo DPP pelo Ultrassom com 1 dia a mais (Reportado 22/12/2025)
+
+- [x] Investigar código de cálculo da DPP pelo US
+- [x] Corrigir lógica de cálculo (remover +1 incorreto)
+- [x] Testar com caso reportado (Lívia Caldas Marins: IG 12s4d → DPP deveria ser 02/07/2026)
+- [x] Validar que cálculo está correto
