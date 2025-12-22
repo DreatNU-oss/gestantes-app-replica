@@ -1404,3 +1404,12 @@
 - [x] Configurar meta tags no index.html para Safari/iOS
 - [x] Testar favicon no navegador
 - [x] Verificar se aparece corretamente no Safari
+
+
+## Adicionar Meta Tags Open Graph para WhatsApp (Solicitado 22/12/2025)
+
+- [x] Gerar imagem Open Graph (1200x630) com logo da Mais Mulher
+- [x] Adicionar meta tags og:title, og:description, og:image no index.html
+- [x] Adicionar meta tags Twitter Card para compatibilidade
+- [x] Testar preview do link no WhatsApp
+- [x] Verificar se logo e informações da Mais Mulher aparecem corretamente
