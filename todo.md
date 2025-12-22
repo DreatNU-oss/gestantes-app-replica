@@ -1487,3 +1487,18 @@
 - [x] Adicionar rota no App.tsx
 - [x] Adicionar item de menu na navegação
 - [x] Testar dashboard com dados reais
+
+
+## BUG: Gráfico de Peso Limitado a 40 Semanas (Reportado 22/12/2025)
+
+- [x] Localizar limite de 40 semanas no componente GraficoPeso.tsx
+- [x] Estender eixo X do gráfico para 42 semanas (já estava em 42)
+- [x] Testar com gestante que está com 40+ semanas
+- [x] Verificar se ponto de peso aparece corretamente no gráfico
+
+
+## FEATURE: Priorizar Último Peso na Mesma Semana (Solicitado 22/12/2025)
+
+- [x] Modificar lógica do GraficoPeso.tsx para ordenar consultas por data
+- [x] Usar último peso quando houver múltiplas consultas na mesma semana
+- [x] Testar com gestante que tem consultas duplicadas na mesma semana

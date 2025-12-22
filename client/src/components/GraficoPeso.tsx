@@ -101,8 +101,21 @@ export function GraficoPeso({ consultas, altura, pesoInicial, metodoCalculo }: G
   }
 
   // Combinar dados reais com faixa ideal
+  // Quando houver múltiplas consultas na mesma semana, usar a mais recente
   const dadosGrafico = dadosFaixa.map((faixa) => {
-    const consultaNaSemana = consultas.find((c) => c.igSemanas === faixa.semana);
+    const consultasNaSemana = consultas.filter((c) => c.igSemanas === faixa.semana);
+    
+    // Se houver múltiplas consultas, ordenar por data e pegar a última
+    let consultaNaSemana = null;
+    if (consultasNaSemana.length > 0) {
+      consultasNaSemana.sort((a, b) => {
+        const dataA = new Date(a.dataConsulta).getTime();
+        const dataB = new Date(b.dataConsulta).getTime();
+        return dataB - dataA; // Ordem decrescente (mais recente primeiro)
+      });
+      consultaNaSemana = consultasNaSemana[0];
+    }
+    
     return {
       ...faixa,
       pesoReal: consultaNaSemana?.peso || null,
