@@ -1395,3 +1395,12 @@
 - [x] Reorganizar layout dos 4 botões (Ver Cartão, Consulta, Exames, Ultrassons)
 - [x] Testar navegação para Exames Laboratoriais
 - [x] Testar navegação para Ultrassons
+
+
+## Trocar Favicon pelo Logo da Mais Mulher (Solicitado 21/12/2025)
+
+- [x] Gerar favicon personalizado com logo da Mais Mulher
+- [x] Adicionar favicon.ico e apple-touch-icon.png ao projeto
+- [x] Configurar meta tags no index.html para Safari/iOS
+- [x] Testar favicon no navegador
+- [x] Verificar se aparece corretamente no Safari
