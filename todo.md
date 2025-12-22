@@ -1440,3 +1440,13 @@
 - [x] Estilizar badge com cores distintas (azul para US, cinza para DUM)
 - [x] Atualizar CartaoPrenatal.tsx para passar informação do método usado
 - [x] Testar visualização com gestantes que têm US e gestantes sem US
+
+
+## BUG: Exibição de NaN no Card de Idade Gestacional (Reportado 22/12/2025)
+
+- [x] Localizar código do card de IG no formulário de Nova Consulta (CartaoPrenatal.tsx)
+- [x] Identificar onde aparece "NaN semanas e NaN dias"
+- [x] Modificar lógica para verificar se IG é inválida (NaN)
+- [x] Exibir "desconsiderada" quando DUM for incerta ou incompatível com US
+- [x] Testar com gestante que tem DUM incerta
+- [x] Testar com gestante que tem DUM incompatível com US

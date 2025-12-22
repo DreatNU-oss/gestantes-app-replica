@@ -1093,14 +1093,24 @@ export default function CartaoPrenatal() {
                         <span className="font-medium">DUM:</span>{" "}
                         {(() => {
                           const ig = calcularIG(formData.dataConsulta);
-                          return ig ? `${ig.semanas} semanas e ${ig.dias} dias` : "-";
+                          if (!ig) return "-";
+                          // Verificar se os valores são NaN (DUM incerta ou incompatível)
+                          if (isNaN(ig.semanas) || isNaN(ig.dias)) {
+                            return <span className="italic text-muted-foreground">desconsiderada</span>;
+                          }
+                          return `${ig.semanas} semanas e ${ig.dias} dias`;
                         })()}
                       </p>
                       <p className="text-sm">
                         <span className="font-medium">Ultrassom:</span>{" "}
                         {(() => {
                           const igUS = calcularIGPorUS(formData.dataConsulta);
-                          return igUS ? `${igUS.semanas} semanas e ${igUS.dias} dias` : "-";
+                          if (!igUS) return "-";
+                          // Verificar se os valores são NaN
+                          if (isNaN(igUS.semanas) || isNaN(igUS.dias)) {
+                            return <span className="italic text-muted-foreground">desconsiderada</span>;
+                          }
+                          return `${igUS.semanas} semanas e ${igUS.dias} dias`;
                         })()}
                       </p>
                     </div>
