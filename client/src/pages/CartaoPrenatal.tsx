@@ -1493,11 +1493,14 @@ export default function CartaoPrenatal() {
             <CardContent>
               <GraficoPeso
                 consultas={consultas.map((c: any) => {
+                  // Priorizar IG pelo Ultrassom, usar DUM como fallback
+                  const igUS = calcularIGPorUS(c.dataConsulta);
                   const igDUM = calcularIG(c.dataConsulta);
+                  const ig = igUS || igDUM; // Prioriza US
                   return {
                     data: c.dataConsulta,
                     peso: c.peso / 1000, // converter gramas para kg
-                    igSemanas: igDUM?.semanas || 0,
+                    igSemanas: ig?.semanas || 0,
                   };
                 })}
                 altura={gestante.altura}

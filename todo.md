@@ -1421,3 +1421,13 @@
 - [x] Corrigir lógica de cálculo (remover +1 incorreto)
 - [x] Testar com caso reportado (Lívia Caldas Marins: IG 12s4d → DPP deveria ser 02/07/2026)
 - [x] Validar que cálculo está correto
+
+## BUG: Gráfico de Peso usando DUM ao invés de priorizar Ultrassom (Reportado 22/12/2025)
+
+- [x] Analisar código do componente GraficoPeso.tsx
+- [x] Identificar onde a IG está sendo calculada (atualmente usa DUM)
+- [x] Modificar lógica para priorizar IG pelo Ultrassom quando disponível
+- [x] Usar DUM apenas como fallback quando não houver ultrassom
+- [x] Testar com gestante que tem ultrassom cadastrado
+- [x] Validar que semanas de gestação estão corretas no eixo X do gráfico
+
