@@ -1533,3 +1533,14 @@
 - [x] Corrigir ordem de declarações - formData sendo acessado antes de ser declarado
 - [x] Mover declaração de formData antes dos hooks useAutoSave e useInstantSave
 - [x] Testar formulário de gestantes após correção
+
+
+## FEATURE: Validação Visual de Campos Obrigatórios (Solicitado 23/12/2025)
+
+- [x] Adicionar estado para rastrear campos com erro de validação
+- [x] Implementar função de validação para campos obrigatórios (nome, data nascimento, email)
+- [x] Adicionar feedback visual com borda vermelha em campos inválidos
+- [x] Adicionar mensagens de erro abaixo dos campos
+- [x] Validar ao tentar salvar formulário
+- [x] Limpar erros quando campo for preenchido
+- [x] Testar validação no formulário de gestantes

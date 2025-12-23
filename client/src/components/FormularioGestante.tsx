@@ -40,6 +40,13 @@ export default function FormularioGestante({
     dppUS: string | null;
   }>({ igDUM: null, dppDUM: null, igUS: null, dppUS: null });
   
+  // Estado de validação
+  const [fieldErrors, setFieldErrors] = useState<{
+    nome?: string;
+    dataNascimento?: string;
+    email?: string;
+  }>({});
+  
   const [formData, setFormData] = useState({
     nome: "",
     telefone: "",
@@ -223,8 +230,58 @@ export default function FormularioGestante({
     }
   }, [gestante]);
 
+  // Função de validação
+  const validateForm = (): boolean => {
+    const errors: typeof fieldErrors = {};
+    
+    // Validar nome
+    if (!formData.nome || formData.nome.trim() === '') {
+      errors.nome = 'Nome é obrigatório';
+    }
+    
+    // Validar data de nascimento
+    if (!formData.dataNascimento) {
+      errors.dataNascimento = 'Data de nascimento é obrigatória';
+    }
+    
+    // Validar e-mail
+    if (!formData.email || formData.email.trim() === '') {
+      errors.email = 'E-mail é obrigatório';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'E-mail inválido';
+    }
+    
+    setFieldErrors(errors);
+    
+    // Se houver erros, mostrar toast e retornar false
+    if (Object.keys(errors).length > 0) {
+      toast.error('Preencha todos os campos obrigatórios', {
+        description: 'Verifique os campos destacados em vermelho.',
+      });
+      return false;
+    }
+    
+    return true;
+  };
+  
+  // Limpar erro de um campo quando ele for preenchido
+  const clearFieldError = (fieldName: keyof typeof fieldErrors) => {
+    if (fieldErrors[fieldName]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar formulário antes de enviar
+    if (!validateForm()) {
+      return;
+    }
 
     const data: any = {
       nome: formData.nome,
@@ -292,20 +349,34 @@ export default function FormularioGestante({
                 <Input
                   id="nome"
                   value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, nome: e.target.value });
+                    clearFieldError('nome');
+                  }}
+                  className={fieldErrors.nome ? 'border-red-500 focus-visible:ring-red-500' : ''}
                   required
                 />
+                {fieldErrors.nome && (
+                  <p className="text-sm text-red-500">{fieldErrors.nome}</p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dataNascimento">Data de Nascimento</Label>
+                <Label htmlFor="dataNascimento">Data de Nascimento *</Label>
                 <DateOfBirthInput
                   id="dataNascimento"
                   value={formData.dataNascimento}
-                  onChange={(value) => setFormData({ ...formData, dataNascimento: value })}
+                  onChange={(value) => {
+                    setFormData({ ...formData, dataNascimento: value });
+                    clearFieldError('dataNascimento');
+                  }}
                   showAge={true}
                   minAge={10}
                   maxAge={60}
+                  className={fieldErrors.dataNascimento ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {fieldErrors.dataNascimento && (
+                  <p className="text-sm text-red-500">{fieldErrors.dataNascimento}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="telefone">Telefone</Label>
@@ -316,12 +387,19 @@ export default function FormularioGestante({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
+                <Label htmlFor="email">E-mail *</Label>
                 <EmailInput
                   id="email"
                   value={formData.email}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
+                  onChange={(value) => {
+                    setFormData({ ...formData, email: value });
+                    clearFieldError('email');
+                  }}
+                  className={fieldErrors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {fieldErrors.email && (
+                  <p className="text-sm text-red-500">{fieldErrors.email}</p>
+                )}
               </div>
             </div>
           </CardContent>
