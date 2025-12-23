@@ -1623,3 +1623,31 @@
 - DUM: 25/06/2025 | Data US: 12/08/2025 | IG US: 6s 0d
 - Diferença calculada: 6 dias (IG DUM na data US = 6s 6d vs IG US = 6s 0d)
 - Resultado: ✅ Alerta aparece corretamente com mensagem explicativa
+
+
+## FEATURE: Validação de Altura e Peso (Solicitado 23/12/2025)
+
+### Objetivo
+- Prevenir erros de digitação em altura e peso
+- Alertar usuário quando valores estão fora do intervalo esperado
+- Melhorar qualidade dos dados cadastrados
+
+### Intervalos de Validação
+- **Altura:** 120-200 cm (valores fora deste intervalo são considerados suspeitos)
+- **Peso Inicial:** 30-180 kg (valores fora deste intervalo são considerados suspeitos)
+
+### Implementação
+- [x] Adicionar estados para armazenar alertas de altura e peso
+- [x] Criar função de validação que verifica se valores estão no intervalo
+- [x] Implementar useEffect que valida quando altura/peso mudam
+- [x] Adicionar feedback visual (borda amarela) nos campos inválidos
+- [x] Mostrar mensagem de alerta abaixo do campo com valor suspeito
+- [x] Permitir salvar mesmo com valores fora do intervalo (apenas alerta, não bloqueia)
+
+### Testes
+- [x] Testar com altura < 120cm (100cm - alerta apareceu corretamente)
+- [x] Testar com altura > 200cm (250cm - alerta apareceu corretamente)
+- [x] Testar com peso < 30kg (20kg - alerta apareceu corretamente)
+- [x] Testar com peso > 180kg (200kg - alerta apareceu corretamente)
+- [x] Verificar que múltiplos alertas aparecem simultaneamente
+- [x] Verificar que formulário pode ser salvo mesmo com alertas

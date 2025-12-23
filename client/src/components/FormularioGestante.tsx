@@ -48,6 +48,17 @@ export default function FormularioGestante({
     diferencaDias: number;
   }>({ show: false, diferencaDias: 0 });
   
+  // Estados para validação de altura e peso
+  const [alertaAltura, setAlertaAltura] = useState<{
+    show: boolean;
+    mensagem: string;
+  }>({ show: false, mensagem: "" });
+  
+  const [alertaPeso, setAlertaPeso] = useState<{
+    show: boolean;
+    mensagem: string;
+  }>({ show: false, mensagem: "" });
+  
   // Estado de validação
   const [fieldErrors, setFieldErrors] = useState<{
     nome?: string;
@@ -239,6 +250,57 @@ export default function FormularioGestante({
       setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
     }
   }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
+  
+  // Validar altura e peso
+  useEffect(() => {
+    // Validar altura (120-200 cm)
+    if (formData.altura) {
+      const altura = parseFloat(formData.altura);
+      if (!isNaN(altura)) {
+        if (altura < 120) {
+          setAlertaAltura({
+            show: true,
+            mensagem: "⚠️ Altura muito baixa (< 120cm). Verifique se o valor está correto."
+          });
+        } else if (altura > 200) {
+          setAlertaAltura({
+            show: true,
+            mensagem: "⚠️ Altura muito alta (> 200cm). Verifique se o valor está correto."
+          });
+        } else {
+          setAlertaAltura({ show: false, mensagem: "" });
+        }
+      } else {
+        setAlertaAltura({ show: false, mensagem: "" });
+      }
+    } else {
+      setAlertaAltura({ show: false, mensagem: "" });
+    }
+    
+    // Validar peso (30-180 kg)
+    if (formData.pesoInicial) {
+      const peso = parseFloat(formData.pesoInicial);
+      if (!isNaN(peso)) {
+        if (peso < 30) {
+          setAlertaPeso({
+            show: true,
+            mensagem: "⚠️ Peso muito baixo (< 30kg). Verifique se o valor está correto."
+          });
+        } else if (peso > 180) {
+          setAlertaPeso({
+            show: true,
+            mensagem: "⚠️ Peso muito alto (> 180kg). Verifique se o valor está correto."
+          });
+        } else {
+          setAlertaPeso({ show: false, mensagem: "" });
+        }
+      } else {
+        setAlertaPeso({ show: false, mensagem: "" });
+      }
+    } else {
+      setAlertaPeso({ show: false, mensagem: "" });
+    }
+  }, [formData.altura, formData.pesoInicial]);
 
   const createMutation = trpc.gestantes.create.useMutation({
     onSuccess: (data) => {
@@ -742,7 +804,13 @@ export default function FormularioGestante({
                     placeholder="Ex: 165"
                     value={formData.altura}
                     onChange={(e) => setFormData({ ...formData, altura: e.target.value })}
+                    className={alertaAltura.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
                   />
+                  {alertaAltura.show && (
+                    <p className="text-sm text-amber-600 flex items-start gap-1">
+                      <span className="mt-0.5">{alertaAltura.mensagem}</span>
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
@@ -755,8 +823,15 @@ export default function FormularioGestante({
                     placeholder="Ex: 65.5"
                     value={formData.pesoInicial}
                     onChange={(e) => setFormData({ ...formData, pesoInicial: e.target.value })}
+                    className={alertaPeso.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
                   />
-                  <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
+                  {alertaPeso.show ? (
+                    <p className="text-sm text-amber-600 flex items-start gap-1">
+                      <span className="mt-0.5">{alertaPeso.mensagem}</span>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
+                  )}
                 </div>
               </div>
             </div>
