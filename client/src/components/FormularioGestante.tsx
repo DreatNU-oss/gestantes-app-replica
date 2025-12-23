@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, Baby } from "lucide-react";
+import { ArrowLeft, Calendar, Baby, Check } from "lucide-react";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
@@ -30,6 +31,12 @@ export default function FormularioGestante({
   onCancel,
 }: FormularioGestanteProps) {
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
+  
+  // Auto-save hook
+  const { lastSaved, saveDraft, loadDraft, clearDraft } = useAutoSave(
+    `formulario-gestante-${gestanteId || 'novo'}`,
+    1000
+  );
   const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
     igDUM: { semanas: number; dias: number } | null;
     dppDUM: string | null;
@@ -69,6 +76,27 @@ export default function FormularioGestante({
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
 
+  // Auto-save: salvar dados automaticamente
+  useEffect(() => {
+    saveDraft({ ...formData, tipoDUM });
+  }, [formData, tipoDUM]);
+  
+  // Auto-save: restaurar dados ao carregar (apenas para novos cadastros)
+  useEffect(() => {
+    if (!gestanteId) {
+      const draft = loadDraft();
+      if (draft) {
+        setFormData(draft);
+        if (draft.tipoDUM) {
+          setTipoDUM(draft.tipoDUM);
+        }
+        toast.info('Rascunho restaurado', {
+          description: 'Seus dados foram recuperados automaticamente.',
+        });
+      }
+    }
+  }, []);
+  
   // Recalcular IG e DPP quando campos relevantes mudarem
   useEffect(() => {
     // Usar meio-dia local para evitar problemas de fuso horário
@@ -133,6 +161,7 @@ export default function FormularioGestante({
 
   const createMutation = trpc.gestantes.create.useMutation({
     onSuccess: () => {
+      clearDraft(); // Limpar rascunho após salvar
       toast.success("Gestante cadastrada com sucesso!");
       onSuccess();
     },
@@ -143,6 +172,7 @@ export default function FormularioGestante({
 
   const updateMutation = trpc.gestantes.update.useMutation({
     onSuccess: () => {
+      clearDraft(); // Limpar rascunho após salvar
       toast.success("Gestante atualizada com sucesso!");
       onSuccess();
     },
@@ -229,7 +259,7 @@ export default function FormularioGestante({
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
-        <div>
+        <div className="flex-1">
           <h2 className="text-3xl font-bold text-foreground">
             {gestanteId ? "Editar Gestante" : "Nova Gestante"}
           </h2>
@@ -237,6 +267,12 @@ export default function FormularioGestante({
             Preencha os dados da gestante
           </p>
         </div>
+        {lastSaved && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Check className="h-4 w-4 text-green-600" />
+            <span>Rascunho salvo {lastSaved}</span>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

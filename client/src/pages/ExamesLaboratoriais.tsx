@@ -15,7 +15,8 @@ import { Button } from "@/components/ui/button";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
-import { Sparkles, ArrowLeft, Loader2 } from "lucide-react";
+import { Sparkles, ArrowLeft, Loader2, Check } from "lucide-react";
+import { useAutoSave } from "@/hooks/useAutoSave";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -38,6 +39,16 @@ export default function ExamesLaboratoriais() {
     }
   }, [gestanteAtiva]);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
+  
+  // Auto-save hook
+  const { savedAt, clearDraft, loadDraft } = useAutoSave(
+    `exames-lab-${gestanteSelecionada || 'sem-gestante'}`,
+    resultados,
+    1000
+  );
+  
+  // Formatar timestamp para exibição
+  const lastSaved = savedAt ? new Date(savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
   const [modalAberto, setModalAberto] = useState(false);
   const [trimestreEdicao, setTrimestreEdicao] = useState<number | null>(null);
   const [novaDataTrimestre, setNovaDataTrimestre] = useState<string>("");
@@ -55,6 +66,7 @@ export default function ExamesLaboratoriais() {
   // Mutation para salvar resultados
   const salvarMutation = trpc.examesLab.salvar.useMutation({
     onSuccess: (data) => {
+      clearDraft(); // Limpar rascunho após salvar
       toast.success(`✅ Resultados salvos com sucesso!`, {
         description: `${data.count} registro(s) de exames foram salvos para a gestante.`,
         duration: 4000,
@@ -75,8 +87,17 @@ export default function ExamesLaboratoriais() {
   useEffect(() => {
     if (resultadosSalvos) {
       setResultados(resultadosSalvos);
+    } else if (gestanteSelecionada) {
+      // Tentar restaurar rascunho se não houver dados salvos
+      const draft = loadDraft();
+      if (draft) {
+        setResultados(draft);
+        toast.info('Rascunho restaurado', {
+          description: 'Seus dados foram recuperados automaticamente.',
+        });
+      }
     }
-  }, [resultadosSalvos]);
+  }, [resultadosSalvos, gestanteSelecionada]);
 
   const handleResultadoChange = (exame: string, trimestre: string, valor: string) => {
     setResultados((prev) => ({
@@ -370,12 +391,18 @@ export default function ExamesLaboratoriais() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div>
+          <div className="flex-1">
             <h2 className="text-3xl font-bold text-foreground">Exames Laboratoriais</h2>
             <p className="text-muted-foreground">
               Acompanhe os exames realizados em cada trimestre
             </p>
           </div>
+          {lastSaved && gestanteSelecionada && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Check className="h-4 w-4 text-green-600" />
+              <span>Rascunho salvo {lastSaved}</span>
+            </div>
+          )}
         </div>
 
         <Card>

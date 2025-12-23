@@ -1508,10 +1508,10 @@
 
 - [x] Criar hook customizado useAutoSave para gerenciar localStorage
 - [x] Implementar auto-save no formulário de Nova Consulta
-- [ ] Implementar auto-save no formulário de cadastro de gestante
-- [ ] Implementar auto-save no formulário de edição de gestante
-- [ ] Implementar auto-save no formulário de exames laboratoriais
-- [ ] Implementar auto-save no formulário de ultrassons
+- [x] Implementar auto-save no formulário de cadastro de gestante
+- [x] Implementar auto-save no formulário de edição de gestante
+- [x] Implementar auto-save no formulário de exames laboratoriais
+- [x] Implementar auto-save no formulário de ultrassons (6 tipos)
 - [x] Adicionar indicador visual de "Rascunho salvo" nos formulários
 - [x] Limpar rascunho após salvamento bem-sucedido
 - [x] Testar funcionalidade trocando de aba e voltando

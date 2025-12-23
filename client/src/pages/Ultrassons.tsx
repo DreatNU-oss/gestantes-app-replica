@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Loader2, Save, ArrowLeft, Sparkles } from 'lucide-react';
+import { Loader2, Save, ArrowLeft, Sparkles, Check } from 'lucide-react';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
@@ -42,7 +43,30 @@ export default function Ultrassons() {
   
   // Mutation para salvar
   const salvarMutation = trpc.ultrassons.salvar.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Limpar rascunho do tipo de ultrassom salvo
+      const tipoUS = (data as any).ultrassom?.tipoUltrassom;
+      switch (tipoUS) {
+        case 'primeiro_ultrassom':
+          primeiroUSAutoSave.clearDraft();
+          break;
+        case 'morfologico_1tri':
+          morfo1TriAutoSave.clearDraft();
+          break;
+        case 'obstetrico':
+          usObstetricoAutoSave.clearDraft();
+          break;
+        case 'morfologico_2tri':
+          morfo2TriAutoSave.clearDraft();
+          break;
+        case 'ecocardiograma':
+          ecocardiogramaAutoSave.clearDraft();
+          break;
+        case 'seguimento':
+          usSeguimentoAutoSave.clearDraft();
+          break;
+      }
+      
       toast.success('✅ Ultrassom salvo com sucesso!', {
         description: 'Os dados do ultrassom foram salvos no sistema.',
         duration: 4000,
@@ -129,6 +153,22 @@ export default function Ultrassons() {
     dopplers: '',
     observacoes: '',
   });
+  
+  // Auto-save hooks para cada tipo de ultrassom
+  const primeiroUSAutoSave = useAutoSave(`us-primeiro-${gestanteSelecionada}`, primeiroUS, 1000);
+  const morfo1TriAutoSave = useAutoSave(`us-morfo1-${gestanteSelecionada}`, morfo1Tri, 1000);
+  const usObstetricoAutoSave = useAutoSave(`us-obstetrico-${gestanteSelecionada}`, usObstetrico, 1000);
+  const morfo2TriAutoSave = useAutoSave(`us-morfo2-${gestanteSelecionada}`, morfo2Tri, 1000);
+  const ecocardiogramaAutoSave = useAutoSave(`us-eco-${gestanteSelecionada}`, ecocardiograma, 1000);
+  const usSeguimentoAutoSave = useAutoSave(`us-seguimento-${gestanteSelecionada}`, usSeguimento, 1000);
+  
+  // Formatar timestamps para exibição
+  const lastSavedPrimeiroUS = primeiroUSAutoSave.savedAt ? new Date(primeiroUSAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedMorfo1Tri = morfo1TriAutoSave.savedAt ? new Date(morfo1TriAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedUsObstetrico = usObstetricoAutoSave.savedAt ? new Date(usObstetricoAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedMorfo2Tri = morfo2TriAutoSave.savedAt ? new Date(morfo2TriAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedEcocardiograma = ecocardiogramaAutoSave.savedAt ? new Date(ecocardiogramaAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedUsSeguimento = usSeguimentoAutoSave.savedAt ? new Date(usSeguimentoAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
   
   // Carregar dados quando gestante é selecionada
   // Função helper para garantir que valores undefined sejam convertidos para string vazia
@@ -387,8 +427,18 @@ export default function Ultrassons() {
           {/* 1º Ultrassom */}
           <Card>
             <CardHeader>
-              <CardTitle>1º Ultrassom</CardTitle>
-              <CardDescription>Ultrassom inicial de confirmação da gestação</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>1º Ultrassom</CardTitle>
+                  <CardDescription>Ultrassom inicial de confirmação da gestação</CardDescription>
+                </div>
+                {lastSavedPrimeiroUS && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedPrimeiroUS}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -481,8 +531,18 @@ export default function Ultrassons() {
           {/* Morfológico 1º Trimestre */}
           <Card>
             <CardHeader>
-              <CardTitle>Morfológico 1º Trimestre</CardTitle>
-              <CardDescription>Ultrassom morfológico com avaliação de translucência nucal</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Morfológico 1º Trimestre</CardTitle>
+                  <CardDescription>Ultrassom morfológico com avaliação de translucência nucal</CardDescription>
+                </div>
+                {lastSavedMorfo1Tri && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedMorfo1Tri}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -584,8 +644,18 @@ export default function Ultrassons() {
           {/* Ultrassom Obstétrico */}
           <Card>
             <CardHeader>
-              <CardTitle>Ultrassom Obstétrico</CardTitle>
-              <CardDescription>Ultrassom de rotina para acompanhamento</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Ultrassom Obstétrico</CardTitle>
+                  <CardDescription>Ultrassom de rotina para acompanhamento</CardDescription>
+                </div>
+                {lastSavedUsObstetrico && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedUsObstetrico}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -676,8 +746,18 @@ export default function Ultrassons() {
           {/* Morfológico 2º Trimestre */}
           <Card>
             <CardHeader>
-              <CardTitle>Morfológico 2º Trimestre</CardTitle>
-              <CardDescription>Ultrassom morfológico detalhado com avaliação anatômica</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Morfológico 2º Trimestre</CardTitle>
+                  <CardDescription>Ultrassom morfológico detalhado com avaliação anatômica</CardDescription>
+                </div>
+                {lastSavedMorfo2Tri && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedMorfo2Tri}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -806,8 +886,18 @@ export default function Ultrassons() {
           {/* Ecocardiograma Fetal */}
           <Card>
             <CardHeader>
-              <CardTitle>Ecocardiograma Fetal</CardTitle>
-              <CardDescription>Avaliação especializada do coração fetal</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Ecocardiograma Fetal</CardTitle>
+                  <CardDescription>Avaliação especializada do coração fetal</CardDescription>
+                </div>
+                {lastSavedEcocardiograma && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedEcocardiograma}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -843,8 +933,18 @@ export default function Ultrassons() {
           {/* Ultrassons de Seguimento */}
           <Card>
             <CardHeader>
-              <CardTitle>Ultrassons de Seguimento</CardTitle>
-              <CardDescription>Ultrassons de acompanhamento após morfológico 2º trimestre (3 a 5 exames)</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Ultrassons de Seguimento</CardTitle>
+                  <CardDescription>Ultrassons de acompanhamento após morfológico 2º trimestre (3 a 5 exames)</CardDescription>
+                </div>
+                {lastSavedUsSeguimento && gestanteSelecionada && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <span>Rascunho {lastSavedUsSeguimento}</span>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
