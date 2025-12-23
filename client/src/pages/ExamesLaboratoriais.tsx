@@ -40,11 +40,10 @@ export default function ExamesLaboratoriais() {
   }, [gestanteAtiva]);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});
   
-  // Auto-save hook
+  // Auto-save hook (500ms padrão)
   const { savedAt, clearDraft, loadDraft } = useAutoSave(
     `exames-lab-${gestanteSelecionada || 'sem-gestante'}`,
-    resultados,
-    1000
+    resultados
   );
   
   // Formatar timestamp para exibição

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
  * 
  * @param key - Chave única para identificar o rascunho no localStorage
  * @param data - Dados atuais do formulário
- * @param delay - Delay em ms antes de salvar (debounce), padrão 1000ms
+ * @param delay - Delay em ms antes de salvar (debounce), padrão 500ms
  * @returns {
  *   savedAt: timestamp do último salvamento,
  *   clearDraft: função para limpar o rascunho,
@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 export function useAutoSave<T>(
   key: string,
   data: T,
-  delay: number = 1000
+  delay: number = 500
 ) {
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();

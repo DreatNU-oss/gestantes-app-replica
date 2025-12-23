@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, ArrowLeft, Sparkles, Check } from 'lucide-react';
 import { useAutoSave } from '@/hooks/useAutoSave';
+import { useInstantSave } from '@/hooks/useInstantSave';
 import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
@@ -154,13 +155,21 @@ export default function Ultrassons() {
     observacoes: '',
   });
   
-  // Auto-save hooks para cada tipo de ultrassom
-  const primeiroUSAutoSave = useAutoSave(`us-primeiro-${gestanteSelecionada}`, primeiroUS, 1000);
-  const morfo1TriAutoSave = useAutoSave(`us-morfo1-${gestanteSelecionada}`, morfo1Tri, 1000);
-  const usObstetricoAutoSave = useAutoSave(`us-obstetrico-${gestanteSelecionada}`, usObstetrico, 1000);
-  const morfo2TriAutoSave = useAutoSave(`us-morfo2-${gestanteSelecionada}`, morfo2Tri, 1000);
-  const ecocardiogramaAutoSave = useAutoSave(`us-eco-${gestanteSelecionada}`, ecocardiograma, 1000);
-  const usSeguimentoAutoSave = useAutoSave(`us-seguimento-${gestanteSelecionada}`, usSeguimento, 1000);
+  // Auto-save hooks para cada tipo de ultrassom (500ms padrão)
+  const primeiroUSAutoSave = useAutoSave(`us-primeiro-${gestanteSelecionada}`, primeiroUS);
+  const morfo1TriAutoSave = useAutoSave(`us-morfo1-${gestanteSelecionada}`, morfo1Tri);
+  const usObstetricoAutoSave = useAutoSave(`us-obstetrico-${gestanteSelecionada}`, usObstetrico);
+  const morfo2TriAutoSave = useAutoSave(`us-morfo2-${gestanteSelecionada}`, morfo2Tri);
+  const ecocardiogramaAutoSave = useAutoSave(`us-eco-${gestanteSelecionada}`, ecocardiograma);
+  const usSeguimentoAutoSave = useAutoSave(`us-seguimento-${gestanteSelecionada}`, usSeguimento);
+  
+  // Salvamento instantâneo para datas de exame (campos críticos)
+  useInstantSave(`us-primeiro-data-${gestanteSelecionada}`, primeiroUS.dataExame, !!gestanteSelecionada);
+  useInstantSave(`us-morfo1-data-${gestanteSelecionada}`, morfo1Tri.dataExame, !!gestanteSelecionada);
+  useInstantSave(`us-obstetrico-data-${gestanteSelecionada}`, usObstetrico.dataExame, !!gestanteSelecionada);
+  useInstantSave(`us-morfo2-data-${gestanteSelecionada}`, morfo2Tri.dataExame, !!gestanteSelecionada);
+  useInstantSave(`us-eco-data-${gestanteSelecionada}`, ecocardiograma.dataExame, !!gestanteSelecionada);
+  useInstantSave(`us-seguimento-data-${gestanteSelecionada}`, usSeguimento.dataExame, !!gestanteSelecionada);
   
   // Formatar timestamps para exibição
   const lastSavedPrimeiroUS = primeiroUSAutoSave.savedAt ? new Date(primeiroUSAutoSave.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;

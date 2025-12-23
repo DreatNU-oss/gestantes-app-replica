@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useInstantSave } from "@/hooks/useInstantSave";
 import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
@@ -85,12 +86,15 @@ export default function CartaoPrenatal() {
     observacoes: "",
   });
 
-  // Auto-save: salvar rascunho automaticamente
+  // Auto-save: salvar rascunho automaticamente (500ms padrão)
   const { savedAt, clearDraft, loadDraft } = useAutoSave(
     `consulta_${gestanteSelecionada}`,
-    formData,
-    1000 // salvar após 1 segundo de inatividade
+    formData
   );
+  
+  // Salvamento instantâneo para campos críticos (0ms)
+  useInstantSave(`consulta-data-${gestanteSelecionada}`, formData.dataConsulta, mostrarFormulario);
+  useInstantSave(`consulta-peso-${gestanteSelecionada}`, formData.peso, mostrarFormulario);
 
   // Carregar rascunho ao abrir o formulário
   useEffect(() => {

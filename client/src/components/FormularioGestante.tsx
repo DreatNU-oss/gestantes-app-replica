@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft, Calendar, Baby, Check } from "lucide-react";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { useInstantSave } from "@/hooks/useInstantSave";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
@@ -32,11 +33,15 @@ export default function FormularioGestante({
 }: FormularioGestanteProps) {
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
   
-  // Auto-save hook
+  // Auto-save hook (500ms padrão)
   const { lastSaved, saveDraft, loadDraft, clearDraft } = useAutoSave(
-    `formulario-gestante-${gestanteId || 'novo'}`,
-    1000
+    `formulario-gestante-${gestanteId || 'novo'}`
   );
+  
+  // Salvamento instantâneo para campos críticos (0ms)
+  useInstantSave(`gestante-nome-${gestanteId || 'novo'}`, formData.nome);
+  useInstantSave(`gestante-dataNascimento-${gestanteId || 'novo'}`, formData.dataNascimento);
+  useInstantSave(`gestante-dum-${gestanteId || 'novo'}`, formData.dum);
   const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
     igDUM: { semanas: number; dias: number } | null;
     dppDUM: string | null;

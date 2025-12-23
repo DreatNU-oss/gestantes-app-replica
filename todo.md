@@ -1515,3 +1515,14 @@
 - [x] Adicionar indicador visual de "Rascunho salvo" nos formulários
 - [x] Limpar rascunho após salvamento bem-sucedido
 - [x] Testar funcionalidade trocando de aba e voltando
+
+
+## Otimização de Auto-Save em Tempo Real (Solicitado 23/12/2025)
+
+- [x] Reduzir delay geral de 1000ms para 500ms em todos os formulários
+- [x] Implementar salvamento instantâneo (0ms) em campos críticos (nome, data, CPF)
+- [x] Atualizar FormularioGestante com delays otimizados
+- [x] Atualizar ExamesLaboratoriais com delays otimizados
+- [x] Atualizar Ultrassons com delays otimizados
+- [x] Atualizar CartãoPrenatal (consultas) com delays otimizados
+- [x] Testar performance e responsividade do sistema
