@@ -1601,3 +1601,25 @@
 - [x] Altura à esquerda | Peso Inicial à direita (linha seguinte)
 - [x] Testar visualmente o novo layout
 - [x] Validar que formulário salva corretamente com novo layout
+
+
+## FEATURE: Validação de Diferença entre IG DUM e IG US (Solicitado 23/12/2025)
+
+### Objetivo
+- Alertar automaticamente quando a diferença entre IG DUM e IG US for maior que 5 dias
+- Ajudar a identificar possíveis inconsistências nos dados obstétricos
+
+### Implementação
+- [x] Criar função para calcular diferença em dias entre IG DUM e IG US
+- [x] Adicionar estado para armazenar alerta de validação
+- [x] Implementar lógica que verifica diferença quando dados mudam
+- [x] Adicionar card de alerta visual no formulário (amarelo/laranja)
+- [x] Mostrar mensagem explicativa sobre a diferença detectada
+- [x] Testar com diferentes cenários (diferença < 5 dias, > 5 dias, sem dados)
+- [x] Validar que alerta aparece/desaparece corretamente
+
+### Teste Realizado
+- Gestante: Camila Rosa Carvalho
+- DUM: 25/06/2025 | Data US: 12/08/2025 | IG US: 6s 0d
+- Diferença calculada: 6 dias (IG DUM na data US = 6s 6d vs IG US = 6s 0d)
+- Resultado: ✅ Alerta aparece corretamente com mensagem explicativa

@@ -42,6 +42,12 @@ export default function FormularioGestante({
     dppUS: string | null;
   }>({ igDUM: null, dppDUM: null, igUS: null, dppUS: null });
   
+  // Estado para alerta de diferença entre IG DUM e IG US
+  const [alertaDiferencaIG, setAlertaDiferencaIG] = useState<{
+    show: boolean;
+    diferencaDias: number;
+  }>({ show: false, diferencaDias: 0 });
+  
   // Estado de validação
   const [fieldErrors, setFieldErrors] = useState<{
     nome?: string;
@@ -196,6 +202,42 @@ export default function FormularioGestante({
     }
 
     setCalculosEmTempoReal({ igDUM, dppDUM, igUS, dppUS });
+    
+    // Validar diferença entre IG DUM e IG US (comparar na data do ultrassom)
+    if (tipoDUM === "data" && formData.dum && formData.dataUltrassom && formData.igUltrassomSemanas && formData.igUltrassomDias !== '') {
+      try {
+        const dumDate = parseLocalDate(formData.dum);
+        const dataUS = parseLocalDate(formData.dataUltrassom);
+        const igSemanas = parseInt(formData.igUltrassomSemanas);
+        const igDias = parseInt(formData.igUltrassomDias);
+        
+        if (!isNaN(igSemanas) && !isNaN(igDias)) {
+          // Calcular IG DUM na data do ultrassom
+          const diffMs = dataUS.getTime() - dumDate.getTime();
+          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const igDUMnaDataUS = diffDays; // IG DUM em dias na data do US
+          
+          // IG US registrada em dias
+          const igUSregistrada = (igSemanas * 7) + igDias;
+          
+          // Calcular diferença
+          const diferencaDias = Math.abs(igDUMnaDataUS - igUSregistrada);
+          
+          if (diferencaDias > 5) {
+            setAlertaDiferencaIG({ show: true, diferencaDias });
+          } else {
+            setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
+          }
+        } else {
+          setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
+        }
+      } catch (error) {
+        console.error('Erro ao validar diferença IG:', error);
+        setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
+      }
+    } else {
+      setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
+    }
   }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
 
   const createMutation = trpc.gestantes.create.useMutation({
@@ -720,6 +762,38 @@ export default function FormularioGestante({
             </div>
           </CardContent>
         </Card>
+
+        {/* Alerta de Diferença entre IG DUM e IG US */}
+        {alertaDiferencaIG.show && (
+          <Card className="bg-amber-50 border-amber-300">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-amber-900">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                Atenção: Diferença entre IG DUM e IG US
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-white rounded-lg p-4">
+                <p className="text-sm text-amber-900 font-medium mb-2">
+                  Foi detectada uma diferença de <span className="font-bold">{alertaDiferencaIG.diferencaDias} dias</span> entre a Idade Gestacional calculada pela DUM e pelo Ultrassom.
+                </p>
+                <p className="text-xs text-amber-800">
+                  ⚠️ Diferenças maiores que 5 dias podem indicar:
+                </p>
+                <ul className="text-xs text-amber-800 mt-1 ml-4 list-disc space-y-1">
+                  <li>DUM incerta ou incorreta</li>
+                  <li>Necessidade de revisar os dados do ultrassom</li>
+                  <li>Variação normal no desenvolvimento fetal</li>
+                </ul>
+                <p className="text-xs text-amber-700 mt-3 font-medium">
+                  💡 Recomenda-se revisar os dados e, se necessário, considerar a IG pelo Ultrassom como referência principal.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Cards de Cálculos em Tempo Real */}
         {(calculosEmTempoReal.igDUM || calculosEmTempoReal.igUS) && (
