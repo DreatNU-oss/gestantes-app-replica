@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useAutoSave } from "@/hooks/useAutoSave";
 import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
@@ -83,6 +84,26 @@ export default function CartaoPrenatal() {
     condutaComplementacao: "",
     observacoes: "",
   });
+
+  // Auto-save: salvar rascunho automaticamente
+  const { savedAt, clearDraft, loadDraft } = useAutoSave(
+    `consulta_${gestanteSelecionada}`,
+    formData,
+    1000 // salvar após 1 segundo de inatividade
+  );
+
+  // Carregar rascunho ao abrir o formulário
+  useEffect(() => {
+    if (mostrarFormulario && !consultaEditando) {
+      const draft = loadDraft();
+      if (draft) {
+        setFormData(draft);
+        toast.info('Rascunho restaurado', {
+          description: 'Seus dados foram recuperados automaticamente.',
+        });
+      }
+    }
+  }, [mostrarFormulario, consultaEditando]);
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
   const { data: gestante } = trpc.gestantes.get.useQuery(
@@ -715,6 +736,7 @@ export default function CartaoPrenatal() {
       condutaComplementacao: "",
       observacoes: "",
     });
+    clearDraft(); // Limpar rascunho ao resetar formulário
     setMostrarFormulario(false);
     setConsultaEditando(null);
   };
@@ -1072,7 +1094,15 @@ export default function CartaoPrenatal() {
         {mostrarFormulario && (
           <Card>
             <CardHeader>
-              <CardTitle>{consultaEditando ? "Editar Consulta" : "Nova Consulta"}</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>{consultaEditando ? "Editar Consulta" : "Nova Consulta"}</CardTitle>
+                {savedAt && !consultaEditando && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                    Rascunho salvo {new Date(savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">

@@ -1502,3 +1502,16 @@
 - [x] Modificar lógica do GraficoPeso.tsx para ordenar consultas por data
 - [x] Usar último peso quando houver múltiplas consultas na mesma semana
 - [x] Testar com gestante que tem consultas duplicadas na mesma semana
+
+
+## FEATURE: Salvamento Automático em Rascunho (Auto-Save) - Solicitado 22/12/2025
+
+- [x] Criar hook customizado useAutoSave para gerenciar localStorage
+- [x] Implementar auto-save no formulário de Nova Consulta
+- [ ] Implementar auto-save no formulário de cadastro de gestante
+- [ ] Implementar auto-save no formulário de edição de gestante
+- [ ] Implementar auto-save no formulário de exames laboratoriais
+- [ ] Implementar auto-save no formulário de ultrassons
+- [x] Adicionar indicador visual de "Rascunho salvo" nos formulários
+- [x] Limpar rascunho após salvamento bem-sucedido
+- [x] Testar funcionalidade trocando de aba e voltando
