@@ -46,6 +46,23 @@ export default function CartaoPrenatal() {
       setGestanteSelecionada(gestanteAtiva.id);
     }
   }, [gestanteAtiva]);
+  
+  // Verificar query params para abrir formulário automaticamente
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gestanteIdParam = params.get('gestanteId');
+    const novaConsultaParam = params.get('novaConsulta');
+    
+    if (gestanteIdParam) {
+      setGestanteSelecionada(parseInt(gestanteIdParam));
+    }
+    
+    if (novaConsultaParam === 'true') {
+      setMostrarFormulario(true);
+      // Limpar query params da URL
+      window.history.replaceState({}, '', '/cartao-prenatal');
+    }
+  }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);

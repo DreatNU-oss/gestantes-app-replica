@@ -1571,3 +1571,18 @@
 - [x] Identificar causa do problema - procedure create não tinha altura/pesoInicial/observacoes
 - [x] Corrigir bug - adicionados campos faltantes nos procedures create e update
 - [x] Testar salvamento de peso e altura
+
+
+## FEATURE: Melhorias de Fluxo - Iniciar Consulta (Solicitado 23/12/2025)
+
+### Modal após salvar gestante
+- [x] Adicionar estado para controlar modal de confirmação
+- [x] Criar modal "Deseja iniciar consulta para [Nome]?"
+- [x] Implementar botões "Não, voltar" e "Sim, iniciar consulta"
+- [x] Navegar para página de nova consulta ao clicar "Sim"
+- [x] Testar fluxo completo
+
+### Menu + Consulta abrir direto
+- [x] Identificar onde menu + Consulta está implementado - GestantesLayout.tsx
+- [x] Modificar para abrir formulário de nova consulta diretamente
+- [x] Testar navegação

@@ -170,7 +170,7 @@ export default function GestantesLayout({
                         variant="outline"
                         size="sm"
                         className="h-8 text-xs"
-                        onClick={() => setLocation('/cartao-prenatal')}
+                        onClick={() => setLocation(`/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true`)}
                         title="Nova Consulta"
                       >
                         <Plus className="h-3 w-3 mr-1" />

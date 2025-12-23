@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { parseLocalDate } from "@/lib/dateUtils";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export default function FormularioGestante({
   onSuccess,
   onCancel,
 }: FormularioGestanteProps) {
+  const [, setLocation] = useLocation();
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
   
   const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
@@ -51,6 +53,11 @@ export default function FormularioGestante({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
   const [formDataInitial, setFormDataInitial] = useState<typeof formData | null>(null);
+  
+  // Estado para modal de iniciar consulta
+  const [showStartConsultaModal, setShowStartConsultaModal] = useState(false);
+  const [createdGestanteId, setCreatedGestanteId] = useState<number | null>(null);
+  const [createdGestanteName, setCreatedGestanteName] = useState<string>("");
   
   const [formData, setFormData] = useState({
     nome: "",
@@ -192,11 +199,15 @@ export default function FormularioGestante({
   }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
 
   const createMutation = trpc.gestantes.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       clearDraft();
       setHasUnsavedChanges(false);
       toast.success("Gestante cadastrada com sucesso!");
-      onSuccess();
+      
+      // Mostrar modal para iniciar consulta
+      setCreatedGestanteId(data.id);
+      setCreatedGestanteName(formData.nome);
+      setShowStartConsultaModal(true);
     },
     onError: (error) => {
       toast.error("Erro ao cadastrar gestante: " + error.message);
@@ -846,6 +857,38 @@ export default function FormularioGestante({
                 }}
               >
                 Sair sem salvar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de iniciar consulta */}
+      {showStartConsultaModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-background border rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-2">Iniciar consulta?</h3>
+            <p className="text-muted-foreground mb-6">
+              Deseja iniciar uma consulta para <span className="font-semibold">{createdGestanteName}</span>?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowStartConsultaModal(false);
+                  onSuccess();
+                }}
+              >
+                Não, voltar
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowStartConsultaModal(false);
+                  // Navegar para página de consultas com gestante selecionada
+                  setLocation(`/cartao-prenatal?gestanteId=${createdGestanteId}&novaConsulta=true`);
+                }}
+              >
+                Sim, iniciar consulta
               </Button>
             </div>
           </div>
