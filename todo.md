@@ -1651,3 +1651,37 @@
 - [x] Testar com peso > 180kg (200kg - alerta apareceu corretamente)
 - [x] Verificar que múltiplos alertas aparecem simultaneamente
 - [x] Verificar que formulário pode ser salvo mesmo com alertas
+
+
+## BUG: Busca não encontra nomes com acentos (Reportado 23/12/2025)
+
+### Problema
+- Ao digitar "Debora" (sem acento), o sistema não encontra "Débora" (com acento)
+- A busca é case-sensitive e accent-sensitive
+- Afeta todos os campos de busca do site
+
+### Campos de Busca Afetados
+- [x] Página de Gestantes - campo de busca por nome (AutocompleteGestante)
+- [ ] Página de Marcos Importantes - seletor de gestante (autocomplete)
+- [ ] Página de Cartão de Pré-Natal - seletor de gestante (autocomplete)
+- [ ] Outros campos de busca que possam existir
+
+### Solução
+- [x] Criar função `normalizeText()` que remove acentos e converte para minúsculas
+- [x] Aplicar normalização no backend (procedures de busca) - Já existia!
+- [x] Aplicar normalização no frontend (AutocompleteGestante)
+- [ ] Verificar outros componentes que usam busca
+- [ ] Testar com exemplos: "Debora" → "Débora", "Jose" → "José", "Tamires" → "Tamiris"
+
+### Testes
+- [x] Buscar "Debora" e encontrar "Débora Gouvea Rocha de Jesus" - ✅ PASSOU
+- [ ] Buscar "Jessica" e encontrar "Jéssica Aparecida de Souza"
+- [ ] Buscar "Tamires" e encontrar "Tamiris Cristina Moreira Gomes"
+- [ ] Buscar "Cecilia" e encontrar "Cecília de Salles Amaral Olímpio"
+- [ ] Verificar que busca com acentos corretos também funciona
+
+### Resultado
+✅ **Normalização implementada com sucesso!**
+- Autocomplete agora encontra nomes independentemente de acentuação
+- Teste "Debora" → "Débora" funcionou perfeitamente
+- Tabela filtrada corretamente mostrando 1 resultado

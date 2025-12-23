@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { normalizeText } from "@/lib/utils-text";
 
 interface Gestante {
   id: number;
@@ -29,9 +30,9 @@ export function AutocompleteGestante({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Filtrar gestantes com base no termo de busca
+  // Filtrar gestantes com base no termo de busca (ignorando acentos)
   const filteredGestantes = gestantes.filter((g) =>
-    g.nome.toLowerCase().includes(value.toLowerCase())
+    normalizeText(g.nome).includes(normalizeText(value))
   );
 
   // Fechar sugestões ao clicar fora
