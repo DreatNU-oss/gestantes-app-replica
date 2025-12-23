@@ -47,6 +47,11 @@ export default function FormularioGestante({
     email?: string;
   }>({});
   
+  // Estados para confirmação ao sair
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+  const [formDataInitial, setFormDataInitial] = useState<typeof formData | null>(null);
+  
   const [formData, setFormData] = useState({
     nome: "",
     telefone: "",
@@ -108,6 +113,21 @@ export default function FormularioGestante({
       }
     }
   }, []);
+  
+  // Salvar estado inicial do formulário
+  useEffect(() => {
+    if (gestante || (!gestanteId && formDataInitial === null)) {
+      setFormDataInitial({ ...formData });
+    }
+  }, [gestante]);
+  
+  // Detectar alterações
+  useEffect(() => {
+    if (formDataInitial) {
+      const hasChanges = JSON.stringify(formData) !== JSON.stringify(formDataInitial);
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [formData, formDataInitial]);
   
   // Recalcular IG e DPP quando campos relevantes mudarem
   useEffect(() => {
@@ -173,7 +193,8 @@ export default function FormularioGestante({
 
   const createMutation = trpc.gestantes.create.useMutation({
     onSuccess: () => {
-      clearDraft(); // Limpar rascunho após salvar
+      clearDraft();
+      setHasUnsavedChanges(false);
       toast.success("Gestante cadastrada com sucesso!");
       onSuccess();
     },
@@ -184,7 +205,8 @@ export default function FormularioGestante({
 
   const updateMutation = trpc.gestantes.update.useMutation({
     onSuccess: () => {
-      clearDraft(); // Limpar rascunho após salvar
+      clearDraft();
+      setHasUnsavedChanges(false);
       toast.success("Gestante atualizada com sucesso!");
       onSuccess();
     },
@@ -274,6 +296,36 @@ export default function FormularioGestante({
       });
     }
   };
+  
+  // Validar campo individual (onBlur)
+  const validateField = (fieldName: keyof typeof fieldErrors) => {
+    const errors: typeof fieldErrors = {};
+    
+    switch (fieldName) {
+      case 'nome':
+        if (!formData.nome || formData.nome.trim() === '') {
+          errors.nome = 'Nome é obrigatório';
+        }
+        break;
+      case 'dataNascimento':
+        if (!formData.dataNascimento) {
+          errors.dataNascimento = 'Data de nascimento é obrigatória';
+        }
+        break;
+      case 'email':
+        if (!formData.email || formData.email.trim() === '') {
+          errors.email = 'E-mail é obrigatório';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+          errors.email = 'E-mail inválido';
+        }
+        break;
+    }
+    
+    setFieldErrors(prev => ({
+      ...prev,
+      ...errors
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -317,7 +369,17 @@ export default function FormularioGestante({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={onCancel}>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => {
+            if (hasUnsavedChanges) {
+              setShowExitConfirmation(true);
+            } else {
+              onCancel();
+            }
+          }}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
@@ -353,6 +415,7 @@ export default function FormularioGestante({
                     setFormData({ ...formData, nome: e.target.value });
                     clearFieldError('nome');
                   }}
+                  onBlur={() => validateField('nome')}
                   className={fieldErrors.nome ? 'border-red-500 focus-visible:ring-red-500' : ''}
                   required
                 />
@@ -369,6 +432,7 @@ export default function FormularioGestante({
                     setFormData({ ...formData, dataNascimento: value });
                     clearFieldError('dataNascimento');
                   }}
+                  onBlur={() => validateField('dataNascimento')}
                   showAge={true}
                   minAge={10}
                   maxAge={60}
@@ -395,6 +459,7 @@ export default function FormularioGestante({
                     setFormData({ ...formData, email: value });
                     clearFieldError('email');
                   }}
+                  onBlur={() => validateField('email')}
                   className={fieldErrors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
                 {fieldErrors.email && (
@@ -736,7 +801,17 @@ export default function FormularioGestante({
         </Card>
 
         <div className="flex gap-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => {
+              if (hasUnsavedChanges) {
+                setShowExitConfirmation(true);
+              } else {
+                onCancel();
+              }
+            }}
+          >
             Cancelar
           </Button>
           <Button 
@@ -747,6 +822,35 @@ export default function FormularioGestante({
           </Button>
         </div>
       </form>
+      
+      {/* Modal de confirmação ao sair */}
+      {showExitConfirmation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-background border rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-2">Deseja sair sem salvar?</h3>
+            <p className="text-muted-foreground mb-6">
+              Você tem alterações não salvas. Se sair agora, essas alterações serão perdidas.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setShowExitConfirmation(false)}
+              >
+                Continuar editando
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setShowExitConfirmation(false);
+                  onCancel();
+                }}
+              >
+                Sair sem salvar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

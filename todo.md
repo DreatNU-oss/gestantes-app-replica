@@ -1544,3 +1544,20 @@
 - [x] Validar ao tentar salvar formulário
 - [x] Limpar erros quando campo for preenchido
 - [x] Testar validação no formulário de gestantes
+
+
+## FEATURE: Validação em Tempo Real e Confirmação ao Sair (Solicitado 23/12/2025)
+
+### Validação em Tempo Real (onBlur)
+- [x] Adicionar validação onBlur no campo Nome
+- [x] Adicionar validação onBlur no campo Data de Nascimento
+- [x] Adicionar validação onBlur no campo E-mail
+- [x] Testar feedback imediato ao perder foco
+
+### Confirmação ao Sair
+- [x] Adicionar estado para rastrear alterações no formulário
+- [x] Detectar quando formulário foi modificado
+- [x] Criar modal de confirmação "Deseja sair sem salvar?"
+- [x] Bloquear navegação quando há alterações pendentes
+- [x] Permitir sair após confirmação do usuário
+- [x] Testar modal de confirmação
