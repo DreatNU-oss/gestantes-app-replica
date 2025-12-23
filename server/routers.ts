@@ -332,6 +332,9 @@ export const appRouter = router({
         igUltrassomDias: z.number().optional(),
         dataUltrassom: z.string().optional(),
         dataPartoProgramado: z.string().optional(),
+        altura: z.number().optional(),
+        pesoInicial: z.number().optional(),
+        observacoes: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const data: any = {
@@ -354,6 +357,9 @@ export const appRouter = router({
           igUltrassomDias: input.igUltrassomDias || null,
           dataUltrassom: input.dataUltrassom ? parseLocalDate(input.dataUltrassom) : null,
           dataPartoProgramado: input.dataPartoProgramado ? parseLocalDate(input.dataPartoProgramado) : null,
+          altura: input.altura || null,
+          pesoInicial: input.pesoInicial || null,
+          observacoes: input.observacoes || null,
         };
         
         return createGestante(data);
@@ -403,6 +409,7 @@ export const appRouter = router({
         igUltrassomDias: z.number().optional(),
         dataUltrassom: z.string().optional(),
         dataPartoProgramado: z.string().optional(),
+        observacoes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const { id, ...rest } = input;

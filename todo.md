@@ -1561,3 +1561,13 @@
 - [x] Bloquear navegação quando há alterações pendentes
 - [x] Permitir sair após confirmação do usuário
 - [x] Testar modal de confirmação
+
+
+## BUG: Peso e Altura não são salvos no cadastro de gestantes (Reportado 23/12/2025)
+
+- [x] Investigar código de envio de peso e altura no FormularioGestante
+- [x] Verificar schema do banco de dados (campos altura e pesoInicial)
+- [x] Verificar procedures de criação e atualização no backend
+- [x] Identificar causa do problema - procedure create não tinha altura/pesoInicial/observacoes
+- [x] Corrigir bug - adicionados campos faltantes nos procedures create e update
+- [x] Testar salvamento de peso e altura
