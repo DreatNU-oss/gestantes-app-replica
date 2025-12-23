@@ -1586,3 +1586,18 @@
 - [x] Identificar onde menu + Consulta está implementado - GestantesLayout.tsx
 - [x] Modificar para abrir formulário de nova consulta diretamente
 - [x] Testar navegação
+
+
+## FEATURE: Reorganizar Layout de Campos de Ultrassom (Solicitado 23/12/2025)
+
+### Problema identificado
+- Campos "IG Ultrassom (Semanas)" e "IG Ultrassom (Dias)" estão na mesma linha que DUM
+- Layout atual confunde pois não fica claro que Semanas/Dias se referem ao ultrassom
+
+### Novo layout desejado
+- [x] Manter DUM à esquerda | Data do Ultrassom à direita (primeira linha)
+- [x] Mover campos Semanas e Dias para ABAIXO da Data do Ultrassom
+- [x] Semanas e Dias lado a lado (campos pequenos) abaixo do ultrassom
+- [x] Altura à esquerda | Peso Inicial à direita (linha seguinte)
+- [x] Testar visualmente o novo layout
+- [x] Validar que formulário salva corretamente com novo layout

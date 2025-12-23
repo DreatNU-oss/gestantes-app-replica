@@ -614,96 +614,108 @@ export default function FormularioGestante({
             <CardTitle>Dados Obstétricos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="tipoDUM">DUM (Data da Última Menstruação)</Label>
-                <Select value={tipoDUM} onValueChange={(value: "data" | "incerta" | "incompativel") => {
-                  setTipoDUM(value);
-                  if (value !== "data") {
-                    setFormData({ ...formData, dum: "" });
-                  }
-                }}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo de DUM" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="data">Data Conhecida</SelectItem>
-                    <SelectItem value="incerta">Incerta</SelectItem>
-                    <SelectItem value="incompativel">Incompatível com US</SelectItem>
-                  </SelectContent>
-                </Select>
-                {tipoDUM === "data" && (
+            <div className="space-y-4">
+              {/* Primeira linha: DUM e Data do Ultrassom */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="tipoDUM">DUM (Data da Última Menstruação)</Label>
+                  <Select value={tipoDUM} onValueChange={(value: "data" | "incerta" | "incompativel") => {
+                    setTipoDUM(value);
+                    if (value !== "data") {
+                      setFormData({ ...formData, dum: "" });
+                    }
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo de DUM" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="data">Data Conhecida</SelectItem>
+                      <SelectItem value="incerta">Incerta</SelectItem>
+                      <SelectItem value="incompativel">Incompatível com US</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {tipoDUM === "data" && (
+                    <Input
+                      id="dum"
+                      type="date"
+                      value={formData.dum}
+                      onChange={(e) => setFormData({ ...formData, dum: e.target.value })}
+                      className="mt-2"
+                    />
+                  )}
+                  {tipoDUM === "incerta" && (
+                    <p className="text-sm text-muted-foreground mt-2">DUM incerta - cálculos baseados em DUM não serão exibidos</p>
+                  )}
+                  {tipoDUM === "incompativel" && (
+                    <p className="text-sm text-muted-foreground mt-2">DUM incompatível com ultrassom - cálculos baseados em DUM não serão exibidos</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dataUltrassom">Data do Ultrassom</Label>
                   <Input
-                    id="dum"
+                    id="dataUltrassom"
                     type="date"
-                    value={formData.dum}
-                    onChange={(e) => setFormData({ ...formData, dum: e.target.value })}
-                    className="mt-2"
+                    value={formData.dataUltrassom}
+                    onChange={(e) => setFormData({ ...formData, dataUltrassom: e.target.value })}
                   />
-                )}
-                {tipoDUM === "incerta" && (
-                  <p className="text-sm text-muted-foreground mt-2">DUM incerta - cálculos baseados em DUM não serão exibidos</p>
-                )}
-                {tipoDUM === "incompativel" && (
-                  <p className="text-sm text-muted-foreground mt-2">DUM incompatível com ultrassom - cálculos baseados em DUM não serão exibidos</p>
-                )}
+                  {/* IG Ultrassom (Semanas e Dias) abaixo da Data do Ultrassom */}
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="igUltrassomSemanas" className="text-xs">Semanas</Label>
+                      <Input
+                        id="igUltrassomSemanas"
+                        type="number"
+                        min="0"
+                        max="42"
+                        value={formData.igUltrassomSemanas}
+                        onChange={(e) => setFormData({ ...formData, igUltrassomSemanas: e.target.value })}
+                        className="h-9"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="igUltrassomDias" className="text-xs">Dias</Label>
+                      <Input
+                        id="igUltrassomDias"
+                        type="number"
+                        min="0"
+                        max="6"
+                        value={formData.igUltrassomDias}
+                        onChange={(e) => setFormData({ ...formData, igUltrassomDias: e.target.value })}
+                        className="h-9"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="dataUltrassom">Data do Ultrassom</Label>
-                <Input
-                  id="dataUltrassom"
-                  type="date"
-                  value={formData.dataUltrassom}
-                  onChange={(e) => setFormData({ ...formData, dataUltrassom: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="igUltrassomSemanas">IG Ultrassom (Semanas)</Label>
-                <Input
-                  id="igUltrassomSemanas"
-                  type="number"
-                  min="0"
-                  max="42"
-                  value={formData.igUltrassomSemanas}
-                  onChange={(e) => setFormData({ ...formData, igUltrassomSemanas: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="igUltrassomDias">IG Ultrassom (Dias)</Label>
-                <Input
-                  id="igUltrassomDias"
-                  type="number"
-                  min="0"
-                  max="6"
-                  value={formData.igUltrassomDias}
-                  onChange={(e) => setFormData({ ...formData, igUltrassomDias: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="altura">Altura (cm)</Label>
-                <Input
-                  id="altura"
-                  type="number"
-                  min="100"
-                  max="250"
-                  placeholder="Ex: 165"
-                  value={formData.altura}
-                  onChange={(e) => setFormData({ ...formData, altura: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
-                <Input
-                  id="pesoInicial"
-                  type="number"
-                  step="0.1"
-                  min="30"
-                  max="200"
-                  placeholder="Ex: 65.5"
-                  value={formData.pesoInicial}
-                  onChange={(e) => setFormData({ ...formData, pesoInicial: e.target.value })}
-                />
-                <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
+
+              {/* Segunda linha: Altura e Peso Inicial */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="altura">Altura (cm)</Label>
+                  <Input
+                    id="altura"
+                    type="number"
+                    min="100"
+                    max="250"
+                    placeholder="Ex: 165"
+                    value={formData.altura}
+                    onChange={(e) => setFormData({ ...formData, altura: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
+                  <Input
+                    id="pesoInicial"
+                    type="number"
+                    step="0.1"
+                    min="30"
+                    max="200"
+                    placeholder="Ex: 65.5"
+                    value={formData.pesoInicial}
+                    onChange={(e) => setFormData({ ...formData, pesoInicial: e.target.value })}
+                  />
+                  <p className="text-sm text-muted-foreground">Peso pré-gestacional para cálculo do IMC</p>
+                </div>
               </div>
             </div>
           </CardContent>
