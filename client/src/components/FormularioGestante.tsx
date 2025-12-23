@@ -33,15 +33,6 @@ export default function FormularioGestante({
 }: FormularioGestanteProps) {
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
   
-  // Auto-save hook (500ms padrão)
-  const { lastSaved, saveDraft, loadDraft, clearDraft } = useAutoSave(
-    `formulario-gestante-${gestanteId || 'novo'}`
-  );
-  
-  // Salvamento instantâneo para campos críticos (0ms)
-  useInstantSave(`gestante-nome-${gestanteId || 'novo'}`, formData.nome);
-  useInstantSave(`gestante-dataNascimento-${gestanteId || 'novo'}`, formData.dataNascimento);
-  useInstantSave(`gestante-dum-${gestanteId || 'novo'}`, formData.dum);
   const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
     igDUM: { semanas: number; dias: number } | null;
     dppDUM: string | null;
@@ -73,6 +64,20 @@ export default function FormularioGestante({
     pesoInicial: "",
   });
 
+  // Auto-save hook (500ms padrão)
+  const { lastSaved, saveDraft, loadDraft, clearDraft } = useAutoSave(
+    `formulario-gestante-${gestanteId || 'novo'}`,
+    { ...formData, tipoDUM }
+  );
+  
+  // Salvamento instantâneo para campos críticos (0ms)
+  useInstantSave(`gestante-nome-${gestanteId || 'novo'}`, formData.nome);
+  useInstantSave(`gestante-dataNascimento-${gestanteId || 'novo'}`, formData.dataNascimento);
+  useInstantSave(`gestante-dum-${gestanteId || 'novo'}`, formData.dum);
+  
+  // Formatar timestamp para exibição
+  const lastSavedFormatted = lastSaved ? new Date(lastSaved).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+
   const { data: gestante } = trpc.gestantes.get.useQuery(
     { id: gestanteId! },
     { enabled: !!gestanteId }
@@ -81,11 +86,6 @@ export default function FormularioGestante({
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
 
-  // Auto-save: salvar dados automaticamente
-  useEffect(() => {
-    saveDraft({ ...formData, tipoDUM });
-  }, [formData, tipoDUM]);
-  
   // Auto-save: restaurar dados ao carregar (apenas para novos cadastros)
   useEffect(() => {
     if (!gestanteId) {
@@ -272,10 +272,10 @@ export default function FormularioGestante({
             Preencha os dados da gestante
           </p>
         </div>
-        {lastSaved && (
+        {lastSavedFormatted && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Check className="h-4 w-4 text-green-600" />
-            <span>Rascunho salvo {lastSaved}</span>
+            <span>Rascunho salvo {lastSavedFormatted}</span>
           </div>
         )}
       </div>

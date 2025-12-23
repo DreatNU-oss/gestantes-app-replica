@@ -1526,3 +1526,10 @@
 - [x] Atualizar Ultrassons com delays otimizados
 - [x] Atualizar CartãoPrenatal (consultas) com delays otimizados
 - [x] Testar performance e responsividade do sistema
+
+
+## BUG: Erro de Inicialização no FormularioGestante (Reportado 23/12/2025)
+
+- [x] Corrigir ordem de declarações - formData sendo acessado antes de ser declarado
+- [x] Mover declaração de formData antes dos hooks useAutoSave e useInstantSave
+- [x] Testar formulário de gestantes após correção
