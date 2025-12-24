@@ -52,7 +52,11 @@ import {
   createFatorRisco,
   updateFatorRisco,
   deleteFatorRisco,
-  hasAltoRisco
+  hasAltoRisco,
+  getMedicamentosByGestanteId,
+  createMedicamento,
+  updateMedicamento,
+  deleteMedicamento
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -1521,6 +1525,46 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         return await deletarParto(input.id);
       }),
+  }),
+
+  // Router de Medicamentos na Gestação
+  medicamentos: router({
+    getMedicamentos: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => getMedicamentosByGestanteId(input.gestanteId)),
+    
+    addMedicamento: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipo: z.enum([
+          "polivitaminicos",
+          "aas",
+          "calcio",
+          "psicotropicos",
+          "progestagenos",
+          "enoxaparina",
+          "levotiroxina",
+          "anti_hipertensivos",
+          "outros"
+        ]),
+        especificacao: z.string().optional(),
+      }))
+      .mutation(({ input }) => createMedicamento(input)),
+    
+    updateMedicamento: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        especificacao: z.string().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return updateMedicamento(id, data);
+      }),
+    
+    deleteMedicamento: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteMedicamento(input.id)),
   }),
 });
 export type AppRouter = typeof appRouter;

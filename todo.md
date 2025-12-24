@@ -1749,3 +1749,14 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Correção de Validação tRPC (Solicitado 24/12/2025)
 
 - [x] Atualizar schema de validação tRPC para incluir novos fatores de risco (epilepsia, malformacoes_mullerianas, historico_familiar_dheg)
+
+## Medicamentos na Gestação (Solicitado 24/12/2025)
+
+- [x] Criar tabela 'medicamentos_gestacao' no schema do banco de dados
+- [x] Adicionar enum com tipos de medicamentos (polivitaminicos, aas, calcio, psicotropicos, progestagenos, enoxaparina, levotiroxina, anti_hipertensivos, outros)
+- [x] Criar funções CRUD no server/db.ts para medicamentos
+- [x] Criar procedures tRPC (getMedicamentos, addMedicamento, updateMedicamento, deleteMedicamento)
+- [x] Criar componente MedicamentosManager.tsx
+- [x] Integrar componente no CartaoPrenatal.tsx
+- [ ] Adicionar medicamentos ao PDF do cartão pré-natal (futura implementação)
+- [x] Testar adição, edição e remoção de medicamentos

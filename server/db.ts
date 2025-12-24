@@ -36,7 +36,10 @@ import {
   partosRealizados,
   fatoresRisco,
   InsertFatorRisco,
-  FatorRisco
+  FatorRisco,
+  medicamentosGestacao,
+  InsertMedicamentoGestacao,
+  MedicamentoGestacao
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -572,4 +575,45 @@ export async function hasAltoRisco(gestanteId: number): Promise<boolean> {
     .limit(1);
   
   return fatores.length > 0;
+}
+
+// ============ MEDICAMENTOS NA GESTAÇÃO ============
+
+export async function getMedicamentosByGestanteId(gestanteId: number): Promise<MedicamentoGestacao[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(medicamentosGestacao)
+    .where(and(
+      eq(medicamentosGestacao.gestanteId, gestanteId),
+      eq(medicamentosGestacao.ativo, 1)
+    ))
+    .orderBy(desc(medicamentosGestacao.createdAt));
+}
+
+export async function createMedicamento(data: InsertMedicamentoGestacao): Promise<MedicamentoGestacao> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(medicamentosGestacao).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(medicamentosGestacao).where(eq(medicamentosGestacao.id, insertedId)).limit(1);
+  return inserted[0] as MedicamentoGestacao;
+}
+
+export async function updateMedicamento(id: number, data: Partial<InsertMedicamentoGestacao>): Promise<MedicamentoGestacao | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(medicamentosGestacao).set(data).where(eq(medicamentosGestacao.id, id));
+  const updated = await db.select().from(medicamentosGestacao).where(eq(medicamentosGestacao.id, id)).limit(1);
+  return updated[0] || null;
+}
+
+export async function deleteMedicamento(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(medicamentosGestacao).set({ ativo: 0 }).where(eq(medicamentosGestacao.id, id));
 }

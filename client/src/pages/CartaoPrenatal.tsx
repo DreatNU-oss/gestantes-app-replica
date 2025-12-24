@@ -23,6 +23,7 @@ import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { GraficoPeso } from "@/components/GraficoPeso";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
+import MedicamentosManager from "@/components/MedicamentosManager";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -1124,6 +1125,11 @@ export default function CartaoPrenatal() {
             gestanteId={gestanteSelecionada} 
             idadeGestante={gestante.calculado?.idade}
           />
+        )}
+
+        {/* Medicamentos na Gestação */}
+        {gestanteSelecionada && (
+          <MedicamentosManager gestanteId={gestanteSelecionada} />
         )}
 
         {/* Botão Nova Consulta */}

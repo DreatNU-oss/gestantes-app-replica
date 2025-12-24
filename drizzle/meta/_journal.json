@@ -176,6 +176,13 @@
       "when": 1766575477819,
       "tag": "0024_good_gargoyle",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1766577615225,
+      "tag": "0025_good_tattoo",
+      "breakpoints": true
     }
   ]
 }

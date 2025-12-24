@@ -461,3 +461,29 @@ export const partosRealizados = mysqlTable("partosRealizados", {
 
 export type PartoRealizado = typeof partosRealizados.$inferSelect;
 export type InsertPartoRealizado = typeof partosRealizados.$inferInsert;
+
+/**
+ * Tabela de medicamentos em uso durante a gestação
+ */
+export const medicamentosGestacao = mysqlTable("medicamentosGestacao", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  tipo: mysqlEnum("tipo", [
+    "polivitaminicos",
+    "aas",
+    "calcio",
+    "psicotropicos",
+    "progestagenos",
+    "enoxaparina",
+    "levotiroxina",
+    "anti_hipertensivos",
+    "outros"
+  ]).notNull(),
+  especificacao: text("especificacao"), // Para anti-hipertensivos e outros
+  ativo: int("ativo").default(1).notNull(), // 1 = em uso, 0 = descontinuado
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MedicamentoGestacao = typeof medicamentosGestacao.$inferSelect;
+export type InsertMedicamentoGestacao = typeof medicamentosGestacao.$inferInsert;
