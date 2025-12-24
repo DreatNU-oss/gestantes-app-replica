@@ -149,6 +149,16 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  
+  // Buscar fatores de risco e medicamentos para o PDF
+  const { data: fatoresRisco } = trpc.fatoresRisco.list.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+  const { data: medicamentos } = trpc.medicamentos.list.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
 
   // Buscar condutas personalizadas
   const { data: condutasPersonalizadas, refetch: refetchCondutas } = trpc.condutas.list.useQuery();
@@ -286,6 +296,162 @@ export default function CartaoPrenatal() {
       y += 7;
       pdf.text(`DPP pelo Ultrassom: ${gestante.calculado.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}`, 20, y);
       y += 15;
+      
+      // Fatores de Risco
+      if (fatoresRisco && fatoresRisco.length > 0) {
+        // Verificar se precisa de nova página
+        if (y > 250) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Fatores de Risco', 20, y);
+        y += 8;
+        
+        pdf.setFontSize(9);
+        pdf.setTextColor(0, 0, 0);
+        
+        // Agrupar fatores de risco em linhas
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 20;
+        const maxWidth = pageWidth - (2 * margin);
+        let currentX = margin;
+        let lineHeight = 7;
+        
+        fatoresRisco.forEach((fator: any, index: number) => {
+          const nomeExibicao = fator.tipo === 'idade_avancada' ? 'Idade Avançada (≥ 35 anos)' :
+                               fator.tipo === 'hipertensao' ? 'Hipertensão' :
+                               fator.tipo === 'diabetes' ? 'Diabetes' :
+                               fator.tipo === 'epilepsia' ? 'Epilepsia' :
+                               fator.tipo === 'gemelaridade' ? 'Gemelaridade' :
+                               fator.tipo === 'cirurgia_uterina_previa' ? 'Cirurgia Uterina Prévia' :
+                               fator.tipo === 'morte_fetal_neonatal' ? 'Morte Fetal/Neonatal' :
+                               fator.tipo === 'abortos_repetidos' ? 'Abortos Repetidos' :
+                               fator.tipo === 'malformacao_fetal' ? 'Malformação Fetal' :
+                               fator.tipo === 'restricao_crescimento' ? 'Restrição de Crescimento' :
+                               fator.tipo === 'parto_prematuro' ? 'Parto Prematuro' :
+                               fator.tipo === 'macrossomia' ? 'Macrossomia' :
+                               fator.tipo === 'isoimunizacao' ? 'Isoimunização' :
+                               fator.tipo === 'outro' ? (fator.especificacao || 'Outro') :
+                               fator.tipo;
+          
+          // Desenhar badge vermelho
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 4;
+          
+          // Verificar se cabe na linha atual
+          if (currentX + textWidth > maxWidth + margin) {
+            currentX = margin;
+            y += lineHeight;
+            
+            // Verificar se precisa de nova página
+            if (y > 270) {
+              pdf.addPage();
+              y = 20;
+            }
+          }
+          
+          // Desenhar badge
+          pdf.setFillColor(254, 226, 226); // Vermelho claro
+          pdf.setDrawColor(220, 38, 38); // Borda vermelha
+          pdf.setLineWidth(0.3);
+          pdf.roundedRect(currentX, y - 4, textWidth, 5, 1, 1, 'FD');
+          
+          // Texto do badge
+          pdf.setTextColor(153, 27, 27); // Texto vermelho escuro
+          pdf.text(nomeExibicao, currentX + 2, y);
+          
+          currentX += textWidth + 3; // Espaço entre badges
+        });
+        
+        y += 12;
+      }
+      
+      // Medicamentos em Uso
+      if (medicamentos && medicamentos.length > 0) {
+        // Verificar se precisa de nova página
+        if (y > 250) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(139, 64, 73);
+        pdf.text('Medicamentos em Uso', 20, y);
+        y += 8;
+        
+        pdf.setFontSize(9);
+        pdf.setTextColor(0, 0, 0);
+        
+        // Agrupar medicamentos em linhas
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 20;
+        const maxWidth = pageWidth - (2 * margin);
+        let currentX = margin;
+        let lineHeight = 7;
+        
+        medicamentos.forEach((med: any) => {
+          const nomeExibicao = med.tipo === 'acido_folico' ? 'Ácido Fólico' :
+                               med.tipo === 'sulfato_ferroso' ? 'Sulfato Ferroso' :
+                               med.tipo === 'anti_hipertensivos' ? 'Anti-hipertensivos' :
+                               med.tipo === 'insulina' ? 'Insulina' :
+                               med.tipo === 'levotiroxina' ? 'Levotiroxina' :
+                               med.tipo === 'atorvastatina' ? 'Atorvastatina' :
+                               med.tipo === 'enalapril' ? 'Enalapril' :
+                               med.tipo === 'metformina' ? 'Metformina' :
+                               med.tipo === 'atenolol' ? 'Atenolol' :
+                               med.tipo === 'losartana' ? 'Losartana' :
+                               med.tipo === 'aas' ? 'AAS' :
+                               med.tipo === 'outro' ? (med.especificacao || 'Outro') :
+                               med.tipo;
+          
+          // Desenhar badge azul
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 4;
+          
+          // Verificar se cabe na linha atual
+          if (currentX + textWidth > maxWidth + margin) {
+            currentX = margin;
+            y += lineHeight;
+            
+            // Verificar se precisa de nova página
+            if (y > 270) {
+              pdf.addPage();
+              y = 20;
+            }
+          }
+          
+          // Desenhar badge
+          pdf.setFillColor(219, 234, 254); // Azul claro
+          pdf.setDrawColor(59, 130, 246); // Borda azul
+          pdf.setLineWidth(0.3);
+          pdf.roundedRect(currentX, y - 4, textWidth, 5, 1, 1, 'FD');
+          
+          // Texto do badge
+          pdf.setTextColor(30, 64, 175); // Texto azul escuro
+          pdf.text(nomeExibicao, currentX + 2, y);
+          
+          currentX += textWidth + 3; // Espaço entre badges
+          
+          // Se houver especificação, adicionar abaixo
+          if (med.especificacao && med.tipo !== 'outro') {
+            // Nova linha para especificação
+            currentX = margin;
+            y += lineHeight;
+            
+            // Verificar se precisa de nova página
+            if (y > 270) {
+              pdf.addPage();
+              y = 20;
+            }
+            
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(`→ ${med.especificacao}`, currentX, y);
+          }
+        });
+        
+        y += 12;
+      }
       
       // Histórico de Consultas
       if (consultas && consultas.length > 0) {

@@ -49,15 +49,36 @@ interface Exame {
   trimestre: number;
 }
 
+interface FatorRisco {
+  tipo: string;
+}
+
+interface Medicamento {
+  tipo: string;
+  especificacao: string | null;
+}
+
 interface DadosPDF {
   gestante: DadosGestante;
   consultas: Consulta[];
   marcos: Marco[];
   ultrassons: Ultrassom[];
   exames: Exame[];
+  fatoresRisco: FatorRisco[];
+  medicamentos: Medicamento[];
 }
 
 export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
+  // Debug: verificar dados recebidos
+  console.log('[PDF DEBUG] Fatores de Risco recebidos:', dados.fatoresRisco.length);
+  console.log('[PDF DEBUG] Medicamentos recebidos:', dados.medicamentos.length);
+  if (dados.fatoresRisco.length > 0) {
+    console.log('[PDF DEBUG] Fatores:', dados.fatoresRisco);
+  }
+  if (dados.medicamentos.length > 0) {
+    console.log('[PDF DEBUG] Medicamentos:', dados.medicamentos);
+  }
+  
   return new Promise((resolve, reject) => {
     try {
       const doc = new PDFDocument({ 
@@ -196,8 +217,141 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
         doc.moveDown(1);
       }
 
+      // Fatores de Risco
+      if (dados.fatoresRisco.length > 0) {
+        // Nova página se necessário
+        if (doc.y > 650) {
+          doc.addPage();
+        }
+        
+        doc.fontSize(14).fillColor(corPrimaria).text('Fatores de Risco');
+        doc.moveDown(0.5);
+        
+        // Mapear tipos de fatores de risco para nomes legíveis
+        const nomesRisco: Record<string, string> = {
+          idade_avancada: 'Idade Avançada (≥ 35 anos)',
+          hipotireoidismo: 'Hipotireoidismo',
+          diabetes_preexistente: 'Diabetes Preexistente',
+          hipertensao_preexistente: 'Hipertensão Preexistente',
+          obesidade: 'Obesidade',
+          gemelaridade: 'Gemelaridade',
+          placenta_previa: 'Placenta Prévia',
+          polidramnio: 'Polidrâmnio',
+          oligodramnio: 'Oligodrâmnio',
+          rciu: 'RCIU (Restrição de Crescimento Intrauterino)',
+          epilepsia: 'Epilepsia',
+          malformacoes_mullerianas: 'Malformações Müllerianas (Útero bicorno/septado/arqueado)',
+          historico_familiar_dheg: 'Mãe/irmã com histórico de DHEG',
+        };
+        
+        // Exibir fatores de risco como badges
+        let xPos = 50;
+        let yPos = doc.y;
+        
+        dados.fatoresRisco.forEach((fator) => {
+          const nome = nomesRisco[fator.tipo] || fator.tipo;
+          const larguraTexto = doc.widthOfString(nome) + 20;
+          
+          // Quebrar linha se não couber
+          if (xPos + larguraTexto > 545) {
+            xPos = 50;
+            yPos += 25;
+            
+            // Nova página se necessário
+            if (yPos > 720) {
+              doc.addPage();
+              yPos = 50;
+            }
+          }
+          
+          // Badge vermelho para fator de risco
+          doc.rect(xPos, yPos, larguraTexto, 20).fillColor('#FEE2E2').fill();
+          doc.rect(xPos, yPos, larguraTexto, 20).strokeColor('#DC2626').lineWidth(1).stroke();
+          doc.fontSize(9).fillColor('#DC2626').text(nome, xPos + 10, yPos + 6, { width: larguraTexto - 20 });
+          
+          xPos += larguraTexto + 10;
+        });
+        
+        doc.y = yPos + 30;
+        doc.moveDown(0.5);
+      }
+
+      // Medicamentos em Uso
+      if (dados.medicamentos.length > 0) {
+        // Nova página se necessário
+        if (doc.y > 650) {
+          doc.addPage();
+        }
+        
+        doc.fontSize(14).fillColor(corPrimaria).text('Medicamentos em Uso');
+        doc.moveDown(0.5);
+        
+        // Mapear tipos de medicamentos para nomes legíveis
+        const nomesMedicamentos: Record<string, string> = {
+          polivitaminicos: 'Polivitamínicos / Vitaminas específicas',
+          aas: 'AAS',
+          calcio: 'Cálcio',
+          psicotropicos: 'Psicotrópicos',
+          progestagenos: 'Progestágenos',
+          enoxaparina: 'Enoxaparina',
+          levotiroxina: 'Levotiroxina',
+          anti_hipertensivos: 'Anti-hipertensivos',
+          outros: 'Outros',
+        };
+        
+        // Exibir medicamentos como badges com especificação
+        let xPos = 50;
+        let yPos = doc.y;
+        
+        dados.medicamentos.forEach((med) => {
+          const nome = nomesMedicamentos[med.tipo] || med.tipo;
+          const larguraTexto = doc.widthOfString(nome) + 20;
+          
+          // Quebrar linha se não couber
+          if (xPos + larguraTexto > 545) {
+            xPos = 50;
+            yPos += 25;
+            
+            // Nova página se necessário
+            if (yPos > 720) {
+              doc.addPage();
+              yPos = 50;
+            }
+          }
+          
+          // Badge azul para medicamento
+          doc.rect(xPos, yPos, larguraTexto, 20).fillColor('#DBEAFE').fill();
+          doc.rect(xPos, yPos, larguraTexto, 20).strokeColor('#3B82F6').lineWidth(1).stroke();
+          doc.fontSize(9).fillColor('#1E40AF').text(nome, xPos + 10, yPos + 6, { width: larguraTexto - 20 });
+          
+          xPos += larguraTexto + 10;
+          
+          // Se houver especificação, exibir abaixo do badge
+          if (med.especificacao) {
+            // Forçar nova linha para especificação
+            xPos = 50;
+            yPos += 25;
+            
+            if (yPos > 720) {
+              doc.addPage();
+              yPos = 50;
+            }
+            
+            doc.fontSize(8).fillColor(corCinza).text(`  → ${med.especificacao}`, xPos, yPos);
+            yPos += 20;
+          }
+        });
+        
+        doc.y = yPos + 10;
+        doc.moveDown(0.5);
+      }
+
       // Marcos Importantes
-      if (dados.marcos.length > 0 && doc.y < 650) {
+      if (dados.marcos.length > 0) {
+        // Nova página se necessário
+        if (doc.y > 650) {
+          doc.addPage();
+        }
         doc.fontSize(14).fillColor(corPrimaria).text('Marcos Importantes da Gestação');
         doc.moveDown(0.5);
         
@@ -222,7 +376,11 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
       }
 
       // Ultrassons
-      if (dados.ultrassons.length > 0 && doc.y < 650) {
+      if (dados.ultrassons.length > 0) {
+        // Nova página se necessário
+        if (doc.y > 650) {
+          doc.addPage();
+        }
         doc.fontSize(14).fillColor(corPrimaria).text('Ultrassons');
         doc.moveDown(0.5);
         
@@ -239,7 +397,11 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
       }
 
       // Exames Laboratoriais
-      if (dados.exames.length > 0 && doc.y < 650) {
+      if (dados.exames.length > 0) {
+        // Nova página se necessário
+        if (doc.y > 650) {
+          doc.addPage();
+        }
         doc.fontSize(14).fillColor(corPrimaria).text('Exames Laboratoriais');
         doc.moveDown(0.5);
         

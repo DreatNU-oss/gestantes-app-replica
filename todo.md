@@ -1758,5 +1758,14 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Criar procedures tRPC (getMedicamentos, addMedicamento, updateMedicamento, deleteMedicamento)
 - [x] Criar componente MedicamentosManager.tsx
 - [x] Integrar componente no CartaoPrenatal.tsx
-- [ ] Adicionar medicamentos ao PDF do cartão pré-natal (futura implementação)
+- [ ] Adicionar medicamentos ao PDF do cartão pré-natal
 - [x] Testar adição, edição e remoção de medicamentos
+
+## Exportar Medicamentos e Fatores de Risco no PDF (Solicitado 24/12/2025)
+
+- [x] Buscar dados de medicamentos da gestante no gerador de PDF
+- [x] Buscar dados de fatores de risco da gestante no gerador de PDF
+- [x] Adicionar seção "Fatores de Risco" no PDF com badges coloridos
+- [x] Adicionar seção "Medicamentos em Uso" no PDF com especificações
+- [x] Testar geração de PDF com medicamentos e fatores de risco
+- [x] Validar layout e formatação das novas seções

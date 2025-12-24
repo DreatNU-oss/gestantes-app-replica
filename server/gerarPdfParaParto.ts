@@ -1,8 +1,9 @@
 import { getDb } from "./db";
-import { gestantes, consultasPrenatal, ultrassons, examesLaboratoriais } from "../drizzle/schema";
+import { gestantes, consultasPrenatal, ultrassons, examesLaboratoriais, fatoresRisco, medicamentosGestacao } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
+import { writeFileSync } from "fs";
 import { storagePut } from "./storage";
 import { calcularIdadeGestacional, calcularDPP } from "./calculos";
 
@@ -11,6 +12,8 @@ import { calcularIdadeGestacional, calcularDPP } from "./calculos";
  * Retorna { pdfUrl, pdfKey }
  */
 export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUrl: string; pdfKey: string }> {
+  console.log('[PDF] Iniciando geração de PDF para gestanteId:', gestanteId);
+  writeFileSync('/tmp/pdf_inicio.txt', `Iniciando PDF para gestante ${gestanteId} em ${new Date().toISOString()}`);
   const db = await getDb();
   if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
 
@@ -141,6 +144,38 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     };
   });
 
+  // Buscar fatores de risco
+  console.log('[PDF DEBUG] Buscando fatores de risco para gestanteId:', gestanteId);
+  const fatoresRiscoResult = await db
+    .select()
+    .from(fatoresRisco)
+    .where(eq(fatoresRisco.gestanteId, gestanteId));
+  console.log('[PDF DEBUG] Fatores de risco encontrados:', fatoresRiscoResult.length, fatoresRiscoResult);
+  
+  // Debug em arquivo
+  try {
+    writeFileSync('/tmp/pdf_debug_fatores.json', JSON.stringify({ gestanteId, count: fatoresRiscoResult.length, data: fatoresRiscoResult }, null, 2));
+  } catch (e) { /* ignore */ }
+
+  const fatoresRiscoFormatados = fatoresRiscoResult.map((f) => ({
+    tipo: f.tipo,
+  }));
+  console.log('[PDF DEBUG] Fatores de risco formatados:', fatoresRiscoFormatados);
+
+  // Buscar medicamentos
+  console.log('[PDF DEBUG] Buscando medicamentos para gestanteId:', gestanteId);
+  const medicamentosResult = await db
+    .select()
+    .from(medicamentosGestacao)
+    .where(eq(medicamentosGestacao.gestanteId, gestanteId));
+  console.log('[PDF DEBUG] Medicamentos encontrados:', medicamentosResult.length, medicamentosResult);
+
+  const medicamentosFormatados = medicamentosResult.map((m) => ({
+    tipo: m.tipo,
+    especificacao: m.especificacao,
+  }));
+  console.log('[PDF DEBUG] Medicamentos formatados:', medicamentosFormatados);
+
   // Calcular marcos importantes (baseado na DPP pelo US se disponível, senão DUM)
   const marcos: Array<{ titulo: string; data: string; periodo: string }> = [];
   
@@ -255,6 +290,8 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     marcos,
     ultrassons: ultrassonsFormatados,
     exames: examesFormatados,
+    fatoresRisco: fatoresRiscoFormatados,
+    medicamentos: medicamentosFormatados,
   };
 
   // Gerar PDF
