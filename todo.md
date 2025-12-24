@@ -1715,3 +1715,5 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Melhorias de UX - Seleção Automática
 
 - [x] Implementar seleção automática da gestante no menu lateral após criar novo registro
+
+- [x] Implementar pop-up de confirmação após salvar gestante para abrir formulário de nova consulta

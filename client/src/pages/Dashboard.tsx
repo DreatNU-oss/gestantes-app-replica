@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useLocation } from "wouter";
 import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,10 @@ export default function Dashboard() {
   const [partoData, setPartoData] = useState<string>("");
   const [partoTipo, setPartoTipo] = useState<"normal" | "cesarea">("normal");
   const [partoMedicoId, setPartoMedicoId] = useState<string>("");
+  
+  // Estados para diálogo de confirmação de consulta
+  const [showConsultaDialog, setShowConsultaDialog] = useState(false);
+  const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{id: number, nome: string} | null>(null);
   
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm });
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
@@ -182,12 +187,18 @@ export default function Dashboard() {
   }, [gestantes, sortBy, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim, searchTerm]);
 
   const handleSuccess = (data?: any) => {
-    // Se editou uma gestante, selecionar automaticamente no menu lateral
+    // Se criou/editou uma gestante, selecionar automaticamente no menu lateral
     if (data && data.id && data.nome) {
       setGestanteAtiva({
         id: data.id,
         nome: data.nome
       });
+      
+      // Se foi criação (não edição), mostrar diálogo de confirmação de consulta
+      if (!editingId) {
+        setGestanteParaConsulta({ id: data.id, nome: data.nome });
+        setShowConsultaDialog(true);
+      }
     }
     
     setShowForm(false);
@@ -499,6 +510,40 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Diálogo de Confirmação de Consulta */}
+      <Dialog open={showConsultaDialog} onOpenChange={setShowConsultaDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>🎉 Gestante cadastrada com sucesso!</DialogTitle>
+            <DialogDescription>
+              Deseja registrar uma consulta para <strong>{gestanteParaConsulta?.nome}</strong> agora?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowConsultaDialog(false);
+                setGestanteParaConsulta(null);
+              }}
+            >
+              Não, agora não
+            </Button>
+            <Button
+              onClick={() => {
+                setShowConsultaDialog(false);
+                // Redirecionar para Cartão Pré-Natal com query params para abrir formulário
+                if (gestanteParaConsulta) {
+                  window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true`;
+                }
+              }}
+            >
+              Sim, registrar consulta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Registro de Parto */}
       <Dialog open={showPartoModal} onOpenChange={setShowPartoModal}>
