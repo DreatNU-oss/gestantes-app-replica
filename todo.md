@@ -1814,3 +1814,24 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir problema de "NaNsNaNd" na IG DUM
 - [x] Criar tabela estruturada para ultrassons com 4 colunas (Data, Tipo, IG, Dados)
 - [x] Extrair dados relevantes do JSON dos ultrassons (DPP, TN, Osso Nasal, Peso Fetal)
+
+## Adicionar Exames Laboratoriais ao PDF do Cartão Pré-Natal (24/12/2025)
+
+- [ ] Analisar estrutura atual do gerador de PDF (gerarPdfCartao.ts)
+- [ ] Verificar schema e estrutura dos dados de exames laboratoriais
+- [ ] Implementar query para buscar exames da gestante
+- [ ] Criar seção "Exames Laboratoriais" no PDF
+- [ ] Adicionar tabela com colunas: Exame, 1º Tri, 2º Tri, 3º Tri
+- [ ] Incluir datas de coleta em cada trimestre
+- [ ] Adicionar observações gerais ao final da seção
+- [ ] Testar geração de PDF com dados reais de exames
+- [ ] Validar layout e formatação da tabela
+
+
+## Adicionar Exames Laboratoriais ao PDF do Cartão Pré-Natal
+
+- [x] Adicionar seção de Exames Laboratoriais ao PDF do Cartão Pré-Natal
+- [x] Criar tabela organizada por trimestre (1º, 2º, 3º)
+- [x] Buscar exames da tabela resultadosExames
+- [x] Exibir resultados e datas de cada exame por trimestre
+- [x] Testar geração de PDF com exames

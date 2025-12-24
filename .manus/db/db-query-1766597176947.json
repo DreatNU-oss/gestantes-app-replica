@@ -1,0 +1,140 @@
+{
+  "query": "SELECT * FROM resultadosExames WHERE gestanteId = 1 ORDER BY nomeExame, trimestre;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM resultadosExames WHERE gestanteId = 1 ORDER BY nomeExame, trimestre;",
+  "rows": [
+    {
+      "id": "330004",
+      "gestanteId": "1",
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330005",
+      "gestanteId": "1",
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "2",
+      "resultado": "92 mg/dL",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-09-10"
+    },
+    {
+      "id": "330001",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330002",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-09-10"
+    },
+    {
+      "id": "330003",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina",
+      "trimestre": "3",
+      "resultado": "11.2 g/dL",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-12-05"
+    },
+    {
+      "id": "330006",
+      "gestanteId": "1",
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330007",
+      "gestanteId": "1",
+      "nomeExame": "Sífilis (VDRL)",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330008",
+      "gestanteId": "1",
+      "nomeExame": "Sífilis (VDRL)",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-12-05"
+    },
+    {
+      "id": "330009",
+      "gestanteId": "1",
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330010",
+      "gestanteId": "1",
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330011",
+      "gestanteId": "1",
+      "nomeExame": "Urina Tipo 1",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-06-15"
+    },
+    {
+      "id": "330012",
+      "gestanteId": "1",
+      "nomeExame": "Urina Tipo 1",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-09-10"
+    },
+    {
+      "id": "330013",
+      "gestanteId": "1",
+      "nomeExame": "Urina Tipo 1",
+      "trimestre": "3",
+      "resultado": "Traços de proteína",
+      "createdAt": "2025-12-24 17:18:13",
+      "updatedAt": "2025-12-24 17:18:13",
+      "dataExame": "2025-12-05"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeExame\ttrimestre\tresultado\tcreatedAt\tupdatedAt\tdataExame\n330004\t1\tGlicemia de Jejum\t1\t85 mg/dL\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330005\t1\tGlicemia de Jejum\t2\t92 mg/dL\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-09-10\n330001\t1\tHemoglobina\t1\t12.5 g/dL\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330002\t1\tHemoglobina\t2\t11.8 g/dL\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-09-10\n330003\t1\tHemoglobina\t3\t11.2 g/dL\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-12-05\n330006\t1\tHIV\t1\tNão reagente\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330007\t1\tSífilis (VDRL)\t1\tNão reagente\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330008\t1\tSífilis (VDRL)\t3\tNão reagente\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-12-05\n330009\t1\tToxoplasmose IgG\t1\tReagente\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330010\t1\tToxoplasmose IgM\t1\tNão reagente\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330011\t1\tUrina Tipo 1\t1\tNormal\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-06-15\n330012\t1\tUrina Tipo 1\t2\tNormal\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-09-10\n330013\t1\tUrina Tipo 1\t3\tTraços de proteína\t2025-12-24 17:18:13\t2025-12-24 17:18:13\t2025-12-05\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

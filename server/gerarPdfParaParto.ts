@@ -1,5 +1,5 @@
 import { getDb } from "./db";
-import { gestantes, consultasPrenatal, ultrassons, examesLaboratoriais, fatoresRisco, medicamentosGestacao } from "../drizzle/schema";
+import { gestantes, consultasPrenatal, ultrassons, examesLaboratoriais, resultadosExames, fatoresRisco, medicamentosGestacao } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
@@ -140,28 +140,42 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     };
   });
 
-  // Buscar exames laboratoriais
+  // Buscar exames laboratoriais da tabela resultadosExames (estruturados por trimestre)
+  console.log('[PDF DEBUG] Buscando exames para gestanteId:', gestanteId);
   const examesResult = await db
     .select()
-    .from(examesLaboratoriais)
-    .where(eq(examesLaboratoriais.gestanteId, gestanteId))
-    .orderBy(desc(examesLaboratoriais.dataExame));
+    .from(resultadosExames)
+    .where(eq(resultadosExames.gestanteId, gestanteId));
+  console.log('[PDF DEBUG] Exames encontrados:', examesResult.length, examesResult);
 
-  const examesFormatados = examesResult.map((e) => {
-    // Calcular trimestre baseado na IG
-    let trimestre = 1;
-    if (e.igSemanas !== null) {
-      if (e.igSemanas >= 27) trimestre = 3;
-      else if (e.igSemanas >= 14) trimestre = 2;
+  // Agrupar exames por nome
+  const examesAgrupados: Record<string, { nome: string; trimestre1?: { resultado: string; data?: string }; trimestre2?: { resultado: string; data?: string }; trimestre3?: { resultado: string; data?: string }; observacoes?: string }> = {};
+  
+  for (const exame of examesResult) {
+    if (exame.nomeExame === 'outros_observacoes') {
+      // Observações gerais
+      if (!examesAgrupados['observacoes']) {
+        examesAgrupados['observacoes'] = { nome: 'Observações', observacoes: exame.resultado || '' };
+      }
+    } else {
+      // Exame normal
+      if (!examesAgrupados[exame.nomeExame]) {
+        examesAgrupados[exame.nomeExame] = { nome: exame.nomeExame };
+      }
+      
+      const trimestreKey = `trimestre${exame.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+      examesAgrupados[exame.nomeExame][trimestreKey] = {
+        resultado: exame.resultado || '-',
+        data: exame.dataExame ? formatarData(new Date(exame.dataExame)) : undefined,
+      };
     }
-    
-    return {
-      tipo: e.tipoExame,
-      data: formatarData(new Date(e.dataExame)),
-      resultado: e.resultado || "-",
-      trimestre,
-    };
-  });
+  }
+  
+  const examesFormatados = Object.values(examesAgrupados).filter(e => e.nome !== 'Observações');
+  const observacoesGerais = examesAgrupados['observacoes']?.observacoes || '';
+  
+  console.log('[PDF DEBUG] Exames formatados:', examesFormatados.length, examesFormatados);
+  console.log('[PDF DEBUG] Observações gerais:', observacoesGerais);
 
   // Buscar fatores de risco
   console.log('[PDF DEBUG] Buscando fatores de risco para gestanteId:', gestanteId);
@@ -309,6 +323,7 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     marcos,
     ultrassons: ultrassonsFormatados,
     exames: examesFormatados,
+    observacoesExames: observacoesGerais,
     fatoresRisco: fatoresRiscoFormatados,
     medicamentos: medicamentosFormatados,
   };

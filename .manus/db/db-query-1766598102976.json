@@ -1,0 +1,150 @@
+{
+  "query": "SELECT * FROM resultadosExames WHERE gestanteId = 1 ORDER BY nomeExame, trimestre;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM resultadosExames WHERE gestanteId = 1 ORDER BY nomeExame, trimestre;",
+  "rows": [
+    {
+      "id": "330025",
+      "gestanteId": "1",
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330026",
+      "gestanteId": "1",
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-08-20"
+    },
+    {
+      "id": "330027",
+      "gestanteId": "1",
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-11-10"
+    },
+    {
+      "id": "330017",
+      "gestanteId": "1",
+      "nomeExame": "Glicemia de jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330018",
+      "gestanteId": "1",
+      "nomeExame": "Glicemia de jejum",
+      "trimestre": "2",
+      "resultado": "88 mg/dL",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-08-20"
+    },
+    {
+      "id": "330014",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL / 37%",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330015",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL / 35%",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-08-20"
+    },
+    {
+      "id": "330016",
+      "gestanteId": "1",
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "resultado": "12.0 g/dL / 36%",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-11-10"
+    },
+    {
+      "id": "330019",
+      "gestanteId": "1",
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330020",
+      "gestanteId": "1",
+      "nomeExame": "HIV",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-11-10"
+    },
+    {
+      "id": "330023",
+      "gestanteId": "1",
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330024",
+      "gestanteId": "1",
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330021",
+      "gestanteId": "1",
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "id": "330022",
+      "gestanteId": "1",
+      "nomeExame": "VDRL",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "createdAt": "2025-12-24 17:40:14",
+      "updatedAt": "2025-12-24 17:40:14",
+      "dataExame": "2025-11-10"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeExame\ttrimestre\tresultado\tcreatedAt\tupdatedAt\tdataExame\n330025\t1\tEAS (Urina tipo 1)\t1\tNormal\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330026\t1\tEAS (Urina tipo 1)\t2\tNormal\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-08-20\n330027\t1\tEAS (Urina tipo 1)\t3\tNormal\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-11-10\n330017\t1\tGlicemia de jejum\t1\t85 mg/dL\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330018\t1\tGlicemia de jejum\t2\t88 mg/dL\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-08-20\n330014\t1\tHemoglobina/Hematócrito\t1\t12.5 g/dL / 37%\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330015\t1\tHemoglobina/Hematócrito\t2\t11.8 g/dL / 35%\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-08-20\n330016\t1\tHemoglobina/Hematócrito\t3\t12.0 g/dL / 36%\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-11-10\n330019\t1\tHIV\t1\tNão reagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330020\t1\tHIV\t3\tNão reagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-11-10\n330023\t1\tToxoplasmose IgG\t1\tReagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330024\t1\tToxoplasmose IgM\t1\tNão reagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330021\t1\tVDRL\t1\tNão reagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-05-15\n330022\t1\tVDRL\t3\tNão reagente\t2025-12-24 17:40:14\t2025-12-24 17:40:14\t2025-11-10\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

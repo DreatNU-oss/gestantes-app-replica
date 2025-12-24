@@ -1,0 +1,15 @@
+{
+  "query": "SELECT g.id, g.nome, COUNT(re.id) as total_exames\nFROM gestantes g\nLEFT JOIN resultadosExames re ON g.id = re.gestanteId\nWHERE g.nome LIKE '%Débora%'\nGROUP BY g.id, g.nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, COUNT(re.id) as total_exames\nFROM gestantes g\nLEFT JOIN resultadosExames re ON g.id = re.gestanteId\nWHERE g.nome LIKE '%Débora%'\nGROUP BY g.id, g.nome;",
+  "rows": [
+    {
+      "id": "330039",
+      "nome": "Débora Gouvea Rocha de Jesus",
+      "total_exames": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttotal_exames\n330039\tDébora Gouvea Rocha de Jesus\t0\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

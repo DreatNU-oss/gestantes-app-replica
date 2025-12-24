@@ -1,0 +1,35 @@
+{
+  "query": "SELECT g.id, g.nome, COUNT(re.id) as total_exames\nFROM gestantes g\nINNER JOIN resultadosExames re ON g.id = re.gestanteId\nGROUP BY g.id, g.nome\nORDER BY total_exames DESC\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, COUNT(re.id) as total_exames\nFROM gestantes g\nINNER JOIN resultadosExames re ON g.id = re.gestanteId\nGROUP BY g.id, g.nome\nORDER BY total_exames DESC\nLIMIT 5;",
+  "rows": [
+    {
+      "id": "330066",
+      "nome": "Laura Antônia Marques Correa",
+      "total_exames": "24"
+    },
+    {
+      "id": "930002",
+      "nome": "Patrícia de Melo Carvalho",
+      "total_exames": "23"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "total_exames": "22"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "total_exames": "18"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "total_exames": "18"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttotal_exames\n330066\tLaura Antônia Marques Correa\t24\n930002\tPatrícia de Melo Carvalho\t23\n330007\tCamila Soares Ferreira Sidrin\t22\n330010\tLetícia Aparecida Silveira\t18\n330008\tLucíola Viviane Achilles Medeiros Araújo\t18\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

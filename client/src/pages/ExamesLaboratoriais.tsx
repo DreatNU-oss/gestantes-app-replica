@@ -84,6 +84,7 @@ export default function ExamesLaboratoriais() {
 
   // Carregar resultados quando gestante é selecionada
   useEffect(() => {
+    console.log('🔍 DEBUG resultadosSalvos:', resultadosSalvos);
     if (resultadosSalvos) {
       setResultados(resultadosSalvos);
     } else if (gestanteSelecionada) {

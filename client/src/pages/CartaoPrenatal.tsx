@@ -145,10 +145,18 @@ export default function CartaoPrenatal() {
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
-  const { data: resultadosExamesLab } = trpc.examesLab.buscar.useQuery(
+  const { data: resultadosExamesLab, isLoading: loadingExamesLab, isError: errorExamesLab } = trpc.examesLab.buscar.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  
+  console.log('🧪 [CartaoPrenatal] Query examesLab:', {
+    gestanteSelecionada,
+    isLoading: loadingExamesLab,
+    isError: errorExamesLab,
+    data: resultadosExamesLab,
+    keys: resultadosExamesLab ? Object.keys(resultadosExamesLab) : 'undefined'
+  });
   
   // Buscar fatores de risco e medicamentos para o PDF
   const { data: fatoresRisco } = trpc.fatoresRisco.list.useQuery(

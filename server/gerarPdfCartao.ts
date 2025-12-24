@@ -1,4 +1,5 @@
-import PDFDocument from "pdfkit";
+import PDFDocument from 'pdfkit';
+import { writeFileSync } from 'fs';
 import path from "path";
 import fs from "fs";
 
@@ -43,10 +44,10 @@ interface Ultrassom {
 }
 
 interface Exame {
-  tipo: string;
-  data: string;
-  resultado: string;
-  trimestre: number;
+  nome: string;
+  trimestre1?: { resultado: string; data?: string };
+  trimestre2?: { resultado: string; data?: string };
+  trimestre3?: { resultado: string; data?: string };
 }
 
 interface FatorRisco {
@@ -64,12 +65,31 @@ interface DadosPDF {
   marcos: Marco[];
   ultrassons: Ultrassom[];
   exames: Exame[];
+  observacoesExames?: string;
   fatoresRisco: FatorRisco[];
   medicamentos: Medicamento[];
 }
 
 export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
   // Debug: verificar dados recebidos
+  const debugInfo = {
+    timestamp: new Date().toISOString(),
+    examesLength: dados.exames.length,
+    exames: dados.exames,
+    observacoesExames: dados.observacoesExames,
+    fatoresRiscoLength: dados.fatoresRisco.length,
+    medicamentosLength: dados.medicamentos.length
+  };
+  
+  try {
+    writeFileSync('/tmp/pdf_debug_exames.json', JSON.stringify(debugInfo, null, 2));
+  } catch (e) { 
+    console.error('[PDF DEBUG] Erro ao escrever arquivo de debug:', e);
+  }
+  
+  console.log('[PDF DEBUG] ===== INICIANDO GERAÇÃO DE PDF =====');
+  console.log('[PDF DEBUG] Exames recebidos:', dados.exames.length, dados.exames);
+  console.log('[PDF DEBUG] Observações de exames:', dados.observacoesExames);
   console.log('[PDF DEBUG] Fatores de Risco recebidos:', dados.fatoresRisco.length);
   console.log('[PDF DEBUG] Medicamentos recebidos:', dados.medicamentos.length);
   if (dados.fatoresRisco.length > 0) {
@@ -438,22 +458,139 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
       }
 
       // Exames Laboratoriais
+      console.log('[PDF DEBUG] Verificando se deve renderizar exames...');
+      console.log('[PDF DEBUG] dados.exames.length:', dados.exames.length);
+      console.log('[PDF DEBUG] dados.exames:', JSON.stringify(dados.exames, null, 2));
+      
       if (dados.exames.length > 0) {
+        console.log('[PDF DEBUG] RENDERIZANDO SEÇÃO DE EXAMES!');
         // Nova página se necessário
         if (doc.y > 650) {
           doc.addPage();
         }
+        
+        // Título da seção
         doc.fontSize(14).fillColor(corPrimaria).text('Exames Laboratoriais');
         doc.moveDown(0.5);
         
-        dados.exames.slice(0, 10).forEach((exame) => {
-          if (doc.y > 720) {
+        // Cabeçalhos da tabela (uma única vez no topo)
+        const startX = 50;
+        const colWidth = 165; // Largura de cada coluna de trimestre
+        const nomeWidth = 100; // Largura da coluna de nome do exame
+        let yPos = doc.y;
+        
+        // Linha de cabeçalho
+        doc.fontSize(11).fillColor(corPrimaria).font('Helvetica-Bold');
+        doc.text('Exame', startX, yPos, { width: nomeWidth, align: 'left' });
+        doc.text('1º Trimestre', startX + nomeWidth, yPos, { width: colWidth, align: 'left' });
+        doc.text('2º Trimestre', startX + nomeWidth + colWidth, yPos, { width: colWidth, align: 'left' });
+        doc.text('3º Trimestre', startX + nomeWidth + colWidth * 2, yPos, { width: colWidth, align: 'left' });
+        
+        // Linha separadora
+        yPos += 15;
+        doc.moveTo(startX, yPos).lineTo(startX + nomeWidth + colWidth * 3, yPos).stroke();
+        yPos += 5;
+        
+        // Iterar sobre cada exame
+        doc.font('Helvetica');
+        dados.exames.forEach((exame) => {
+          // Verificar se precisa de nova página
+          if (yPos > 720) {
             doc.addPage();
+            yPos = 50;
+            
+            // Repetir cabeçalhos na nova página
+            doc.fontSize(11).fillColor(corPrimaria).font('Helvetica-Bold');
+            doc.text('Exame', startX, yPos, { width: nomeWidth, align: 'left' });
+            doc.text('1º Trimestre', startX + nomeWidth, yPos, { width: colWidth, align: 'left' });
+            doc.text('2º Trimestre', startX + nomeWidth + colWidth, yPos, { width: colWidth, align: 'left' });
+            doc.text('3º Trimestre', startX + nomeWidth + colWidth * 2, yPos, { width: colWidth, align: 'left' });
+            yPos += 15;
+            doc.moveTo(startX, yPos).lineTo(startX + nomeWidth + colWidth * 3, yPos).stroke();
+            yPos += 5;
+            doc.font('Helvetica');
           }
           
-          doc.fontSize(9).fillColor(corTexto).text(`${exame.tipo}: ${exame.resultado} (${exame.data})`);
-          doc.moveDown(0.3);
+          // Nome do exame em negrito
+          doc.fontSize(9).fillColor(corTexto).font('Helvetica-Bold');
+          doc.text(exame.nome, startX, yPos, { width: nomeWidth, align: 'left' });
+          doc.font('Helvetica');
+          
+          // Função auxiliar para formatar resultado com data
+          const formatarResultado = (trimestre?: { resultado: string; data?: string }) => {
+            if (!trimestre) return '-';
+            
+            // Filtrar datas brutas (formato YYYY-MM-DD)
+            const resultado = trimestre.resultado;
+            if (/^\d{4}-\d{2}-\d{2}$/.test(resultado)) {
+              return '-'; // Ignorar datas brutas
+            }
+            
+            // Se tiver data, formatar como DD/MM/AAAA
+            if (trimestre.data) {
+              const dataFormatada = trimestre.data.includes('/') 
+                ? trimestre.data 
+                : (() => {
+                    const [ano, mes, dia] = trimestre.data!.split('-');
+                    return `${dia}/${mes}/${ano}`;
+                  })();
+              return `${dataFormatada}\n${resultado}`;
+            }
+            
+            return resultado;
+          };
+          
+          // Resultados de cada trimestre
+          const texto1 = formatarResultado(exame.trimestre1);
+          const texto2 = formatarResultado(exame.trimestre2);
+          const texto3 = formatarResultado(exame.trimestre3);
+          
+          // Renderizar cada coluna (PDFKit quebra automaticamente)
+          doc.fontSize(8).fillColor(corCinza);
+          
+          // Calcular altura de cada texto
+          const altura1 = doc.heightOfString(texto1, { width: colWidth - 5 });
+          const altura2 = doc.heightOfString(texto2, { width: colWidth - 5 });
+          const altura3 = doc.heightOfString(texto3, { width: colWidth - 5 });
+          const alturaMax = Math.max(altura1, altura2, altura3);
+          
+          // 1º Trimestre
+          doc.text(texto1, startX + nomeWidth, yPos, { width: colWidth - 5, align: 'left' });
+          
+          // 2º Trimestre
+          doc.text(texto2, startX + nomeWidth + colWidth, yPos, { width: colWidth - 5, align: 'left' });
+          
+          // 3º Trimestre
+          doc.text(texto3, startX + nomeWidth + colWidth * 2, yPos, { width: colWidth - 5, align: 'left' });
+          
+          // Avançar para próxima linha
+          yPos += alturaMax + 5;
         });
+        
+        // Observações gerais
+        if (dados.observacoesExames && dados.observacoesExames.trim()) {
+          yPos += 10;
+          if (yPos > 700) {
+            doc.addPage();
+            yPos = 50;
+          }
+          
+          doc.fontSize(10).fillColor(corPrimaria).font('Helvetica-Bold');
+          doc.text('OBSERVAÇÕES:', startX, yPos);
+          yPos += 15;
+          
+          doc.fontSize(9).fillColor(corTexto).font('Helvetica');
+          const alturaObservacoes = doc.heightOfString(dados.observacoesExames, { width: 495 });
+          if (yPos + alturaObservacoes > 750) {
+            doc.addPage();
+            yPos = 50;
+          }
+          doc.text(dados.observacoesExames, startX, yPos, { width: 495 });
+          yPos += alturaObservacoes + 5;
+        }
+        
+        // Atualizar posição do documento
+        doc.y = yPos;
       }
 
       // Rodapé em todas as páginas
