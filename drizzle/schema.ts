@@ -128,6 +128,9 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
     "trombofilia",
     "mal_passado_obstetrico",
     "incompetencia_istmo_cervical",
+    "epilepsia",
+    "malformacoes_mullerianas",
+    "historico_familiar_dheg",
     "outro"
   ]).notNull(),
   descricao: text("descricao"), // Para "outro" ou detalhes adicionais

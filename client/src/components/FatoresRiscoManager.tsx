@@ -28,6 +28,9 @@ const FATORES_RISCO_LABELS: Record<string, string> = {
   trombofilia: "Trombofilia",
   mal_passado_obstetrico: "Mal Passado Obstétrico",
   incompetencia_istmo_cervical: "Incompetência Istmo-cervical",
+  epilepsia: "Epilepsia",
+  malformacoes_mullerianas: "Malformações Müllerianas (Útero bicorno/septado/arqueado)",
+  historico_familiar_dheg: "Mãe/irmã com histórico de DHEG",
   outro: "Outro",
 };
 
@@ -191,6 +194,13 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   </SelectItem>
                   <SelectItem value="incompetencia_istmo_cervical">
                     Incompetência Istmo-cervical
+                  </SelectItem>
+                  <SelectItem value="epilepsia">Epilepsia</SelectItem>
+                  <SelectItem value="malformacoes_mullerianas">
+                    Malformações Müllerianas (Útero bicorno/septado/arqueado)
+                  </SelectItem>
+                  <SelectItem value="historico_familiar_dheg">
+                    Mãe/irmã com histórico de DHEG
                   </SelectItem>
                   <SelectItem value="outro">Outro</SelectItem>
                 </SelectContent>

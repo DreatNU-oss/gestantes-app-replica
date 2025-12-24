@@ -1,0 +1,1 @@
+ALTER TABLE `fatoresRisco` MODIFY COLUMN `tipo` enum('idade_avancada','hipotireoidismo','hipertensao','diabetes_tipo2','trombofilia','mal_passado_obstetrico','incompetencia_istmo_cervical','uso_medicamentos_psicotropicos','epilepsia','malformacoes_mullerianas','historico_familiar_dheg','outro') NOT NULL;

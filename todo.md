@@ -1731,3 +1731,13 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Remover submenu "Logs de E-mails" (dados duplicados em Monitoramento)
 - [x] Padronizar página Monitoramento de E-mails com GestantesLayout e botão Voltar
+
+## Novos Fatores de Risco (Solicitado 24/12/2025)
+
+- [x] Adicionar campo 'usoMedicamentosPsicotropicos' ao schema (removido posteriormente)
+- [x] Adicionar campo 'epilepsia' ao schema
+- [x] Adicionar campo 'malformacoesMullerianas' ao schema
+- [x] Adicionar campo 'historicoFamiliarDheg' ao schema
+- [x] Atualizar formulários de cadastro/edição com novos checkboxes
+- [x] Atualizar exibição de fatores de risco no cartão pré-natal
+- [x] Atualizar exibição de fatores de risco no dashboard
