@@ -1685,3 +1685,28 @@
 - Autocomplete agora encontra nomes independentemente de acentuação
 - Teste "Debora" → "Débora" funcionou perfeitamente
 - Tabela filtrada corretamente mostrando 1 resultado
+
+
+## Seleção Automática no Menu Lateral ao Editar Gestante
+
+### Objetivo
+Ao editar o registro principal de uma gestante, ela deve ser automaticamente selecionada no menu lateral para facilitar navegação rápida para suas seções (Cartão, Consultas, Exames, Ultrassons).
+
+### Implementação
+- [x] Identificar componente FormularioGestante onde acontece a edição
+- [x] Importar hook useGestanteAtiva no FormularioGestante
+- [x] Após salvar edição com sucesso, chamar setGestanteAtiva() com dados da gestante
+- [x] Testar fluxo: editar gestante → salvar → verificar menu lateral atualizado
+
+### Resultado
+✅ **Funcionalidade implementada com sucesso!**
+- Problema identificado: mutation `gestantes.update` retornava apenas `{ success: true }`
+- Solução: Modificada para retornar `{ success: true, id, nome }` após buscar gestante atualizada
+- Dashboard.handleSuccess agora recebe dados corretos e chama setGestanteAtiva()
+- Testado com Débora Gouvea: após editar, ela foi automaticamente selecionada no menu lateral
+- Menu lateral mostra "Gestante Selecionada: Débora Gouvea Rocha de Jesus"
+- Botão na tabela mostra "Selecionada" corretamente
+
+### Resultado Esperado
+✅ Ao salvar edição de gestante, ela fica automaticamente selecionada no menu lateral
+✅ Usuário pode navegar rapidamente para Cartão/Consultas/Exames sem precisar selecionar novamente

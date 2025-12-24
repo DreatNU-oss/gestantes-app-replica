@@ -181,7 +181,15 @@ export default function Dashboard() {
     }
   }, [gestantes, sortBy, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim, searchTerm]);
 
-  const handleSuccess = () => {
+  const handleSuccess = (data?: any) => {
+    // Se editou uma gestante, selecionar automaticamente no menu lateral
+    if (data && data.id && data.nome) {
+      setGestanteAtiva({
+        id: data.id,
+        nome: data.nome
+      });
+    }
+    
     setShowForm(false);
     setEditingId(null);
     setViewingId(null);

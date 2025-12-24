@@ -20,10 +20,11 @@ import { toast } from "sonner";
 import { ArrowLeft, Calendar, Baby, Check } from "lucide-react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
-  onSuccess: () => void;
+  onSuccess: (data?: any) => void;
   onCancel: () => void;
 }
 
@@ -33,6 +34,7 @@ export default function FormularioGestante({
   onCancel,
 }: FormularioGestanteProps) {
   const [, setLocation] = useLocation();
+  const { setGestanteAtiva } = useGestanteAtiva();
   const [tipoDUM, setTipoDUM] = useState<"data" | "incerta" | "incompativel">("data");
   
   const [calculosEmTempoReal, setCalculosEmTempoReal] = useState<{
@@ -319,11 +321,13 @@ export default function FormularioGestante({
   });
 
   const updateMutation = trpc.gestantes.update.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       clearDraft();
       setHasUnsavedChanges(false);
       toast.success("Gestante atualizada com sucesso!");
-      onSuccess();
+      
+      // Passar os dados da gestante para o callback onSuccess
+      onSuccess(data);
     },
     onError: (error) => {
       toast.error("Erro ao atualizar gestante: " + error.message);

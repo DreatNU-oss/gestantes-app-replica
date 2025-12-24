@@ -421,7 +421,17 @@ export const appRouter = router({
         if (data.dataPartoProgramado) data.dataPartoProgramado = parseLocalDate(data.dataPartoProgramado);
         
         await updateGestante(id, data);
-        return { success: true };
+        
+        // Retornar dados da gestante para permitir seleção automática
+        const gestante = await getGestanteById(id);
+        if (!gestante) {
+          throw new Error('Gestante não encontrada após atualização');
+        }
+        return { 
+          success: true,
+          id: gestante.id,
+          nome: gestante.nome
+        };
       }),
     
     delete: protectedProcedure
