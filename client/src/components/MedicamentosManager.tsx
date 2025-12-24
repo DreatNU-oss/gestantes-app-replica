@@ -20,14 +20,16 @@ interface MedicamentosManagerProps {
 }
 
 const MEDICAMENTOS_LABELS: Record<string, string> = {
-  polivitaminicos: "Polivitamínicos / Vitaminas específicas",
   aas: "AAS",
-  calcio: "Cálcio",
-  psicotropicos: "Psicotrópicos",
-  progestagenos: "Progestágenos",
-  enoxaparina: "Enoxaparina",
-  levotiroxina: "Levotiroxina",
   anti_hipertensivos: "Anti-hipertensivos",
+  calcio: "Cálcio",
+  enoxaparina: "Enoxaparina",
+  insulina: "Insulina",
+  levotiroxina: "Levotiroxina",
+  medicamentos_inalatorios: "Medicamentos Inalatórios (corticosteroides/broncodilatadores)",
+  polivitaminicos: "Polivitamínicos / Vitaminas específicas",
+  progestagenos: "Progestágenos",
+  psicotropicos: "Psicotrópicos",
   outros: "Outros",
 };
 
@@ -73,7 +75,7 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
       return;
     }
 
-    if ((novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "outros") && !novoMedicamento.especificacao) {
+    if ((novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "medicamentos_inalatorios" || novoMedicamento.tipo === "insulina" || novoMedicamento.tipo === "outros") && !novoMedicamento.especificacao) {
       toast.error("Especifique o medicamento");
       return;
     }
@@ -91,7 +93,7 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
     }
   };
 
-  const needsEspecificacao = novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "outros";
+  const needsEspecificacao = novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "medicamentos_inalatorios" || novoMedicamento.tipo === "insulina" || novoMedicamento.tipo === "outros";
 
   if (isLoading) {
     return <div className="text-sm text-muted-foreground">Carregando medicamentos...</div>;
@@ -147,14 +149,16 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="polivitaminicos">Polivitamínicos / Vitaminas específicas</SelectItem>
                   <SelectItem value="aas">AAS</SelectItem>
-                  <SelectItem value="calcio">Cálcio</SelectItem>
-                  <SelectItem value="psicotropicos">Psicotrópicos</SelectItem>
-                  <SelectItem value="progestagenos">Progestágenos</SelectItem>
-                  <SelectItem value="enoxaparina">Enoxaparina</SelectItem>
-                  <SelectItem value="levotiroxina">Levotiroxina</SelectItem>
                   <SelectItem value="anti_hipertensivos">Anti-hipertensivos</SelectItem>
+                  <SelectItem value="calcio">Cálcio</SelectItem>
+                  <SelectItem value="enoxaparina">Enoxaparina</SelectItem>
+                  <SelectItem value="insulina">Insulina</SelectItem>
+                  <SelectItem value="levotiroxina">Levotiroxina</SelectItem>
+                  <SelectItem value="medicamentos_inalatorios">Medicamentos Inalatórios (corticosteroides/broncodilatadores)</SelectItem>
+                  <SelectItem value="polivitaminicos">Polivitamínicos / Vitaminas específicas</SelectItem>
+                  <SelectItem value="progestagenos">Progestágenos</SelectItem>
+                  <SelectItem value="psicotropicos">Psicotrópicos</SelectItem>
                   <SelectItem value="outros">Outros</SelectItem>
                 </SelectContent>
               </Select>

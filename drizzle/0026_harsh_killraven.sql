@@ -1,0 +1,2 @@
+ALTER TABLE `fatoresRisco` MODIFY COLUMN `tipo` enum('diabetes_gestacional','diabetes_tipo2','dpoc_asma','epilepsia','hipotireoidismo','hipertensao','historico_familiar_dheg','idade_avancada','incompetencia_istmo_cervical','mal_passado_obstetrico','malformacoes_mullerianas','trombofilia','outro') NOT NULL;--> statement-breakpoint
+ALTER TABLE `medicamentosGestacao` MODIFY COLUMN `tipo` enum('aas','anti_hipertensivos','calcio','enoxaparina','insulina','levotiroxina','medicamentos_inalatorios','polivitaminicos','progestagenos','psicotropicos','outros') NOT NULL;

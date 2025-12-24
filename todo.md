@@ -1777,3 +1777,21 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir enum de tipos de fatores de risco para corresponder ao schema do banco
 - [x] Testar carregamento de medicamentos e fatores de risco na página do Cartão Pré-natal
 - [x] Validar geração de PDF com as novas procedures funcionando
+
+## Adicionar Novos Fatores de Risco e Medicamentos (24/12/2025)
+
+- [x] Adicionar "dpoc_asma" ao enum de fatores de risco no schema
+- [x] Adicionar "diabetes_gestacional" ao enum de fatores de risco no schema
+- [x] Adicionar "medicamentos_inalatorios" ao enum de medicamentos no schema
+- [x] Adicionar "insulina" ao enum de medicamentos no schema
+- [x] Executar db:push para aplicar mudanças no banco
+- [x] Atualizar enum no router tRPC de fatores de risco
+- [x] Atualizar enum no router tRPC de medicamentos
+- [x] Ordenar alfabeticamente as opções de fatores de risco (exceto "outro" por último)
+- [x] Ordenar alfabeticamente as opções de medicamentos (exceto "outros" por último)
+- [x] Atualizar componente FatoresRiscoManager.tsx com novas opções ordenadas
+- [x] Atualizar componente MedicamentosManager.tsx com novas opções ordenadas
+- [x] Testar adição dos novos fatores de risco
+- [x] Testar adição dos novos medicamentos
+- [x] Validar ordenação alfabética nos seletores
+- [x] Testar geração de PDF com novos itens

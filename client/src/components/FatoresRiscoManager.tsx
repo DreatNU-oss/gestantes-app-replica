@@ -21,16 +21,18 @@ interface FatoresRiscoManagerProps {
 }
 
 const FATORES_RISCO_LABELS: Record<string, string> = {
-  idade_avancada: "Idade ≥ 35 anos",
+  diabetes_gestacional: "Diabetes Gestacional",
+  diabetes_tipo2: "Diabetes Tipo 2",
+  dpoc_asma: "DPOC/Asma",
+  epilepsia: "Epilepsia",
   hipotireoidismo: "Hipotireoidismo",
   hipertensao: "Hipertensão",
-  diabetes_tipo2: "Diabetes Tipo 2",
-  trombofilia: "Trombofilia",
-  mal_passado_obstetrico: "Mal Passado Obstétrico",
-  incompetencia_istmo_cervical: "Incompetência Istmo-cervical",
-  epilepsia: "Epilepsia",
-  malformacoes_mullerianas: "Malformações Müllerianas (Útero bicorno/septado/arqueado)",
   historico_familiar_dheg: "Mãe/irmã com histórico de DHEG",
+  idade_avancada: "Idade ≥ 35 anos",
+  incompetencia_istmo_cervical: "Incompetência Istmo-cervical",
+  mal_passado_obstetrico: "Mal Passado Obstétrico",
+  malformacoes_mullerianas: "Malformações Müllerianas (Útero bicorno/septado/arqueado)",
+  trombofilia: "Trombofilia",
   outro: "Outro",
 };
 
@@ -184,24 +186,26 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="idade_avancada">Idade ≥ 35 anos</SelectItem>
+                  <SelectItem value="diabetes_gestacional">Diabetes Gestacional</SelectItem>
+                  <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
+                  <SelectItem value="dpoc_asma">DPOC/Asma</SelectItem>
+                  <SelectItem value="epilepsia">Epilepsia</SelectItem>
                   <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
                   <SelectItem value="hipertensao">Hipertensão</SelectItem>
-                  <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
-                  <SelectItem value="trombofilia">Trombofilia</SelectItem>
-                  <SelectItem value="mal_passado_obstetrico">
-                    Mal Passado Obstétrico
-                  </SelectItem>
-                  <SelectItem value="incompetencia_istmo_cervical">
-                    Incompetência Istmo-cervical
-                  </SelectItem>
-                  <SelectItem value="epilepsia">Epilepsia</SelectItem>
-                  <SelectItem value="malformacoes_mullerianas">
-                    Malformações Müllerianas (Útero bicorno/septado/arqueado)
-                  </SelectItem>
                   <SelectItem value="historico_familiar_dheg">
                     Mãe/irmã com histórico de DHEG
                   </SelectItem>
+                  <SelectItem value="idade_avancada">Idade ≥ 35 anos</SelectItem>
+                  <SelectItem value="incompetencia_istmo_cervical">
+                    Incompetência Istmo-cervical
+                  </SelectItem>
+                  <SelectItem value="mal_passado_obstetrico">
+                    Mal Passado Obstétrico
+                  </SelectItem>
+                  <SelectItem value="malformacoes_mullerianas">
+                    Malformações Müllerianas (Útero bicorno/septado/arqueado)
+                  </SelectItem>
+                  <SelectItem value="trombofilia">Trombofilia</SelectItem>
                   <SelectItem value="outro">Outro</SelectItem>
                 </SelectContent>
               </Select>

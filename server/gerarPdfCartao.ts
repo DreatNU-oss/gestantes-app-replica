@@ -229,19 +229,19 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
         
         // Mapear tipos de fatores de risco para nomes legíveis
         const nomesRisco: Record<string, string> = {
-          idade_avancada: 'Idade Avançada (≥ 35 anos)',
-          hipotireoidismo: 'Hipotireoidismo',
-          diabetes_preexistente: 'Diabetes Preexistente',
-          hipertensao_preexistente: 'Hipertensão Preexistente',
-          obesidade: 'Obesidade',
-          gemelaridade: 'Gemelaridade',
-          placenta_previa: 'Placenta Prévia',
-          polidramnio: 'Polidrâmnio',
-          oligodramnio: 'Oligodrâmnio',
-          rciu: 'RCIU (Restrição de Crescimento Intrauterino)',
+          diabetes_gestacional: 'Diabetes Gestacional',
+          diabetes_tipo2: 'Diabetes Tipo 2',
+          dpoc_asma: 'DPOC/Asma',
           epilepsia: 'Epilepsia',
-          malformacoes_mullerianas: 'Malformações Müllerianas (Útero bicorno/septado/arqueado)',
+          hipotireoidismo: 'Hipotireoidismo',
+          hipertensao: 'Hipertensão',
           historico_familiar_dheg: 'Mãe/irmã com histórico de DHEG',
+          idade_avancada: 'Idade Avançada (≥ 35 anos)',
+          incompetencia_istmo_cervical: 'Incompetência Istmo-cervical',
+          mal_passado_obstetrico: 'Mal Passado Obstétrico',
+          malformacoes_mullerianas: 'Malformações Müllerianas (Útero bicorno/septado/arqueado)',
+          trombofilia: 'Trombofilia',
+          outro: 'Outro',
         };
         
         // Exibir fatores de risco como badges
@@ -288,14 +288,16 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
         
         // Mapear tipos de medicamentos para nomes legíveis
         const nomesMedicamentos: Record<string, string> = {
-          polivitaminicos: 'Polivitamínicos / Vitaminas específicas',
           aas: 'AAS',
-          calcio: 'Cálcio',
-          psicotropicos: 'Psicotrópicos',
-          progestagenos: 'Progestágenos',
-          enoxaparina: 'Enoxaparina',
-          levotiroxina: 'Levotiroxina',
           anti_hipertensivos: 'Anti-hipertensivos',
+          calcio: 'Cálcio',
+          enoxaparina: 'Enoxaparina',
+          insulina: 'Insulina',
+          levotiroxina: 'Levotiroxina',
+          medicamentos_inalatorios: 'Medicamentos Inalatórios (corticosteroides/broncodilatadores)',
+          polivitaminicos: 'Polivitamínicos / Vitaminas específicas',
+          progestagenos: 'Progestágenos',
+          psicotropicos: 'Psicotrópicos',
           outros: 'Outros',
         };
         

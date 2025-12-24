@@ -1537,16 +1537,18 @@ export const appRouter = router({
       .input(z.object({
         gestanteId: z.number(),
         tipo: z.enum([
-          "idade_avancada",
+          "diabetes_gestacional",
+          "diabetes_tipo2",
+          "dpoc_asma",
+          "epilepsia",
           "hipotireoidismo",
           "hipertensao",
-          "diabetes_tipo2",
-          "trombofilia",
-          "mal_passado_obstetrico",
-          "incompetencia_istmo_cervical",
-          "epilepsia",
-          "malformacoes_mullerianas",
           "historico_familiar_dheg",
+          "idade_avancada",
+          "incompetencia_istmo_cervical",
+          "mal_passado_obstetrico",
+          "malformacoes_mullerianas",
+          "trombofilia",
           "outro"
         ]),
       }))
@@ -1571,14 +1573,16 @@ export const appRouter = router({
       .input(z.object({
         gestanteId: z.number(),
         tipo: z.enum([
-          "polivitaminicos",
           "aas",
-          "calcio",
-          "psicotropicos",
-          "progestagenos",
-          "enoxaparina",
-          "levotiroxina",
           "anti_hipertensivos",
+          "calcio",
+          "enoxaparina",
+          "insulina",
+          "levotiroxina",
+          "medicamentos_inalatorios",
+          "polivitaminicos",
+          "progestagenos",
+          "psicotropicos",
           "outros"
         ]),
         especificacao: z.string().optional(),
