@@ -345,8 +345,9 @@ export default function CartaoPrenatal() {
                                fator.tipo === 'outro' ? (fator.especificacao || 'Outro') :
                                fator.tipo;
           
-          // Desenhar badge vermelho
-          const textWidth = pdf.getTextWidth(nomeExibicao) + 4;
+          // Calcular largura do texto com padding adequado
+          pdf.setFontSize(9);
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 6; // Aumentado padding de 4 para 6
           
           // Verificar se cabe na linha atual
           if (currentX + textWidth > maxWidth + margin) {
@@ -368,7 +369,7 @@ export default function CartaoPrenatal() {
           
           // Texto do badge (centralizado verticalmente no retângulo)
           pdf.setTextColor(153, 27, 27); // Texto vermelho escuro
-          pdf.text(nomeExibicao, currentX + 2, y + 0.5);
+          pdf.text(nomeExibicao, currentX + 3, y + 0.5); // Aumentado padding de 2 para 3
           
           currentX += textWidth + 3; // Espaço entre badges
         });
@@ -414,8 +415,9 @@ export default function CartaoPrenatal() {
                                med.tipo === 'outro' ? (med.especificacao || 'Outro') :
                                med.tipo;
           
-          // Desenhar badge azul
-          const textWidth = pdf.getTextWidth(nomeExibicao) + 4;
+          // Calcular largura do texto com padding adequado
+          pdf.setFontSize(9);
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 6; // Aumentado padding de 4 para 6
           
           // Verificar se cabe na linha atual
           if (currentX + textWidth > maxWidth + margin) {
@@ -437,24 +439,32 @@ export default function CartaoPrenatal() {
           
           // Texto do badge (centralizado verticalmente no retângulo)
           pdf.setTextColor(30, 64, 175); // Texto azul escuro
-          pdf.text(nomeExibicao, currentX + 2, y + 0.5);
+          pdf.text(nomeExibicao, currentX + 3, y + 0.5); // Aumentado padding de 2 para 3
           
           currentX += textWidth + 3; // Espaço entre badges
           
-          // Se houver especificação, adicionar abaixo
+          // Se houver especificação, adicionar ao lado do badge (na mesma linha)
           if (med.especificacao && med.tipo !== 'outro') {
-            // Nova linha para especificação
-            currentX = margin;
-            y += lineHeight;
+            pdf.setFontSize(9);
+            pdf.setTextColor(100, 100, 100);
+            const especTexto = ` ${med.especificacao}`;
+            const especWidth = pdf.getTextWidth(especTexto);
             
-            // Verificar se precisa de nova página
-            if (y > 270) {
-              pdf.addPage();
-              y = 20;
+            // Verificar se cabe na linha atual
+            if (currentX + especWidth > maxWidth + margin) {
+              // Não cabe, ir para próxima linha
+              currentX = margin;
+              y += lineHeight;
+              
+              // Verificar se precisa de nova página
+              if (y > 270) {
+                pdf.addPage();
+                y = 20;
+              }
             }
             
-            pdf.setTextColor(100, 100, 100);
-            pdf.text(`→ ${med.especificacao}`, currentX, y);
+            pdf.text(especTexto, currentX, y + 0.5);
+            currentX += especWidth + 3;
           }
         });
         

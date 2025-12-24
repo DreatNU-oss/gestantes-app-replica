@@ -1850,3 +1850,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Exibir IG DUM e IG USG separadamente no histórico de consultas
 - [x] Substituir "NaNxNa" por "-" quando IG não está disponível
 - [x] Testar PDF com dados reais após correções
+
+## Correções Urgentes de Badges no PDF (24/12/2025 - 17:10)
+- [x] Corrigir badge "Idade Avançada (≥ 35 anos)" que está com texto saindo do retângulo
+- [x] Corrigir truncamento de "losartana 50mg" que aparece como "artana 50mg"
+- [x] Revisar cálculo de largura dos badges para textos longos
+- [x] Garantir que todo texto caiba dentro do badge
+- [x] Testar com todos os fatores de risco e medicamentos
