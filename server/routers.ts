@@ -362,7 +362,14 @@ export const appRouter = router({
           observacoes: input.observacoes || null,
         };
         
-        return createGestante(data);
+        const novaGestante = await createGestante(data);
+        
+        // Retornar dados da gestante para permitir seleção automática
+        return { 
+          success: true,
+          id: novaGestante.id,
+          nome: novaGestante.nome
+        };
       }),
     
     update: protectedProcedure

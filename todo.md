@@ -1710,3 +1710,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ### Resultado Esperado
 ✅ Ao salvar edição de gestante, ela fica automaticamente selecionada no menu lateral
 ✅ Usuário pode navegar rapidamente para Cartão/Consultas/Exames sem precisar selecionar novamente
+
+
+## Melhorias de UX - Seleção Automática
+
+- [x] Implementar seleção automática da gestante no menu lateral após criar novo registro
