@@ -1726,3 +1726,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar visualização de alertas na lista de gestantes
 - [x] Adicionar seção de fatores de risco no Cartão de Pré-natal
 - [x] Implementar cálculo automático de idade ≥ 35 anos como fator de risco
+
+## Ajustes de Menu e Layout (Solicitado 24/12/2025)
+
+- [x] Remover submenu "Logs de E-mails" (dados duplicados em Monitoramento)
+- [x] Padronizar página Monitoramento de E-mails com GestantesLayout e botão Voltar

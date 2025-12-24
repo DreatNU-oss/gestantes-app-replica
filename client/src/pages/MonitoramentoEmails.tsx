@@ -12,7 +12,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Mail, CheckCircle2, XCircle, Clock, TrendingUp, Calendar } from 'lucide-react';
+import { Mail, CheckCircle2, XCircle, Clock, TrendingUp, Calendar, ArrowLeft } from 'lucide-react';
+import GestantesLayout from '@/components/GestantesLayout';
+import { useLocation } from 'wouter';
 
 export default function MonitoramentoEmails() {
   const [dataInicio, setDataInicio] = useState('');
@@ -69,14 +71,26 @@ export default function MonitoramentoEmails() {
     setStatusFiltro('todos');
   };
 
+  const [, setLocation] = useLocation();
+
   return (
-    <div className="container py-8 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Monitoramento de E-mails</h1>
-        <p className="text-muted-foreground mt-2">
-          Acompanhe o histórico de envios, estatísticas e próximos lembretes programados
-        </p>
-      </div>
+    <GestantesLayout>
+      <div className="space-y-6">
+        {/* Botão Voltar */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setLocation('/dashboard')}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+
+        <div>
+          <h2 className="text-2xl font-bold text-foreground shrink-0">Monitoramento de E-mails</h2>
+          <p className="text-muted-foreground mt-2">
+            Acompanhe o histórico de envios, estatísticas e próximos lembretes programados
+          </p>
+        </div>
 
       {/* Estatísticas Gerais */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -322,6 +336,7 @@ export default function MonitoramentoEmails() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </GestantesLayout>
   );
 }
