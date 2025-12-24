@@ -1857,3 +1857,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Revisar cálculo de largura dos badges para textos longos
 - [x] Garantir que todo texto caiba dentro do badge
 - [x] Testar com todos os fatores de risco e medicamentos
+
+## Correção Badge Idade Avançada (24/12/2025 - 19:40)
+- [x] Badge "Idade Avançada (≥ 35 anos)" ainda está cortando texto no PDF
+- [x] Aumentar ainda mais a largura do badge ou usar texto abreviado
+- [x] Testar com PDF da Débora
+- [x] Solução: Simplificado texto para "Idade ≥ 35 anos" (mais compacto)

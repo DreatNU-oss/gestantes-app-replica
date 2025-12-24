@@ -329,7 +329,7 @@ export default function CartaoPrenatal() {
         let lineHeight = 7;
         
         fatoresRisco.forEach((fator: any, index: number) => {
-          const nomeExibicao = fator.tipo === 'idade_avancada' ? 'Idade Avançada (≥ 35 anos)' :
+          const nomeExibicao = fator.tipo === 'idade_avancada' ? 'Idade ≥ 35 anos' :
                                fator.tipo === 'hipertensao' ? 'Hipertensão' :
                                fator.tipo === 'diabetes' ? 'Diabetes' :
                                fator.tipo === 'epilepsia' ? 'Epilepsia' :
