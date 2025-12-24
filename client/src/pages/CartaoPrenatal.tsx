@@ -364,11 +364,11 @@ export default function CartaoPrenatal() {
           pdf.setFillColor(254, 226, 226); // Vermelho claro
           pdf.setDrawColor(220, 38, 38); // Borda vermelha
           pdf.setLineWidth(0.3);
-          pdf.roundedRect(currentX, y - 4, textWidth, 5, 1, 1, 'FD');
+          pdf.roundedRect(currentX, y - 4, textWidth, 6, 1, 1, 'FD');
           
-          // Texto do badge
+          // Texto do badge (centralizado verticalmente no retângulo)
           pdf.setTextColor(153, 27, 27); // Texto vermelho escuro
-          pdf.text(nomeExibicao, currentX + 2, y);
+          pdf.text(nomeExibicao, currentX + 2, y + 0.5);
           
           currentX += textWidth + 3; // Espaço entre badges
         });
@@ -433,11 +433,11 @@ export default function CartaoPrenatal() {
           pdf.setFillColor(219, 234, 254); // Azul claro
           pdf.setDrawColor(59, 130, 246); // Borda azul
           pdf.setLineWidth(0.3);
-          pdf.roundedRect(currentX, y - 4, textWidth, 5, 1, 1, 'FD');
+          pdf.roundedRect(currentX, y - 4, textWidth, 6, 1, 1, 'FD');
           
-          // Texto do badge
+          // Texto do badge (centralizado verticalmente no retângulo)
           pdf.setTextColor(30, 64, 175); // Texto azul escuro
-          pdf.text(nomeExibicao, currentX + 2, y);
+          pdf.text(nomeExibicao, currentX + 2, y + 0.5);
           
           currentX += textWidth + 3; // Espaço entre badges
           
@@ -478,7 +478,7 @@ export default function CartaoPrenatal() {
           }
           
           // Calcular IG pela DUM
-          let igTexto = '-';
+          let igDUMTexto = '-';
           if (gestante.dum) {
             const dum = new Date(gestante.dum);
             const dataConsulta = new Date(consulta.dataConsulta);
@@ -486,14 +486,33 @@ export default function CartaoPrenatal() {
             const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
             const semanas = Math.floor(totalDias / 7);
             const dias = totalDias % 7;
-            igTexto = `${semanas}s${dias}d`;
+            // Validar se os valores são válidos
+            if (!isNaN(semanas) && !isNaN(dias) && semanas >= 0 && dias >= 0) {
+              igDUMTexto = `${semanas}s ${dias}d`;
+            }
+          }
+          
+          // Calcular IG pelo Ultrassom
+          let igUSTexto = '-';
+          if (gestante.dataUltrassom && gestante.igUltrassomSemanas) {
+            const ultrassom = new Date(gestante.dataUltrassom);
+            const dataConsulta = new Date(consulta.dataConsulta);
+            const diffMs = dataConsulta.getTime() - ultrassom.getTime();
+            const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS;
+            const semanas = Math.floor(totalDiasUS / 7);
+            const dias = totalDiasUS % 7;
+            // Validar se os valores são válidos
+            if (!isNaN(semanas) && !isNaN(dias) && semanas >= 0 && dias >= 0) {
+              igUSTexto = `${semanas}s ${dias}d`;
+            }
           }
           
           const pesoFormatado = consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : '-';
           const bcf = consulta.bcf ? 'Sim' : 'Não';
           const mf = consulta.mf ? 'Sim' : 'Não';
           
-          pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG: ${igTexto}`, 20, y);
+          pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG DUM: ${igDUMTexto} | IG US: ${igUSTexto}`, 20, y);
           y += 5;
           const paFormatado = consulta.pressaoArterial || '-';
           const auFormatado = consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)}cm` : '-';

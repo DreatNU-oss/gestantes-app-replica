@@ -1843,3 +1843,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Exibir Idade Gestacional no momento do exame
 - [x] Mostrar dados relevantes (DPP, TN, Peso Fetal, BCF, Conclusão)
 - [x] Testar geração de PDF com ultrassons
+
+
+## Correções no PDF do Cartão Pré-Natal (Reportado 24/12/2025)
+- [x] Corrigir sobreposição de textos e quadrados coloridos nos badges (Fatores de Risco e Medicamentos)
+- [x] Exibir IG DUM e IG USG separadamente no histórico de consultas
+- [x] Substituir "NaNxNa" por "-" quando IG não está disponível
+- [x] Testar PDF com dados reais após correções
