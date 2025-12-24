@@ -1527,8 +1527,42 @@ export const appRouter = router({
       }),
   }),
 
+  // Router de Fatores de Risco
+  fatoresRisco: router({
+    list: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => getFatoresRiscoByGestanteId(input.gestanteId)),
+    
+    add: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipo: z.enum([
+          "idade_avancada",
+          "hipotireoidismo",
+          "hipertensao",
+          "diabetes_tipo2",
+          "trombofilia",
+          "mal_passado_obstetrico",
+          "incompetencia_istmo_cervical",
+          "epilepsia",
+          "malformacoes_mullerianas",
+          "historico_familiar_dheg",
+          "outro"
+        ]),
+      }))
+      .mutation(({ input }) => createFatorRisco(input)),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteFatorRisco(input.id)),
+  }),
+
   // Router de Medicamentos na Gestação
   medicamentos: router({
+    list: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => getMedicamentosByGestanteId(input.gestanteId)),
+    
     getMedicamentos: protectedProcedure
       .input(z.object({ gestanteId: z.number() }))
       .query(({ input }) => getMedicamentosByGestanteId(input.gestanteId)),

@@ -1769,3 +1769,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar seção "Medicamentos em Uso" no PDF com especificações
 - [x] Testar geração de PDF com medicamentos e fatores de risco
 - [x] Validar layout e formatação das novas seções
+
+## Correção de Procedures tRPC (24/12/2025)
+
+- [x] Criar procedure medicamentos.list para listar medicamentos da gestante
+- [x] Criar procedure fatoresRisco.list para listar fatores de risco da gestante
+- [x] Corrigir enum de tipos de fatores de risco para corresponder ao schema do banco
+- [x] Testar carregamento de medicamentos e fatores de risco na página do Cartão Pré-natal
+- [x] Validar geração de PDF com as novas procedures funcionando
