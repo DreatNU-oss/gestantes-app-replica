@@ -469,6 +469,9 @@ export const appRouter = router({
           "trombofilia",
           "mal_passado_obstetrico",
           "incompetencia_istmo_cervical",
+          "epilepsia",
+          "malformacoes_mullerianas",
+          "historico_familiar_dheg",
           "outro"
         ]),
         descricao: z.string().optional(),

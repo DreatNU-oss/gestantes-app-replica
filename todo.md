@@ -1745,3 +1745,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Correção de Exibição NaN (Solicitado 24/12/2025)
 
 - [x] Corrigir exibição de "NaN" no histórico de consultas quando IG DUM não está disponível
+
+## Correção de Validação tRPC (Solicitado 24/12/2025)
+
+- [x] Atualizar schema de validação tRPC para incluir novos fatores de risco (epilepsia, malformacoes_mullerianas, historico_familiar_dheg)
