@@ -1835,3 +1835,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Buscar exames da tabela resultadosExames
 - [x] Exibir resultados e datas de cada exame por trimestre
 - [x] Testar geração de PDF com exames
+
+### Adicionar Ultrassons ao PDF do Cartão Pré-Natal
+- [x] Adicionar seção de Ultrassons ao PDF do Cartão Pré-Natal
+- [x] Criar tabela organizada por data do exame
+- [x] Incluir tipo de ultrassom (1º US, Morfológico, etc.)
+- [x] Exibir Idade Gestacional no momento do exame
+- [x] Mostrar dados relevantes (DPP, TN, Peso Fetal, BCF, Conclusão)
+- [x] Testar geração de PDF com ultrassons

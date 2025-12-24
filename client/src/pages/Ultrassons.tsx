@@ -314,6 +314,8 @@ export default function Ultrassons() {
 
   // Função para salvar ultrassom
   const handleSalvar = async (tipoUltrassom: string, dados: any) => {
+    console.log('🔍 handleSalvar chamado:', { tipoUltrassom, dados, gestanteSelecionada });
+    
     if (!gestanteSelecionada) {
       toast.error('⚠️ Gestante não selecionada', {
         description: 'Por favor, selecione uma gestante antes de salvar.',
@@ -324,6 +326,8 @@ export default function Ultrassons() {
     
     // Validar campos obrigatórios
     const validacao = validarCamposObrigatorios(tipoUltrassom, dados);
+    console.log('🔍 Resultado da validação:', validacao);
+    
     if (!validacao.valido) {
       toast.error('❌ Campos obrigatórios não preenchidos', {
         description: validacao.mensagem,

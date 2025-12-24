@@ -1214,8 +1214,8 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         const { salvarUltrassom } = await import('./ultrassons');
-        const id = await salvarUltrassom(input);
-        return { success: true, id };
+        const result = await salvarUltrassom(input);
+        return result;
       }),
 
     buscar: protectedProcedure
