@@ -894,10 +894,17 @@ export default function CartaoPrenatal() {
     
     const dum = new Date(gestante.dum);
     const consulta = new Date(dataConsulta);
+    
+    // Validar se as datas são válidas
+    if (isNaN(dum.getTime()) || isNaN(consulta.getTime())) return null;
+    
     const diffMs = consulta.getTime() - dum.getTime();
     const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const semanas = Math.floor(totalDias / 7);
     const dias = totalDias % 7;
+    
+    // Validar se os valores calculados são válidos
+    if (isNaN(semanas) || isNaN(dias)) return null;
     
     return { semanas, dias };
   };
@@ -907,12 +914,19 @@ export default function CartaoPrenatal() {
     
     const ultrassom = new Date(gestante.dataUltrassom);
     const consulta = new Date(dataConsulta);
+    
+    // Validar se as datas são válidas
+    if (isNaN(ultrassom.getTime()) || isNaN(consulta.getTime())) return null;
+    
     const diffMs = consulta.getTime() - ultrassom.getTime();
     const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
     const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS;
     const semanas = Math.floor(totalDiasUS / 7);
     const dias = totalDiasUS % 7;
+    
+    // Validar se os valores calculados são válidos
+    if (isNaN(semanas) || isNaN(dias)) return null;
     
     return { semanas, dias };
   };

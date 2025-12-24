@@ -1741,3 +1741,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Atualizar formulários de cadastro/edição com novos checkboxes
 - [x] Atualizar exibição de fatores de risco no cartão pré-natal
 - [x] Atualizar exibição de fatores de risco no dashboard
+
+## Correção de Exibição NaN (Solicitado 24/12/2025)
+
+- [x] Corrigir exibição de "NaN" no histórico de consultas quando IG DUM não está disponível
