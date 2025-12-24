@@ -73,7 +73,9 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     if (gestante.dum) {
       const dumDate = new Date(gestante.dum);
       const ig = calcularIdadeGestacional(dumDate, dataConsulta.toISOString().split('T')[0]);
-      igDUM = `${ig?.semanas || 0}s ${ig?.dias || 0}d`;
+      if (ig && typeof ig.semanas === 'number' && typeof ig.dias === 'number' && !isNaN(ig.semanas) && !isNaN(ig.dias)) {
+        igDUM = `${ig.semanas}s ${ig.dias}d`;
+      }
     }
 
     // Calcular IG pelo US na data da consulta
@@ -114,12 +116,29 @@ export async function gerarEUploadPdfCartao(gestanteId: number): Promise<{ pdfUr
     .where(eq(ultrassons.gestanteId, gestanteId))
     .orderBy(desc(ultrassons.dataExame));
 
-  const ultrassonsFormatados = ultrassonsResult.map((u) => ({
-    data: u.dataExame || "-",
-    ig: u.idadeGestacional || "-",
-    tipo: u.tipoUltrassom || "-",
-    observacoes: null, // Ultrassons não têm campo observacoes separado
-  }));
+  const ultrassonsFormatados = ultrassonsResult.map((u) => {
+    // Extrair dados relevantes do JSON
+    let dadosTexto = "-";
+    if (u.dados && typeof u.dados === 'object') {
+      const dados = u.dados as any;
+      const partes: string[] = [];
+      
+      // Campos comuns em todos os ultrassons
+      if (dados.dpp) partes.push(`DPP: ${dados.dpp}`);
+      if (dados.tn) partes.push(`TN: ${dados.tn} mm`);
+      if (dados.ossoNasal) partes.push(`Osso Nasal: ${dados.ossoNasal}`);
+      if (dados.pesoFetal) partes.push(`Peso: ${dados.pesoFetal}g`);
+      
+      dadosTexto = partes.length > 0 ? partes.join(', ') : '-';
+    }
+    
+    return {
+      data: u.dataExame || "-",
+      ig: u.idadeGestacional || "-",
+      tipo: u.tipoUltrassom || "-",
+      observacoes: dadosTexto,
+    };
+  });
 
   // Buscar exames laboratoriais
   const examesResult = await db

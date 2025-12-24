@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, nome FROM gestantes WHERE nome LIKE '%Letícia%' OR nome LIKE '%Leticia%' LIMIT 3",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM gestantes WHERE nome LIKE '%Letícia%' OR nome LIKE '%Leticia%' LIMIT 3",
+  "rows": [
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira"
+    },
+    {
+      "id": "330068",
+      "nome": "Letícia Campos Calderaro Dias"
+    },
+    {
+      "id": "330069",
+      "nome": "Letícia Celeste Caetano"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n330010\tLetícia Aparecida Silveira\n330068\tLetícia Campos Calderaro Dias\n330069\tLetícia Celeste Caetano\n",
+  "stderr": "",
+  "execution_time_ms": 2289
+}

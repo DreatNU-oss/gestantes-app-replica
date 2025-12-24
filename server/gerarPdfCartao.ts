@@ -380,22 +380,61 @@ export async function gerarPdfCartaoPrenatal(dados: DadosPDF): Promise<Buffer> {
       // Ultrassons
       if (dados.ultrassons.length > 0) {
         // Nova página se necessário
-        if (doc.y > 650) {
+        if (doc.y > 600) {
           doc.addPage();
         }
         doc.fontSize(14).fillColor(corPrimaria).text('Ultrassons');
         doc.moveDown(0.5);
         
-        dados.ultrassons.slice(0, 5).forEach((us) => {
-          if (doc.y > 720) {
+        // Cabeçalho da tabela
+        const tabelaY = doc.y;
+        const colData = 50;
+        const colTipo = 130;
+        const colIG = 280;
+        const colDados = 360;
+        const larguraTotal = 495;
+        
+        // Desenhar cabeçalho
+        doc.rect(colData, tabelaY, larguraTotal, 20).fillColor(corSecundaria).fill();
+        doc.fontSize(9).fillColor(corTexto);
+        doc.text('Data', colData + 5, tabelaY + 6, { width: 70 });
+        doc.text('Tipo', colTipo + 5, tabelaY + 6, { width: 140 });
+        doc.text('IG', colIG + 5, tabelaY + 6, { width: 70 });
+        doc.text('Dados', colDados + 5, tabelaY + 6, { width: 180 });
+        
+        let linhaY = tabelaY + 20;
+        
+        dados.ultrassons.slice(0, 5).forEach((us, index) => {
+          // Nova página se necessário
+          if (linhaY > 720) {
             doc.addPage();
+            linhaY = 50;
           }
           
-          doc.fontSize(9).fillColor(corCinza).text(`Data: ${us.data} | IG: ${us.ig} | Tipo: ${us.tipo}`);
-          doc.moveDown(0.3);
+          const alturaLinha = 25;
+          
+          // Linha alternada
+          if (index % 2 === 0) {
+            doc.rect(colData, linhaY, larguraTotal, alturaLinha).fillColor('#F9F9F9').fill();
+          }
+          
+          // Bordas
+          doc.rect(colData, linhaY, larguraTotal, alturaLinha).stroke(corCinza);
+          
+          // Conteúdo
+          doc.fontSize(8).fillColor(corTexto);
+          doc.text(us.data, colData + 5, linhaY + 8, { width: 70 });
+          doc.text(us.tipo, colTipo + 5, linhaY + 8, { width: 140 });
+          doc.text(us.ig, colIG + 5, linhaY + 8, { width: 70 });
+          
+          // Dados com quebra de linha se necessário
+          const dados = us.observacoes || '-';
+          doc.text(dados, colDados + 5, linhaY + 8, { width: 175, height: alturaLinha - 10 });
+          
+          linhaY += alturaLinha;
         });
         
-        doc.moveDown(0.5);
+        doc.y = linhaY + 10;
       }
 
       // Exames Laboratoriais

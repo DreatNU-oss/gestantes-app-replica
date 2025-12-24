@@ -1,0 +1,14 @@
+{
+  "query": "SELECT gestanteId, COUNT(*) as total FROM ultrassons WHERE gestanteId IN (SELECT id FROM gestantes WHERE nome LIKE '%Letícia%' OR nome LIKE '%Leticia%') GROUP BY gestanteId",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT gestanteId, COUNT(*) as total FROM ultrassons WHERE gestanteId IN (SELECT id FROM gestantes WHERE nome LIKE '%Letícia%' OR nome LIKE '%Leticia%') GROUP BY gestanteId",
+  "rows": [
+    {
+      "gestanteId": "330068",
+      "total": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "gestanteId\ttotal\n330068\t3\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

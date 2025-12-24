@@ -1795,3 +1795,22 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Testar adição dos novos medicamentos
 - [x] Validar ordenação alfabética nos seletores
 - [x] Testar geração de PDF com novos itens
+
+## Problema de Acesso - Usuária brunna.avellino (24/12/2025)
+
+- [ ] Verificar se usuário brunna.avellino existe no banco de dados
+- [ ] Verificar role/permissões do usuário
+- [ ] Identificar causa do erro "You don't have permission to view this page"
+- [ ] Corrigir problema de acesso
+- [ ] Testar login com o usuário brunna.avellino
+
+## Correção de Bugs no PDF do Cartão Pré-Natal (24/12/2025)
+
+- [x] Corrigir sobreposição de textos dos ultrassons no PDF
+- [x] Corrigir problema de fatores de risco não aparecerem no PDF
+- [x] Ajustar espaçamento e layout da seção de ultrassons
+- [x] Validar que fatores de risco estão sendo buscados corretamente
+- [x] Testar geração de PDF com dados completos
+- [x] Corrigir problema de "NaNsNaNd" na IG DUM
+- [x] Criar tabela estruturada para ultrassons com 4 colunas (Data, Tipo, IG, Dados)
+- [x] Extrair dados relevantes do JSON dos ultrassons (DPP, TN, Osso Nasal, Peso Fetal)
