@@ -1863,3 +1863,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Aumentar ainda mais a largura do badge ou usar texto abreviado
 - [x] Testar com PDF da Débora
 - [x] Solução: Simplificado texto para "Idade ≥ 35 anos" (mais compacto)
+
+## Correção URGENTE Badge Idade (24/12/2025 - 19:45)
+- [x] Badge ainda está MUITO pequeno - texto cortado
+- [x] Símbolo "≥" aparece como "e" no PDF
+- [x] Aumentar drasticamente o padding/largura do badge
+- [x] Usar texto alternativo "Idade > 35 anos" (símbolo ASCII)
+- [x] Testar renderização de símbolos especiais no jsPDF
+- [x] Solução final: "Idade > 35 anos" com padding 12 unidades

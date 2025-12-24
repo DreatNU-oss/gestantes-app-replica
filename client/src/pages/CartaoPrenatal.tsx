@@ -329,7 +329,7 @@ export default function CartaoPrenatal() {
         let lineHeight = 7;
         
         fatoresRisco.forEach((fator: any, index: number) => {
-          const nomeExibicao = fator.tipo === 'idade_avancada' ? 'Idade ≥ 35 anos' :
+          const nomeExibicao = fator.tipo === 'idade_avancada' ? 'Idade > 35 anos' :
                                fator.tipo === 'hipertensao' ? 'Hipertensão' :
                                fator.tipo === 'diabetes' ? 'Diabetes' :
                                fator.tipo === 'epilepsia' ? 'Epilepsia' :
@@ -347,7 +347,7 @@ export default function CartaoPrenatal() {
           
           // Calcular largura do texto com padding adequado
           pdf.setFontSize(9);
-          const textWidth = pdf.getTextWidth(nomeExibicao) + 6; // Aumentado padding de 4 para 6
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 12; // Aumentado padding para 12 (badge maior)
           
           // Verificar se cabe na linha atual
           if (currentX + textWidth > maxWidth + margin) {
@@ -417,7 +417,7 @@ export default function CartaoPrenatal() {
           
           // Calcular largura do texto com padding adequado
           pdf.setFontSize(9);
-          const textWidth = pdf.getTextWidth(nomeExibicao) + 6; // Aumentado padding de 4 para 6
+          const textWidth = pdf.getTextWidth(nomeExibicao) + 12; // Aumentado padding para 12 (badge maior)
           
           // Verificar se cabe na linha atual
           if (currentX + textWidth > maxWidth + margin) {
