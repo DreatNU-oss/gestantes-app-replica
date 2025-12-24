@@ -22,6 +22,7 @@ import {
 import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { GraficoPeso } from "@/components/GraficoPeso";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
+import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -1101,6 +1102,14 @@ export default function CartaoPrenatal() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Fatores de Risco */}
+        {gestanteSelecionada && gestante && (
+          <FatoresRiscoManager 
+            gestanteId={gestanteSelecionada} 
+            idadeGestante={gestante.calculado?.idade}
+          />
         )}
 
         {/* Botão Nova Consulta */}

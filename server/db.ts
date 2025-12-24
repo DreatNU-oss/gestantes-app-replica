@@ -33,7 +33,10 @@ import {
   condutasPersonalizadas,
   InsertCondutaPersonalizada,
   CondutaPersonalizada,
-  partosRealizados
+  partosRealizados,
+  fatoresRisco,
+  InsertFatorRisco,
+  FatorRisco
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -514,4 +517,59 @@ export async function deleteCondutaPersonalizada(id: number): Promise<void> {
   
   // Soft delete - apenas marca como inativo
   await db.update(condutasPersonalizadas).set({ ativo: 0 }).where(eq(condutasPersonalizadas.id, id));
+}
+
+// ============ FATORES DE RISCO ============
+
+export async function getFatoresRiscoByGestanteId(gestanteId: number): Promise<FatorRisco[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(fatoresRisco)
+    .where(and(
+      eq(fatoresRisco.gestanteId, gestanteId),
+      eq(fatoresRisco.ativo, 1)
+    ))
+    .orderBy(desc(fatoresRisco.createdAt));
+}
+
+export async function createFatorRisco(data: InsertFatorRisco): Promise<FatorRisco> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(fatoresRisco).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(fatoresRisco).where(eq(fatoresRisco.id, insertedId)).limit(1);
+  return inserted[0] as FatorRisco;
+}
+
+export async function updateFatorRisco(id: number, data: Partial<InsertFatorRisco>): Promise<FatorRisco | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(fatoresRisco).set(data).where(eq(fatoresRisco.id, id));
+  const updated = await db.select().from(fatoresRisco).where(eq(fatoresRisco.id, id)).limit(1);
+  return updated[0] || null;
+}
+
+export async function deleteFatorRisco(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(fatoresRisco).set({ ativo: 0 }).where(eq(fatoresRisco.id, id));
+}
+
+export async function hasAltoRisco(gestanteId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const fatores = await db.select().from(fatoresRisco)
+    .where(and(
+      eq(fatoresRisco.gestanteId, gestanteId),
+      eq(fatoresRisco.ativo, 1)
+    ))
+    .limit(1);
+  
+  return fatores.length > 0;
 }

@@ -21,6 +21,7 @@ import { ArrowLeft, Calendar, Baby, Check } from "lucide-react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
+import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
@@ -957,6 +958,18 @@ export default function FormularioGestante({
             </div>
           </CardContent>
         </Card>
+
+        {/* Fatores de Risco - apenas para edição */}
+        {gestanteId && (
+          <FatoresRiscoManager 
+            gestanteId={gestanteId} 
+            idadeGestante={calculosEmTempoReal.igDUM ? (
+              formData.dataNascimento ? 
+                Math.floor((new Date().getTime() - new Date(formData.dataNascimento).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+                : null
+            ) : null}
+          />
+        )}
 
         <Card>
           <CardHeader>

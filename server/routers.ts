@@ -47,7 +47,12 @@ import {
   getCondutasPersonalizadas,
   createCondutaPersonalizada,
   updateCondutaPersonalizada,
-  deleteCondutaPersonalizada
+  deleteCondutaPersonalizada,
+  getFatoresRiscoByGestanteId,
+  createFatorRisco,
+  updateFatorRisco,
+  deleteFatorRisco,
+  hasAltoRisco
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -447,6 +452,47 @@ export const appRouter = router({
         await deleteGestante(input.id);
         return { success: true };
       }),
+    
+    // Fatores de Risco
+    getFatoresRisco: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => getFatoresRiscoByGestanteId(input.gestanteId)),
+    
+    addFatorRisco: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipo: z.enum([
+          "idade_avancada",
+          "hipotireoidismo",
+          "hipertensao",
+          "diabetes_tipo2",
+          "trombofilia",
+          "mal_passado_obstetrico",
+          "incompetencia_istmo_cervical",
+          "outro"
+        ]),
+        descricao: z.string().optional(),
+      }))
+      .mutation(({ input }) => createFatorRisco(input)),
+    
+    updateFatorRisco: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        descricao: z.string().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return updateFatorRisco(id, data);
+      }),
+    
+    deleteFatorRisco: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteFatorRisco(input.id)),
+    
+    hasAltoRisco: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => hasAltoRisco(input.gestanteId)),
   }),
 
   consultasPrenatal: router({

@@ -1717,3 +1717,12 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar seleção automática da gestante no menu lateral após criar novo registro
 
 - [x] Implementar pop-up de confirmação após salvar gestante para abrir formulário de nova consulta
+
+## Sistema de Indicadores de Risco
+
+- [x] Criar tabela de fatores de risco no banco de dados
+- [x] Implementar procedures backend para gerenciar fatores de risco
+- [x] Adicionar seção de fatores de risco no formulário de gestante
+- [x] Implementar visualização de alertas na lista de gestantes
+- [x] Adicionar seção de fatores de risco no Cartão de Pré-natal
+- [x] Implementar cálculo automático de idade ≥ 35 anos como fator de risco

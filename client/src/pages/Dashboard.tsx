@@ -43,6 +43,7 @@ import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
 import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
+import AltoRiscoBadge from "@/components/AltoRiscoBadge";
 
 type SortOption = "nome" | "dpp-dum" | "dpp-us";
 
@@ -416,6 +417,7 @@ export default function Dashboard() {
                     <TableHead>#</TableHead>
                     <TableHead>Seleção</TableHead>
                     <TableHead>Nome</TableHead>
+                    <TableHead>Risco</TableHead>
                     <TableHead>IG (DUM)</TableHead>
                     <TableHead>DPP (DUM)</TableHead>
                     <TableHead>IG (US)</TableHead>
@@ -440,6 +442,9 @@ export default function Dashboard() {
                           </Button>
                         </TableCell>
                         <TableCell className="font-medium">{g.nome}</TableCell>
+                        <TableCell>
+                          <AltoRiscoBadge gestanteId={g.id} />
+                        </TableCell>
                         <TableCell>
                           {igDumBadge ? (
                             <span className={`inline-block px-3 py-1.5 rounded text-xs font-medium ${igDumBadge.cor}`}>

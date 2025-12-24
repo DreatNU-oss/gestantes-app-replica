@@ -148,6 +148,13 @@
       "when": 1766018173594,
       "tag": "0020_big_darkstar",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1766571446853,
+      "tag": "0021_special_the_phantom",
+      "breakpoints": true
     }
   ]
 }

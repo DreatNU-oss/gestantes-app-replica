@@ -115,6 +115,31 @@ export type Gestante = typeof gestantes.$inferSelect;
 export type InsertGestante = typeof gestantes.$inferInsert;
 
 /**
+ * Tabela de fatores de risco das gestantes
+ */
+export const fatoresRisco = mysqlTable("fatoresRisco", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  tipo: mysqlEnum("tipo", [
+    "idade_avancada",
+    "hipotireoidismo",
+    "hipertensao",
+    "diabetes_tipo2",
+    "trombofilia",
+    "mal_passado_obstetrico",
+    "incompetencia_istmo_cervical",
+    "outro"
+  ]).notNull(),
+  descricao: text("descricao"), // Para "outro" ou detalhes adicionais
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = resolvido/inativo
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type FatorRisco = typeof fatoresRisco.$inferSelect;
+export type InsertFatorRisco = typeof fatoresRisco.$inferInsert;
+
+/**
  * Tabela de consultas pré-natais
  */
 export const consultasPrenatal = mysqlTable("consultasPrenatal", {
