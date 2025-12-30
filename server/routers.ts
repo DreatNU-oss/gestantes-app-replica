@@ -212,7 +212,7 @@ export const appRouter = router({
       const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm);
       
       // Adicionar cálculos para cada gestante
-      return lista.map(g => {
+      const gestantesComCalculo = lista.map(g => {
         let igDUM = null;
         let igUS = null;
         let dpp = null;
@@ -251,6 +251,13 @@ export const appRouter = router({
             idade
           }
         };
+      });
+      
+      // Ordenar por Idade Gestacional decrescente (priorizar US, depois DUM)
+      return gestantesComCalculo.sort((a, b) => {
+        const igA = a.calculado.igUS?.totalDias ?? a.calculado.igDUM?.totalDias ?? 0;
+        const igB = b.calculado.igUS?.totalDias ?? b.calculado.igDUM?.totalDias ?? 0;
+        return igB - igA; // Decrescente (maior IG primeiro)
       });
     }),
     

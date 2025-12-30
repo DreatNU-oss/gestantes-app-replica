@@ -1871,3 +1871,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Usar texto alternativo "Idade > 35 anos" (símbolo ASCII)
 - [x] Testar renderização de símbolos especiais no jsPDF
 - [x] Solução final: "Idade > 35 anos" com padding 12 unidades
+
+## Melhorias Solicitadas (24/12/2025 - 20:15)
+- [x] Ordenar gestantes por Idade Gestacional decrescente na página inicial
+- [x] Corrigir curva de peso para usar DUM quando ultrassom não disponível
+- [x] Priorizar IG pelo US, mas usar IG pela DUM como fallback
+- [x] Testar com gestantes sem ultrassom cadastrado
