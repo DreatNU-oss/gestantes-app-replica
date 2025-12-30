@@ -1381,7 +1381,7 @@ export default function CartaoPrenatal() {
                           if (isNaN(ig.semanas) || isNaN(ig.dias)) {
                             return <span className="italic text-muted-foreground">desconsiderada</span>;
                           }
-                          return `${ig.semanas} semanas e ${ig.dias} dias`;
+                          return `${ig.semanas} ${ig.semanas === 1 ? 'semana' : 'semanas'} e ${ig.dias} ${ig.dias === 1 ? 'dia' : 'dias'}`;
                         })()}
                       </p>
                       <p className="text-sm">
@@ -1393,7 +1393,7 @@ export default function CartaoPrenatal() {
                           if (isNaN(igUS.semanas) || isNaN(igUS.dias)) {
                             return <span className="italic text-muted-foreground">desconsiderada</span>;
                           }
-                          return `${igUS.semanas} semanas e ${igUS.dias} dias`;
+                          return `${igUS.semanas} ${igUS.semanas === 1 ? 'semana' : 'semanas'} e ${igUS.dias} ${igUS.dias === 1 ? 'dia' : 'dias'}`;
                         })()}
                       </p>
                       {(() => {

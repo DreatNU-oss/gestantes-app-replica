@@ -177,7 +177,7 @@ export default function AgendamentoConsultas() {
                         </span>
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {agendamento.igSemanas} semanas e {agendamento.igDias} dias
+                        {agendamento.igSemanas} {agendamento.igSemanas === 1 ? 'semana' : 'semanas'} e {agendamento.igDias} {agendamento.igDias === 1 ? 'dia' : 'dias'}
                       </div>
                       {agendamento.exameComplementar !== "nenhum" && (
                         <div className="flex items-center gap-2 mt-1">
