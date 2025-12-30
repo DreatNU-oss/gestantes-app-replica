@@ -3,12 +3,12 @@ import { gestantes, logsEmails } from '../drizzle/schema';
 import { enviarEmail, templates } from './email';
 import { eq, and, isNotNull } from 'drizzle-orm';
 
-interface Gestante {
+interface GestanteLembrete {
   id: number;
   nome: string;
   email: string | null;
-  dum: string | Date | null;
-  dataUltrassom: string | Date | null;
+  dum: string | null;
+  dataUltrassom: string | null;
   igUltrassomSemanas: number | null;
   igUltrassomDias: number | null;
 }
@@ -44,7 +44,7 @@ function calcularIGPorUS(dataUS: Date, igUSSemanas: number, igUSDias: number): {
 /**
  * Obtém IG atual da gestante (prioriza US, depois DUM)
  */
-function obterIGAtual(gestante: Gestante): { semanas: number; dias: number } | null {
+function obterIGAtual(gestante: GestanteLembrete): { semanas: number; dias: number } | null {
   // Prioridade 1: Ultrassom
   if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
     const dataUS = typeof gestante.dataUltrassom === 'string' 
@@ -100,7 +100,7 @@ export async function processarLembretes(): Promise<{
     // Buscar todas as gestantes com e-mail cadastrado
     const todasGestantes = await db.select()
       .from(gestantes)
-      .where(isNotNull(gestantes.email)) as Gestante[];
+      .where(isNotNull(gestantes.email)) as GestanteLembrete[];
     
     resultado.processadas = todasGestantes.length;
     resultado.detalhes.push(`📊 Processando ${todasGestantes.length} gestantes com e-mail cadastrado`);

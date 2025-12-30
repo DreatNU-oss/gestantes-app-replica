@@ -114,6 +114,17 @@ export const gestantes = mysqlTable("gestantes", {
 export type Gestante = typeof gestantes.$inferSelect;
 export type InsertGestante = typeof gestantes.$inferInsert;
 
+// Tipo estendido com campos calculados (usado nas respostas da API)
+export type GestanteComCalculos = Gestante & {
+  calculado?: {
+    igDUM: { semanas: number; dias: number; totalDias: number } | null;
+    igUS: { semanas: number; dias: number; totalDias: number } | null;
+    dpp: Date | null;
+    dppUS: Date | null;
+    idade: number | null;
+  };
+};
+
 /**
  * Tabela de fatores de risco das gestantes
  */

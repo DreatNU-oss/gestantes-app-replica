@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import type { GestanteComCalculos } from "@/../../drizzle/schema";
 import {
   BarChart,
   Bar,
@@ -46,7 +47,7 @@ interface GestanteModal {
 }
 
 interface GraficoDistribuicaoPartosProps {
-  gestantes: Gestante[];
+  gestantes: GestanteComCalculos[];
 }
 
 export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPartosProps) {
@@ -54,7 +55,7 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
   const [gestantesSelecionadas, setGestantesSelecionadas] = useState<GestanteModal[]>([]); 
   const [mesSelecionado, setMesSelecionado] = useState("");
 
-  const calcularDPP = (gestante: Gestante): Date | null => {
+  const calcularDPP = (gestante: GestanteComCalculos): Date | null => {
     // Prioridade 1: Data Programada
     if (gestante.dataPartoProgramado) {
       return new Date(gestante.dataPartoProgramado);

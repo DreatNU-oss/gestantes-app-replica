@@ -48,9 +48,8 @@ export default function AgendamentoConsultas() {
       return;
     }
 
-    const dumStr = gestante.dum instanceof Date 
-      ? gestante.dum.toISOString().split('T')[0] 
-      : gestante.dum;
+    // dum já vem como string do banco de dados
+    const dumStr = gestante.dum;
     
     console.log('Calling mutation with:', { gestanteId: gestanteSelecionada, dum: dumStr, dataPrimeiraConsulta });
     calcularMutation.mutate({
@@ -108,8 +107,6 @@ export default function AgendamentoConsultas() {
                 value={gestanteSelecionada?.toString() || ""}
                 onChange={(value) => setGestanteSelecionada(parseInt(value))}
                 placeholder="Digite o nome da gestante..."
-                labelKey="nome"
-                valueKey="id"
               />
             </div>
 
