@@ -45,8 +45,6 @@ import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import AltoRiscoBadge from "@/components/AltoRiscoBadge";
 
-type SortOption = "nome" | "dpp-dum" | "dpp-us";
-
 // Função para formatar data de forma segura, evitando problemas de timezone
 const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
   if (!dateValue) return "-";
@@ -74,7 +72,7 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("nome");
+  const [sortBy, setSortBy] = useState<'nome' | 'ig_asc' | 'ig_desc'>('ig_desc');
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTipoParto, setFilterTipoParto] = useState<string>("todos");
   const [filterMedico, setFilterMedico] = useState<string>("todos");
@@ -93,7 +91,7 @@ export default function Dashboard() {
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
   const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{id: number, nome: string} | null>(null);
   
-  const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm });
+  const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm, sortBy });
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
   const utils = trpc.useUtils();
@@ -128,8 +126,8 @@ export default function Dashboard() {
   const sortedGestantes = useMemo(() => {
     if (!gestantes) return [];
     
-    const filtered = gestantes.filter(g => {
-      // Busca por nome já feita no backend (com normalização de acentos)
+    // Ordenação já feita no backend, apenas filtrar aqui
+    return gestantes.filter(g => {
       const matchTipoParto = filterTipoParto === "todos" || g.tipoPartoDesejado === filterTipoParto;
       const matchMedico = filterMedico === "todos" || g.medicoId?.toString() === filterMedico;
       const matchPlano = filterPlano === "todos" || g.planoSaudeId?.toString() === filterPlano;
@@ -153,39 +151,7 @@ export default function Dashboard() {
       
       return matchTipoParto && matchMedico && matchPlano && matchDppPeriodo;
     });
-    
-    const sorted = [...filtered];
-    
-    switch (sortBy) {
-      case "nome":
-        return sorted.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-      
-      case "dpp-dum":
-        return sorted.sort((a, b) => {
-          const dppA = a.calculado?.dpp ? new Date(a.calculado.dpp).getTime() : Infinity;
-          const dppB = b.calculado?.dpp ? new Date(b.calculado.dpp).getTime() : Infinity;
-          return dppA - dppB;
-        });
-      
-      case "dpp-us":
-        return sorted.sort((a, b) => {
-          const calcDppUS = (g: typeof gestantes[0]) => {
-            if (g.igUltrassomSemanas === null || g.igUltrassomDias === null || !g.dataUltrassom) return Infinity;
-            const dataUS = new Date(g.dataUltrassom);
-            const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
-            const diasRestantes = 280 - igUltrassomDias;
-            const dpp = new Date(dataUS);
-            dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
-            return dpp.getTime();
-          };
-          
-          return calcDppUS(a) - calcDppUS(b);
-        });
-      
-      default:
-        return sorted;
-    }
-  }, [gestantes, sortBy, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim, searchTerm]);
+  }, [gestantes, filterTipoParto, filterMedico, filterPlano, filterDppInicio, filterDppFim]);
 
   const handleSuccess = (data?: any) => {
     // Se criou/editou uma gestante, selecionar automaticamente no menu lateral
@@ -331,14 +297,14 @@ export default function Dashboard() {
                 placeholder="Buscar por nome..."
               />
               
-              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'nome' | 'ig_asc' | 'ig_desc')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Ordenar por" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="nome">Nome (A-Z)</SelectItem>
-                  <SelectItem value="dpp-dum">DPP pela DUM</SelectItem>
-                  <SelectItem value="dpp-us">DPP pelo Ultrassom</SelectItem>
+                  <SelectItem value="ig_asc">IG Crescente (menos avançadas)</SelectItem>
+                  <SelectItem value="ig_desc">IG Decrescente (mais avançadas)</SelectItem>
                 </SelectContent>
               </Select>
 

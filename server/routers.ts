@@ -207,7 +207,10 @@ export const appRouter = router({
 
   gestantes: router({
     list: protectedProcedure
-      .input(z.object({ searchTerm: z.string().optional() }).optional())
+      .input(z.object({ 
+        searchTerm: z.string().optional(),
+        sortBy: z.enum(['nome', 'ig_asc', 'ig_desc']).optional().default('ig_desc')
+      }).optional())
       .query(async ({ ctx, input }) => {
       const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm);
       
@@ -253,11 +256,24 @@ export const appRouter = router({
         };
       });
       
-      // Ordenar por Idade Gestacional decrescente (priorizar US, depois DUM)
+      // Ordenar conforme parâmetro
+      const sortBy = input?.sortBy ?? 'ig_desc';
+      
       return gestantesComCalculo.sort((a, b) => {
-        const igA = a.calculado.igUS?.totalDias ?? a.calculado.igDUM?.totalDias ?? 0;
-        const igB = b.calculado.igUS?.totalDias ?? b.calculado.igDUM?.totalDias ?? 0;
-        return igB - igA; // Decrescente (maior IG primeiro)
+        if (sortBy === 'nome') {
+          // Ordenação alfabética por nome
+          return a.nome.localeCompare(b.nome);
+        } else {
+          // Ordenação por Idade Gestacional (priorizar US, depois DUM)
+          const igA = a.calculado.igUS?.totalDias ?? a.calculado.igDUM?.totalDias ?? 0;
+          const igB = b.calculado.igUS?.totalDias ?? b.calculado.igDUM?.totalDias ?? 0;
+          
+          if (sortBy === 'ig_asc') {
+            return igA - igB; // Crescente (menor IG primeiro)
+          } else {
+            return igB - igA; // Decrescente (maior IG primeiro)
+          }
+        }
       });
     }),
     

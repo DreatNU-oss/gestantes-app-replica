@@ -1877,3 +1877,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir curva de peso para usar DUM quando ultrassom não disponível
 - [x] Priorizar IG pelo US, mas usar IG pela DUM como fallback
 - [x] Testar com gestantes sem ultrassom cadastrado
+
+## Ordenação Customizável de Gestantes (30/12/2025)
+- [x] Adicionar parâmetro de ordenação no backend (nome, ig_asc, ig_desc)
+- [x] Criar Select de ordenação no frontend da página Gestantes
+- [x] Implementar lógica de ordenação por nome alfabético
+- [x] Implementar ordenação por IG crescente
+- [x] Implementar ordenação por IG decrescente (padrão atual)
+- [x] Testar todas as opções de ordenação
