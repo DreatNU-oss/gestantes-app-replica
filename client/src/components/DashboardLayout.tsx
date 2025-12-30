@@ -25,6 +25,7 @@ import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
+import { InstallPWAButton } from './InstallPWAButton';
 import { Button } from "./ui/button";
 
 const menuItems = [
@@ -258,6 +259,7 @@ function DashboardLayoutContent({
           </div>
         )}
         <main className="flex-1 p-4">{children}</main>
+        <InstallPWAButton />
       </SidebarInset>
     </>
   );
