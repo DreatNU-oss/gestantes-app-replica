@@ -21,6 +21,7 @@ import LogsEmails from "./pages/LogsEmails";
 import PartosRealizados from "./pages/PartosRealizados";
 import EstatisticasPartos from "./pages/EstatisticasPartos";
 import MonitoramentoEmails from "./pages/MonitoramentoEmails";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 
 function Router() {
   return (
@@ -41,6 +42,7 @@ function Router() {
       <Route path={"/monitoramento-emails"} component={MonitoramentoEmails} />
       <Route path={"/partos-realizados"} component={PartosRealizados} />
       <Route path={"/estatisticas-partos"} component={EstatisticasPartos} />
+      <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
