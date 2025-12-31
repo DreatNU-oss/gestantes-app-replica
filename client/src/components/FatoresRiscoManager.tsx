@@ -25,6 +25,7 @@ const FATORES_RISCO_LABELS: Record<string, string> = {
   diabetes_tipo2: "Diabetes Tipo 2",
   dpoc_asma: "DPOC/Asma",
   epilepsia: "Epilepsia",
+  fator_rh_negativo: "Fator Rh Negativo",
   hipotireoidismo: "Hipotireoidismo",
   hipertensao: "Hipertensão",
   historico_familiar_dheg: "Mãe/irmã com histórico de DHEG",
@@ -190,6 +191,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
                   <SelectItem value="dpoc_asma">DPOC/Asma</SelectItem>
                   <SelectItem value="epilepsia">Epilepsia</SelectItem>
+                  <SelectItem value="fator_rh_negativo">Fator Rh Negativo</SelectItem>
                   <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
                   <SelectItem value="hipertensao">Hipertensão</SelectItem>
                   <SelectItem value="historico_familiar_dheg">

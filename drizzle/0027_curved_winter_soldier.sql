@@ -1,0 +1,1 @@
+ALTER TABLE `fatoresRisco` MODIFY COLUMN `tipo` enum('diabetes_gestacional','diabetes_tipo2','dpoc_asma','epilepsia','fator_rh_negativo','hipotireoidismo','hipertensao','historico_familiar_dheg','idade_avancada','incompetencia_istmo_cervical','mal_passado_obstetrico','malformacoes_mullerianas','trombofilia','outro') NOT NULL;
