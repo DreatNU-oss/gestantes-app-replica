@@ -1,0 +1,40 @@
+{
+  "query": "SELECT \n  id,\n  codigo,\n  destino,\n  usado,\n  expiraEm,\n  createdAt,\n  CASE \n    WHEN usado = 1 THEN 'JÁ USADO'\n    WHEN expiraEm < NOW() THEN 'EXPIRADO'\n    ELSE 'VÁLIDO'\n  END as status,\n  TIMESTAMPDIFF(MINUTE, NOW(), expiraEm) as minutos_restantes\nFROM codigosAcessoGestante \nWHERE destino = 'teste@gestantesapp.com' \nORDER BY createdAt DESC \nLIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  codigo,\n  destino,\n  usado,\n  expiraEm,\n  createdAt,\n  CASE \n    WHEN usado = 1 THEN 'JÁ USADO'\n    WHEN expiraEm < NOW() THEN 'EXPIRADO'\n    ELSE 'VÁLIDO'\n  END as status,\n  TIMESTAMPDIFF(MINUTE, NOW(), expiraEm) as minutos_restantes\nFROM codigosAcessoGestante \nWHERE destino = 'teste@gestantesapp.com' \nORDER BY createdAt DESC \nLIMIT 3;",
+  "rows": [
+    {
+      "id": "270004",
+      "codigo": "282742",
+      "destino": "teste@gestantesapp.com",
+      "usado": "1",
+      "expiraEm": "2025-12-30 21:11:39",
+      "createdAt": "2025-12-30 20:56:38",
+      "status": "JÁ USADO",
+      "minutos_restantes": "13"
+    },
+    {
+      "id": "270003",
+      "codigo": "352969",
+      "destino": "teste@gestantesapp.com",
+      "usado": "0",
+      "expiraEm": "2025-12-30 21:11:14",
+      "createdAt": "2025-12-30 20:56:14",
+      "status": "VÁLIDO",
+      "minutos_restantes": "13"
+    },
+    {
+      "id": "270002",
+      "codigo": "597169",
+      "destino": "teste@gestantesapp.com",
+      "usado": "1",
+      "expiraEm": "2025-12-30 21:09:09",
+      "createdAt": "2025-12-30 20:54:08",
+      "status": "JÁ USADO",
+      "minutos_restantes": "11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\tdestino\tusado\texpiraEm\tcreatedAt\tstatus\tminutos_restantes\n270004\t282742\tteste@gestantesapp.com\t1\t2025-12-30 21:11:39\t2025-12-30 20:56:38\tJÁ USADO\t13\n270003\t352969\tteste@gestantesapp.com\t0\t2025-12-30 21:11:14\t2025-12-30 20:56:14\tVÁLIDO\t13\n270002\t597169\tteste@gestantesapp.com\t1\t2025-12-30 21:09:09\t2025-12-30 20:54:08\tJÁ USADO\t11\n",
+  "stderr": "",
+  "execution_time_ms": 94
+}

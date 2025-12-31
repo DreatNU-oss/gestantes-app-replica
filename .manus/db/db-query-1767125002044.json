@@ -1,0 +1,31 @@
+{
+  "query": "-- Dados da gestante\nSELECT \n  g.id,\n  g.nome,\n  g.email,\n  g.telefone,\n  g.dataNascimento,\n  g.dum,\n  g.dataUltrassom,\n  g.igUltrassomSemanas,\n  g.igUltrassomDias,\n  g.altura,\n  g.pesoInicial,\n  g.gesta,\n  g.para,\n  g.tipoPartoDesejado,\n  m.nome as medico,\n  ps.nome as planoSaude,\n  (SELECT COUNT(*) FROM consultasPrenatal WHERE gestanteId = g.id) as total_consultas,\n  (SELECT COUNT(*) FROM resultadosExames WHERE gestanteId = g.id) as total_exames,\n  (SELECT COUNT(*) FROM ultrassons WHERE gestanteId = g.id) as total_ultrassons\nFROM gestantes g\nLEFT JOIN medicos m ON g.medicoId = m.id\nLEFT JOIN planosSaude ps ON g.planoSaudeId = ps.id\nWHERE g.nome = 'TESTE - Gestante Exemplo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute -- Dados da gestante\nSELECT \n  g.id,\n  g.nome,\n  g.email,\n  g.telefone,\n  g.dataNascimento,\n  g.dum,\n  g.dataUltrassom,\n  g.igUltrassomSemanas,\n  g.igUltrassomDias,\n  g.altura,\n  g.pesoInicial,\n  g.gesta,\n  g.para,\n  g.tipoPartoDesejado,\n  m.nome as medico,\n  ps.nome as planoSaude,\n  (SELECT COUNT(*) FROM consultasPrenatal WHERE gestanteId = g.id) as total_consultas,\n  (SELECT COUNT(*) FROM resultadosExames WHERE gestanteId = g.id) as total_exames,\n  (SELECT COUNT(*) FROM ultrassons WHERE gestanteId = g.id) as total_ultrassons\nFROM gestantes g\nLEFT JOIN medicos m ON g.medicoId = m.id\nLEFT JOIN planosSaude ps ON g.planoSaudeId = ps.id\nWHERE g.nome = 'TESTE - Gestante Exemplo';",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "telefone": "(47) 99999-9999",
+      "dataNascimento": "1990-05-15",
+      "dum": "2024-04-01",
+      "dataUltrassom": "2024-05-20",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0",
+      "altura": "165",
+      "pesoInicial": "60000",
+      "gesta": "1",
+      "para": "0",
+      "tipoPartoDesejado": "normal",
+      "medico": "Dr. André",
+      "planoSaude": "Unimed (inclui o parto)",
+      "total_consultas": "10",
+      "total_exames": "29",
+      "total_ultrassons": "7"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\temail\ttelefone\tdataNascimento\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\taltura\tpesoInicial\tgesta\tpara\ttipoPartoDesejado\tmedico\tplanoSaude\ttotal_consultas\ttotal_exames\ttotal_ultrassons\n1320002\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\t(47) 99999-9999\t1990-05-15\t2024-04-01\t2024-05-20\t7\t0\t165\t60000\t1\t0\tnormal\tDr. André\tUnimed (inclui o parto)\t10\t29\t7\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

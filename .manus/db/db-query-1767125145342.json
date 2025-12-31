@@ -1,0 +1,18 @@
+{
+  "query": "SELECT \n  nome,\n  dum,\n  DATEDIFF('2024-12-30', dum) as dias_desde_dum,\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as semanas_calculadas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as dias_calculados,\n  DATE_ADD(dum, INTERVAL 280 DAY) as dpp_calculada\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  nome,\n  dum,\n  DATEDIFF('2024-12-30', dum) as dias_desde_dum,\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as semanas_calculadas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as dias_calculados,\n  DATE_ADD(dum, INTERVAL 280 DAY) as dpp_calculada\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "rows": [
+    {
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "2024-04-01",
+      "dias_desde_dum": "273",
+      "semanas_calculadas": "39",
+      "dias_calculados": "0",
+      "dpp_calculada": "2025-01-06"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\tdum\tdias_desde_dum\tsemanas_calculadas\tdias_calculados\tdpp_calculada\nTESTE - Gestante Exemplo\t2024-04-01\t273\t39\t0\t2025-01-06\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

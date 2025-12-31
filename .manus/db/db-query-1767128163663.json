@@ -1,0 +1,60 @@
+{
+  "query": "SELECT \n  s.id,\n  s.token,\n  s.gestanteId,\n  s.expiraEm,\n  s.createdAt,\n  g.nome,\n  g.email,\n  CASE \n    WHEN s.expiraEm > NOW() THEN 'VÁLIDA'\n    ELSE 'EXPIRADA'\n  END as status_sessao\nFROM sessoesGestante s\nJOIN gestantes g ON s.gestanteId = g.id\nWHERE g.email = 'teste@gestantesapp.com'\nORDER BY s.createdAt DESC\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  s.id,\n  s.token,\n  s.gestanteId,\n  s.expiraEm,\n  s.createdAt,\n  g.nome,\n  g.email,\n  CASE \n    WHEN s.expiraEm > NOW() THEN 'VÁLIDA'\n    ELSE 'EXPIRADA'\n  END as status_sessao\nFROM sessoesGestante s\nJOIN gestantes g ON s.gestanteId = g.id\nWHERE g.email = 'teste@gestantesapp.com'\nORDER BY s.createdAt DESC\nLIMIT 5;",
+  "rows": [
+    {
+      "id": "180001",
+      "token": "edf3aa9a8e70a6aad787c4db14387354631fa06bca95fe121498feec3386d578bad8a1f7a832aa0ae24ba2f6dfe89ad654b4c2cf3523d8574de7b46cbe3201e6",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 20:54:16",
+      "createdAt": "2025-12-30 20:54:15",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    },
+    {
+      "id": "150010",
+      "token": "830369bddbb73b209dddecf929fa8ecb970f96bd98b6af7c8f4aa28f43b766486f505285b065c78351bbaa659843b1f8bd5266ea7458cb65330e0cbdd4540913",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 20:19:35",
+      "createdAt": "2025-12-30 20:19:34",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    },
+    {
+      "id": "150009",
+      "token": "b2eb7dada34844542f297cfa248d9936b96a47dca48163c82f12b5850e18acc583b06a8159cb2b087a831628c418e3049868d3a2c41249388234ce368c9b9581",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 20:16:08",
+      "createdAt": "2025-12-30 20:16:07",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    },
+    {
+      "id": "150008",
+      "token": "067d0a3ec1bb595a88efd6e189a31ec8671ef310d70a5eec02578e18fc5498e0766307266da51797503320ec358d4cdc011972623c0723352347990e7d228495",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 20:14:21",
+      "createdAt": "2025-12-30 20:14:20",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    },
+    {
+      "id": "150007",
+      "token": "87b8e655b5cc91282493f172e30272e11d60399307d1bb8984b6454201dff23b88fb9fabaea84c06ecfa314f689c2448d3abf5ac4e5657d7ab8326a2d4534ae2",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 20:12:39",
+      "createdAt": "2025-12-30 20:12:39",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttoken\tgestanteId\texpiraEm\tcreatedAt\tnome\temail\tstatus_sessao\n180001\tedf3aa9a8e70a6aad787c4db14387354631fa06bca95fe121498feec3386d578bad8a1f7a832aa0ae24ba2f6dfe89ad654b4c2cf3523d8574de7b46cbe3201e6\t1320002\t2026-01-29 20:54:16\t2025-12-30 20:54:15\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n150010\t830369bddbb73b209dddecf929fa8ecb970f96bd98b6af7c8f4aa28f43b766486f505285b065c78351bbaa659843b1f8bd5266ea7458cb65330e0cbdd4540913\t1320002\t2026-01-29 20:19:35\t2025-12-30 20:19:34\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n150009\tb2eb7dada34844542f297cfa248d9936b96a47dca48163c82f12b5850e18acc583b06a8159cb2b087a831628c418e3049868d3a2c41249388234ce368c9b9581\t1320002\t2026-01-29 20:16:08\t2025-12-30 20:16:07\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n150008\t067d0a3ec1bb595a88efd6e189a31ec8671ef310d70a5eec02578e18fc5498e0766307266da51797503320ec358d4cdc011972623c0723352347990e7d228495\t1320002\t2026-01-29 20:14:21\t2025-12-30 20:14:20\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n150007\t87b8e655b5cc91282493f172e30272e11d60399307d1bb8984b6454201dff23b88fb9fabaea84c06ecfa314f689c2448d3abf5ac4e5657d7ab8326a2d4534ae2\t1320002\t2026-01-29 20:12:39\t2025-12-30 20:12:39\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

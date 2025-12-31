@@ -1,0 +1,22 @@
+{
+  "query": "SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  dataNascimento,\n  createdAt,\n  updatedAt,\n  LENGTH(dum) as len_dum,\n  LENGTH(dataUltrassom) as len_dataUS,\n  LENGTH(dataNascimento) as len_dataNasc\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  dataNascimento,\n  createdAt,\n  updatedAt,\n  LENGTH(dum) as len_dum,\n  LENGTH(dataUltrassom) as len_dataUS,\n  LENGTH(dataNascimento) as len_dataNasc\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "Incompatível com US",
+      "dataUltrassom": "2025-05-14",
+      "dataNascimento": "1990-05-15",
+      "createdAt": "2025-12-30 20:00:34",
+      "updatedAt": "2025-12-30 20:11:44",
+      "len_dum": "20",
+      "len_dataUS": "10",
+      "len_dataNasc": "10"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataUltrassom\tdataNascimento\tcreatedAt\tupdatedAt\tlen_dum\tlen_dataUS\tlen_dataNasc\n1320002\tTESTE - Gestante Exemplo\tIncompatível com US\t2025-05-14\t1990-05-15\t2025-12-30 20:00:34\t2025-12-30 20:11:44\t20\t10\t10\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

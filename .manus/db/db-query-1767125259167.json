@@ -1,0 +1,23 @@
+{
+  "query": "SELECT \n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  -- Cálculo IG pela DUM\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as ig_dum_semanas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as ig_dum_dias,\n  -- Cálculo IG pelo US\n  FLOOR((DATEDIFF('2024-12-30', dataUltrassom) + (igUltrassomSemanas * 7) + igUltrassomDias) / 7) as ig_us_semanas,\n  MOD((DATEDIFF('2024-12-30', dataUltrassom) + (igUltrassomSemanas * 7) + igUltrassomDias), 7) as ig_us_dias,\n  -- DPPs\n  DATE_ADD(dum, INTERVAL 280 DAY) as dpp_dum,\n  DATE_ADD(DATE_SUB(dataUltrassom, INTERVAL (igUltrassomSemanas * 7 + igUltrassomDias) DAY), INTERVAL 280 DAY) as dpp_us\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  -- Cálculo IG pela DUM\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as ig_dum_semanas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as ig_dum_dias,\n  -- Cálculo IG pelo US\n  FLOOR((DATEDIFF('2024-12-30', dataUltrassom) + (igUltrassomSemanas * 7) + igUltrassomDias) / 7) as ig_us_semanas,\n  MOD((DATEDIFF('2024-12-30', dataUltrassom) + (igUltrassomSemanas * 7) + igUltrassomDias), 7) as ig_us_dias,\n  -- DPPs\n  DATE_ADD(dum, INTERVAL 280 DAY) as dpp_dum,\n  DATE_ADD(DATE_SUB(dataUltrassom, INTERVAL (igUltrassomSemanas * 7 + igUltrassomDias) DAY), INTERVAL 280 DAY) as dpp_us\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "rows": [
+    {
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "2024-04-01",
+      "dataUltrassom": "2024-05-20",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0",
+      "ig_dum_semanas": "39",
+      "ig_dum_dias": "0",
+      "ig_us_semanas": "39",
+      "ig_us_dias": "0",
+      "dpp_dum": "2025-01-06",
+      "dpp_us": "2025-01-06"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\tig_dum_semanas\tig_dum_dias\tig_us_semanas\tig_us_dias\tdpp_dum\tdpp_us\nTESTE - Gestante Exemplo\t2024-04-01\t2024-05-20\t7\t0\t39\t0\t39\t0\t2025-01-06\t2025-01-06\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

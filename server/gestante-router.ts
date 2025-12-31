@@ -172,6 +172,26 @@ function calculateWeightCurve(pesoInicial: number, altura: number) {
   };
 }
 
+// Helper to safely parse date strings from database
+function parseDateSafe(dateStr: string | null | undefined): Date | null {
+  if (!dateStr || dateStr === 'null' || dateStr === 'undefined' || dateStr.trim() === '') {
+    return null;
+  }
+  
+  // Handle special values from DUM field
+  const specialValues = ['Incerta', 'incerta', 'INCERTA', 'Incompatível com US', 'incompatível com us'];
+  if (specialValues.some(val => dateStr.toLowerCase().includes(val.toLowerCase()))) {
+    return null;
+  }
+  
+  try {
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? null : date;
+  } catch {
+    return null;
+  }
+}
+
 // Middleware to validate gestante token
 async function validateGestanteToken(token: string) {
   if (!token) {
@@ -320,11 +340,32 @@ export const gestanteRouter = router({
       token: z.string(),
     }))
     .query(async ({ input }) => {
-      const gestante = await validateGestanteToken(input.token);
+      console.log('[DEBUG gestante.me] Input recebido:', JSON.stringify(input));
+      try {
+        const gestanteRaw = await validateGestanteToken(input.token);
+        console.log('[DEBUG] gestanteRaw type:', typeof gestanteRaw);
+        console.log('[DEBUG] gestanteRaw keys:', Object.keys(gestanteRaw));
+        
+        // Convert to JSON and parse back to remove any Date objects
+        const gestanteJSON = JSON.stringify(gestanteRaw);
+        const gestanteParsed = JSON.parse(gestanteJSON);
+        
+        // Remove Date fields that cause serialization issues
+        const { createdAt, updatedAt, userId, ...gestanteData } = gestanteParsed;
+        const gestante = gestanteData;
+        console.log('[DEBUG gestante.me] Gestante encontrada:', gestante.id, gestante.nome);
       
       // Calculate gestational ages
-      const dum = gestante.dum ? new Date(gestante.dum) : null;
-      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom) : null;
+      console.log('[DEBUG] gestante.dum:', gestante.dum, 'type:', typeof gestante.dum);
+      console.log('[DEBUG] gestante.dataUltrassom:', gestante.dataUltrassom, 'type:', typeof gestante.dataUltrassom);
+      console.log('[DEBUG] gestante.dataNascimento:', gestante.dataNascimento, 'type:', typeof gestante.dataNascimento);
+      console.log('[DEBUG] gestante.createdAt:', gestante.createdAt, 'type:', typeof gestante.createdAt);
+      console.log('[DEBUG] gestante.updatedAt:', gestante.updatedAt, 'type:', typeof gestante.updatedAt);
+      
+      const dum = parseDateSafe(gestante.dum);
+      const dataUS = parseDateSafe(gestante.dataUltrassom);
+      console.log('[DEBUG] dum parsed:', dum);
+      console.log('[DEBUG] dataUS parsed:', dataUS);
       
       let igDUM = null;
       let igUS = null;
@@ -332,24 +373,115 @@ export const gestanteRouter = router({
       let dppUS = null;
       
       if (dum) {
-        igDUM = calculateIGFromDUM(dum);
-        dppDUM = calculateDPP(dum);
+        try {
+          igDUM = calculateIGFromDUM(dum);
+          dppDUM = calculateDPP(dum);
+          console.log('[DEBUG] Calculated igDUM and dppDUM successfully');
+        } catch (err) {
+          console.error('[ERROR] Failed to calculate from DUM:', err);
+        }
       }
       
       if (dataUS && gestante.igUltrassomSemanas !== null) {
-        igUS = calculateIGFromUS(dataUS, gestante.igUltrassomSemanas, gestante.igUltrassomDias || 0);
-        dppUS = calculateDPPFromUS(dataUS, gestante.igUltrassomSemanas, gestante.igUltrassomDias || 0);
+        try {
+          igUS = calculateIGFromUS(dataUS, gestante.igUltrassomSemanas, gestante.igUltrassomDias || 0);
+          dppUS = calculateDPPFromUS(dataUS, gestante.igUltrassomSemanas, gestante.igUltrassomDias || 0);
+          console.log('[DEBUG] Calculated igUS and dppUS successfully');
+        } catch (err) {
+          console.error('[ERROR] Failed to calculate from US:', err);
+        }
       }
       
-      return {
-        ...gestante,
-        calculado: {
-          igDUM,
-          igUS,
-          dppDUM,
-          dppUS,
-        },
-      };
+        console.log('[DEBUG gestante.me] Retornando dados...');
+        console.log('[DEBUG] igDUM:', JSON.stringify(igDUM));
+        console.log('[DEBUG] igUS:', JSON.stringify(igUS));
+        console.log('[DEBUG] dppDUM:', dppDUM, 'type:', typeof dppDUM);
+        console.log('[DEBUG] dppUS:', dppUS, 'type:', typeof dppUS);
+        
+        // Convert Date objects to ISO strings to avoid Superjson serialization errors
+        const dppDUMStr = typeof dppDUM === 'string' ? dppDUM : null;
+        const dppUSStr = typeof dppUS === 'string' ? dppUS : null;
+        
+        // Convert all date fields to strings safely - handle both string and Date objects
+        const convertToDateString = (val: any): string | null => {
+          if (!val) return null;
+          if (val instanceof Date) {
+            return isNaN(val.getTime()) ? null : val.toISOString().split('T')[0];
+          }
+          const str = String(val);
+          if (str === 'null' || str === 'undefined' || str.trim() === '') return null;
+          // Try to parse and validate
+          try {
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? null : str.split('T')[0];
+          } catch {
+            return null;
+          }
+        };
+        
+        const dataNascimentoStr = convertToDateString(gestante.dataNascimento);
+        const dumStr = convertToDateString(gestante.dum);
+        const dataUltrassomStr = convertToDateString(gestante.dataUltrassom);
+        
+        console.log('[DEBUG] dppDUMStr:', dppDUMStr);
+        console.log('[DEBUG] dppUSStr:', dppUSStr);
+        console.log('[DEBUG] dataNascimentoStr:', dataNascimentoStr);
+        console.log('[DEBUG] dumStr:', dumStr);
+        console.log('[DEBUG] dataUltrassomStr:', dataUltrassomStr);
+        
+        // Convert all fields to JSON-safe types - ONLY primitives
+        const result = {
+          id: String(gestante.id),
+          nome: String(gestante.nome || ''),
+          email: gestante.email ? String(gestante.email) : null,
+          telefone: gestante.telefone ? String(gestante.telefone) : null,
+          dataNascimento: dataNascimentoStr,
+          dum: dumStr,
+          dataUltrassom: dataUltrassomStr,
+          igUltrassomSemanas: gestante.igUltrassomSemanas !== null ? Number(gestante.igUltrassomSemanas) : null,
+          igUltrassomDias: gestante.igUltrassomDias !== null ? Number(gestante.igUltrassomDias) : null,
+          altura: gestante.altura !== null ? Number(gestante.altura) : null,
+          pesoInicial: gestante.pesoInicial !== null ? Number(gestante.pesoInicial) : null,
+          planoSaudeId: gestante.planoSaudeId ? String(gestante.planoSaudeId) : null,
+          medicoId: gestante.medicoId ? String(gestante.medicoId) : null,
+          tipoPartoDesejado: gestante.tipoPartoDesejado ? String(gestante.tipoPartoDesejado) : null,
+          gesta: gestante.gesta !== null ? Number(gestante.gesta) : null,
+          para: gestante.para !== null ? Number(gestante.para) : null,
+          partosNormais: gestante.partosNormais !== null ? Number(gestante.partosNormais) : null,
+          cesareas: gestante.cesareas !== null ? Number(gestante.cesareas) : null,
+          abortos: gestante.abortos !== null ? Number(gestante.abortos) : null,
+          observacoes: gestante.observacoes ? String(gestante.observacoes) : null,
+          calculado: {
+            igDUM: igDUM ? { semanas: Number(igDUM.semanas), dias: Number(igDUM.dias), totalDias: Number(igDUM.totalDias) } : null,
+            igUS: igUS ? { semanas: Number(igUS.semanas), dias: Number(igUS.dias), totalDias: Number(igUS.totalDias) } : null,
+            dppDUM: dppDUMStr,
+            dppUS: dppUSStr,
+          },
+        };
+        
+        console.log('[DEBUG] Returning result:', JSON.stringify(result).substring(0, 200));
+        
+        // Try to serialize with Superjson to catch exact error
+        try {
+          const testSerialization = JSON.stringify(result);
+          console.log('[DEBUG] JSON serialization OK');
+        } catch (serErr) {
+          console.error('[ERROR] JSON serialization failed:', serErr);
+          throw serErr;
+        }
+        
+        return result;
+      } catch (error) {
+        console.error('[ERROR gestante.me] FATAL ERROR CAUGHT!');
+        console.error('[ERROR] Error object:', error);
+        console.error('[ERROR] Error type:', typeof error);
+        console.error('[ERROR] Error message:', error instanceof Error ? error.message : String(error));
+        console.error('[ERROR] Error stack:', error instanceof Error ? error.stack : 'No stack');
+        if (error instanceof Error && 'cause' in error) {
+          console.error('[ERROR] Error cause:', error.cause);
+        }
+        throw error;
+      }
     }),
   
   // GET /marcos

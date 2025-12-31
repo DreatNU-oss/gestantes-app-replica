@@ -1,0 +1,20 @@
+{
+  "query": "SELECT \n  s.id,\n  s.token,\n  s.gestanteId,\n  s.expiraEm,\n  s.createdAt,\n  g.nome,\n  g.email,\n  CASE \n    WHEN s.expiraEm > NOW() THEN 'VÁLIDA'\n    ELSE 'EXPIRADA'\n  END as status_sessao\nFROM sessoesGestante s\nJOIN gestantes g ON s.gestanteId = g.id\nWHERE s.token = '4889f65eb446b1476d08472ac2bde173e65e4c035c25f12cece37becca1f932a993f2a8b57199dd123ec716329d1bf63f8e02ed1d0e9b7e201967ed8accd691a'\nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  s.id,\n  s.token,\n  s.gestanteId,\n  s.expiraEm,\n  s.createdAt,\n  g.nome,\n  g.email,\n  CASE \n    WHEN s.expiraEm > NOW() THEN 'VÁLIDA'\n    ELSE 'EXPIRADA'\n  END as status_sessao\nFROM sessoesGestante s\nJOIN gestantes g ON s.gestanteId = g.id\nWHERE s.token = '4889f65eb446b1476d08472ac2bde173e65e4c035c25f12cece37becca1f932a993f2a8b57199dd123ec716329d1bf63f8e02ed1d0e9b7e201967ed8accd691a'\nLIMIT 1;",
+  "rows": [
+    {
+      "id": "180004",
+      "token": "4889f65eb446b1476d08472ac2bde173e65e4c035c25f12cece37becca1f932a993f2a8b57199dd123ec716329d1bf63f8e02ed1d0e9b7e201967ed8accd691a",
+      "gestanteId": "1320002",
+      "expiraEm": "2026-01-29 21:04:35",
+      "createdAt": "2025-12-30 21:04:35",
+      "nome": "TESTE - Gestante Exemplo",
+      "email": "teste@gestantesapp.com",
+      "status_sessao": "VÁLIDA"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttoken\tgestanteId\texpiraEm\tcreatedAt\tnome\temail\tstatus_sessao\n180004\t4889f65eb446b1476d08472ac2bde173e65e4c035c25f12cece37becca1f932a993f2a8b57199dd123ec716329d1bf63f8e02ed1d0e9b7e201967ed8accd691a\t1320002\t2026-01-29 21:04:35\t2025-12-30 21:04:35\tTESTE - Gestante Exemplo\tteste@gestantesapp.com\tVÁLIDA\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

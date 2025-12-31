@@ -1,0 +1,21 @@
+{
+  "query": "SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  dataNascimento,\n  createdAt,\n  updatedAt\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  dataNascimento,\n  createdAt,\n  updatedAt\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "2024-04-01",
+      "dataUltrassom": "2024-05-20",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0",
+      "dataNascimento": "1990-05-15",
+      "createdAt": "2025-12-30 20:00:34",
+      "updatedAt": "2025-12-30 20:00:34"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\tdataNascimento\tcreatedAt\tupdatedAt\n1320002\tTESTE - Gestante Exemplo\t2024-04-01\t2024-05-20\t7\t0\t1990-05-15\t2025-12-30 20:00:34\t2025-12-30 20:00:34\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, nome, dum, dataUltrassom FROM gestantes WHERE nome = 'TESTE - Gestante Exemplo' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dum, dataUltrassom FROM gestantes WHERE nome = 'TESTE - Gestante Exemplo' LIMIT 1;",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "2024-04-01",
+      "dataUltrassom": "2024-05-20"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataUltrassom\n1320002\tTESTE - Gestante Exemplo\t2024-04-01\t2024-05-20\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

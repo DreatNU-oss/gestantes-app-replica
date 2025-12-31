@@ -1,0 +1,16 @@
+{
+  "query": "SELECT codigo, expiraEm, usado, createdAt\nFROM codigosAcessoGestante\nWHERE destino = 'teste@gestantesapp.com'\nORDER BY createdAt DESC\nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT codigo, expiraEm, usado, createdAt\nFROM codigosAcessoGestante\nWHERE destino = 'teste@gestantesapp.com'\nORDER BY createdAt DESC\nLIMIT 1;",
+  "rows": [
+    {
+      "codigo": "589119",
+      "expiraEm": "2025-12-30 20:32:40",
+      "usado": "0",
+      "createdAt": "2025-12-30 20:17:40"
+    }
+  ],
+  "messages": [],
+  "stdout": "codigo\texpiraEm\tusado\tcreatedAt\n589119\t2025-12-30 20:32:40\t0\t2025-12-30 20:17:40\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

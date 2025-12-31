@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados)\nSELECT id, 'ecocardiograma_fetal', '2024-09-30', '26s 1d', \nJSON_OBJECT(\n  'quatro_camaras', 'Normal',\n  'vias_saida', 'Normais',\n  'arco_aortico', 'Normal',\n  'arco_ductal', 'Normal',\n  'septo_interatrial', 'Íntegro',\n  'septo_interventricular', 'Íntegro',\n  'valvas', 'Normais',\n  'ritmo_cardiaco', 'Regular - 142 bpm',\n  'funcao_ventricular', 'Normal',\n  'derrame_pericardico', 'Ausente',\n  'observacoes', 'Ecocardiograma fetal sem alterações. Anatomia cardíaca normal.'\n)\nFROM gestantes WHERE nome = 'TESTE - Gestante Exemplo' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados)\nSELECT id, 'ecocardiograma_fetal', '2024-09-30', '26s 1d', \nJSON_OBJECT(\n  'quatro_camaras', 'Normal',\n  'vias_saida', 'Normais',\n  'arco_aortico', 'Normal',\n  'arco_ductal', 'Normal',\n  'septo_interatrial', 'Íntegro',\n  'septo_interventricular', 'Íntegro',\n  'valvas', 'Normais',\n  'ritmo_cardiaco', 'Regular - 142 bpm',\n  'funcao_ventricular', 'Normal',\n  'derrame_pericardico', 'Ausente',\n  'observacoes', 'Ecocardiograma fetal sem alterações. Anatomia cardíaca normal.'\n)\nFROM gestantes WHERE nome = 'TESTE - Gestante Exemplo' LIMIT 1;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 69
+}

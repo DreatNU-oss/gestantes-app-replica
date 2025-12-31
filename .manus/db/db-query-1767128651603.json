@@ -1,0 +1,20 @@
+{
+  "query": "SELECT \n  id,\n  codigo,\n  destino,\n  usado,\n  expiraEm,\n  createdAt,\n  CASE \n    WHEN usado = 1 THEN 'JÁ USADO'\n    WHEN expiraEm < NOW() THEN 'EXPIRADO'\n    ELSE 'VÁLIDO'\n  END as status,\n  TIMESTAMPDIFF(MINUTE, NOW(), expiraEm) as minutos_restantes\nFROM codigosAcessoGestante \nWHERE codigo = '999999'\nORDER BY createdAt DESC \nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  codigo,\n  destino,\n  usado,\n  expiraEm,\n  createdAt,\n  CASE \n    WHEN usado = 1 THEN 'JÁ USADO'\n    WHEN expiraEm < NOW() THEN 'EXPIRADO'\n    ELSE 'VÁLIDO'\n  END as status,\n  TIMESTAMPDIFF(MINUTE, NOW(), expiraEm) as minutos_restantes\nFROM codigosAcessoGestante \nWHERE codigo = '999999'\nORDER BY createdAt DESC \nLIMIT 1;",
+  "rows": [
+    {
+      "id": "270005",
+      "codigo": "999999",
+      "destino": "teste@gestantesapp.com",
+      "usado": "1",
+      "expiraEm": "2025-12-30 21:58:15",
+      "createdAt": "2025-12-30 20:58:15",
+      "status": "JÁ USADO",
+      "minutos_restantes": "54"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\tdestino\tusado\texpiraEm\tcreatedAt\tstatus\tminutos_restantes\n270005\t999999\tteste@gestantesapp.com\t1\t2025-12-30 21:58:15\t2025-12-30 20:58:15\tJÁ USADO\t54\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

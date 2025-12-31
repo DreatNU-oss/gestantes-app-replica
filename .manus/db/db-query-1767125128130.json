@@ -1,0 +1,20 @@
+{
+  "query": "SELECT \n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  DATEDIFF('2024-12-30', dum) as dias_desde_dum,\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as semanas_calculadas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as dias_calculados\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  DATEDIFF('2024-12-30', dum) as dias_desde_dum,\n  FLOOR(DATEDIFF('2024-12-30', dum) / 7) as semanas_calculadas,\n  MOD(DATEDIFF('2024-12-30', dum), 7) as dias_calculados\nFROM gestantes \nWHERE nome = 'TESTE - Gestante Exemplo';",
+  "rows": [
+    {
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "2024-04-01",
+      "dataUltrassom": "2024-05-20",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0",
+      "dias_desde_dum": "273",
+      "semanas_calculadas": "39",
+      "dias_calculados": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\tdias_desde_dum\tsemanas_calculadas\tdias_calculados\nTESTE - Gestante Exemplo\t2024-04-01\t2024-05-20\t7\t0\t273\t39\t0\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

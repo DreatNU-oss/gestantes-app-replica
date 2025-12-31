@@ -1,0 +1,15 @@
+{
+  "query": "INSERT INTO codigosAcessoGestante (gestanteId, codigo, destino, expiraEm, createdAt)\nSELECT \n  id,\n  '999999' as codigo,\n  'teste@gestantesapp.com',\n  DATE_ADD(NOW(), INTERVAL 60 MINUTE),\n  NOW()\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;\n\nSELECT 'USE ESTE CÓDIGO: 999999' as mensagem, expiraEm, 'VÁLIDO POR 60 MINUTOS' as status\nFROM codigosAcessoGestante \nWHERE codigo = '999999' AND destino = 'teste@gestantesapp.com'\nORDER BY createdAt DESC \nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO codigosAcessoGestante (gestanteId, codigo, destino, expiraEm, createdAt)\nSELECT \n  id,\n  '999999' as codigo,\n  'teste@gestantesapp.com',\n  DATE_ADD(NOW(), INTERVAL 60 MINUTE),\n  NOW()\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;\n\nSELECT 'USE ESTE CÓDIGO: 999999' as mensagem, expiraEm, 'VÁLIDO POR 60 MINUTOS' as status\nFROM codigosAcessoGestante \nWHERE codigo = '999999' AND destino = 'teste@gestantesapp.com'\nORDER BY createdAt DESC \nLIMIT 1;",
+  "rows": [
+    {
+      "mensagem": "USE ESTE CÓDIGO: 999999",
+      "expiraEm": "2025-12-30 21:58:15",
+      "status": "VÁLIDO POR 60 MINUTOS"
+    }
+  ],
+  "messages": [],
+  "stdout": "mensagem\texpiraEm\tstatus\nUSE ESTE CÓDIGO: 999999\t2025-12-30 21:58:15\tVÁLIDO POR 60 MINUTOS\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

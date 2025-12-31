@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  id,\n  createdAt,\n  updatedAt,\n  UNIX_TIMESTAMP(createdAt) as created_unix,\n  UNIX_TIMESTAMP(updatedAt) as updated_unix\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  createdAt,\n  updatedAt,\n  UNIX_TIMESTAMP(createdAt) as created_unix,\n  UNIX_TIMESTAMP(updatedAt) as updated_unix\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "rows": [
+    {
+      "id": "1320002",
+      "createdAt": "2025-12-30 20:00:34",
+      "updatedAt": "2025-12-30 20:11:44",
+      "created_unix": "1767124834",
+      "updated_unix": "1767125504"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcreatedAt\tupdatedAt\tcreated_unix\tupdated_unix\n1320002\t2025-12-30 20:00:34\t2025-12-30 20:11:44\t1767124834\t1767125504\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

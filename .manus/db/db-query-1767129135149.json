@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  id,\n  nome,\n  dum,\n  CHAR_LENGTH(dum) as dum_length,\n  HEX(dum) as dum_hex\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  nome,\n  dum,\n  CHAR_LENGTH(dum) as dum_length,\n  HEX(dum) as dum_hex\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com'\nLIMIT 1;",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "Incompatível com US",
+      "dum_length": "19",
+      "dum_hex": "496E636F6D706174C3AD76656C20636F6D205553"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdum_length\tdum_hex\n1320002\tTESTE - Gestante Exemplo\tIncompatível com US\t19\t496E636F6D706174C3AD76656C20636F6D205553\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

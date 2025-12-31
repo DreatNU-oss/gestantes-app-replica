@@ -271,15 +271,7 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Alertas de Partos Próximos */}
-        {gestantes && gestantes.length > 0 && (
-          <AlertasPartosProximos 
-            gestantes={gestantes} 
-            medicos={medicos} 
-            onRegistrarParto={handleRegistrarParto}
-          />
-        )}
-
+        {/* Card de Filtros e Busca */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -365,6 +357,16 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        {/* Alertas de Partos Próximos */}
+        {gestantes && gestantes.length > 0 && (
+          <AlertasPartosProximos 
+            gestantes={gestantes} 
+            medicos={medicos} 
+            onRegistrarParto={handleRegistrarParto}
+          />
+        )}
+
+        {/* Tabela de Gestantes */}
         <Card>
           <CardContent className="p-0">
             {isLoading ? (

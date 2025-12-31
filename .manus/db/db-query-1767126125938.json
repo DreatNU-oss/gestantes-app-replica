@@ -1,0 +1,20 @@
+{
+  "query": "SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  CASE \n    WHEN dum IS NULL THEN 'DUM NULL'\n    WHEN dum = '' THEN 'DUM VAZIO'\n    WHEN dum LIKE '0000%' THEN 'DUM INVÁLIDA'\n    ELSE 'DUM OK'\n  END as status_dum,\n  CASE \n    WHEN dataUltrassom IS NULL THEN 'US NULL'\n    WHEN dataUltrassom = '' THEN 'US VAZIO'\n    WHEN dataUltrassom LIKE '0000%' THEN 'US INVÁLIDA'\n    ELSE 'US OK'\n  END as status_us\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  id,\n  nome,\n  dum,\n  dataUltrassom,\n  igUltrassomSemanas,\n  igUltrassomDias,\n  CASE \n    WHEN dum IS NULL THEN 'DUM NULL'\n    WHEN dum = '' THEN 'DUM VAZIO'\n    WHEN dum LIKE '0000%' THEN 'DUM INVÁLIDA'\n    ELSE 'DUM OK'\n  END as status_dum,\n  CASE \n    WHEN dataUltrassom IS NULL THEN 'US NULL'\n    WHEN dataUltrassom = '' THEN 'US VAZIO'\n    WHEN dataUltrassom LIKE '0000%' THEN 'US INVÁLIDA'\n    ELSE 'US OK'\n  END as status_us\nFROM gestantes \nWHERE email = 'teste@gestantesapp.com';",
+  "rows": [
+    {
+      "id": "1320002",
+      "nome": "TESTE - Gestante Exemplo",
+      "dum": "Incompatível com US",
+      "dataUltrassom": "2025-05-14",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0",
+      "status_dum": "DUM OK",
+      "status_us": "US OK"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\tstatus_dum\tstatus_us\n1320002\tTESTE - Gestante Exemplo\tIncompatível com US\t2025-05-14\t7\t0\tDUM OK\tUS OK\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}
