@@ -140,6 +140,7 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
     "epilepsia",
     "fator_preditivo_dheg",
     "fator_rh_negativo",
+    "gemelar",
     "hipotireoidismo",
     "hipertensao",
     "historico_familiar_dheg",

@@ -204,6 +204,13 @@
       "when": 1768247178821,
       "tag": "0028_outgoing_eddie_brock",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1768249310821,
+      "tag": "0029_skinny_vivisector",
+      "breakpoints": true
     }
   ]
 }

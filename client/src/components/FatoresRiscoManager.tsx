@@ -29,6 +29,7 @@ const FATORES_RISCO_LABELS: Record<string, string> = {
   epilepsia: "Epilepsia",
   fator_preditivo_dheg: "Fator Preditivo Positivo para DHEG em Morfo 1º trimestre",
   fator_rh_negativo: "Fator Rh Negativo",
+  gemelar: "Gemelar",
   hipotireoidismo: "Hipotireoidismo",
   hipertensao: "Hipertensão",
   historico_familiar_dheg: "Mãe/irmã com histórico de DHEG",
@@ -204,6 +205,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectItem value="epilepsia">Epilepsia</SelectItem>
                   <SelectItem value="fator_preditivo_dheg">Fator Preditivo Positivo para DHEG em Morfo 1º trimestre</SelectItem>
                   <SelectItem value="fator_rh_negativo">Fator Rh Negativo</SelectItem>
+                  <SelectItem value="gemelar">Gemelar</SelectItem>
                   <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
                   <SelectItem value="hipertensao">Hipertensão</SelectItem>
                   <SelectItem value="historico_familiar_dheg">
