@@ -132,10 +132,13 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
   id: int("id").autoincrement().primaryKey(),
   gestanteId: int("gestanteId").notNull(),
   tipo: mysqlEnum("tipo", [
+    "alergia_medicamentos",
+    "alteracoes_morfologicas_fetais",
     "diabetes_gestacional",
     "diabetes_tipo2",
     "dpoc_asma",
     "epilepsia",
+    "fator_preditivo_dheg",
     "fator_rh_negativo",
     "hipotireoidismo",
     "hipertensao",
@@ -144,6 +147,7 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
     "incompetencia_istmo_cervical",
     "mal_passado_obstetrico",
     "malformacoes_mullerianas",
+    "sobrepeso_obesidade",
     "trombofilia",
     "outro"
   ]).notNull(),

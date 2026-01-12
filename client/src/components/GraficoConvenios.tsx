@@ -117,15 +117,37 @@ export function GraficoConvenios() {
         },
       },
       datalabels: {
-        color: '#fff',
+        color: (context: any) => {
+          // Usar cor branca para fatias grandes, cor da fatia para labels externos
+          const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
+          const percentage = ((context.dataset.data[context.dataIndex] / total) * 100);
+          return percentage > 5 ? '#fff' : context.dataset.backgroundColor[context.dataIndex];
+        },
         font: {
           weight: 'bold' as const,
-          size: 16,
+          size: 14,
         },
         formatter: (value: number, context: any) => {
           const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
           const percentage = ((value / total) * 100).toFixed(1);
-          return `${percentage}%`;
+          // Mostrar percentual apenas se for maior que 1%
+          return percentage !== '0.0' ? `${percentage}%` : '';
+        },
+        // Posicionar labels de fatias pequenas fora do gráfico
+        anchor: (context: any) => {
+          const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
+          const percentage = ((context.dataset.data[context.dataIndex] / total) * 100);
+          return percentage > 5 ? 'center' : 'end';
+        },
+        align: (context: any) => {
+          const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
+          const percentage = ((context.dataset.data[context.dataIndex] / total) * 100);
+          return percentage > 5 ? 'center' : 'end';
+        },
+        offset: (context: any) => {
+          const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
+          const percentage = ((context.dataset.data[context.dataIndex] / total) * 100);
+          return percentage > 5 ? 0 : 10;
         },
       },
     },

@@ -21,10 +21,13 @@ interface FatoresRiscoManagerProps {
 }
 
 const FATORES_RISCO_LABELS: Record<string, string> = {
+  alergia_medicamentos: "Alergia a medicamentos",
+  alteracoes_morfologicas_fetais: "Alterações morfológicas fetais",
   diabetes_gestacional: "Diabetes Gestacional",
   diabetes_tipo2: "Diabetes Tipo 2",
   dpoc_asma: "DPOC/Asma",
   epilepsia: "Epilepsia",
+  fator_preditivo_dheg: "Fator Preditivo Positivo para DHEG em Morfo 1º trimestre",
   fator_rh_negativo: "Fator Rh Negativo",
   hipotireoidismo: "Hipotireoidismo",
   hipertensao: "Hipertensão",
@@ -33,6 +36,7 @@ const FATORES_RISCO_LABELS: Record<string, string> = {
   incompetencia_istmo_cervical: "Incompetência Istmo-cervical",
   mal_passado_obstetrico: "Mal Passado Obstétrico",
   malformacoes_mullerianas: "Malformações Müllerianas (Útero bicorno/septado/arqueado)",
+  sobrepeso_obesidade: "Sobrepeso/obesidade",
   trombofilia: "Trombofilia",
   outro: "Outro",
 };
@@ -95,6 +99,11 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
 
     if (novoFator.tipo === "outro" && !novoFator.descricao) {
       toast.error("Descreva o fator de risco");
+      return;
+    }
+
+    if (novoFator.tipo === "alergia_medicamentos" && !novoFator.descricao) {
+      toast.error("Especifique os medicamentos");
       return;
     }
 
@@ -187,10 +196,13 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="alergia_medicamentos">Alergia a medicamentos</SelectItem>
+                  <SelectItem value="alteracoes_morfologicas_fetais">Alterações morfológicas fetais</SelectItem>
                   <SelectItem value="diabetes_gestacional">Diabetes Gestacional</SelectItem>
                   <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
                   <SelectItem value="dpoc_asma">DPOC/Asma</SelectItem>
                   <SelectItem value="epilepsia">Epilepsia</SelectItem>
+                  <SelectItem value="fator_preditivo_dheg">Fator Preditivo Positivo para DHEG em Morfo 1º trimestre</SelectItem>
                   <SelectItem value="fator_rh_negativo">Fator Rh Negativo</SelectItem>
                   <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
                   <SelectItem value="hipertensao">Hipertensão</SelectItem>
@@ -207,16 +219,17 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectItem value="malformacoes_mullerianas">
                     Malformações Müllerianas (Útero bicorno/septado/arqueado)
                   </SelectItem>
+                  <SelectItem value="sobrepeso_obesidade">Sobrepeso/obesidade</SelectItem>
                   <SelectItem value="trombofilia">Trombofilia</SelectItem>
                   <SelectItem value="outro">Outro</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {(novoFator.tipo === "outro" || novoFator.tipo === "mal_passado_obstetrico") && (
+            {(novoFator.tipo === "outro" || novoFator.tipo === "mal_passado_obstetrico" || novoFator.tipo === "alergia_medicamentos") && (
               <div>
                 <Label htmlFor="descricao">
-                  {novoFator.tipo === "outro" ? "Descrição *" : "Detalhes (opcional)"}
+                  {novoFator.tipo === "outro" ? "Descrição *" : novoFator.tipo === "alergia_medicamentos" ? "Especificar medicamentos *" : "Detalhes (opcional)"}
                 </Label>
                 <Input
                   id="descricao"

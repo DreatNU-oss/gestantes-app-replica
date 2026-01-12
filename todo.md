@@ -1889,3 +1889,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [ ] BUG: Corrigir cálculo de IG no gráfico de peso (consulta de 37 semanas aparece como 35 semanas) - EM INVESTIGAÇÃO
 - [x] BUG URGENTE: Reverter alterações que causaram diminuição de 2 semanas no cálculo de IG ao abrir formulário de nova consulta - RESOLVIDO: Adicionado -1 de volta no cálculo de totalDiasUS
 - [x] Adicionar botão "Limpar Rascunho" no formulário de nova consulta para facilitar limpeza de dados salvos automaticamente
+
+- [x] Adicionar 4 novos fatores de risco: Alergia a medicamentos (com especificação), Sobrepeso/obesidade, Fator Preditivo Positivo para DHEG em Morfo 1º trimestre, Alterações morfológicas fetais
+- [x] Reorganizar fatores de risco em ordem alfabética
+- [x] Corrigir bug do campo "Tipo de Parto Desejado" que não salva ao editar cadastro de gestante
+- [x] Melhorar visualização de percentuais no gráfico de convênios (fatias pequenas não mostram percentual legível)
