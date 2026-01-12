@@ -109,8 +109,8 @@ export function GraficoPeso({ consultas, altura, pesoInicial, metodoCalculo }: G
     let consultaNaSemana = null;
     if (consultasNaSemana.length > 0) {
       consultasNaSemana.sort((a, b) => {
-        const dataA = new Date(a.dataConsulta).getTime();
-        const dataB = new Date(b.dataConsulta).getTime();
+        const dataA = new Date(a.data).getTime();
+        const dataB = new Date(b.data).getTime();
         return dataB - dataA; // Ordem decrescente (mais recente primeiro)
       });
       consultaNaSemana = consultasNaSemana[0];

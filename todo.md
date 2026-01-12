@@ -1886,4 +1886,6 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar ordenação por IG decrescente (padrão atual)
 - [x] Testar todas as opções de ordenação
 
-- [ ] BUG: Corrigir cálculo de IG no gráfico de peso (consulta de 37 semanas aparece como 35 semanas)
+- [ ] BUG: Corrigir cálculo de IG no gráfico de peso (consulta de 37 semanas aparece como 35 semanas) - EM INVESTIGAÇÃO
+- [x] BUG URGENTE: Reverter alterações que causaram diminuição de 2 semanas no cálculo de IG ao abrir formulário de nova consulta - RESOLVIDO: Adicionado -1 de volta no cálculo de totalDiasUS
+- [x] Adicionar botão "Limpar Rascunho" no formulário de nova consulta para facilitar limpeza de dados salvos automaticamente

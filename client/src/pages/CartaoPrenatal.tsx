@@ -509,8 +509,7 @@ export default function CartaoPrenatal() {
             const dataConsulta = new Date(consulta.dataConsulta);
             const diffMs = dataConsulta.getTime() - ultrassom.getTime();
             const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            // Subtrair 1 dia para corrigir contagem inclusiva (mesmo padrão do AlertasPartosProximos)
-    const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS - 1;
+            const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS - 1;
             const semanas = Math.floor(totalDiasUS / 7);
             const dias = totalDiasUS % 7;
             // Validar se os valores são válidos
@@ -1126,7 +1125,6 @@ export default function CartaoPrenatal() {
     const diffMs = consulta.getTime() - ultrassom.getTime();
     const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
-    // Subtrair 1 dia para corrigir contagem inclusiva (mesmo padrão do AlertasPartosProximos)
     const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS - 1;
     const semanas = Math.floor(totalDiasUS / 7);
     const dias = totalDiasUS % 7;
@@ -1626,6 +1624,33 @@ export default function CartaoPrenatal() {
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancelar
                   </Button>
+                  {!consultaEditando && savedAt && (
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      onClick={() => {
+                        clearDraft();
+                        setFormData({
+                          dataConsulta: getDataHoje(),
+                          peso: "",
+                          pressaoArterial: "",
+                          alturaUterina: "",
+                          bcf: "",
+                          mf: "",
+                          conduta: [],
+                          condutaComplementacao: "",
+                          observacoes: "",
+                        });
+                        toast.success('Rascunho limpo', {
+                          description: 'Formulário resetado com sucesso.',
+                        });
+                      }}
+                      className="text-muted-foreground"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Limpar Rascunho
+                    </Button>
+                  )}
                 </div>
               </form>
             </CardContent>
