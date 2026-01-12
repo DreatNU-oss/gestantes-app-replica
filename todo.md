@@ -1896,3 +1896,4 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Melhorar visualização de percentuais no gráfico de convênios (fatias pequenas não mostram percentual legível)
 - [x] Adicionar "Gemelar" como fator de risco em ordem alfabética
 - [x] Corrigir validação tRPC do endpoint fatoresRisco.create para incluir 'gemelar'
+- [x] Corrigir enum de validação do endpoint fatoresRisco.add para incluir TODOS os fatores de risco (faltando: alergia_medicamentos, alteracoes_morfologicas_fetais, diabetes_gestacional, dpoc_asma, fator_preditivo_dheg, fator_rh_negativo, gemelar, sobrepeso_obesidade)
