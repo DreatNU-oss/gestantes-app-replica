@@ -1895,3 +1895,4 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir bug do campo "Tipo de Parto Desejado" que não salva ao editar cadastro de gestante
 - [x] Melhorar visualização de percentuais no gráfico de convênios (fatias pequenas não mostram percentual legível)
 - [x] Adicionar "Gemelar" como fator de risco em ordem alfabética
+- [x] Corrigir validação tRPC do endpoint fatoresRisco.create para incluir 'gemelar'
