@@ -1885,3 +1885,5 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar ordenação por IG crescente
 - [x] Implementar ordenação por IG decrescente (padrão atual)
 - [x] Testar todas as opções de ordenação
+
+- [ ] BUG: Corrigir cálculo de IG no gráfico de peso (consulta de 37 semanas aparece como 35 semanas)
