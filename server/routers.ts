@@ -1560,15 +1560,10 @@ export const appRouter = router({
       .input(z.object({
         gestanteId: z.number(),
         tipo: z.enum([
-          "alergia_medicamentos",
-          "alteracoes_morfologicas_fetais",
           "diabetes_gestacional",
           "diabetes_tipo2",
           "dpoc_asma",
           "epilepsia",
-          "fator_preditivo_dheg",
-          "fator_rh_negativo",
-          "gemelar",
           "hipotireoidismo",
           "hipertensao",
           "historico_familiar_dheg",
@@ -1576,7 +1571,6 @@ export const appRouter = router({
           "incompetencia_istmo_cervical",
           "mal_passado_obstetrico",
           "malformacoes_mullerianas",
-          "sobrepeso_obesidade",
           "trombofilia",
           "outro"
         ]),
