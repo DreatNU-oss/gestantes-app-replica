@@ -229,7 +229,45 @@ export default function CartaoPrenatal() {
     },
   });
 
+  const gerarPDFMutation = trpc.pdf.gerarCartaoPrenatal.useMutation();
+
   const handleGerarPDF = async () => {
+    if (!gestante) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
+    
+    setIsGerandoPDF(true);
+    try {
+      // Chamar backend para gerar PDF
+      const result = await gerarPDFMutation.mutateAsync({ gestanteId: gestante.id });
+      
+      // Converter base64 para blob
+      const pdfBlob = new Blob(
+        [Uint8Array.from(atob(result.pdf), c => c.charCodeAt(0))],
+        { type: 'application/pdf' }
+      );
+      
+      // Criar link de download
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = result.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('PDF gerado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      toast.error('Erro ao gerar PDF. Tente novamente.');
+    } finally {
+      setIsGerandoPDF(false);
+    }
+  };
+
+  const handleGerarPDFAntigo = async () => {
     if (!gestante) {
       toast.error('Selecione uma gestante primeiro');
       return;
@@ -1869,16 +1907,35 @@ export default function CartaoPrenatal() {
 
         {/* Botão Gerar Cartão */}
         {gestante && (
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-end gap-3 mt-6">
             <Button
               onClick={() => window.open(`/cartao-prenatal-impressao/${gestante.id}`, '_blank')}
               size="lg"
-              className="bg-[#8B4049] hover:bg-[#6d3239]"
+              variant="outline"
+              className="border-[#8B4049] text-[#8B4049] hover:bg-[#8B4049] hover:text-white"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
               </svg>
-              Gerar Cartão de Pré-Natal
+              Visualizar para Impressão
+            </Button>
+            <Button
+              onClick={handleGerarPDF}
+              size="lg"
+              disabled={isGerandoPDF}
+              className="bg-[#8B4049] hover:bg-[#6d3239]"
+            >
+              {isGerandoPDF ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Gerando PDF...
+                </>
+              ) : (
+                <>
+                  <Download className="h-5 w-5 mr-2" />
+                  Baixar PDF Profissional
+                </>
+              )}
             </Button>
           </div>
         )}

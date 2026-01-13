@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { gerarPDFCartaoPrenatal } from "./pdf";
 import { gestanteRouter } from "./gestante-router";
 import { z } from "zod";
 import type { GestanteComCalculos } from "../drizzle/schema";

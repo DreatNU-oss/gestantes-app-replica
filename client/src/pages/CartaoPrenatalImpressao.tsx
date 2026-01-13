@@ -88,8 +88,19 @@ export default function CartaoPrenatalImpressao() {
       <style>{`
         @media print {
           body { margin: 0; padding: 0; }
-          @page { margin: 1cm; }
+          @page { 
+            margin: 1cm;
+            size: A4;
+          }
           .no-print { display: none !important; }
+        }
+      `}</style>
+      
+      {/* Estilos globais para remover cabeçalhos e rodapés do navegador */}
+      <style>{`
+        @page {
+          margin: 1cm;
+          size: A4;
         }
       `}</style>
 

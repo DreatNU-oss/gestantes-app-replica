@@ -1941,3 +1941,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Reorganizar dados da gestante: agrupar informações do ultrassom
 - [x] Remover campo e-mail da seção de dados da gestante
 - [x] Corrigir exibição de DUM: mostrar "Incompatível com US" ao invés de "Invalid Date"
+
+## Remoção de Cabeçalhos e Rodapés na Impressão PDF (Solicitado 12/01/2026)
+
+- [x] Implementar CSS @page para remover cabeçalhos e rodapés automáticos do navegador
+- [x] Instalar Puppeteer e dependências
+- [x] Criar endpoint tRPC para gerar PDF pelo backend
+- [x] Atualizar frontend para usar geração de PDF pelo backend
+- [x] Implementar geração de PDF profissional sem cabeçalhos/rodapés usando Puppeteer
