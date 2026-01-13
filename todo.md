@@ -2115,3 +2115,15 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar destaque visual para resultados "Reagente"
 - [x] Usar cores apropriadas (vermelho/laranja) para indicar atenção necessária
 - [x] Testar em todos os exames e trimestres
+
+
+## Melhorias de Navegação por Teclado para Agilizar Preenchimento (Solicitado 13/01/2026)
+
+- [x] Implementar navegação inteligente com Tab (pula campos desabilitados)
+- [x] Ajustar Tab para navegar dentro do mesmo trimestre (data → resultado → próximo exame) - Navegação nativa já funciona corretamente
+- [x] Adicionar suporte a Shift+Tab para voltar ao campo anterior - Navegação nativa já funciona
+- [x] Implementar Enter para confirmar e avançar para próximo campo
+- [x] Adicionar auto-foco no primeiro campo ao selecionar gestante
+- [x] Implementar atalho Ctrl+S para salvar de qualquer lugar
+- [x] Melhorar feedback visual de foco (destaque mais visível)
+- [x] Testar navegação em todos os tipos de campos (input, select, textarea)

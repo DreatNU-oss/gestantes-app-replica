@@ -129,6 +129,63 @@ export default function ExamesLaboratoriais() {
     }
   }, [resultadosSalvos, gestanteSelecionada]);
 
+  // Implementar navegação por teclado e atalhos
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+S para salvar
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        if (gestanteSelecionada && Object.keys(resultados).length > 0) {
+          handleSalvar();
+        }
+        return;
+      }
+
+      // Enter para avançar para próximo campo (apenas em inputs e selects)
+      if (e.key === 'Enter') {
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.hasAttribute('role')) {
+          e.preventDefault();
+          const focusableElements = Array.from(
+            document.querySelectorAll(
+              'input:not([disabled]), select:not([disabled]), button[role="combobox"]:not([disabled]), textarea:not([disabled])'
+            )
+          ) as HTMLElement[];
+          
+          const currentIndex = focusableElements.indexOf(target);
+          if (currentIndex !== -1 && currentIndex < focusableElements.length - 1) {
+            // Encontrar próximo elemento visível
+            for (let i = currentIndex + 1; i < focusableElements.length; i++) {
+              const nextElement = focusableElements[i];
+              if (nextElement.offsetParent !== null) { // Verifica se está visível
+                nextElement.focus();
+                break;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [gestanteSelecionada, resultados]);
+
+  // Auto-foco no primeiro campo quando gestante é selecionada
+  useEffect(() => {
+    if (gestanteSelecionada) {
+      // Aguardar renderização da tabela
+      setTimeout(() => {
+        const firstInput = document.querySelector(
+          'input[type="date"]:not([disabled])'
+        ) as HTMLInputElement;
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 300);
+    }
+  }, [gestanteSelecionada]);
+
   const handleResultadoChange = (exame: string, trimestre: string, valor: string) => {
     setResultados((prev) => ({
       ...prev,
@@ -137,6 +194,36 @@ export default function ExamesLaboratoriais() {
         [trimestre]: valor,
       },
     }));
+  };
+
+  // Função para salvar resultados (usada pelo botão e pelo atalho Ctrl+S)
+  const handleSalvar = () => {
+    if (!gestanteSelecionada) return;
+    
+    const resultadosLimpos: Record<string, any> = {};
+    const datas: Record<string, { data1?: string; data2?: string; data3?: string }> = {};
+
+    for (const [nomeExame, valor] of Object.entries(resultados)) {
+      if (typeof valor === 'object' && valor !== null) {
+        const { data1, data2, data3, ...resto } = valor;
+        
+        // Salvar datas separadamente
+        if (data1 || data2 || data3) {
+          datas[nomeExame] = { data1, data2, data3 };
+        }
+        
+        // Remover campos de data dos resultados
+        resultadosLimpos[nomeExame] = resto;
+      } else {
+        resultadosLimpos[nomeExame] = valor;
+      }
+    }
+    
+    salvarMutation.mutate({
+      gestanteId: gestanteSelecionada,
+      resultados: resultadosLimpos,
+      datas: Object.keys(datas).length > 0 ? datas : undefined,
+    });
   };
 
   // Função para obter a primeira data preenchida de um trimestre
@@ -783,38 +870,7 @@ export default function ExamesLaboratoriais() {
                   
                   <Button 
                     className="bg-rose-600 hover:bg-rose-700"
-                    onClick={() => {
-                      if (gestanteSelecionada) {
-                        // Extrair datas dos resultados (data1, data2, data3)
-                        const datas: Record<string, Record<string, string> | string> = {};
-                        const resultadosLimpos: Record<string, Record<string, string> | string> = {};
-                        
-                        for (const [nomeExame, valor] of Object.entries(resultados)) {
-                          if (typeof valor === 'object' && valor !== null) {
-                            const { data1, data2, data3, ...resto } = valor as Record<string, string>;
-                            
-                            // Armazenar datas se existirem
-                            if (data1 || data2 || data3) {
-                              datas[nomeExame] = {};
-                              if (data1) (datas[nomeExame] as Record<string, string>).data1 = data1;
-                              if (data2) (datas[nomeExame] as Record<string, string>).data2 = data2;
-                              if (data3) (datas[nomeExame] as Record<string, string>).data3 = data3;
-                            }
-                            
-                            // Remover campos de data dos resultados
-                            resultadosLimpos[nomeExame] = resto;
-                          } else {
-                            resultadosLimpos[nomeExame] = valor;
-                          }
-                        }
-                        
-                        salvarMutation.mutate({
-                          gestanteId: gestanteSelecionada,
-                          resultados: resultadosLimpos,
-                          datas: Object.keys(datas).length > 0 ? datas : undefined,
-                        });
-                      }
-                    }}
+                    onClick={handleSalvar}
                     disabled={salvarMutation.isPending}
                   >
                     {salvarMutation.isPending && (

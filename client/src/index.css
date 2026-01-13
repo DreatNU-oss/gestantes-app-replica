@@ -160,6 +160,15 @@
     min-width: 0;
   }
 
+  /* Melhorar feedback visual de foco para navegação por teclado */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button[role="combobox"]:focus {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
+    outline: none;
+  }
+
   @media (min-width: 640px) {
     .container {
       padding-left: 1.5rem; /* 24px - tablet padding */
