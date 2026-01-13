@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, dataConsulta, peso, conduta FROM consultasPrenatal WHERE gestanteId = 330090 LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataConsulta, peso, conduta FROM consultasPrenatal WHERE gestanteId = 330090 LIMIT 3;",
+  "rows": [
+    {
+      "id": "1770021",
+      "dataConsulta": "2025-12-03",
+      "peso": "58700",
+      "conduta": "NULL"
+    },
+    {
+      "id": "4710002",
+      "dataConsulta": "2026-01-12",
+      "peso": "60000",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataConsulta\tpeso\tconduta\n1770021\t2025-12-03\t58700\tNULL\n4710002\t2026-01-12\t60000\t[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, gestanteId, dataConsulta, igSemanas, igDias, peso, pressaoArterial, alturaUterina, bcf, mf, conduta, observacoes FROM consultasPrenatal WHERE gestanteId = 330090 ORDER BY dataConsulta LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, dataConsulta, igSemanas, igDias, peso, pressaoArterial, alturaUterina, bcf, mf, conduta, observacoes FROM consultasPrenatal WHERE gestanteId = 330090 ORDER BY dataConsulta LIMIT 5;",
+  "rows": [
+    {
+      "id": "1770021",
+      "gestanteId": "330090",
+      "dataConsulta": "2025-12-03",
+      "igSemanas": "NULL",
+      "igDias": "NULL",
+      "peso": "58700",
+      "pressaoArterial": "100/60",
+      "alturaUterina": "NULL",
+      "bcf": "1",
+      "mf": "0",
+      "conduta": "NULL",
+      "observacoes": "Solicito morfo 1o trim"
+    },
+    {
+      "id": "4710002",
+      "gestanteId": "330090",
+      "dataConsulta": "2026-01-12",
+      "igSemanas": "NULL",
+      "igDias": "NULL",
+      "peso": "60000",
+      "pressaoArterial": "110x70",
+      "alturaUterina": "160",
+      "bcf": "1",
+      "mf": "1",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "observacoes": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tdataConsulta\tigSemanas\tigDias\tpeso\tpressaoArterial\talturaUterina\tbcf\tmf\tconduta\tobservacoes\n1770021\t330090\t2025-12-03\tNULL\tNULL\t58700\t100/60\tNULL\t1\t0\tNULL\tSolicito morfo 1o trim\n4710002\t330090\t2026-01-12\tNULL\tNULL\t60000\t110x70\t160\t1\t1\t[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

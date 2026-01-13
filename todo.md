@@ -1898,3 +1898,38 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] BUG: IG pelo Ultrassom aparece com 1 dia a menos no card do formulário de Nova Consulta (correto no Dashboard)
 - [x] BUG: Enum de validação tRPC desatualizado - CORRIGIDO: Sincronizado enum de gestantes.addFatorRisco com todos os 19 fatores
+
+- [ ] Investigar diferenças entre PDF e HTML do Cartão de Pré-natal
+- [ ] Alinhar formatação do PDF com o padrão visual do HTML
+
+## Página de Impressão do Cartão de Pré-Natal
+
+- [ ] Criar componente CartaoPrenatalImpressao.tsx
+- [ ] Implementar layout completo com dados da gestante
+- [ ] Adicionar histórico de consultas com condutas
+- [ ] Incluir gráfico de evolução de peso
+- [ ] Adicionar ultrassons realizados
+- [ ] Adicionar exames laboratoriais
+- [ ] Adicionar marcos importantes
+- [ ] Adicionar fatores de risco e medicamentos
+- [ ] Criar CSS otimizado para impressão (@media print)
+- [ ] Adicionar rota /cartao-prenatal-impressao/:gestanteId
+- [ ] Modificar botão "Gerar Cartão de Pré-Natal" para abrir nova página
+- [ ] Testar impressão via Ctrl+P e salvar como PDF
+
+## Bugs na Página de Impressão do Cartão (Reportados 12/01/2026)
+
+- [ ] BUG: Datas das consultas não aparecem na tabela (aparecem como "-")
+- [ ] BUG: IGs (DUM e US) das consultas não aparecem (aparecem como "-")
+- [ ] BUG: Gráfico de peso não mostra evolução corretamente
+- [ ] BUG: Pontos do peso aparecem no lugar errado do gráfico
+
+- [ ] Corrigir datas das consultas na página de impressão (aparecem como "-")
+- [ ] Corrigir gráfico de peso na página de impressão (pontos no lugar errado)
+- [ ] Corrigir formatação de conduta (array JSON ao invés de texto)
+
+- [x] Corrigir datas das consultas na página de impressão (aparecem como "-")
+- [x] Corrigir gráfico de peso na página de impressão (pontos no lugar errado)
+- [x] Corrigir formatação de conduta (array JSON ao invés de texto)
+- [x] Criar página HTML de impressão do Cartão de Pré-natal
+- [x] Implementar botão "Gerar Cartão de Pré-Natal" que abre página de impressão

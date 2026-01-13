@@ -11,6 +11,7 @@ import MarcosImportantes from "./pages/MarcosImportantes";
 import PrevisaoPartos from "./pages/PrevisaoPartos";
 import ExamesLaboratoriais from "./pages/ExamesLaboratoriais";
 import CartaoPrenatal from "./pages/CartaoPrenatal";
+import CartaoPrenatalImpressao from "./pages/CartaoPrenatalImpressao";
 import Estatisticas from "./pages/Estatisticas";
 import GerenciarPlanos from "./pages/GerenciarPlanos";
 import GerenciarMedicos from "./pages/GerenciarMedicos";
@@ -33,6 +34,7 @@ function Router() {
       <Route path={"/exames"} component={ExamesLaboratoriais} />
       <Route path={"/ultrassons"} component={Ultrassons} />
       <Route path={"/cartao-prenatal"} component={CartaoPrenatal} />
+      <Route path={"/cartao-prenatal-impressao/:gestanteId"} component={CartaoPrenatalImpressao} />
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/gerenciar-planos"} component={GerenciarPlanos} />
       <Route path={"/gerenciar-medicos"} component={GerenciarMedicos} />

@@ -1,0 +1,24 @@
+{
+  "query": "SELECT id, dataConsulta, igSemanas, igDias, peso FROM consultasPrenatal WHERE gestanteId = 330090;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataConsulta, igSemanas, igDias, peso FROM consultasPrenatal WHERE gestanteId = 330090;",
+  "rows": [
+    {
+      "id": "1770021",
+      "dataConsulta": "2025-12-03",
+      "igSemanas": "NULL",
+      "igDias": "NULL",
+      "peso": "58700"
+    },
+    {
+      "id": "4710002",
+      "dataConsulta": "2026-01-12",
+      "igSemanas": "NULL",
+      "igDias": "NULL",
+      "peso": "60000"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataConsulta\tigSemanas\tigDias\tpeso\n1770021\t2025-12-03\tNULL\tNULL\t58700\n4710002\t2026-01-12\tNULL\tNULL\t60000\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}
