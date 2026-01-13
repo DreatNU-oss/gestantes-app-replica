@@ -226,6 +226,74 @@ export default function ExamesLaboratoriais() {
     });
   };
 
+  // Função para preencher todos os exames qualitativos com resultado normal/negativo
+  const preencherTodosNormais = (trimestre: 1 | 2 | 3) => {
+    if (!gestanteSelecionada) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
+    
+    const novosResultados = { ...resultados };
+    let contadorPreenchidos = 0;
+    
+    // Lista de todos os exames
+    const todosExames = [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames];
+    
+    for (const exame of todosExames) {
+      // Verificar se o exame tem esse trimestre
+      const temTrimestre = trimestre === 1 ? exame.trimestres.primeiro :
+                          trimestre === 2 ? exame.trimestres.segundo :
+                          exame.trimestres.terceiro;
+      
+      if (!temTrimestre) continue;
+      
+      const nomeExame = exame.nome;
+      const chave = trimestre.toString();
+      
+      // Verificar se é um exame qualitativo e preencher com valor normal
+      let valorNormal: string | null = null;
+      
+      // Exames sorológicos -> "Não Reagente"
+      if (EXAMES_SOROLOGICOS.includes(nomeExame)) {
+        valorNormal = "Não Reagente";
+      }
+      // EAS -> "Normal"
+      else if (nomeExame === "EAS (Urina tipo 1)") {
+        valorNormal = "Normal";
+      }
+      // Urocultura -> "Negativa"
+      else if (nomeExame === "Urocultura") {
+        valorNormal = "Negativa";
+      }
+      // EPF -> "Negativo"
+      else if (nomeExame === "EPF (Parasitológico de Fezes)") {
+        valorNormal = "Negativo";
+      }
+      
+      if (valorNormal) {
+        // Inicializar objeto se não existir
+        if (!novosResultados[nomeExame] || typeof novosResultados[nomeExame] !== 'object') {
+          novosResultados[nomeExame] = {};
+        }
+        
+        // Só preencher se estiver vazio
+        const valorAtual = (novosResultados[nomeExame] as Record<string, string>)[chave];
+        if (!valorAtual || valorAtual.trim() === '') {
+          (novosResultados[nomeExame] as Record<string, string>)[chave] = valorNormal;
+          contadorPreenchidos++;
+        }
+      }
+    }
+    
+    setResultados(novosResultados);
+    
+    if (contadorPreenchidos > 0) {
+      toast.success(`${contadorPreenchidos} exames preenchidos como Normal/Negativo no ${trimestre}º trimestre`);
+    } else {
+      toast.info('Todos os exames qualitativos já estão preenchidos neste trimestre');
+    }
+  };
+
   // Função para obter a primeira data preenchida de um trimestre
   const obterPrimeiraDataTrimestre = (numeroTrimestre: 1 | 2 | 3): string | null => {
     const campoData = `data${numeroTrimestre}`;
@@ -756,7 +824,7 @@ export default function ExamesLaboratoriais() {
       </div>
       
       {/* Botões de Copiar Data - Acima da Tabela */}
-      <div className="flex gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div className="flex flex-wrap gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-gray-700">Copiar data para múltiplos exames:</span>
         </div>
@@ -781,6 +849,40 @@ export default function ExamesLaboratoriais() {
           size="sm"
           className="bg-white hover:bg-blue-100"
           onClick={() => abrirModalCopiarData(3)}
+        >
+          3º Trimestre
+        </Button>
+      </div>
+      
+      {/* Botões de Preenchimento em Lote - Marcar todos como Normal/Negativo */}
+      <div className="flex flex-wrap gap-4 mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-700">Marcar todos qualitativos como Normal/Negativo:</span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+          onClick={() => preencherTodosNormais(1)}
+          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
+        >
+          1º Trimestre
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+          onClick={() => preencherTodosNormais(2)}
+          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
+        >
+          2º Trimestre
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+          onClick={() => preencherTodosNormais(3)}
+          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
         >
           3º Trimestre
         </Button>

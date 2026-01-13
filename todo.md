@@ -2137,3 +2137,13 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar atalhos para EPF (1=Positivo, 2=Negativo)
 - [x] Adicionar tooltip mostrando os atalhos disponíveis (title no SelectTrigger)
 - [x] Testar funcionamento em todos os dropdowns
+
+
+## Preenchimento em Lote de Exames Normais (Solicitado 13/01/2026)
+
+- [x] Criar função para identificar todos os exames qualitativos (sorológicos, EAS, Urocultura, EPF)
+- [x] Implementar botão "Marcar todos como Normal/Negativo" para cada trimestre
+- [x] Preencher automaticamente: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo
+- [x] Mostrar toast de confirmação com quantidade de exames preenchidos
+- [x] Posicionar botões próximos aos botões de trimestre existentes (seção verde abaixo da azul)
+- [x] Testar funcionamento em todos os 3 trimestres
