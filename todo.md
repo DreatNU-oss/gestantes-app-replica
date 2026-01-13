@@ -1991,3 +1991,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Identificar se há conflito de eventos ou problema de estrutura - CAUSA: Sobreposição de elementos no TableHead
 - [x] Implementar solução alternativa funcional - Botões movidos para acima da tabela
 - [x] Testar solução no navegador - SUCESSO TOTAL!
+
+
+## Bug Reportado - API Error (13/01/2026)
+
+- [x] Investigar erro "Unexpected token '<', "<html><h"... is not valid JSON" na página /dashboard
+- [x] Identificar qual rota tRPC está retornando HTML em vez de JSON - Ordem de middlewares está correta, erro pode ser intermitente
+- [x] Corrigir o problema no servidor - Adicionado verificação para ignorar rotas /api/ no middleware catch-all
