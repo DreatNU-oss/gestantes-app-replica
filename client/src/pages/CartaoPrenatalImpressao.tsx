@@ -108,7 +108,7 @@ export default function CartaoPrenatalImpressao() {
         <img 
           src="/logo-horizontal.png" 
           alt="Mais Mulher" 
-          className="mx-auto h-16 mb-4"
+          className="mx-auto h-24 mb-4"
         />
         <h1 className="text-3xl font-bold text-[#6B4226] border-b-2 border-[#6B4226] pb-2">
           Cartão de Pré-Natal
@@ -132,32 +132,33 @@ export default function CartaoPrenatalImpressao() {
             <div>{gestante.telefone || "-"}</div>
           </div>
           <div>
-            <span className="font-semibold">E-mail:</span>
-            <div>{gestante.email || "-"}</div>
-          </div>
-          <div>
             <span className="font-semibold">DUM:</span>
-            <div>{gestante.dum ? formatarData(gestante.dum) : "-"}</div>
+            <div>{gestante.dum === "Incerta" || gestante.dum === "Incompatível com US" ? gestante.dum : (gestante.dum ? formatarData(gestante.dum) : "-")}</div>
           </div>
           <div>
             <span className="font-semibold">DPP pela DUM:</span>
             <div>{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</div>
           </div>
           <div>
-            <span className="font-semibold">Data do Ultrassom:</span>
-            <div>{gestante.dataUltrassom ? formatarData(gestante.dataUltrassom) : "-"}</div>
-          </div>
-          <div>
-            <span className="font-semibold">IG no Ultrassom:</span>
-            <div>{gestante.igUltrassomSemanas !== null ? `${gestante.igUltrassomSemanas}s ${gestante.igUltrassomDias || 0}d` : "-"}</div>
-          </div>
-          <div>
-            <span className="font-semibold">DPP pelo Ultrassom:</span>
-            <div>{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</div>
-          </div>
-          <div>
             <span className="font-semibold">História Obstétrica:</span>
             <div>G{gestante.gesta || 0}P{gestante.para || 0}A{gestante.abortos || 0}</div>
+          </div>
+          <div className="col-span-3 border-t pt-4 mt-2">
+            <div className="font-semibold text-base mb-2">Dados do Ultrassom</div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <span className="font-semibold">Data do Ultrassom:</span>
+                <div>{gestante.dataUltrassom ? formatarData(gestante.dataUltrassom) : "-"}</div>
+              </div>
+              <div>
+                <span className="font-semibold">IG no Ultrassom:</span>
+                <div>{gestante.igUltrassomSemanas !== null ? `${gestante.igUltrassomSemanas}s ${gestante.igUltrassomDias || 0}d` : "-"}</div>
+              </div>
+              <div>
+                <span className="font-semibold">DPP pelo Ultrassom:</span>
+                <div>{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</div>
+              </div>
+            </div>
           </div>
           <div>
             <span className="font-semibold">Tipo de Parto Desejado:</span>

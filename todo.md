@@ -1934,3 +1934,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Criar página HTML de impressão do Cartão de Pré-natal
 - [x] Implementar botão "Gerar Cartão de Pré-Natal" que abre página de impressão
 - [x] Corrigir logo na página de impressão do Cartão de Pré-natal
+
+## Melhorias na Página de Impressão do Cartão de Pré-natal (Solicitado 12/01/2026)
+
+- [x] Aumentar tamanho do logotipo no topo da página
+- [x] Reorganizar dados da gestante: agrupar informações do ultrassom
+- [x] Remover campo e-mail da seção de dados da gestante
+- [x] Corrigir exibição de DUM: mostrar "Incompatível com US" ao invés de "Invalid Date"
