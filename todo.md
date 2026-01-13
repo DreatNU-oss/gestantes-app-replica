@@ -2065,3 +2065,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 11. Hepatite B (HBsAg)
 12. Anti-HBs
 13. (Verificar se há mais exames sorológicos na lista)
+
+
+## Adicionar Opção "Indeterminado" aos Dropdowns Sorológicos (Solicitado 13/01/2026)
+
+- [x] Adicionar SelectItem com value="Indeterminado" aos dropdowns de exames sorológicos
+- [x] Testar se a opção aparece corretamente em todos os 13 exames
+- [x] Verificar se o valor é salvo e carregado corretamente do banco de dados

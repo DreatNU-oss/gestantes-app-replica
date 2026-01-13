@@ -261,6 +261,7 @@ export default function ExamesLaboratoriais() {
           <SelectContent>
             <SelectItem value="Reagente">Reagente</SelectItem>
             <SelectItem value="Não Reagente">Não Reagente</SelectItem>
+            <SelectItem value="Indeterminado">Indeterminado</SelectItem>
           </SelectContent>
         </Select>
       );
