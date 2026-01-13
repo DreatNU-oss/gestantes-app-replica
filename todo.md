@@ -2006,3 +2006,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Identificar qual rota tRPC específica está falhando (timestamp: 14:40:21) - Problema: vite.middlewares pode estar interferindo
 - [x] Analisar código da rota problemática e identificar causa raiz - vite.middlewares processa requisições antes do tRPC
 - [x] Implementar correção definitiva que previna o erro de forma permanente - Envolvido vite.middlewares em verificação condicional
+
+
+## Erro Persistente - API Error (14:54:35)
+
+- [ ] Erro "Unexpected token '<', "<html><h"... is not valid JSON" continua ocorrendo após correções anteriores
+- [ ] Verificar se middleware Vite foi realmente modificado corretamente
+- [ ] Identificar qual rota tRPC específica está causando o erro
+- [x] Implementar solução mais robusta que garanta que rotas /api/ nunca retornem HTML - Adicionado middleware de guarda e fallback JSON

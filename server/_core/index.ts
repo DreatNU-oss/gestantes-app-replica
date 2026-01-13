@@ -111,6 +111,13 @@ async function startServer() {
     }
   });
   // tRPC API
+  // Middleware de guarda para garantir que rotas /api/trpc NUNCA retornem HTML
+  app.use("/api/trpc", (req, res, next) => {
+    // Marca a requisição como sendo da API
+    (req as any).isApiRequest = true;
+    next();
+  });
+  
   app.use(
     "/api/trpc",
     createExpressMiddleware({
@@ -118,6 +125,11 @@ async function startServer() {
       createContext,
     })
   );
+  
+  // Fallback para rotas /api/trpc que não foram tratadas - retorna JSON error
+  app.use("/api/trpc/*", (req, res) => {
+    res.status(404).json({ error: "tRPC route not found" });
+  });
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

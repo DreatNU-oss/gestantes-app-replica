@@ -22,7 +22,8 @@ export async function setupVite(app: Express, server: Server) {
 
   // Envolver middlewares do Vite para ignorar rotas da API
   app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/api/')) {
+    // Verifica se é uma requisição da API (marcada pelo middleware de guarda)
+    if ((req as any).isApiRequest || req.originalUrl.startsWith('/api/')) {
       return next();
     }
     vite.middlewares(req, res, next);
@@ -31,7 +32,7 @@ export async function setupVite(app: Express, server: Server) {
     const url = req.originalUrl;
     
     // Ignorar rotas da API - elas devem ser tratadas pelos middlewares anteriores
-    if (url.startsWith('/api/')) {
+    if ((req as any).isApiRequest || url.startsWith('/api/')) {
       return next();
     }
 
