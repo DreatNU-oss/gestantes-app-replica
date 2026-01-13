@@ -21,6 +21,10 @@ export default function CartaoPrenatalImpressao() {
   useEffect(() => {
     if (gestante && consultas) {
       setIsLoading(false);
+      // Adicionar sinal no DOM para Puppeteer saber que dados foram carregados
+      setTimeout(() => {
+        document.body.setAttribute('data-content-loaded', 'true');
+      }, 100);
     }
   }, [gestante, consultas]);
 
@@ -84,7 +88,7 @@ export default function CartaoPrenatalImpressao() {
   }
 
   return (
-    <div className="min-h-screen bg-white p-8 print:p-0">
+    <div className="min-h-screen bg-white p-8 print:p-0" data-pdf-ready="true">
       <style>{`
         @media print {
           body { margin: 0; padding: 0; }

@@ -1,14 +1,32 @@
 import puppeteer from 'puppeteer';
-import { ENV } from './_core/env';
+import { writeFileSync } from 'fs';
+import { buscarDadosCartaoPrenatal } from './pdfData';
+import { gerarHTMLCartaoPrenatal } from './pdfTemplate';
 
 /**
  * Gera PDF do Cartão de Pré-natal usando Puppeteer
- * Remove cabeçalhos e rodapés automáticos do navegador
+ * Gera o HTML no servidor e converte diretamente para PDF sem precisar acessar via HTTP
  */
 export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer> {
   let browser;
   
   try {
+    console.log('[PDF] Buscando dados da gestante:', gestanteId);
+    
+    // Buscar todos os dados necessários
+    const dados = await buscarDadosCartaoPrenatal(gestanteId);
+    
+    console.log('[PDF] Gerando HTML do cartão pré-natal...');
+    
+    // Gerar HTML completo
+    const html = gerarHTMLCartaoPrenatal(dados);
+    
+    // Salvar HTML para debug (opcional)
+    writeFileSync(`/tmp/pdf_html_${gestanteId}.html`, html);
+    console.log(`[PDF] HTML salvo em /tmp/pdf_html_${gestanteId}.html`);
+    
+    console.log('[PDF] Iniciando navegador Puppeteer...');
+    
     // Iniciar navegador headless
     browser = await puppeteer.launch({
       headless: true,
@@ -22,46 +40,15 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
 
     const page = await browser.newPage();
     
-    // Construir URL da página de impressão (usar localhost pois Puppeteer roda no mesmo servidor)
-    const baseUrl = 'http://localhost:3000';
-    const url = `${baseUrl}/cartao-prenatal-impressao/${gestanteId}`;
+    console.log('[PDF] Carregando HTML no Puppeteer...');
     
-    // Navegar para a página
-    console.log('[PDF] Navegando para:', url);
-    await page.goto(url, {
-      waitUntil: 'networkidle0', // Aguarda até não haver mais requisições de rede
-      timeout: 90000 // Aumentado para 90 segundos
+    // Carregar HTML diretamente (sem precisar de URL)
+    await page.setContent(html, {
+      waitUntil: 'networkidle0',
+      timeout: 30000
     });
     
-    console.log('[PDF] Página carregada, aguardando renderização completa...');
-    
-    // Aguardar que o conteúdo principal esteja renderizado
-    // Usar um seletor mais genérico e confiável
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    // Aguardar tempo adicional para garantir que todos os recursos foram carregados
-    // Isso evita o erro "Execution context was destroyed"
-    await page.evaluate(() => {
-      return new Promise((resolve) => {
-        // Aguardar que todas as imagens estejam carregadas
-        const images = Array.from(document.images);
-        const promises = images.map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise(resolve => {
-            img.onload = resolve;
-            img.onerror = resolve; // Resolver mesmo se houver erro
-          });
-        });
-        Promise.all(promises).then(resolve);
-      });
-    });
-    
-    console.log('[PDF] Todos os recursos carregados, aguardando estabilização...');
-    
-    // Aguardar mais um pouco para garantir que gráficos e outros elementos dinâmicos renderizaram
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log('[PDF] Iniciando geração do PDF...');
+    console.log('[PDF] HTML carregado, gerando PDF...');
     
     // Gerar PDF com configurações profissionais
     const pdfBuffer = await page.pdf({
@@ -73,14 +60,16 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         bottom: '1cm',
         left: '1cm'
       },
-      // Remover cabeçalhos e rodapés do navegador
       displayHeaderFooter: false
     });
 
+    console.log('[PDF] PDF gerado com sucesso!');
+    
     return Buffer.from(pdfBuffer);
     
   } catch (error) {
     console.error('Erro ao gerar PDF:', error);
+    writeFileSync('/tmp/pdf_erro.txt', `Erro ao gerar PDF em ${new Date().toISOString()}:\n${error instanceof Error ? error.stack : String(error)}`);
     throw new Error(`Falha ao gerar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
   } finally {
     if (browser) {
