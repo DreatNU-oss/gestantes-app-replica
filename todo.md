@@ -1959,3 +1959,35 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Remover waitForSelector do logo (pode estar causando navegação)
 - [x] Adicionar verificação explícita de carregamento de imagens
 - [x] Testar geração de PDF com gestante que tem muitos dados (Vivian - SUCESSO)
+
+
+## Novas Melhorias - 13/01/2026
+
+- [x] Remover "Médico Responsável" do PDF do cartão pré-natal
+- [x] Remover "Tipo de Parto Desejado" do PDF do cartão pré-natal
+- [x] Implementar auto-preenchimento de data nos exames laboratoriais ao clicar no campo
+- [x] Auto-preenchimento deve usar a primeira data preenchida do mesmo trimestre
+- [x] Manter datas editáveis individualmente após auto-preenchimento
+
+
+## Nova Funcionalidade - Modal de Seleção de Exames para Copiar Data - 13/01/2026
+
+- [x] Remover código antigo de botões individuais "Usar data anterior" que não funcionaram
+- [x] Criar componente de modal/dialog com lista de checkboxes para seleção de exames
+- [x] Adicionar botão "Copiar data para múltiplos exames" no topo de cada trimestre
+- [x] Implementar lógica para listar apenas exames sem data preenchida
+- [x] Implementar função para aplicar data selecionada aos exames marcados
+- [ ] Testar funcionalidade no navegador com diferentes cenários
+
+
+## Bug Reportado - 13/01/2026
+
+- [x] Corrigir campos de curva glicêmica (TTGO) no 2º trimestre que não permitem inserir valores
+
+
+## Investigação - Botão Copiar (Auto-preenchimento de datas)
+
+- [x] Investigar por que o botão "Copiar" não responde aos cliques
+- [x] Identificar se há conflito de eventos ou problema de estrutura - CAUSA: Sobreposição de elementos no TableHead
+- [x] Implementar solução alternativa funcional - Botões movidos para acima da tabela
+- [x] Testar solução no navegador - SUCESSO TOTAL!

@@ -263,14 +263,6 @@ export function gerarHTMLCartaoPrenatal(dados: DadosCartaoPrenatal): string {
     
     <div class="grid" style="margin-top: 16px;">
       <div class="field">
-        <span class="field-label">Tipo de Parto Desejado:</span>
-        <span class="field-value">${gestante.tipoPartoDesejado || '-'}</span>
-      </div>
-      <div class="field">
-        <span class="field-label">Médico Responsável:</span>
-        <span class="field-value">-</span>
-      </div>
-      <div class="field">
         <span class="field-label">Plano de Saúde:</span>
         <span class="field-value">-</span>
       </div>

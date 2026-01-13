@@ -12,6 +12,7 @@ import { InputExameValidado } from "@/components/InputExameValidado";
 import { obterIdValidacao } from "@/data/mapeamentoExames";
 import { isExameSorologico } from "@/data/valoresReferencia";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
@@ -51,6 +52,11 @@ export default function ExamesLaboratoriais() {
   const [modalAberto, setModalAberto] = useState(false);
   const [trimestreEdicao, setTrimestreEdicao] = useState<number | null>(null);
   const [novaDataTrimestre, setNovaDataTrimestre] = useState<string>("");
+  
+  // Estados para o modal de copiar data
+  const [modalCopiarDataAberto, setModalCopiarDataAberto] = useState(false);
+  const [trimestreCopiarData, setTrimestreCopiarData] = useState<1 | 2 | 3>(1);
+  const [examesSelecionados, setExamesSelecionados] = useState<string[]>([]);
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -109,16 +115,115 @@ export default function ExamesLaboratoriais() {
     }));
   };
 
+  // Função para obter a primeira data preenchida de um trimestre
+  const obterPrimeiraDataTrimestre = (numeroTrimestre: 1 | 2 | 3): string | null => {
+    const campoData = `data${numeroTrimestre}`;
+    console.log('[DEBUG] obterPrimeiraDataTrimestre chamada. Trimestre:', numeroTrimestre, 'Campo:', campoData);
+    console.log('[DEBUG] Resultados atuais:', resultados);
+    
+    // Percorrer todos os exames para encontrar a primeira data preenchida
+    for (const exame of [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames]) {
+      const resultadoExame = resultados[exame.nome];
+      console.log('[DEBUG] Verificando exame:', exame.nome, 'Resultado:', resultadoExame);
+      if (typeof resultadoExame === 'object' && resultadoExame !== null) {
+        const data = resultadoExame[campoData];
+        console.log('[DEBUG] Data encontrada:', data);
+        if (data && data.trim() !== '') {
+          console.log('[DEBUG] Retornando data:', data);
+          return data;
+        }
+      }
+    }
+    console.log('[DEBUG] Nenhuma data encontrada');
+    return null;
+  };
+
+  // Função para obter lista de exames sem data em um trimestre
+  const obterExamesSemData = (numeroTrimestre: 1 | 2 | 3): ExameConfig[] => {
+    const campoData = `data${numeroTrimestre}`;
+    const examesSemData: ExameConfig[] = [];
+    
+    for (const exame of [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames]) {
+      // Verificar se o exame tem esse trimestre
+      const temTrimestre = numeroTrimestre === 1 ? exame.trimestres.primeiro :
+                          numeroTrimestre === 2 ? exame.trimestres.segundo :
+                          exame.trimestres.terceiro;
+      
+      if (!temTrimestre) continue;
+      
+      const resultadoExame = resultados[exame.nome];
+      const temData = typeof resultadoExame === 'object' && 
+                     resultadoExame !== null && 
+                     resultadoExame[campoData] && 
+                     resultadoExame[campoData].trim() !== '';
+      
+      if (!temData) {
+        examesSemData.push(exame);
+      }
+    }
+    
+    return examesSemData;
+  };
+  
+  // Função para aplicar data aos exames selecionados
+  const aplicarDataAosExames = () => {
+    const primeiraData = obterPrimeiraDataTrimestre(trimestreCopiarData);
+    
+    if (!primeiraData) {
+      toast.error('Nenhuma data encontrada para copiar');
+      return;
+    }
+    
+    if (examesSelecionados.length === 0) {
+      toast.error('Selecione pelo menos um exame');
+      return;
+    }
+    
+    // Aplicar data a todos os exames selecionados
+    examesSelecionados.forEach(nomeExame => {
+      handleResultadoChange(nomeExame, `data${trimestreCopiarData}`, primeiraData);
+    });
+    
+    toast.success(`Data copiada para ${examesSelecionados.length} exame(s)!`);
+    
+    // Fechar modal e limpar seleção
+    setModalCopiarDataAberto(false);
+    setExamesSelecionados([]);
+  };
+  
+  // Função para abrir modal de copiar data
+  const abrirModalCopiarData = (trimestre: 1 | 2 | 3) => {
+    console.log('[DEBUG] abrirModalCopiarData chamada. Trimestre:', trimestre);
+    const primeiraData = obterPrimeiraDataTrimestre(trimestre);
+    console.log('[DEBUG] primeiraData:', primeiraData);
+    
+    if (!primeiraData) {
+      toast.error('Preencha pelo menos uma data neste trimestre antes de copiar');
+      return;
+    }
+    
+    const examesSemData = obterExamesSemData(trimestre);
+    
+    if (examesSemData.length === 0) {
+      toast.info('Todos os exames deste trimestre já têm data preenchida');
+      return;
+    }
+    
+    setTrimestreCopiarData(trimestre);
+    setModalCopiarDataAberto(true);
+  };
+
   // Componente helper para renderizar campo de resultado (Select ou Input)
-  const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string) => {
+  const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string, subcampo?: string) => {
     // Todos os exames agora usam input de texto livre para permitir valores numéricos e anotações
+    const chave = subcampo ? `${subcampo}_${trimestre}` : trimestre.toString();
     
     return (
       <InputExameValidado
         nomeExame={obterIdValidacao(nomeExame) || nomeExame}
         trimestre={trimestre}
         value={valor}
-        onChange={(novoValor) => handleResultadoChange(nomeExame, trimestre.toString(), novoValor)}
+        onChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         className="w-full"
       />
     );
@@ -138,15 +243,18 @@ export default function ExamesLaboratoriais() {
               {/* 1º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.primeiro ? (
-                  <Input
-                    type="date"
-                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(exame.nome, "data1", e.target.value)
-                    }
-                    className="w-full text-xs"
-                    placeholder="Data"
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(exame.nome, "data1", e.target.value)
+                      }
+                      className="w-full text-xs"
+                      placeholder="Data"
+                    />
+
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
@@ -157,7 +265,8 @@ export default function ExamesLaboratoriais() {
                   renderCampoResultado(
                     exame.nome,
                     1,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`] : "") || "",
+                    subcampo
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -166,15 +275,18 @@ export default function ExamesLaboratoriais() {
               {/* 2º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.segundo ? (
-                  <Input
-                    type="date"
-                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(exame.nome, "data2", e.target.value)
-                    }
-                    className="w-full text-xs"
-                    placeholder="Data"
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(exame.nome, "data2", e.target.value)
+                      }
+                      className="w-full text-xs"
+                      placeholder="Data"
+                    />
+
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
@@ -185,7 +297,8 @@ export default function ExamesLaboratoriais() {
                   renderCampoResultado(
                     exame.nome,
                     2,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`] : "") || "",
+                    subcampo
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -194,15 +307,18 @@ export default function ExamesLaboratoriais() {
               {/* 3º Trimestre - Data */}
               <TableCell className="text-center">
                 {exame.trimestres.terceiro ? (
-                  <Input
-                    type="date"
-                    value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
-                    onChange={(e) =>
-                      handleResultadoChange(exame.nome, "data3", e.target.value)
-                    }
-                    className="w-full text-xs"
-                    placeholder="Data"
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Input
+                      type="date"
+                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
+                      onChange={(e) =>
+                        handleResultadoChange(exame.nome, "data3", e.target.value)
+                      }
+                      className="w-full text-xs"
+                      placeholder="Data"
+                    />
+
+                  </div>
                 ) : (
                   <div className="text-gray-400">-</div>
                 )}
@@ -213,7 +329,8 @@ export default function ExamesLaboratoriais() {
                   renderCampoResultado(
                     exame.nome,
                     3,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`] : "") || ""
+                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`] : "") || "",
+                    subcampo
                   )
                 ) : (
                   <div className="text-gray-400">-</div>
@@ -232,15 +349,17 @@ export default function ExamesLaboratoriais() {
         {/* 1º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
-            <Input
-              type="date"
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "data1", e.target.value)
-              }
-              className="w-full text-xs"
-              placeholder="Data"
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data1", e.target.value)
+                }
+                className="w-full text-xs"
+                placeholder="Data"
+              />
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
@@ -260,15 +379,17 @@ export default function ExamesLaboratoriais() {
         {/* 2º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.segundo ? (
-            <Input
-              type="date"
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "data2", e.target.value)
-              }
-              className="w-full text-xs"
-              placeholder="Data"
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data2", e.target.value)
+                }
+                className="w-full text-xs"
+                placeholder="Data"
+              />
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
@@ -288,15 +409,17 @@ export default function ExamesLaboratoriais() {
         {/* 3º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.terceiro ? (
-            <Input
-              type="date"
-              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
-              onChange={(e) =>
-                handleResultadoChange(exame.nome, "data3", e.target.value)
-              }
-              className="w-full text-xs"
-              placeholder="Data"
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                type="date"
+                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
+                onChange={(e) =>
+                  handleResultadoChange(exame.nome, "data3", e.target.value)
+                }
+                className="w-full text-xs"
+                placeholder="Data"
+              />
+            </div>
           ) : (
             <div className="text-gray-400">-</div>
           )}
@@ -321,6 +444,37 @@ export default function ExamesLaboratoriais() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">{titulo}</h3>
+      </div>
+      
+      {/* Botões de Copiar Data - Acima da Tabela */}
+      <div className="flex gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-700">Copiar data para múltiplos exames:</span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-blue-100"
+          onClick={() => abrirModalCopiarData(1)}
+        >
+          1º Trimestre
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-blue-100"
+          onClick={() => abrirModalCopiarData(2)}
+        >
+          2º Trimestre
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white hover:bg-blue-100"
+          onClick={() => abrirModalCopiarData(3)}
+        >
+          3º Trimestre
+        </Button>
       </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>
@@ -642,6 +796,62 @@ export default function ExamesLaboratoriais() {
                 }}
               >
                 Atualizar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Modal de Copiar Data para Múltiplos Exames */}
+        <Dialog open={modalCopiarDataAberto} onOpenChange={setModalCopiarDataAberto}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Copiar Data para Múltiplos Exames</DialogTitle>
+              <DialogDescription>
+                Data a ser copiada: <strong>{obterPrimeiraDataTrimestre(trimestreCopiarData)}</strong>
+                <br />
+                Selecione os exames que deseja preencher com esta data:
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-3 py-4">
+              {obterExamesSemData(trimestreCopiarData).map((exame) => (
+                <div key={exame.nome} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
+                  <Checkbox
+                    id={`exame-${exame.nome}`}
+                    checked={examesSelecionados.includes(exame.nome)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setExamesSelecionados([...examesSelecionados, exame.nome]);
+                      } else {
+                        setExamesSelecionados(examesSelecionados.filter(e => e !== exame.nome));
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor={`exame-${exame.nome}`}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+                  >
+                    {exame.nome}
+                  </label>
+                </div>
+              ))}
+            </div>
+            
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setModalCopiarDataAberto(false);
+                  setExamesSelecionados([]);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={aplicarDataAosExames}
+                disabled={examesSelecionados.length === 0}
+              >
+                Aplicar ({examesSelecionados.length} selecionado{examesSelecionados.length !== 1 ? 's' : ''})
               </Button>
             </DialogFooter>
           </DialogContent>
