@@ -248,8 +248,50 @@ export default function ExamesLaboratoriais() {
     // Verificar se é um exame sorológico
     const ehSorologico = EXAMES_SOROLOGICOS.includes(nomeExame);
     
+    // Verificar se é EAS (Urina tipo 1)
+    const ehEAS = nomeExame === "EAS (Urina tipo 1)";
+    
+    // Verificar se é Urocultura
+    const ehUrocultura = nomeExame === "Urocultura";
+    
+    // Renderizar dropdown para EAS (Urina tipo 1)
+    if (ehEAS) {
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Normal">Normal</SelectItem>
+            <SelectItem value="Alterado">Alterado</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    // Renderizar dropdown para Urocultura
+    if (ehUrocultura) {
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Positiva">Positiva</SelectItem>
+            <SelectItem value="Negativa">Negativa</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    // Renderizar Select para exames sorológicos
     if (ehSorologico) {
-      // Renderizar Select para exames sorológicos
       return (
         <Select
           value={valor || ""}

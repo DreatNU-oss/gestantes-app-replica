@@ -2072,3 +2072,12 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar SelectItem com value="Indeterminado" aos dropdowns de exames sorológicos
 - [x] Testar se a opção aparece corretamente em todos os 13 exames
 - [x] Verificar se o valor é salvo e carregado corretamente do banco de dados
+
+
+## Dropdowns Customizados para Exames de Urina (Solicitado 13/01/2026)
+
+- [x] Adicionar lógica para identificar exames de urina específicos (EAS e Urocultura)
+- [x] Implementar dropdown para EAS (Urina tipo 1) com opções: Normal / Alterado
+- [x] Implementar dropdown para Urocultura com opções: Positiva / Negativa
+- [x] Testar se os dropdowns aparecem corretamente em todos os 3 trimestres
+- [x] Verificar se os valores são salvos e carregados corretamente do banco de dados
