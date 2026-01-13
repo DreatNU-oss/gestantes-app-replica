@@ -29,22 +29,38 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
     // Navegar para a página
     console.log('[PDF] Navegando para:', url);
     await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 60000
+      waitUntil: 'networkidle0', // Aguarda até não haver mais requisições de rede
+      timeout: 90000 // Aumentado para 90 segundos
     });
     
-    console.log('[PDF] Página carregada, aguardando renderização...');
+    console.log('[PDF] Página carregada, aguardando renderização completa...');
     
-    // Aguardar pelo logo (opcional, não falha se não encontrar)
-    try {
-      await page.waitForSelector('img[alt="Mais Mulher"]', { timeout: 5000 });
-      console.log('[PDF] Logo encontrado');
-    } catch (e) {
-      console.log('[PDF] Logo não encontrado, continuando...');
-    }
+    // Aguardar que o conteúdo principal esteja renderizado
+    // Usar um seletor mais genérico e confiável
+    await page.waitForSelector('body', { timeout: 10000 });
     
-    // Aguardar mais um pouco para garantir que gráficos renderizaram
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Aguardar tempo adicional para garantir que todos os recursos foram carregados
+    // Isso evita o erro "Execution context was destroyed"
+    await page.evaluate(() => {
+      return new Promise((resolve) => {
+        // Aguardar que todas as imagens estejam carregadas
+        const images = Array.from(document.images);
+        const promises = images.map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise(resolve => {
+            img.onload = resolve;
+            img.onerror = resolve; // Resolver mesmo se houver erro
+          });
+        });
+        Promise.all(promises).then(resolve);
+      });
+    });
+    
+    console.log('[PDF] Todos os recursos carregados, aguardando estabilização...');
+    
+    // Aguardar mais um pouco para garantir que gráficos e outros elementos dinâmicos renderizaram
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     console.log('[PDF] Iniciando geração do PDF...');
     
     // Gerar PDF com configurações profissionais

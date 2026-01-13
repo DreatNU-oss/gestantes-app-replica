@@ -1949,3 +1949,13 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Criar endpoint tRPC para gerar PDF pelo backend
 - [x] Atualizar frontend para usar geração de PDF pelo backend
 - [x] Implementar geração de PDF profissional sem cabeçalhos/rodapés usando Puppeteer
+
+
+## Correção de Erro Puppeteer - "Execution context was destroyed" (13/01/2026)
+
+- [x] Investigar causa do erro no código server/pdf.ts
+- [x] Melhorar tratamento de carregamento da página (waitUntil: 'networkidle0')
+- [x] Adicionar timeout maior para páginas com muitos dados (90s)
+- [x] Remover waitForSelector do logo (pode estar causando navegação)
+- [x] Adicionar verificação explícita de carregamento de imagens
+- [x] Testar geração de PDF com gestante que tem muitos dados (Vivian - SUCESSO)
