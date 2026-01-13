@@ -509,7 +509,7 @@ export default function CartaoPrenatal() {
             const dataConsulta = new Date(consulta.dataConsulta);
             const diffMs = dataConsulta.getTime() - ultrassom.getTime();
             const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS - 1;
+            const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS;
             const semanas = Math.floor(totalDiasUS / 7);
             const dias = totalDiasUS % 7;
             // Validar se os valores são válidos
@@ -1125,7 +1125,7 @@ export default function CartaoPrenatal() {
     const diffMs = consulta.getTime() - ultrassom.getTime();
     const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
-    const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS - 1;
+    const totalDiasUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diasDesdeUS;
     const semanas = Math.floor(totalDiasUS / 7);
     const dias = totalDiasUS % 7;
     

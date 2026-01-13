@@ -1895,3 +1895,5 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir bug do campo "Tipo de Parto Desejado" que não salva ao editar cadastro de gestante
 - [x] Melhorar visualização de percentuais no gráfico de convênios (fatias pequenas não mostram percentual legível)
 - [x] Adicionar "Gemelar" como fator de risco em ordem alfabética
+
+- [x] BUG: IG pelo Ultrassom aparece com 1 dia a menos no card do formulário de Nova Consulta (correto no Dashboard)
