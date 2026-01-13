@@ -2031,3 +2031,12 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Testar funcionalidade "Desmarcar Todos" (desmarca todos os exames)
 - [x] Validar contador de exames selecionados
 - [x] Validar mudança dinâmica do texto do botão
+
+
+## Implementação de Campo de Data no Modal de Copiar Data (13/01/2026)
+
+- [ ] Adicionar campo de data no topo do modal
+- [ ] Implementar lógica para aplicar a data inserida a todos os exames selecionados
+- [ ] Adicionar validação para garantir que há uma data válida antes de aplicar
+- [ ] Adicionar validação para garantir que há pelo menos um exame selecionado
+- [ ] Testar funcionalidade completa no navegador

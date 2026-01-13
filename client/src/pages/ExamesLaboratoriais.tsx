@@ -57,6 +57,7 @@ export default function ExamesLaboratoriais() {
   const [modalCopiarDataAberto, setModalCopiarDataAberto] = useState(false);
   const [trimestreCopiarData, setTrimestreCopiarData] = useState<1 | 2 | 3>(1);
   const [examesSelecionados, setExamesSelecionados] = useState<string[]>([]);
+  const [dataParaCopiar, setDataParaCopiar] = useState<string>("");
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -167,13 +168,13 @@ export default function ExamesLaboratoriais() {
   
   // Função para aplicar data aos exames selecionados
   const aplicarDataAosExames = () => {
-    const primeiraData = obterPrimeiraDataTrimestre(trimestreCopiarData);
-    
-    if (!primeiraData) {
-      toast.error('Nenhuma data encontrada para copiar');
+    // Validar se há uma data válida
+    if (!dataParaCopiar || dataParaCopiar.trim() === '') {
+      toast.error('Por favor, insira uma data válida');
       return;
     }
     
+    // Validar se há exames selecionados
     if (examesSelecionados.length === 0) {
       toast.error('Selecione pelo menos um exame');
       return;
@@ -181,14 +182,15 @@ export default function ExamesLaboratoriais() {
     
     // Aplicar data a todos os exames selecionados
     examesSelecionados.forEach(nomeExame => {
-      handleResultadoChange(nomeExame, `data${trimestreCopiarData}`, primeiraData);
+      handleResultadoChange(nomeExame, `data${trimestreCopiarData}`, dataParaCopiar);
     });
     
     toast.success(`Data copiada para ${examesSelecionados.length} exame(s)!`);
     
-    // Fechar modal e limpar seleção
+    // Fechar modal, limpar seleção e limpar data
     setModalCopiarDataAberto(false);
     setExamesSelecionados([]);
+    setDataParaCopiar("");
   };
   
   // Função para abrir modal de copiar data
@@ -198,8 +200,12 @@ export default function ExamesLaboratoriais() {
     const primeiraData = obterPrimeiraDataTrimestre(trimestre);
     console.log('[DEBUG] primeiraData:', primeiraData);
     
-    // Removida validação de data obrigatória - permitir abrir modal mesmo sem data
-    // A validação será feita ao aplicar a data aos exames selecionados
+    // Pré-preencher o campo de data com a primeira data encontrada (se houver)
+    if (primeiraData) {
+      setDataParaCopiar(primeiraData);
+    } else {
+      setDataParaCopiar("");
+    }
     
     const examesSemData = obterExamesSemData(trimestre);
     
@@ -806,11 +812,24 @@ export default function ExamesLaboratoriais() {
             <DialogHeader>
               <DialogTitle>Copiar Data para Múltiplos Exames</DialogTitle>
               <DialogDescription>
-                Data a ser copiada: <strong>{obterPrimeiraDataTrimestre(trimestreCopiarData)}</strong>
-                <br />
-                Selecione os exames que deseja preencher com esta data:
+                Insira a data que deseja copiar para os exames selecionados:
               </DialogDescription>
             </DialogHeader>
+            
+            {/* Campo de Data */}
+            <div className="py-4 border-b">
+              <label htmlFor="data-copiar" className="block text-sm font-medium text-gray-700 mb-2">
+                Data do Exame
+              </label>
+              <input
+                id="data-copiar"
+                type="date"
+                value={dataParaCopiar}
+                onChange={(e) => setDataParaCopiar(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Selecione a data"
+              />
+            </div>
             
             <div className="space-y-3 py-4">
               {obterExamesSemData(trimestreCopiarData).map((exame) => (
