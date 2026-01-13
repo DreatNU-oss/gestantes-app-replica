@@ -2081,3 +2081,19 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar dropdown para Urocultura com opções: Positiva / Negativa
 - [x] Testar se os dropdowns aparecem corretamente em todos os 3 trimestres
 - [x] Verificar se os valores são salvos e carregados corretamente do banco de dados
+
+
+## Campo de Observações Condicional para EAS "Alterado" (Solicitado 13/01/2026)
+
+- [x] Adicionar campo de observações que aparece quando EAS = "Alterado"
+- [x] Implementar lógica para mostrar/ocultar campo baseado no valor selecionado
+- [x] Salvar observações no banco de dados junto com o resultado
+- [x] Carregar observações ao abrir a página
+- [x] Testar funcionalidade em todos os 3 trimestres
+
+## Dropdown para EPF (Parasitológico de Fezes) (Solicitado 13/01/2026)
+
+- [x] Adicionar lógica para identificar exame EPF
+- [x] Implementar dropdown com opções: Positivo / Negativo
+- [x] Testar em todos os 3 trimestres
+- [x] Verificar se valores são salvos corretamente

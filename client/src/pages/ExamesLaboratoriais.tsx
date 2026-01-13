@@ -254,21 +254,38 @@ export default function ExamesLaboratoriais() {
     // Verificar se é Urocultura
     const ehUrocultura = nomeExame === "Urocultura";
     
-    // Renderizar dropdown para EAS (Urina tipo 1)
+    // Verificar se é EPF (Parasitológico de Fezes)
+    const ehEPF = nomeExame === "EPF (Parasitológico de Fezes)";
+    
+    // Renderizar dropdown para EAS (Urina tipo 1) com campo de observações condicional
     if (ehEAS) {
+      const chaveObs = subcampo ? `${subcampo}_obs_${trimestre}` : `obs_${trimestre}`;
+      const valorObs = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveObs] : "") || "";
+      
       return (
-        <Select
-          value={valor || ""}
-          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Selecione..." />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Normal">Normal</SelectItem>
-            <SelectItem value="Alterado">Alterado</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-2 w-full">
+          <Select
+            value={valor || ""}
+            onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Normal">Normal</SelectItem>
+              <SelectItem value="Alterado">Alterado</SelectItem>
+            </SelectContent>
+          </Select>
+          {valor === "Alterado" && (
+            <Input
+              type="text"
+              value={valorObs}
+              onChange={(e) => handleResultadoChange(nomeExame, chaveObs, e.target.value)}
+              placeholder="Especifique a alteração (ex: leucócitos, hemácias...)" 
+              className="w-full text-xs"
+            />
+          )}
+        </div>
       );
     }
     
@@ -285,6 +302,24 @@ export default function ExamesLaboratoriais() {
           <SelectContent>
             <SelectItem value="Positiva">Positiva</SelectItem>
             <SelectItem value="Negativa">Negativa</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    // Renderizar dropdown para EPF (Parasitológico de Fezes)
+    if (ehEPF) {
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Positivo">Positivo</SelectItem>
+            <SelectItem value="Negativo">Negativo</SelectItem>
           </SelectContent>
         </Select>
       );
