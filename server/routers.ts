@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gestanteRouter } from "./gestante-router";
 import { z } from "zod";
+import type { GestanteComCalculos } from "../drizzle/schema";
 import { 
   createGestante, 
   getGestantesByUserId, 
@@ -75,9 +76,10 @@ function parseLocalDate(dateString: string): string {
 }
 
 // Funções auxiliares para cálculos obstétricos
-function calcularIdadeGestacionalPorDUM(dum: Date): { semanas: number; dias: number; totalDias: number } {
+function calcularIdadeGestacionalPorDUM(dum: Date | string): { semanas: number; dias: number; totalDias: number } {
+  const dumDate = typeof dum === 'string' ? new Date(dum + 'T12:00:00') : dum;
   const hoje = new Date();
-  const diffMs = hoje.getTime() - dum.getTime();
+  const diffMs = hoje.getTime() - dumDate.getTime();
   const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const semanas = Math.floor(totalDias / 7);
   const dias = totalDias % 7;
@@ -96,8 +98,9 @@ function calcularIdadeGestacionalPorUS(igUltrassomDias: number, dataUltrassom: D
   return { semanas, dias, totalDias };
 }
 
-function calcularDPP(dum: Date): Date {
-  const dpp = new Date(dum);
+function calcularDPP(dum: Date | string): Date {
+  const dumDate = typeof dum === 'string' ? new Date(dum + 'T12:00:00') : dum;
+  const dpp = new Date(dumDate);
   dpp.setDate(dpp.getDate() + 280); // 40 semanas = 280 dias
   return dpp;
 }
@@ -109,8 +112,9 @@ function calcularDppUS(igUltrassomDias: number, dataUltrassom: Date): Date {
   return dpp;
 }
 
-function calcularDataParaSemana(dum: Date, semanasAlvo: number): Date {
-  const dataAlvo = new Date(dum);
+function calcularDataParaSemana(dum: Date | string, semanasAlvo: number): Date {
+  const dumDate = typeof dum === 'string' ? new Date(dum + 'T12:00:00') : dum;
+  const dataAlvo = new Date(dumDate);
   dataAlvo.setDate(dataAlvo.getDate() + (semanasAlvo * 7));
   return dataAlvo;
 }
@@ -211,7 +215,7 @@ export const appRouter = router({
         searchTerm: z.string().optional(),
         sortBy: z.enum(['nome', 'ig_asc', 'ig_desc']).optional().default('ig_desc')
       }).optional())
-      .query(async ({ ctx, input }) => {
+      .query(async ({ ctx, input }): Promise<GestanteComCalculos[]> => {
       const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm);
       
       // Adicionar cálculos para cada gestante
@@ -279,7 +283,7 @@ export const appRouter = router({
     
     get: protectedProcedure
       .input(z.object({ id: z.number() }))
-      .query(async ({ input }) => {
+      .query(async ({ input }): Promise<GestanteComCalculos | null> => {
         const g = await getGestanteById(input.id);
         if (!g) return null;
         

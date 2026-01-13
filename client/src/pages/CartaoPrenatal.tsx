@@ -300,9 +300,9 @@ export default function CartaoPrenatal() {
       
       pdf.text(notacaoObstetrica, 20, y);
       y += 7;
-      pdf.text(`DPP pela DUM: ${gestante.calculado.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}`, 20, y);
+      pdf.text(`DPP pela DUM: ${gestante.calculado?.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}`, 20, y);
       y += 7;
-      pdf.text(`DPP pelo Ultrassom: ${gestante.calculado.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}`, 20, y);
+      pdf.text(`DPP pelo Ultrassom: ${gestante.calculado?.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}`, 20, y);
       y += 15;
       
       // Fatores de Risco
@@ -573,12 +573,12 @@ export default function CartaoPrenatal() {
               
               // Título "CONDUTA" em destaque
               pdf.setFontSize(8);
-              pdf.setFont(undefined, 'bold');
+              pdf.setFont('', 'bold');
               pdf.setTextColor(139, 64, 73); // Cor da clínica
               pdf.text('CONDUTA:', 23, y + 4);
               
               // Texto das condutas
-              pdf.setFont(undefined, 'normal');
+              pdf.setFont('', 'normal');
               pdf.setTextColor(60, 60, 60);
               pdf.setFontSize(8);
               
@@ -599,12 +599,12 @@ export default function CartaoPrenatal() {
               // Complementação em itálico
               if (hasComplementacao) {
                 yTexto += 5; // Aumentar espaço antes da complementação
-                pdf.setFont(undefined, 'italic');
+                pdf.setFont('', 'italic');
                 pdf.setTextColor(100, 100, 100);
                 pdf.text('Complementação:', 23, yTexto);
                 yTexto += 4.5;
                 
-                pdf.setFont(undefined, 'normal');
+                pdf.setFont('', 'normal');
                 linhasCompl.forEach((linha: string) => {
                   pdf.text(linha, 23, yTexto);
                   yTexto += 4.5;
@@ -680,7 +680,7 @@ export default function CartaoPrenatal() {
           
           // Texto do marco (cor escura para melhor legibilidade)
           pdf.setTextColor(30, 30, 30);
-          pdf.setFont(undefined, 'bold');
+          pdf.setFont('', 'bold');
           pdf.text(marco.titulo, xPos + 2, y + 2);
           
           // Data (ajustar para caber na coluna)
@@ -691,7 +691,7 @@ export default function CartaoPrenatal() {
           pdf.text(dataTexto, xPos + larguraColuna - 2, y + 2, { align: 'right' });
           pdf.setFontSize(9);
           
-          pdf.setFont(undefined, 'normal');
+          pdf.setFont('', 'normal');
           
           // Alternar entre colunas
           coluna = coluna === 0 ? 1 : 0;
@@ -728,7 +728,7 @@ export default function CartaoPrenatal() {
         
         pdf.setFontSize(11);
         pdf.setTextColor(0, 0, 0);
-        pdf.setFont(undefined, 'bold');
+        pdf.setFont('', 'bold');
         pdf.text('1º Trimestre', col1X, y);
         pdf.text('2º Trimestre', col2X, y);
         pdf.text('3º Trimestre', col3X, y);
@@ -740,7 +740,7 @@ export default function CartaoPrenatal() {
         y += 5;
         
         pdf.setFontSize(9);
-        pdf.setFont(undefined, 'normal');
+        pdf.setFont('', 'normal');
         
         // Iterar pelos exames estruturados
         for (const [nomeExame, valor] of Object.entries(resultadosExamesLab)) {
@@ -755,7 +755,7 @@ export default function CartaoPrenatal() {
           }
           
           // Nome do exame em negrito
-          pdf.setFont(undefined, 'bold');
+          pdf.setFont('', 'bold');
           pdf.text(nomeExame.replace(/_/g, ' ').toUpperCase(), 20, y);
           y += 5;
           
@@ -776,7 +776,7 @@ export default function CartaoPrenatal() {
             const temResultado = resultadosTrimestres.some(r => r !== '-');
             
             if (temResultado) {
-              pdf.setFont(undefined, 'normal');
+              pdf.setFont('', 'normal');
               pdf.setFontSize(8);
               
               // Extrair datas dos trimestres
@@ -794,7 +794,7 @@ export default function CartaoPrenatal() {
               });
               
               // Mostrar datas em cinza e itálico
-              pdf.setFont(undefined, 'italic');
+              pdf.setFont('', 'italic');
               pdf.setTextColor(100, 100, 100);
               pdf.text(datas[0], col1X, y);
               pdf.text(datas[1], col2X, y);
@@ -802,7 +802,7 @@ export default function CartaoPrenatal() {
               y += 4;
               
               // Resultados
-              pdf.setFont(undefined, 'normal');
+              pdf.setFont('', 'normal');
               pdf.setTextColor(0, 0, 0);
               const linhas1 = pdf.splitTextToSize(resultadosTrimestres[0], 55);
               const linhas2 = pdf.splitTextToSize(resultadosTrimestres[1], 55);
@@ -833,10 +833,10 @@ export default function CartaoPrenatal() {
             pdf.addPage();
             y = 20;
           }
-          pdf.setFont(undefined, 'bold');
+          pdf.setFont('', 'bold');
           pdf.text('OBSERVAÇÕES:', 20, y);
           y += 5;
-          pdf.setFont(undefined, 'normal');
+          pdf.setFont('', 'normal');
           const linhasObs = pdf.splitTextToSize(resultadosExamesLab.outros_observacoes, 170);
           linhasObs.forEach((linha: string) => {
             if (y > 275) {
@@ -866,7 +866,7 @@ export default function CartaoPrenatal() {
         // Cabeçalho da tabela
         pdf.setFontSize(9);
         pdf.setTextColor(0, 0, 0);
-        pdf.setFont(undefined, 'bold');
+        pdf.setFont('', 'bold');
         pdf.text('Data', 20, y);
         pdf.text('Tipo', 50, y);
         pdf.text('IG', 100, y);
@@ -878,14 +878,14 @@ export default function CartaoPrenatal() {
         pdf.line(20, y, 190, y);
         y += 5;
         
-        pdf.setFont(undefined, 'normal');
+        pdf.setFont('', 'normal');
         
         ultrassons.forEach((us: any) => {
           if (y > 270) {
             pdf.addPage();
             y = 20;
             // Repetir cabeçalho na nova página
-            pdf.setFont(undefined, 'bold');
+            pdf.setFont('', 'bold');
             pdf.text('Data', 20, y);
             pdf.text('Tipo', 50, y);
             pdf.text('IG', 100, y);
@@ -893,7 +893,7 @@ export default function CartaoPrenatal() {
             y += 5;
             pdf.line(20, y, 190, y);
             y += 5;
-            pdf.setFont(undefined, 'normal');
+            pdf.setFont('', 'normal');
           }
           
           const dataExame = us.dataExame ? new Date(us.dataExame).toLocaleDateString('pt-BR') : '-';

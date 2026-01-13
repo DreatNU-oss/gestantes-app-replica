@@ -40,7 +40,7 @@ export default function MarcosImportantes() {
     });
   };
 
-  const formatIG = (ig: { semanas: number; dias: number } | null) => {
+  const formatIG = (ig: { semanas: number; dias: number; totalDias?: number } | null | undefined) => {
     if (!ig) return "-";
     return `${ig.semanas}s ${ig.dias}d`;
   };

@@ -218,7 +218,7 @@ export default function Dashboard() {
     return { nome: "3º Tri", cor: "bg-pink-100 text-pink-700 border border-pink-300" };
   };
 
-  const formatIGBadge = (ig: { semanas: number; dias: number } | null | undefined) => {
+  const formatIGBadge = (ig: { semanas: number; dias: number; totalDias?: number } | null | undefined) => {
     if (!ig) return null;
     const trimestre = getTrimestre(ig.semanas);
     return {

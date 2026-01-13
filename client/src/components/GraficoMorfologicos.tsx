@@ -35,17 +35,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-interface Gestante {
-  id: number;
-  nome: string;
-  dum?: Date | null;
-  igUltrassomSemanas?: number | null;
-  igUltrassomDias?: number | null;
-  dataUltrassom?: Date | null;
-}
+import type { GestanteComCalculos } from "@/../../drizzle/schema";
 
 interface GraficoMorfologicosProps {
-  gestantes: Gestante[];
+  gestantes: GestanteComCalculos[];
 }
 
 export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
@@ -54,7 +47,7 @@ export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
   const [tituloModal, setTituloModal] = useState("");
 
   // Calcula data para uma semana específica priorizando ultrassom, com fallback para DUM
-  const calcularData = (gestante: Gestante, semanas: number, dias: number = 0): Date | null => {
+  const calcularData = (gestante: GestanteComCalculos, semanas: number, dias: number = 0): Date | null => {
     // Prioridade 1: Cálculo pelo Ultrassom
     if (
       gestante.dataUltrassom &&
