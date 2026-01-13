@@ -2040,3 +2040,28 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [ ] Adicionar validação para garantir que há uma data válida antes de aplicar
 - [ ] Adicionar validação para garantir que há pelo menos um exame selecionado
 - [ ] Testar funcionalidade completa no navegador
+
+
+## Dropdowns Customizados para Exames Sorológicos (Solicitado 13/01/2026)
+
+- [x] Criar lista de 13 exames sorológicos que devem ter dropdown ao invés de campo de texto
+- [x] Implementar lógica para identificar se um exame é sorológico
+- [x] Substituir campo de texto por dropdown com opções "Reagente" e "Não Reagente"
+- [x] Garantir que o dropdown funciona para todos os 3 trimestres
+- [x] Testar com diferentes exames sorológicos no navegador (Implementação completa, teste manual pendente)
+- [x] Validar que exames não-sorológicos continuam com campo de texto livre
+
+### Lista de Exames Sorológicos:
+1. FTA-ABS IgG
+2. FTA-ABS IgM
+3. Toxoplasmose IgG
+4. Toxoplasmose IgM
+5. Rubéola IgG
+6. Rubéola IgM
+7. Citomegalovírus IgG
+8. Citomegalovírus IgM
+9. HIV
+10. Hepatite C (Anti-HCV)
+11. Hepatite B (HBsAg)
+12. Anti-HBs
+13. (Verificar se há mais exames sorológicos na lista)

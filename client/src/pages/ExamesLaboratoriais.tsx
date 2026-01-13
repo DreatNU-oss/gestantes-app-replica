@@ -27,6 +27,29 @@ import {
   outrosExames,
   type ExameConfig,
 } from "@/data/examesConfig";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Lista de exames sorológicos que devem ter dropdown Reagente/Não Reagente
+const EXAMES_SOROLOGICOS = [
+  "FTA-ABS IgG",
+  "FTA-ABS IgM",
+  "Toxoplasmose IgG",
+  "Toxoplasmose IgM",
+  "Rubéola IgG",
+  "Rubéola IgM",
+  "Citomegalovírus IgG",
+  "Citomegalovírus IgM",
+  "HIV",
+  "Hepatite C (Anti-HCV)",
+  "Hepatite B (HBsAg)",
+  "Anti-HBs",
+];
 
 export default function ExamesLaboratoriais() {
   const [, setLocation] = useLocation();
@@ -220,9 +243,30 @@ export default function ExamesLaboratoriais() {
 
   // Componente helper para renderizar campo de resultado (Select ou Input)
   const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string, subcampo?: string) => {
-    // Todos os exames agora usam input de texto livre para permitir valores numéricos e anotações
     const chave = subcampo ? `${subcampo}_${trimestre}` : trimestre.toString();
     
+    // Verificar se é um exame sorológico
+    const ehSorologico = EXAMES_SOROLOGICOS.includes(nomeExame);
+    
+    if (ehSorologico) {
+      // Renderizar Select para exames sorológicos
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Reagente">Reagente</SelectItem>
+            <SelectItem value="Não Reagente">Não Reagente</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    // Renderizar Input para exames não-sorológicos
     return (
       <InputExameValidado
         nomeExame={obterIdValidacao(nomeExame) || nomeExame}
