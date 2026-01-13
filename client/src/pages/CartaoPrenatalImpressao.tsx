@@ -106,7 +106,7 @@ export default function CartaoPrenatalImpressao() {
       {/* Logo e Título */}
       <div className="text-center mb-8">
         <img 
-          src="/logo.png" 
+          src="/logo-horizontal.png" 
           alt="Mais Mulher" 
           className="mx-auto h-16 mb-4"
         />

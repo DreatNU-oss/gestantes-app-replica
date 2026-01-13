@@ -1933,3 +1933,4 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir formatação de conduta (array JSON ao invés de texto)
 - [x] Criar página HTML de impressão do Cartão de Pré-natal
 - [x] Implementar botão "Gerar Cartão de Pré-Natal" que abre página de impressão
+- [x] Corrigir logo na página de impressão do Cartão de Pré-natal
