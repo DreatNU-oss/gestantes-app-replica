@@ -2097,3 +2097,21 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar dropdown com opções: Positivo / Negativo
 - [x] Testar em todos os 3 trimestres
 - [x] Verificar se valores são salvos corretamente
+
+
+## Campos Condicionais para Urocultura Positiva (Solicitado 13/01/2026)
+
+- [x] Adicionar campo de texto para agente infeccioso quando Urocultura = "Positiva"
+- [x] Adicionar campo de texto para antibiograma quando Urocultura = "Positiva"
+- [x] Implementar lógica para mostrar/ocultar campos baseado no valor selecionado
+- [x] Salvar campos no banco de dados junto com o resultado
+- [x] Carregar campos ao abrir a página
+- [x] Testar funcionalidade em todos os 3 trimestres
+
+## Indicadores Visuais para Resultados Alterados (Solicitado 13/01/2026)
+
+- [x] Adicionar destaque visual (cor de alerta) para resultados "Alterado"
+- [x] Adicionar destaque visual para resultados "Positiva" ou "Positivo"
+- [x] Adicionar destaque visual para resultados "Reagente"
+- [x] Usar cores apropriadas (vermelho/laranja) para indicar atenção necessária
+- [x] Testar em todos os exames e trimestres

@@ -261,6 +261,7 @@ export default function ExamesLaboratoriais() {
     if (ehEAS) {
       const chaveObs = subcampo ? `${subcampo}_obs_${trimestre}` : `obs_${trimestre}`;
       const valorObs = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveObs] : "") || "";
+      const ehAlterado = valor === "Alterado";
       
       return (
         <div className="flex flex-col gap-2 w-full">
@@ -268,7 +269,7 @@ export default function ExamesLaboratoriais() {
             value={valor || ""}
             onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : ''}`}>
               <SelectValue placeholder="Selecione..." />
             </SelectTrigger>
             <SelectContent>
@@ -289,32 +290,60 @@ export default function ExamesLaboratoriais() {
       );
     }
     
-    // Renderizar dropdown para Urocultura
+    // Renderizar dropdown para Urocultura com campos condicionais
     if (ehUrocultura) {
+      const chaveAgente = subcampo ? `${subcampo}_agente_${trimestre}` : `agente_${trimestre}`;
+      const chaveAntibiograma = subcampo ? `${subcampo}_antibiograma_${trimestre}` : `antibiograma_${trimestre}`;
+      const valorAgente = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveAgente] : "") || "";
+      const valorAntibiograma = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveAntibiograma] : "") || "";
+      const ehPositiva = valor === "Positiva";
+      
       return (
-        <Select
-          value={valor || ""}
-          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Selecione..." />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Positiva">Positiva</SelectItem>
-            <SelectItem value="Negativa">Negativa</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-2 w-full">
+          <Select
+            value={valor || ""}
+            onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+          >
+            <SelectTrigger className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Positiva">Positiva</SelectItem>
+              <SelectItem value="Negativa">Negativa</SelectItem>
+            </SelectContent>
+          </Select>
+          {valor === "Positiva" && (
+            <>
+              <Input
+                type="text"
+                value={valorAgente}
+                onChange={(e) => handleResultadoChange(nomeExame, chaveAgente, e.target.value)}
+                placeholder="Agente infeccioso (ex: E. coli, Proteus...)" 
+                className="w-full text-xs"
+              />
+              <Input
+                type="text"
+                value={valorAntibiograma}
+                onChange={(e) => handleResultadoChange(nomeExame, chaveAntibiograma, e.target.value)}
+                placeholder="Antibiograma (sensibilidade aos antibióticos)" 
+                className="w-full text-xs"
+              />
+            </>
+          )}
+        </div>
       );
     }
     
     // Renderizar dropdown para EPF (Parasitológico de Fezes)
     if (ehEPF) {
+      const ehPositivo = valor === "Positivo";
+      
       return (
         <Select
           value={valor || ""}
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
             <SelectValue placeholder="Selecione..." />
           </SelectTrigger>
           <SelectContent>
@@ -327,12 +356,14 @@ export default function ExamesLaboratoriais() {
     
     // Renderizar Select para exames sorológicos
     if (ehSorologico) {
+      const ehReagente = valor === "Reagente";
+      
       return (
         <Select
           value={valor || ""}
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className={`w-full ${ehReagente ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
             <SelectValue placeholder="Selecione..." />
           </SelectTrigger>
           <SelectContent>
