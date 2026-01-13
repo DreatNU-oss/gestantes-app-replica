@@ -2014,3 +2014,20 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [ ] Verificar se middleware Vite foi realmente modificado corretamente
 - [ ] Identificar qual rota tRPC específica está causando o erro
 - [x] Implementar solução mais robusta que garanta que rotas /api/ nunca retornem HTML - Adicionado middleware de guarda e fallback JSON
+
+
+## Nova Funcionalidade - Botão "Selecionar Todos" no Modal de Copiar Data (13/01/2026)
+
+- [x] Adicionar botão "Selecionar Todos" no modal de copiar data dos exames laboratoriais
+- [x] Implementar função para marcar todos os checkboxes de uma vez
+- [ ] Testar funcionalidade no navegador
+
+
+## Correção de Bug - Botão "Selecionar Todos" em Exames Laboratoriais (13/01/2026)
+
+- [x] Remover validação que impedia abertura do modal sem data preenchida
+- [x] Permitir abertura do modal de copiar data mesmo sem data prévia
+- [x] Testar funcionalidade "Selecionar Todos" (marca todos os 27 exames)
+- [x] Testar funcionalidade "Desmarcar Todos" (desmarca todos os exames)
+- [x] Validar contador de exames selecionados
+- [x] Validar mudança dinâmica do texto do botão

@@ -194,13 +194,12 @@ export default function ExamesLaboratoriais() {
   // Função para abrir modal de copiar data
   const abrirModalCopiarData = (trimestre: 1 | 2 | 3) => {
     console.log('[DEBUG] abrirModalCopiarData chamada. Trimestre:', trimestre);
+    console.log('[DEBUG] Resultados atuais:', resultados);
     const primeiraData = obterPrimeiraDataTrimestre(trimestre);
     console.log('[DEBUG] primeiraData:', primeiraData);
     
-    if (!primeiraData) {
-      toast.error('Preencha pelo menos uma data neste trimestre antes de copiar');
-      return;
-    }
+    // Removida validação de data obrigatória - permitir abrir modal mesmo sem data
+    // A validação será feita ao aplicar a data aos exames selecionados
     
     const examesSemData = obterExamesSemData(trimestre);
     
@@ -837,22 +836,40 @@ export default function ExamesLaboratoriais() {
               ))}
             </div>
             
-            <DialogFooter>
+            <DialogFooter className="flex justify-between">
               <Button
                 variant="outline"
                 onClick={() => {
-                  setModalCopiarDataAberto(false);
-                  setExamesSelecionados([]);
+                  const examesSemData = obterExamesSemData(trimestreCopiarData);
+                  if (examesSelecionados.length === examesSemData.length) {
+                    // Se todos estão selecionados, desmarcar todos
+                    setExamesSelecionados([]);
+                  } else {
+                    // Caso contrário, selecionar todos
+                    setExamesSelecionados(examesSemData.map(e => e.nome));
+                  }
                 }}
               >
-                Cancelar
+                {examesSelecionados.length === obterExamesSemData(trimestreCopiarData).length ? 'Desmarcar Todos' : 'Selecionar Todos'}
               </Button>
-              <Button
-                onClick={aplicarDataAosExames}
-                disabled={examesSelecionados.length === 0}
-              >
-                Aplicar ({examesSelecionados.length} selecionado{examesSelecionados.length !== 1 ? 's' : ''})
-              </Button>
+              
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setModalCopiarDataAberto(false);
+                    setExamesSelecionados([]);
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={aplicarDataAosExames}
+                  disabled={examesSelecionados.length === 0}
+                >
+                  Aplicar ({examesSelecionados.length} selecionado{examesSelecionados.length !== 1 ? 's' : ''})
+                </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
