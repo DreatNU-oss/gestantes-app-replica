@@ -2147,3 +2147,25 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Mostrar toast de confirmação com quantidade de exames preenchidos
 - [x] Posicionar botões próximos aos botões de trimestre existentes (seção verde abaixo da azul)
 - [x] Testar funcionamento em todos os 3 trimestres
+
+
+## Modal de Seleção Individual para Preenchimento em Lote (Solicitado 13/01/2026)
+
+- [x] Criar modal que abre ao clicar no botão de preenchimento em lote
+- [x] Listar todos os exames qualitativos do trimestre selecionado
+- [x] Adicionar toggle/switch para cada exame: Normal/Negativo ou Alterado/Positivo/Reagente
+- [x] Permitir selecionar múltiplos exames de uma vez
+- [x] Implementar botão "Aplicar" que preenche os exames conforme selecionado
+- [x] Manter botão "Selecionar Todos Normal" e "Selecionar Todos Alterado" no modal
+- [x] Testar funcionamento em todos os 3 trimestres
+
+
+## Modal de Seleção Individual para Preenchimento em Lote (Solicitado 13/01/2026)
+
+- [x] Criar modal que abre ao clicar no botão de preenchimento em lote
+- [x] Listar todos os exames qualitativos do trimestre selecionado
+- [x] Adicionar toggle/switch para cada exame: Normal/Negativo ou Alterado/Positivo/Reagente
+- [x] Permitir selecionar múltiplos exames de uma vez
+- [x] Implementar botão "Aplicar" que preenche os exames conforme selecionado
+- [x] Manter botão "Selecionar Todos Normal" e "Selecionar Todos Alterado" no modal
+- [x] Testar funcionamento em todos os 3 trimestres

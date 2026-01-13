@@ -81,6 +81,12 @@ export default function ExamesLaboratoriais() {
   const [trimestreCopiarData, setTrimestreCopiarData] = useState<1 | 2 | 3>(1);
   const [examesSelecionados, setExamesSelecionados] = useState<string[]>([]);
   const [dataParaCopiar, setDataParaCopiar] = useState<string>("");
+  
+  // Estados para o modal de preenchimento em lote
+  const [modalPreenchimentoLoteAberto, setModalPreenchimentoLoteAberto] = useState(false);
+  const [trimestrePreenchimentoLote, setTrimestrePreenchimentoLote] = useState<1 | 2 | 3>(1);
+  // Mapa de exame -> valor selecionado ("normal" ou "alterado")
+  const [selecaoExamesLote, setSelecaoExamesLote] = useState<Record<string, "normal" | "alterado">>({});
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -226,72 +232,119 @@ export default function ExamesLaboratoriais() {
     });
   };
 
-  // Função para preencher todos os exames qualitativos com resultado normal/negativo
-  const preencherTodosNormais = (trimestre: 1 | 2 | 3) => {
-    if (!gestanteSelecionada) {
-      toast.error('Selecione uma gestante primeiro');
-      return;
-    }
-    
-    const novosResultados = { ...resultados };
-    let contadorPreenchidos = 0;
-    
-    // Lista de todos os exames
+  // Função para obter lista de exames qualitativos de um trimestre
+  const obterExamesQualitativos = (trimestre: 1 | 2 | 3): { nome: string; tipo: string; valorNormal: string; valorAlterado: string }[] => {
     const todosExames = [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames];
+    const examesQualitativos: { nome: string; tipo: string; valorNormal: string; valorAlterado: string }[] = [];
     
     for (const exame of todosExames) {
-      // Verificar se o exame tem esse trimestre
       const temTrimestre = trimestre === 1 ? exame.trimestres.primeiro :
                           trimestre === 2 ? exame.trimestres.segundo :
                           exame.trimestres.terceiro;
       
       if (!temTrimestre) continue;
       
-      const nomeExame = exame.nome;
-      const chave = trimestre.toString();
+      // Exames sorológicos
+      if (EXAMES_SOROLOGICOS.includes(exame.nome)) {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "sorologico",
+          valorNormal: "Não Reagente",
+          valorAlterado: "Reagente"
+        });
+      }
+      // EAS
+      else if (exame.nome === "EAS (Urina tipo 1)") {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "eas",
+          valorNormal: "Normal",
+          valorAlterado: "Alterado"
+        });
+      }
+      // Urocultura
+      else if (exame.nome === "Urocultura") {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "urocultura",
+          valorNormal: "Negativa",
+          valorAlterado: "Positiva"
+        });
+      }
+      // EPF
+      else if (exame.nome === "EPF (Parasitológico de Fezes)") {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "epf",
+          valorNormal: "Negativo",
+          valorAlterado: "Positivo"
+        });
+      }
+    }
+    
+    return examesQualitativos;
+  };
+
+  // Função para abrir modal de preenchimento em lote
+  const abrirModalPreenchimentoLote = (trimestre: 1 | 2 | 3) => {
+    if (!gestanteSelecionada) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
+    
+    // Inicializar seleção com todos como "normal"
+    const examesQualitativos = obterExamesQualitativos(trimestre);
+    const selecaoInicial: Record<string, "normal" | "alterado"> = {};
+    
+    for (const exame of examesQualitativos) {
+      selecaoInicial[exame.nome] = "normal";
+    }
+    
+    setSelecaoExamesLote(selecaoInicial);
+    setTrimestrePreenchimentoLote(trimestre);
+    setModalPreenchimentoLoteAberto(true);
+  };
+
+  // Função para aplicar preenchimento em lote
+  const aplicarPreenchimentoLote = () => {
+    const novosResultados = { ...resultados };
+    let contadorPreenchidos = 0;
+    const examesQualitativos = obterExamesQualitativos(trimestrePreenchimentoLote);
+    const chave = trimestrePreenchimentoLote.toString();
+    
+    for (const exame of examesQualitativos) {
+      const selecao = selecaoExamesLote[exame.nome];
+      if (!selecao) continue;
       
-      // Verificar se é um exame qualitativo e preencher com valor normal
-      let valorNormal: string | null = null;
+      const valor = selecao === "normal" ? exame.valorNormal : exame.valorAlterado;
       
-      // Exames sorológicos -> "Não Reagente"
-      if (EXAMES_SOROLOGICOS.includes(nomeExame)) {
-        valorNormal = "Não Reagente";
-      }
-      // EAS -> "Normal"
-      else if (nomeExame === "EAS (Urina tipo 1)") {
-        valorNormal = "Normal";
-      }
-      // Urocultura -> "Negativa"
-      else if (nomeExame === "Urocultura") {
-        valorNormal = "Negativa";
-      }
-      // EPF -> "Negativo"
-      else if (nomeExame === "EPF (Parasitológico de Fezes)") {
-        valorNormal = "Negativo";
+      // Inicializar objeto se não existir
+      if (!novosResultados[exame.nome] || typeof novosResultados[exame.nome] !== 'object') {
+        novosResultados[exame.nome] = {};
       }
       
-      if (valorNormal) {
-        // Inicializar objeto se não existir
-        if (!novosResultados[nomeExame] || typeof novosResultados[nomeExame] !== 'object') {
-          novosResultados[nomeExame] = {};
-        }
-        
-        // Só preencher se estiver vazio
-        const valorAtual = (novosResultados[nomeExame] as Record<string, string>)[chave];
-        if (!valorAtual || valorAtual.trim() === '') {
-          (novosResultados[nomeExame] as Record<string, string>)[chave] = valorNormal;
-          contadorPreenchidos++;
-        }
-      }
+      (novosResultados[exame.nome] as Record<string, string>)[chave] = valor;
+      contadorPreenchidos++;
     }
     
     setResultados(novosResultados);
+    setModalPreenchimentoLoteAberto(false);
     
     if (contadorPreenchidos > 0) {
-      toast.success(`${contadorPreenchidos} exames preenchidos como Normal/Negativo no ${trimestre}º trimestre`);
-    } else {
-      toast.info('Todos os exames qualitativos já estão preenchidos neste trimestre');
+      toast.success(`${contadorPreenchidos} exames preenchidos no ${trimestrePreenchimentoLote}º trimestre`);
     }
+  };
+
+  // Função para marcar todos como normal ou alterado no modal
+  const marcarTodosNoModal = (tipo: "normal" | "alterado") => {
+    const examesQualitativos = obterExamesQualitativos(trimestrePreenchimentoLote);
+    const novaSelecao: Record<string, "normal" | "alterado"> = {};
+    
+    for (const exame of examesQualitativos) {
+      novaSelecao[exame.nome] = tipo;
+    }
+    
+    setSelecaoExamesLote(novaSelecao);
   };
 
   // Função para obter a primeira data preenchida de um trimestre
@@ -854,17 +907,17 @@ export default function ExamesLaboratoriais() {
         </Button>
       </div>
       
-      {/* Botões de Preenchimento em Lote - Marcar todos como Normal/Negativo */}
+      {/* Botões de Preenchimento em Lote - Selecionar exames qualitativos */}
       <div className="flex flex-wrap gap-4 mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Marcar todos qualitativos como Normal/Negativo:</span>
+          <span className="text-sm font-medium text-gray-700">Preencher exames qualitativos em lote:</span>
         </div>
         <Button
           variant="outline"
           size="sm"
           className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => preencherTodosNormais(1)}
-          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
+          onClick={() => abrirModalPreenchimentoLote(1)}
+          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
         >
           1º Trimestre
         </Button>
@@ -872,8 +925,8 @@ export default function ExamesLaboratoriais() {
           variant="outline"
           size="sm"
           className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => preencherTodosNormais(2)}
-          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
+          onClick={() => abrirModalPreenchimentoLote(2)}
+          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
         >
           2º Trimestre
         </Button>
@@ -881,8 +934,8 @@ export default function ExamesLaboratoriais() {
           variant="outline"
           size="sm"
           className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => preencherTodosNormais(3)}
-          title="Preenche: Sorológicos=Não Reagente, EAS=Normal, Urocultura=Negativa, EPF=Negativo"
+          onClick={() => abrirModalPreenchimentoLote(3)}
+          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
         >
           3º Trimestre
         </Button>
@@ -1262,6 +1315,107 @@ export default function ExamesLaboratoriais() {
                   disabled={examesSelecionados.length === 0}
                 >
                   Aplicar ({examesSelecionados.length} selecionado{examesSelecionados.length !== 1 ? 's' : ''})
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Modal de Preenchimento em Lote */}
+        <Dialog open={modalPreenchimentoLoteAberto} onOpenChange={setModalPreenchimentoLoteAberto}>
+          <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Preencher Exames Qualitativos - {trimestrePreenchimentoLote}º Trimestre</DialogTitle>
+              <DialogDescription>
+                Selecione o resultado para cada exame. Use os botões abaixo para marcar todos de uma vez.
+              </DialogDescription>
+            </DialogHeader>
+            
+            {/* Botões de Marcar Todos */}
+            <div className="flex gap-3 py-3 border-b">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-green-50 hover:bg-green-100 border-green-300 text-green-700"
+                onClick={() => marcarTodosNoModal("normal")}
+              >
+                <Check className="mr-2 h-4 w-4" />
+                Marcar Todos Normal/Negativo
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-red-50 hover:bg-red-100 border-red-300 text-red-700"
+                onClick={() => marcarTodosNoModal("alterado")}
+              >
+                Marcar Todos Alterado/Positivo
+              </Button>
+            </div>
+            
+            {/* Lista de Exames */}
+            <div className="space-y-2 py-4">
+              {obterExamesQualitativos(trimestrePreenchimentoLote).map((exame) => (
+                <div 
+                  key={exame.nome} 
+                  className={`flex items-center justify-between p-3 rounded-lg border ${
+                    selecaoExamesLote[exame.nome] === "alterado" 
+                      ? "bg-red-50 border-red-200" 
+                      : "bg-green-50 border-green-200"
+                  }`}
+                >
+                  <div className="flex-1">
+                    <span className="font-medium text-gray-800">{exame.nome}</span>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {selecaoExamesLote[exame.nome] === "normal" 
+                        ? `Será preenchido como: ${exame.valorNormal}` 
+                        : `Será preenchido como: ${exame.valorAlterado}`
+                      }
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={selecaoExamesLote[exame.nome] === "normal" ? "default" : "outline"}
+                      size="sm"
+                      className={selecaoExamesLote[exame.nome] === "normal" 
+                        ? "bg-green-600 hover:bg-green-700" 
+                        : "hover:bg-green-100"
+                      }
+                      onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "normal" }))}
+                    >
+                      {exame.valorNormal}
+                    </Button>
+                    <Button
+                      variant={selecaoExamesLote[exame.nome] === "alterado" ? "default" : "outline"}
+                      size="sm"
+                      className={selecaoExamesLote[exame.nome] === "alterado" 
+                        ? "bg-red-600 hover:bg-red-700" 
+                        : "hover:bg-red-100"
+                      }
+                      onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "alterado" }))}
+                    >
+                      {exame.valorAlterado}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <DialogFooter className="flex justify-between items-center">
+              <div className="text-sm text-gray-500">
+                {Object.values(selecaoExamesLote).filter(v => v === "alterado").length} exame(s) marcado(s) como alterado
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setModalPreenchimentoLoteAberto(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={aplicarPreenchimentoLote}
+                  className="bg-rose-600 hover:bg-rose-700"
+                >
+                  Aplicar Preenchimento
                 </Button>
               </div>
             </DialogFooter>
