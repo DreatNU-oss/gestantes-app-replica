@@ -350,14 +350,29 @@ export default function ExamesLaboratoriais() {
       const valorObs = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveObs] : "") || "";
       const ehAlterado = valor === "Alterado";
       
+      // Handler para atalhos numéricos: 1=Normal, 2=Alterado
+      const handleKeyDownEAS = (e: React.KeyboardEvent) => {
+        if (e.key === '1') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Normal');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Alterado');
+        }
+      };
+      
       return (
         <div className="flex flex-col gap-2 w-full">
           <Select
             value={valor || ""}
             onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           >
-            <SelectTrigger className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : ''}`}>
-              <SelectValue placeholder="Selecione..." />
+            <SelectTrigger 
+              className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : ''}`}
+              onKeyDown={handleKeyDownEAS}
+              title="Atalhos: 1=Normal, 2=Alterado"
+            >
+              <SelectValue placeholder="1/2" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Normal">Normal</SelectItem>
@@ -385,14 +400,29 @@ export default function ExamesLaboratoriais() {
       const valorAntibiograma = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? (resultados[nomeExame] as Record<string, string>)[chaveAntibiograma] : "") || "";
       const ehPositiva = valor === "Positiva";
       
+      // Handler para atalhos numéricos: 1=Positiva, 2=Negativa
+      const handleKeyDownUrocultura = (e: React.KeyboardEvent) => {
+        if (e.key === '1') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Positiva');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Negativa');
+        }
+      };
+      
       return (
         <div className="flex flex-col gap-2 w-full">
           <Select
             value={valor || ""}
             onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           >
-            <SelectTrigger className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
-              <SelectValue placeholder="Selecione..." />
+            <SelectTrigger 
+              className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
+              onKeyDown={handleKeyDownUrocultura}
+              title="Atalhos: 1=Positiva, 2=Negativa"
+            >
+              <SelectValue placeholder="1/2" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Positiva">Positiva</SelectItem>
@@ -425,13 +455,28 @@ export default function ExamesLaboratoriais() {
     if (ehEPF) {
       const ehPositivo = valor === "Positivo";
       
+      // Handler para atalhos numéricos: 1=Positivo, 2=Negativo
+      const handleKeyDownEPF = (e: React.KeyboardEvent) => {
+        if (e.key === '1') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Positivo');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Negativo');
+        }
+      };
+      
       return (
         <Select
           value={valor || ""}
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
-          <SelectTrigger className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
-            <SelectValue placeholder="Selecione..." />
+          <SelectTrigger 
+            className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
+            onKeyDown={handleKeyDownEPF}
+            title="Atalhos: 1=Positivo, 2=Negativo"
+          >
+            <SelectValue placeholder="1/2" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="Positivo">Positivo</SelectItem>
@@ -444,14 +489,33 @@ export default function ExamesLaboratoriais() {
     // Renderizar Select para exames sorológicos
     if (ehSorologico) {
       const ehReagente = valor === "Reagente";
+      const ehIndeterminado = valor === "Indeterminado";
+      
+      // Handler para atalhos numéricos: 1=Reagente, 2=Não Reagente, 3=Indeterminado
+      const handleKeyDownSorologico = (e: React.KeyboardEvent) => {
+        if (e.key === '1') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Reagente');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Não Reagente');
+        } else if (e.key === '3') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Indeterminado');
+        }
+      };
       
       return (
         <Select
           value={valor || ""}
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
-          <SelectTrigger className={`w-full ${ehReagente ? 'border-red-500 bg-red-50 text-red-900' : ''}`}>
-            <SelectValue placeholder="Selecione..." />
+          <SelectTrigger 
+            className={`w-full ${ehReagente ? 'border-red-500 bg-red-50 text-red-900' : ''} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
+            onKeyDown={handleKeyDownSorologico}
+            title="Atalhos: 1=Reagente, 2=Não Reagente, 3=Indeterminado"
+          >
+            <SelectValue placeholder="1/2/3" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="Reagente">Reagente</SelectItem>

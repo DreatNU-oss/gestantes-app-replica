@@ -2127,3 +2127,13 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar atalho Ctrl+S para salvar de qualquer lugar
 - [x] Melhorar feedback visual de foco (destaque mais visível)
 - [x] Testar navegação em todos os tipos de campos (input, select, textarea)
+
+
+## Atalhos Numéricos para Dropdowns de Exames (Solicitado 13/01/2026)
+
+- [x] Implementar atalhos numéricos para exames sorológicos (1=Reagente, 2=Não Reagente, 3=Indeterminado)
+- [x] Implementar atalhos para EAS (1=Normal, 2=Alterado)
+- [x] Implementar atalhos para Urocultura (1=Positiva, 2=Negativa)
+- [x] Implementar atalhos para EPF (1=Positivo, 2=Negativo)
+- [x] Adicionar tooltip mostrando os atalhos disponíveis (title no SelectTrigger)
+- [x] Testar funcionamento em todos os dropdowns
