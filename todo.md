@@ -1897,4 +1897,4 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar "Gemelar" como fator de risco em ordem alfabética
 
 - [x] BUG: IG pelo Ultrassom aparece com 1 dia a menos no card do formulário de Nova Consulta (correto no Dashboard)
-- [x] BUG: Enum de validação tRPC desatualizado - faltam 8 fatores de risco no endpoint fatoresRisco.add
+- [x] BUG: Enum de validação tRPC desatualizado - CORRIGIDO: Sincronizado enum de gestantes.addFatorRisco com todos os 19 fatores
