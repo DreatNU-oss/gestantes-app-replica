@@ -999,6 +999,22 @@ export default function ExamesLaboratoriais() {
               <div className="space-y-8 mt-6">
                 {/* Barras de Ação em Lote - Aparecem apenas uma vez */}
                 <div className="space-y-3">
+                  {/* Botão Interpretar com IA */}
+                  <div className="flex flex-wrap gap-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-700">Preencher exames automaticamente:</span>
+                    </div>
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      className="bg-white border-purple-600 text-purple-600 hover:bg-purple-100"
+                      onClick={() => setModalAberto(true)}
+                    >
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Interpretar com IA
+                    </Button>
+                  </div>
+                  
                   {/* Botões de Copiar Data */}
                   <div className="flex flex-wrap gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="flex items-center gap-2">
@@ -1081,16 +1097,7 @@ export default function ExamesLaboratoriais() {
                   />
                 </div>
 
-                <div className="flex justify-between items-center mt-6">
-                  <Button 
-                    variant="outline"
-                    className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950"
-                    onClick={() => setModalAberto(true)}
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Interpretar com IA
-                  </Button>
-                  
+                <div className="flex justify-end items-center mt-6">
                   <Button 
                     className="bg-rose-600 hover:bg-rose-700"
                     onClick={handleSalvar}

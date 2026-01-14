@@ -2190,3 +2190,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Identificar onde as barras azul e verde estão sendo renderizadas múltiplas vezes
 - [x] Manter apenas uma instância das barras na parte superior, acima do título "Exames de Sangue"
 - [x] Remover duplicações nas outras seções (Exames de Urina, Outros Exames, etc.)
+
+
+## Mover Botão "Interpretar com IA" para Parte Superior (Solicitado 14/01/2026)
+
+- [x] Localizar onde o botão "Interpretar com IA" está atualmente renderizado
+- [x] Mover para a parte superior da página, junto com as barras de ação em lote
+- [x] Manter a funcionalidade intacta após a mudança de posição
