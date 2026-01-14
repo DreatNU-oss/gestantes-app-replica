@@ -2169,3 +2169,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar botão "Aplicar" que preenche os exames conforme selecionado
 - [x] Manter botão "Selecionar Todos Normal" e "Selecionar Todos Alterado" no modal
 - [x] Testar funcionamento em todos os 3 trimestres
+
+
+## Correção de Bug - Cores do Sidebar (Reportado 13/01/2026)
+
+- [x] Identificar onde as cores do sidebar foram alteradas para branco
+- [x] Restaurar cor bege/creme original do sidebar e fundo da logo
+- [x] Verificar se a mudança afetou outras partes da interface
