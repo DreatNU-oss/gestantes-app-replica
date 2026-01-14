@@ -2230,3 +2230,13 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
   - [x] Paciente evoluiu para parto
   - [x] Paciente decidiu um espaço maior entre as consultas por conta própria
 - [x] Filtrar gestantes com justificativa da lista de alertas
+
+
+## Remoção Automática de Alertas (Solicitado 14/01/2026)
+
+- [x] Gestante com parto registrado deve sair automaticamente da lista de alertas (já implementado)
+- [x] Gestante com consulta salva no cartão pré-natal deve sair automaticamente da lista de alertas (já implementado)
+
+## Ajuste de Limite de Alerta (Solicitado 14/01/2026)
+
+- [x] Alterar limite de 35 dias para 40 dias para gestantes com até 34 semanas

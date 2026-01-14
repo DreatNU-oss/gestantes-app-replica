@@ -374,12 +374,12 @@ function calcularIGAtual(gestante: Gestante): { semanas: number; dias: number; t
 // Função para determinar o limite de dias sem consulta baseado na IG
 function getLimiteDiasConsulta(igSemanas: number | null): { limite: number; faixa: string } {
   if (igSemanas === null) {
-    // Se não tem IG, usar limite padrão de 35 dias
-    return { limite: 35, faixa: 'Sem IG' };
+    // Se não tem IG, usar limite padrão de 40 dias
+    return { limite: 40, faixa: 'Sem IG' };
   }
   
   if (igSemanas < 34) {
-    return { limite: 35, faixa: 'Até 34 semanas' };
+    return { limite: 40, faixa: 'Até 34 semanas' };
   } else if (igSemanas >= 34 && igSemanas < 36) {
     return { limite: 15, faixa: '34-36 semanas' };
   } else {

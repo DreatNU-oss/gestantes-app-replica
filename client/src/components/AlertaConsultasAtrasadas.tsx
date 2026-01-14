@@ -186,7 +186,7 @@ export function AlertaConsultasAtrasadas() {
             </Badge>
           </CardTitle>
           <p className="text-sm text-orange-700 mt-1">
-            Limite dinâmico: até 34 sem (35 dias) | 34-36 sem (15 dias) | após 36 sem (8 dias)
+            Limite dinâmico: até 34 sem (40 dias) | 34-36 sem (15 dias) | após 36 sem (8 dias)
           </p>
         </CardHeader>
         <CardContent>
@@ -232,7 +232,7 @@ export function AlertaConsultasAtrasadas() {
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-yellow-800 flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
-                  Até 34 semanas (limite: 35 dias)
+                  Até 34 semanas (limite: 40 dias)
                 </h4>
                 {gestantesPorFaixa['Até 34 semanas'].slice(0, 5).map((item: GestanteAlerta) => 
                   renderGestanteCard(
