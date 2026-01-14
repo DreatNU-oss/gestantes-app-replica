@@ -2345,3 +2345,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Campos de resultado (HIV, etc.) não estão ficando verdes quando preenchidos
 - [x] Corrigir erros de TypeScript no projeto
 - [ ] Erro ao salvar exames com valores NaN (Urocultura, e-coli, Fosfomicina) - pendente
+
+
+## Correção de Bugs de Exames Laboratoriais (14/01/2026)
+
+- [x] Fix NaN error when saving Urocultura exam results
+- [ ] Fix green colorization for exam date fields

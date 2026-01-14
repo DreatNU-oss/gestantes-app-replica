@@ -1175,15 +1175,22 @@ export const appRouter = router({
             }
           } else if (typeof valor === 'object' && valor !== null) {
             // Exame com trimestres
-            for (const [trimestre, resultado] of Object.entries(valor)) {
+            for (const [chave, resultado] of Object.entries(valor)) {
+              // Verificar se a chave é um número de trimestre válido (1, 2 ou 3)
+              // Ignorar chaves como "agente_1", "antibiograma_1", "obs_1" etc.
+              const trimestreNum = parseInt(chave);
+              if (isNaN(trimestreNum) || trimestreNum < 1 || trimestreNum > 3) {
+                continue; // Pular chaves que não são trimestres válidos
+              }
+              
               // Validar que o resultado não seja vazio, "?", ou apenas espaços
               if (resultado && resultado.trim() && resultado.trim() !== '?') {
                 // Buscar data específica do trimestre ou data única
                 let dataExame: Date | null = null;
                 if (datasExame) {
-                  if (typeof datasExame === 'object' && datasExame[`data${trimestre}`]) {
+                  if (typeof datasExame === 'object' && datasExame[`data${chave}`]) {
                     // Adicionar T12:00:00 para evitar problema de timezone
-                    const dataStr = datasExame[`data${trimestre}`];
+                    const dataStr = datasExame[`data${chave}`];
                     dataExame = new Date(`${dataStr}T12:00:00`);
                   } else if (typeof datasExame === 'string') {
                     dataExame = new Date(`${datasExame}T12:00:00`);
@@ -1193,7 +1200,7 @@ export const appRouter = router({
                 resultadosParaInserir.push({
                   gestanteId: input.gestanteId,
                   nomeExame,
-                  trimestre: parseInt(trimestre),
+                  trimestre: trimestreNum,
                   resultado,
                   dataExame,
                 });
