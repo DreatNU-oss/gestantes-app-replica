@@ -337,10 +337,60 @@ export async function deleteConsulta(id: number): Promise<void> {
 }
 
 // ============ GESTANTES SEM CONSULTA RECENTE ============
-export async function getGestantesSemConsultaRecente(diasLimite: number = 35): Promise<{
+
+// Função auxiliar para calcular idade gestacional atual
+function calcularIGAtual(gestante: Gestante): { semanas: number; dias: number; totalDias: number } | null {
+  const hoje = new Date();
+  hoje.setHours(12, 0, 0, 0);
+  
+  // Prioridade: Ultrassom > DUM
+  if (gestante.igUltrassomSemanas !== null && gestante.igUltrassomDias !== null && gestante.dataUltrassom) {
+    const dataUS = new Date(gestante.dataUltrassom + 'T12:00:00');
+    const diffMs = hoje.getTime() - dataUS.getTime();
+    const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
+    const totalDias = igUltrassomDias + diasDesdeUS;
+    const semanas = Math.floor(totalDias / 7);
+    const dias = totalDias % 7;
+    return { semanas, dias, totalDias };
+  }
+  
+  // Fallback: DUM
+  if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
+    const dumDate = new Date(gestante.dum + 'T12:00:00');
+    const diffMs = hoje.getTime() - dumDate.getTime();
+    const totalDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const semanas = Math.floor(totalDias / 7);
+    const dias = totalDias % 7;
+    return { semanas, dias, totalDias };
+  }
+  
+  return null;
+}
+
+// Função para determinar o limite de dias sem consulta baseado na IG
+function getLimiteDiasConsulta(igSemanas: number | null): { limite: number; faixa: string } {
+  if (igSemanas === null) {
+    // Se não tem IG, usar limite padrão de 35 dias
+    return { limite: 35, faixa: 'Sem IG' };
+  }
+  
+  if (igSemanas < 34) {
+    return { limite: 35, faixa: 'Até 34 semanas' };
+  } else if (igSemanas >= 34 && igSemanas < 36) {
+    return { limite: 15, faixa: '34-36 semanas' };
+  } else {
+    return { limite: 8, faixa: 'Após 36 semanas' };
+  }
+}
+
+export async function getGestantesSemConsultaRecente(): Promise<{
   gestante: Gestante;
   ultimaConsulta: Date | null;
   diasSemConsulta: number;
+  igAtual: { semanas: number; dias: number; totalDias: number } | null;
+  limiteDias: number;
+  faixaIG: string;
 }[]> {
   const db = await getDb();
   if (!db) return [];
@@ -362,9 +412,18 @@ export async function getGestantesSemConsultaRecente(diasLimite: number = 35): P
     gestante: Gestante;
     ultimaConsulta: Date | null;
     diasSemConsulta: number;
+    igAtual: { semanas: number; dias: number; totalDias: number } | null;
+    limiteDias: number;
+    faixaIG: string;
   }[] = [];
   
   for (const gestante of gestantesAtivas) {
+    // Calcular idade gestacional atual
+    const igAtual = calcularIGAtual(gestante);
+    
+    // Determinar limite de dias baseado na IG
+    const { limite: limiteDias, faixa: faixaIG } = getLimiteDiasConsulta(igAtual?.semanas ?? null);
+    
     // Buscar a consulta mais recente desta gestante
     const consultas = await db.select().from(consultasPrenatal)
       .where(eq(consultasPrenatal.gestanteId, gestante.id))
@@ -387,18 +446,29 @@ export async function getGestantesSemConsultaRecente(diasLimite: number = 35): P
       }
     }
     
-    // Incluir apenas gestantes com mais de X dias sem consulta
-    if (diasSemConsulta >= diasLimite) {
+    // Incluir apenas gestantes com mais de X dias sem consulta (limite dinâmico baseado na IG)
+    if (diasSemConsulta >= limiteDias) {
       resultado.push({
         gestante,
         ultimaConsulta,
-        diasSemConsulta
+        diasSemConsulta,
+        igAtual,
+        limiteDias,
+        faixaIG
       });
     }
   }
   
-  // Ordenar por dias sem consulta (mais tempo primeiro)
-  return resultado.sort((a, b) => b.diasSemConsulta - a.diasSemConsulta);
+  // Ordenar por urgência: primeiro por faixa de IG (mais avançada primeiro), depois por dias sem consulta
+  return resultado.sort((a, b) => {
+    // Prioridade: gestantes com IG mais avançada primeiro
+    const igA = a.igAtual?.semanas ?? 0;
+    const igB = b.igAtual?.semanas ?? 0;
+    if (igB !== igA) return igB - igA;
+    
+    // Dentro da mesma faixa, ordenar por dias sem consulta (mais tempo primeiro)
+    return b.diasSemConsulta - a.diasSemConsulta;
+  });
 }
 
 // ============ EXAMES LABORATORIAIS ============

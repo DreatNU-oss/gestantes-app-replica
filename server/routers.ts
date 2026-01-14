@@ -538,10 +538,9 @@ export const appRouter = router({
       .input(z.object({ gestanteId: z.number() }))
       .query(({ input }) => hasAltoRisco(input.gestanteId)),
     
-    // Alerta de gestantes sem consulta recente
+    // Alerta de gestantes sem consulta recente (limite dinâmico baseado na IG)
     semConsultaRecente: protectedProcedure
-      .input(z.object({ diasLimite: z.number().optional().default(35) }))
-      .query(({ input }) => getGestantesSemConsultaRecente(input.diasLimite)),
+      .query(() => getGestantesSemConsultaRecente()),
   }),
 
   consultasPrenatal: router({

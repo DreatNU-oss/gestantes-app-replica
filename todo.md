@@ -2206,3 +2206,12 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Implementar componente de alerta na página principal (Dashboard)
 - [x] Exibir lista de gestantes com nome e última data de consulta
 - [x] Adicionar link para agendar consulta ou ver detalhes da gestante
+
+
+## Alerta Dinâmico Baseado na Idade Gestacional (Solicitado 14/01/2026)
+
+- [x] Modificar lógica de alerta para considerar idade gestacional
+- [x] Até 34 semanas: alerta após 35 dias sem consulta
+- [x] Entre 34 e 36 semanas: alerta após 15 dias sem consulta
+- [x] Após 36 semanas: alerta após 8 dias sem consulta
+- [x] Exibir informação da idade gestacional e período de alerta no card
