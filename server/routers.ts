@@ -1163,7 +1163,8 @@ export const appRouter = router({
           if (nomeExame === 'outros_observacoes') {
             // Campo de texto livre - salvar como trimestre 0
             if (typeof valor === 'string' && valor.trim()) {
-              const dataExame = typeof datasExame === 'string' ? new Date(datasExame) : null;
+              // Adicionar T12:00:00 para evitar problema de timezone
+              const dataExame = typeof datasExame === 'string' ? new Date(`${datasExame}T12:00:00`) : null;
               resultadosParaInserir.push({
                 gestanteId: input.gestanteId,
                 nomeExame,
@@ -1181,9 +1182,11 @@ export const appRouter = router({
                 let dataExame: Date | null = null;
                 if (datasExame) {
                   if (typeof datasExame === 'object' && datasExame[`data${trimestre}`]) {
-                    dataExame = new Date(datasExame[`data${trimestre}`]);
+                    // Adicionar T12:00:00 para evitar problema de timezone
+                    const dataStr = datasExame[`data${trimestre}`];
+                    dataExame = new Date(`${dataStr}T12:00:00`);
                   } else if (typeof datasExame === 'string') {
-                    dataExame = new Date(datasExame);
+                    dataExame = new Date(`${datasExame}T12:00:00`);
                   }
                 }
                 
@@ -1262,7 +1265,15 @@ export const appRouter = router({
             
             // Adicionar data do trimestre se existir
             if (resultado.dataExame) {
-              const dataFormatada = new Date(resultado.dataExame).toISOString().split('T')[0];
+              // Usar toLocaleDateString para evitar problema de timezone
+              // Criar data com hora ao meio-dia para evitar mudança de dia
+              const data = new Date(resultado.dataExame);
+              // Ajustar para timezone local adicionando o offset
+              const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+              const ano = dataLocal.getFullYear();
+              const mes = String(dataLocal.getMonth() + 1).padStart(2, '0');
+              const dia = String(dataLocal.getDate()).padStart(2, '0');
+              const dataFormatada = `${ano}-${mes}-${dia}`;
               (resultadosEstruturados[resultado.nomeExame] as Record<string, string>)[`data${resultado.trimestre}`] = dataFormatada;
             }
           }

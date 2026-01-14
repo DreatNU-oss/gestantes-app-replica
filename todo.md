@@ -2303,3 +2303,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] IgG positivo (Reagente) deve ficar verde (indica imunidade)
 - [x] IgM positivo (Reagente) deve ficar vermelho (indica infecção recente)
 - [x] Outros exames sorológicos (HIV, Hepatites) mantêm vermelho quando reagente
+
+## Bug Fix - Data dos Exames Mudando (Solicitado 14/01/2026)
+
+- [x] Corrigir bug de fuso horário onde data 03/10/2025 muda para 02/10/2025 ao recarregar
+- [x] Adicionar T12:00:00 ao salvar datas para evitar mudança de dia
+- [x] Ajustar leitura de datas para compensar timezone
