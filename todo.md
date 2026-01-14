@@ -2240,3 +2240,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Ajuste de Limite de Alerta (Solicitado 14/01/2026)
 
 - [x] Alterar limite de 35 dias para 40 dias para gestantes com até 34 semanas
+
+## Exibição de Gestantes no Alerta (Solicitado 14/01/2026)
+
+- [x] Mostrar todas as gestantes na lista de alertas (remover limite de 5)

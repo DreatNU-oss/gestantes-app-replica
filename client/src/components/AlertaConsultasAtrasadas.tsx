@@ -234,7 +234,7 @@ export function AlertaConsultasAtrasadas() {
                   <span className="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
                   Até 34 semanas (limite: 40 dias)
                 </h4>
-                {gestantesPorFaixa['Até 34 semanas'].slice(0, 5).map((item: GestanteAlerta) => 
+                {gestantesPorFaixa['Até 34 semanas'].map((item: GestanteAlerta) => 
                   renderGestanteCard(
                     item, 
                     "border-yellow-200", 
@@ -243,11 +243,7 @@ export function AlertaConsultasAtrasadas() {
                   )
                 )}
                 
-                {gestantesPorFaixa['Até 34 semanas'].length > 5 && (
-                  <p className="text-sm text-yellow-700 text-center pt-2">
-                    E mais {gestantesPorFaixa['Até 34 semanas'].length - 5} gestante(s) nesta faixa...
-                  </p>
-                )}
+                
               </div>
             )}
           </div>
