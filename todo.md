@@ -2309,3 +2309,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Corrigir bug de fuso horário onde data 03/10/2025 muda para 02/10/2025 ao recarregar
 - [x] Adicionar T12:00:00 ao salvar datas para evitar mudança de dia
 - [x] Ajustar leitura de datas para compensar timezone
+
+## Diferenciação Visual de Datas de Exames (Solicitado 14/01/2026)
+
+- [x] Datas de exames não preenchidos: fundo branco
+- [x] Datas de exames preenchidos: fundo verde (mesmo verde dos resultados normais)

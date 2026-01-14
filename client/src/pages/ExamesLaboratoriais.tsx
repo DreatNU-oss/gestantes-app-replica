@@ -750,7 +750,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data1", e.target.value)
                       }
-                      className="w-full text-xs"
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
@@ -782,7 +782,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data2", e.target.value)
                       }
-                      className="w-full text-xs"
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
@@ -814,7 +814,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data3", e.target.value)
                       }
-                      className="w-full text-xs"
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
@@ -856,7 +856,7 @@ export default function ExamesLaboratoriais() {
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data1", e.target.value)
                 }
-                className="w-full text-xs"
+                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["1"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />
             </div>
@@ -886,7 +886,7 @@ export default function ExamesLaboratoriais() {
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data2", e.target.value)
                 }
-                className="w-full text-xs"
+                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["2"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />
             </div>
@@ -916,7 +916,7 @@ export default function ExamesLaboratoriais() {
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data3", e.target.value)
                 }
-                className="w-full text-xs"
+                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["3"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />
             </div>
