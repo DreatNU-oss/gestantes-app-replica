@@ -2259,3 +2259,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar campo de data prevista da consulta no schema
 - [x] Atualizar modal de justificativa para mostrar campo de data quando "já agendada" for selecionado
 - [x] Modificar lógica de expiração para usar a data prevista ao invés de 5 dias fixos
+
+## Justificativa Temporária para "Espaço Maior" (Solicitado 14/01/2026)
+
+- [x] Tornar justificativa "espaco_maior_consultas" temporária com campo de data prevista

@@ -101,8 +101,8 @@ export function AlertaConsultasAtrasadas() {
       return;
     }
 
-    // Validar data prevista se motivo for "ja_agendada"
-    if (motivoSelecionado === 'ja_agendada' && !dataPrevistaConsulta) {
+    // Validar data prevista para justificativas temporárias
+    if ((motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') && !dataPrevistaConsulta) {
       toast.error("Informe a data prevista da consulta");
       return;
     }
@@ -110,7 +110,7 @@ export function AlertaConsultasAtrasadas() {
     criarJustificativaMutation.mutate({
       gestanteId: gestanteSelecionada.gestante.id,
       motivo: motivoSelecionado,
-      dataPrevistaConsulta: motivoSelecionado === 'ja_agendada' ? dataPrevistaConsulta : undefined,
+      dataPrevistaConsulta: (motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') ? dataPrevistaConsulta : undefined,
       observacoes: observacoes || undefined
     });
   };
@@ -294,8 +294,8 @@ export function AlertaConsultasAtrasadas() {
               </Select>
             </div>
 
-            {/* Campo de data prevista - aparece apenas quando "ja_agendada" é selecionado */}
-            {motivoSelecionado === 'ja_agendada' && (
+            {/* Campo de data prevista - aparece para justificativas temporárias */}
+            {(motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') && (
               <div className="space-y-2">
                 <Label htmlFor="dataPrevista">Data Prevista da Consulta *</Label>
                 <input
