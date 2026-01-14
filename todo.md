@@ -2244,3 +2244,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Exibição de Gestantes no Alerta (Solicitado 14/01/2026)
 
 - [x] Mostrar todas as gestantes na lista de alertas (remover limite de 5)
+
+## Bug Fix - Gestante Excluída no Alerta (Solicitado 14/01/2026)
+
+- [x] Gestante excluída da lista principal deve sair automaticamente da lista de alertas

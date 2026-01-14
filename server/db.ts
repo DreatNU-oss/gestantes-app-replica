@@ -193,6 +193,10 @@ export async function deleteGestante(id: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
+  // Excluir justificativas associadas à gestante
+  await db.delete(justificativasAlerta).where(eq(justificativasAlerta.gestanteId, id));
+  
+  // Excluir a gestante
   await db.delete(gestantes).where(eq(gestantes.id, id));
 }
 

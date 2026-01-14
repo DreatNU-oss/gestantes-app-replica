@@ -101,6 +101,7 @@ export default function Dashboard() {
     onSuccess: () => {
       toast.success("Gestante removida com sucesso!");
       utils.gestantes.list.invalidate();
+      utils.gestantes.semConsultaRecente.invalidate();
     },
     onError: (error) => {
       toast.error("Erro ao remover gestante: " + error.message);
