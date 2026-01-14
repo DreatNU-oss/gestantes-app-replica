@@ -41,6 +41,7 @@ import { Label } from "@/components/ui/label";
 import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
+import { AlertaConsultasAtrasadas } from "@/components/AlertaConsultasAtrasadas";
 import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import AltoRiscoBadge from "@/components/AltoRiscoBadge";
@@ -365,6 +366,9 @@ export default function Dashboard() {
             onRegistrarParto={handleRegistrarParto}
           />
         )}
+
+        {/* Alerta de Consultas Atrasadas */}
+        <AlertaConsultasAtrasadas />
 
         {/* Tabela de Gestantes */}
         <Card>

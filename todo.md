@@ -2197,3 +2197,12 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Localizar onde o botão "Interpretar com IA" está atualmente renderizado
 - [x] Mover para a parte superior da página, junto com as barras de ação em lote
 - [x] Manter a funcionalidade intacta após a mudança de posição
+
+
+## Alerta de Gestantes sem Consulta nos Últimos 35 Dias (Solicitado 14/01/2026)
+
+- [x] Verificar estrutura de dados de consultas no banco de dados
+- [x] Criar query para identificar gestantes sem consulta nos últimos 35 dias
+- [x] Implementar componente de alerta na página principal (Dashboard)
+- [x] Exibir lista de gestantes com nome e última data de consulta
+- [x] Adicionar link para agendar consulta ou ver detalhes da gestante

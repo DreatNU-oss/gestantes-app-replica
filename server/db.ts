@@ -336,6 +336,71 @@ export async function deleteConsulta(id: number): Promise<void> {
   await db.delete(consultasPrenatal).where(eq(consultasPrenatal.id, id));
 }
 
+// ============ GESTANTES SEM CONSULTA RECENTE ============
+export async function getGestantesSemConsultaRecente(diasLimite: number = 35): Promise<{
+  gestante: Gestante;
+  ultimaConsulta: Date | null;
+  diasSemConsulta: number;
+}[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  // Buscar todas as gestantes
+  const todasGestantes = await db.select().from(gestantes);
+  
+  // Buscar IDs das gestantes que já tiveram parto
+  const partosRealizadosData = await db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
+  const gestantesComParto = new Set(partosRealizadosData.map(p => p.gestanteId));
+  
+  // Filtrar apenas gestantes ativas (sem parto realizado)
+  const gestantesAtivas = todasGestantes.filter(g => !gestantesComParto.has(g.id));
+  
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  const resultado: {
+    gestante: Gestante;
+    ultimaConsulta: Date | null;
+    diasSemConsulta: number;
+  }[] = [];
+  
+  for (const gestante of gestantesAtivas) {
+    // Buscar a consulta mais recente desta gestante
+    const consultas = await db.select().from(consultasPrenatal)
+      .where(eq(consultasPrenatal.gestanteId, gestante.id))
+      .orderBy(desc(consultasPrenatal.dataConsulta))
+      .limit(1);
+    
+    let ultimaConsulta: Date | null = null;
+    let diasSemConsulta = Infinity;
+    
+    if (consultas.length > 0 && consultas[0].dataConsulta) {
+      ultimaConsulta = new Date(consultas[0].dataConsulta);
+      ultimaConsulta.setHours(0, 0, 0, 0);
+      diasSemConsulta = Math.floor((hoje.getTime() - ultimaConsulta.getTime()) / (1000 * 60 * 60 * 24));
+    } else {
+      // Se nunca teve consulta, considerar a data de cadastro
+      if (gestante.createdAt) {
+        const dataCadastro = new Date(gestante.createdAt);
+        dataCadastro.setHours(0, 0, 0, 0);
+        diasSemConsulta = Math.floor((hoje.getTime() - dataCadastro.getTime()) / (1000 * 60 * 60 * 24));
+      }
+    }
+    
+    // Incluir apenas gestantes com mais de X dias sem consulta
+    if (diasSemConsulta >= diasLimite) {
+      resultado.push({
+        gestante,
+        ultimaConsulta,
+        diasSemConsulta
+      });
+    }
+  }
+  
+  // Ordenar por dias sem consulta (mais tempo primeiro)
+  return resultado.sort((a, b) => b.diasSemConsulta - a.diasSemConsulta);
+}
+
 // ============ EXAMES LABORATORIAIS ============
 export async function createExameLaboratorial(data: InsertExameLaboratorial): Promise<ExameLaboratorial> {
   const db = await getDb();

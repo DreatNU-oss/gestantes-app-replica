@@ -58,7 +58,8 @@ import {
   getMedicamentosByGestanteId,
   createMedicamento,
   updateMedicamento,
-  deleteMedicamento
+  deleteMedicamento,
+  getGestantesSemConsultaRecente
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -536,6 +537,11 @@ export const appRouter = router({
     hasAltoRisco: protectedProcedure
       .input(z.object({ gestanteId: z.number() }))
       .query(({ input }) => hasAltoRisco(input.gestanteId)),
+    
+    // Alerta de gestantes sem consulta recente
+    semConsultaRecente: protectedProcedure
+      .input(z.object({ diasLimite: z.number().optional().default(35) }))
+      .query(({ input }) => getGestantesSemConsultaRecente(input.diasLimite)),
   }),
 
   consultasPrenatal: router({
