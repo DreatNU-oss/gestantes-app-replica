@@ -524,6 +524,7 @@ export const justificativasAlerta = mysqlTable("justificativasAlerta", {
     "evoluiu_parto",
     "espaco_maior_consultas"
   ]).notNull(),
+  dataPrevistaConsulta: date("dataPrevistaConsulta"), // Data prevista da consulta (usado quando motivo = ja_agendada)
   observacoes: text("observacoes"),
   ativo: int("ativo").default(1).notNull(), // 1 = ativo (excluir do alerta), 0 = inativo (voltar ao alerta)
   criadoPor: int("criadoPor"), // ID do usuário que criou

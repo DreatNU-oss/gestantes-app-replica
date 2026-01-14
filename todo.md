@@ -2253,3 +2253,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Justificativa "Paciente já está agendada" deve ser temporária (5 dias)
 - [x] Após 5 dias, se não houver consulta registrada, gestante volta para lista de alertas
+
+## Campo de Data Prevista na Justificativa (Solicitado 14/01/2026)
+
+- [x] Adicionar campo de data prevista da consulta no schema
+- [x] Atualizar modal de justificativa para mostrar campo de data quando "já agendada" for selecionado
+- [x] Modificar lógica de expiração para usar a data prevista ao invés de 5 dias fixos

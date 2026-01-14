@@ -421,12 +421,19 @@ export async function getGestantesSemConsultaRecente(): Promise<{
   const gestantesComJustificativa = new Set(
     justificativasData
       .filter(j => {
-        // Se a justificativa é "ja_agendada", ela expira após 5 dias
+        // Se a justificativa é "ja_agendada", verificar se ainda é válida
         if (j.motivo === 'ja_agendada') {
+          // Se tem data prevista da consulta, usar ela como referência
+          if (j.dataPrevistaConsulta) {
+            const dataPrevista = new Date(j.dataPrevistaConsulta);
+            dataPrevista.setHours(0, 0, 0, 0);
+            // A justificativa expira no dia seguinte à data prevista
+            return hoje.getTime() <= dataPrevista.getTime();
+          }
+          // Se não tem data prevista, usar 5 dias a partir da criação (fallback)
           const dataJustificativa = new Date(j.createdAt);
           dataJustificativa.setHours(0, 0, 0, 0);
           const diasDesdeJustificativa = Math.floor((hoje.getTime() - dataJustificativa.getTime()) / (1000 * 60 * 60 * 24));
-          // Se passou mais de 5 dias, a justificativa não é mais válida
           return diasDesdeJustificativa <= 5;
         }
         // Outras justificativas são permanentes

@@ -218,6 +218,13 @@
       "when": 1768352515831,
       "tag": "0030_cooing_the_anarchist",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1768355948433,
+      "tag": "0031_lonely_scorpion",
+      "breakpoints": true
     }
   ]
 }

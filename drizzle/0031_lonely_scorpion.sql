@@ -1,0 +1,1 @@
+ALTER TABLE `justificativasAlerta` ADD `dataPrevistaConsulta` date;

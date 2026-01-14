@@ -51,6 +51,7 @@ export function AlertaConsultasAtrasadas() {
   const [modalAberto, setModalAberto] = useState(false);
   const [gestanteSelecionada, setGestanteSelecionada] = useState<GestanteAlerta | null>(null);
   const [motivoSelecionado, setMotivoSelecionado] = useState<MotivoJustificativa | "">("");
+  const [dataPrevistaConsulta, setDataPrevistaConsulta] = useState("");
   const [observacoes, setObservacoes] = useState("");
   
   const utils = trpc.useUtils();
@@ -63,6 +64,7 @@ export function AlertaConsultasAtrasadas() {
       setModalAberto(false);
       setGestanteSelecionada(null);
       setMotivoSelecionado("");
+      setDataPrevistaConsulta("");
       setObservacoes("");
       utils.gestantes.semConsultaRecente.invalidate();
     },
@@ -88,6 +90,7 @@ export function AlertaConsultasAtrasadas() {
   const handleAbrirModal = (gestante: GestanteAlerta) => {
     setGestanteSelecionada(gestante);
     setMotivoSelecionado("");
+    setDataPrevistaConsulta("");
     setObservacoes("");
     setModalAberto(true);
   };
@@ -98,9 +101,16 @@ export function AlertaConsultasAtrasadas() {
       return;
     }
 
+    // Validar data prevista se motivo for "ja_agendada"
+    if (motivoSelecionado === 'ja_agendada' && !dataPrevistaConsulta) {
+      toast.error("Informe a data prevista da consulta");
+      return;
+    }
+
     criarJustificativaMutation.mutate({
       gestanteId: gestanteSelecionada.gestante.id,
       motivo: motivoSelecionado,
+      dataPrevistaConsulta: motivoSelecionado === 'ja_agendada' ? dataPrevistaConsulta : undefined,
       observacoes: observacoes || undefined
     });
   };
@@ -283,6 +293,24 @@ export function AlertaConsultasAtrasadas() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Campo de data prevista - aparece apenas quando "ja_agendada" é selecionado */}
+            {motivoSelecionado === 'ja_agendada' && (
+              <div className="space-y-2">
+                <Label htmlFor="dataPrevista">Data Prevista da Consulta *</Label>
+                <input
+                  type="date"
+                  id="dataPrevista"
+                  value={dataPrevistaConsulta}
+                  onChange={(e) => setDataPrevistaConsulta(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  min={new Date().toISOString().split('T')[0]}
+                />
+                <p className="text-xs text-muted-foreground">
+                  A gestante voltará para a lista de alertas após esta data se não houver consulta registrada.
+                </p>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="observacoes">Observações (opcional)</Label>

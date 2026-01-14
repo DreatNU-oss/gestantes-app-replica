@@ -557,9 +557,17 @@ export const appRouter = router({
           "evoluiu_parto",
           "espaco_maior_consultas"
         ]),
+        dataPrevistaConsulta: z.string().optional(), // Data prevista da consulta (formato YYYY-MM-DD)
         observacoes: z.string().optional()
       }))
-      .mutation(({ input }) => createJustificativa(input)),
+      .mutation(({ input }) => {
+        const data: any = { ...input };
+        // Converter string para Date se fornecida
+        if (data.dataPrevistaConsulta) {
+          data.dataPrevistaConsulta = new Date(data.dataPrevistaConsulta + 'T00:00:00');
+        }
+        return createJustificativa(data);
+      }),
     
     buscarJustificativa: protectedProcedure
       .input(z.object({ gestanteId: z.number() }))
