@@ -269,7 +269,7 @@ export function GraficoPeso({ consultas, altura, pesoInicial, metodoCalculo }: G
             strokeWidth={3}
             dot={(props: any) => {
               const { cx, cy, payload, onMouseEnter, onMouseLeave } = props;
-              if (!payload.pesoReal) return null;
+              if (!payload.pesoReal) return <circle key={`empty-${payload?.semana || Math.random()}`} cx={0} cy={0} r={0} />;
               
               // Determinar cor do ponto baseado na posição
               let corPonto = cor.linha; // verde/azul padrão

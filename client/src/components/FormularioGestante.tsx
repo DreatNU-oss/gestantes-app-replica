@@ -104,7 +104,7 @@ export default function FormularioGestante({
   });
 
   // Auto-save hook (500ms padrão)
-  const { lastSaved, saveDraft, loadDraft, clearDraft } = useAutoSave(
+  const { savedAt, loadDraft, clearDraft } = useAutoSave(
     `formulario-gestante-${gestanteId || 'novo'}`,
     { ...formData, tipoDUM }
   );
@@ -115,7 +115,7 @@ export default function FormularioGestante({
   useInstantSave(`gestante-dum-${gestanteId || 'novo'}`, formData.dum);
   
   // Formatar timestamp para exibição
-  const lastSavedFormatted = lastSaved ? new Date(lastSaved).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+  const lastSavedFormatted = savedAt ? new Date(savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
 
   const { data: gestante } = trpc.gestantes.get.useQuery(
     { id: gestanteId! },
@@ -350,7 +350,7 @@ export default function FormularioGestante({
         nome: gestante.nome || "",
         telefone: gestante.telefone || "",
         email: gestante.email || "",
-        dataNascimento: gestante.dataNascimento ? (typeof gestante.dataNascimento === 'string' ? gestante.dataNascimento : gestante.dataNascimento.toISOString().split('T')[0]) : "",
+        dataNascimento: gestante.dataNascimento ? (typeof gestante.dataNascimento === 'string' ? gestante.dataNascimento : (gestante.dataNascimento as Date).toISOString().split('T')[0]) : "",
         planoSaudeId: gestante.planoSaudeId?.toString() || "",
         carteirinhaUnimed: gestante.carteirinhaUnimed || "",
         medicoId: gestante.medicoId?.toString() || "",
@@ -360,11 +360,11 @@ export default function FormularioGestante({
         partosNormais: gestante.partosNormais?.toString() || "",
         cesareas: gestante.cesareas?.toString() || "",
         abortos: gestante.abortos?.toString() || "",
-        dum: (gestante.dum === "Incerta" || gestante.dum === "Incompatível com US") ? "" : (gestante.dum ? (typeof gestante.dum === 'string' ? gestante.dum : gestante.dum.toISOString().split('T')[0]) : ""),
+        dum: (gestante.dum === "Incerta" || gestante.dum === "Incompatível com US") ? "" : (gestante.dum ? (typeof gestante.dum === 'string' ? gestante.dum : (gestante.dum as Date).toISOString().split('T')[0]) : ""),
         igUltrassomSemanas: gestante.igUltrassomSemanas?.toString() || "",
         igUltrassomDias: gestante.igUltrassomDias?.toString() || "",
-        dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom.toISOString().split('T')[0]) : "",
-        dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : gestante.dataPartoProgramado.toISOString().split('T')[0]) : "",
+        dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : (gestante.dataUltrassom as Date).toISOString().split('T')[0]) : "",
+        dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "",
         observacoes: gestante.observacoes || "",
         altura: gestante.altura?.toString() || "",
         pesoInicial: gestante.pesoInicial ? (gestante.pesoInicial / 1000).toFixed(1) : "", // converter gramas para kg

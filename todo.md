@@ -2337,3 +2337,11 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Atualizar prompt da IA com instruções mais detalhadas para classificação
 - [x] Adicionar categorias organizadas: Hemograma, Sorologias, Bioquímica, Urina/Fezes, Tipagem, Curva Glicêmica, Estreptococo
 - [x] Incluir mapeamento de variações de nomes para nomes padronizados
+
+## Bug Fix - Coloração Verde nos Campos de Data (Solicitado 14/01/2026)
+
+- [x] Corrigir campos de data que não estão ficando verdes quando o resultado do exame está preenchido
+- [x] Anti-HBs deve ficar verde tanto quando Reagente quanto Não Reagente
+- [x] Campos de resultado (HIV, etc.) não estão ficando verdes quando preenchidos
+- [x] Corrigir erros de TypeScript no projeto
+- [ ] Erro ao salvar exames com valores NaN (Urocultura, e-coli, Fosfomicina) - pendente

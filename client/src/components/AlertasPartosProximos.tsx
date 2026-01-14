@@ -128,7 +128,7 @@ export function AlertasPartosProximos({
       dataUS.setHours(0, 0, 0, 0);
       // Correção: subtrair 1 dia para não contar o dia do ultrassom
       const diasDesdeUS = Math.floor((hoje.getTime() - dataUS.getTime()) / (1000 * 60 * 60 * 24));
-      const diasGestacaoUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
+      const diasGestacaoUS = ((gestante.igUltrassomSemanas ?? 0) * 7) + (gestante.igUltrassomDias || 0);
       // Subtrair 1 dia do total para corrigir contagem inclusiva
       return diasGestacaoUS + diasDesdeUS - 1;
     }

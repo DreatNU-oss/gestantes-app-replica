@@ -661,6 +661,7 @@ export default function ExamesLaboratoriais() {
     // Renderizar Select para exames sorológicos
     if (ehSorologico) {
       const ehReagente = valor === "Reagente";
+      const ehNaoReagente = valor === "Não Reagente";
       const ehIndeterminado = valor === "Indeterminado";
       
       // Determinar se é IgG ou IgM para definir a cor quando reagente
@@ -668,18 +669,23 @@ export default function ExamesLaboratoriais() {
       // IgM reagente = vermelho (indica infecção recente, é preocupante)
       const ehIgG = nomeExame.includes('IgG');
       const ehIgM = nomeExame.includes('IgM');
+      const ehAntiHBs = nomeExame.includes('Anti-HBs');
       
-      // Definir classes de cor baseado no tipo de exame
-      let corReagente = '';
+      // Definir classes de cor baseado no tipo de exame e resultado
+      let corResultado = '';
       if (ehReagente) {
-        if (ehIgG) {
-          corReagente = 'border-green-500 bg-green-50 text-green-900';
+        if (ehIgG || ehAntiHBs) {
+          // IgG reagente ou Anti-HBs reagente = verde (indica imunidade)
+          corResultado = 'border-green-500 bg-green-50 text-green-900';
         } else if (ehIgM) {
-          corReagente = 'border-red-500 bg-red-50 text-red-900';
+          corResultado = 'border-red-500 bg-red-50 text-red-900';
         } else {
           // Para outros exames sorológicos (HIV, Hepatites, etc), manter vermelho
-          corReagente = 'border-red-500 bg-red-50 text-red-900';
+          corResultado = 'border-red-500 bg-red-50 text-red-900';
         }
+      } else if (ehNaoReagente) {
+        // Não Reagente = verde (resultado normal/bom para a maioria dos exames)
+        corResultado = 'border-green-500 bg-green-50 text-green-900';
       }
       
       // Handler para atalhos numéricos: 1=Reagente, 2=Não Reagente, 3=Indeterminado
@@ -702,7 +708,7 @@ export default function ExamesLaboratoriais() {
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
           <SelectTrigger 
-            className={`w-full ${corReagente} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
+            className={`w-full ${corResultado} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
             onKeyDown={handleKeyDownSorologico}
             title="Atalhos: 1=Reagente, 2=Não Reagente, 3=Indeterminado"
           >
@@ -750,7 +756,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data1", e.target.value)
                       }
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_1`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
@@ -782,7 +788,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data2", e.target.value)
                       }
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_2`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
@@ -814,7 +820,7 @@ export default function ExamesLaboratoriais() {
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data3", e.target.value)
                       }
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
+                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_3`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
 
