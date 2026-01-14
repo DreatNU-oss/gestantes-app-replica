@@ -2292,3 +2292,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Investigar por que Letícia Celeste e Wanna não saíram da lista após justificativa
 - [x] Verificar se justificativas estão sendo salvas no banco - tabela não existia em produção
 - [x] Criar tabela justificativasAlerta no banco de produção
+
+## Bug Fix - Erro ao Salvar Exames (Solicitado 14/01/2026)
+
+- [x] Corrigir erro de validação "Invalid input: expected string, received undefined" ao salvar exames
+- [x] Tratar campos de data vazios corretamente - filtrar valores undefined/null antes de enviar

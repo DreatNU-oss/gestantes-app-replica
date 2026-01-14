@@ -215,14 +215,28 @@ export default function ExamesLaboratoriais() {
       if (typeof valor === 'object' && valor !== null) {
         const { data1, data2, data3, ...resto } = valor;
         
-        // Salvar datas separadamente
-        if (data1 || data2 || data3) {
-          datas[nomeExame] = { data1, data2, data3 };
+        // Salvar datas separadamente - apenas se tiverem valor válido (não undefined/null/vazio)
+        const datasValidas: { data1?: string; data2?: string; data3?: string } = {};
+        if (data1 && typeof data1 === 'string' && data1.trim()) datasValidas.data1 = data1;
+        if (data2 && typeof data2 === 'string' && data2.trim()) datasValidas.data2 = data2;
+        if (data3 && typeof data3 === 'string' && data3.trim()) datasValidas.data3 = data3;
+        
+        if (Object.keys(datasValidas).length > 0) {
+          datas[nomeExame] = datasValidas;
         }
         
-        // Remover campos de data dos resultados
-        resultadosLimpos[nomeExame] = resto;
-      } else {
+        // Remover campos de data e valores undefined/null dos resultados
+        const restoLimpo: Record<string, string> = {};
+        for (const [key, val] of Object.entries(resto)) {
+          if (val !== undefined && val !== null && typeof val === 'string') {
+            restoLimpo[key] = val;
+          }
+        }
+        
+        if (Object.keys(restoLimpo).length > 0) {
+          resultadosLimpos[nomeExame] = restoLimpo;
+        }
+      } else if (valor !== undefined && valor !== null) {
         resultadosLimpos[nomeExame] = valor;
       }
     }
