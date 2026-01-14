@@ -2280,3 +2280,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Bug Fix - POST em Queries tRPC (Solicitado 14/01/2026)
 
 - [x] Corrigir erro "Unsupported POST-request to query procedure" - adicionado allowMethodOverride: true no servidor
+
+## Bug Fix - Erro removeChild no Site Publicado (Solicitado 14/01/2026)
+
+- [x] Investigar erro "NotFoundError: Failed to execute 'removeChild' on 'Node'" - causado por extensões do navegador/Google Translate
+- [x] Adicionar meta tag para desabilitar tradução automática
+- [x] Melhorar ErrorBoundary com mensagem específica para esse erro
