@@ -2176,3 +2176,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Identificar onde as cores do sidebar foram alteradas para branco
 - [x] Restaurar cor bege/creme original do sidebar e fundo da logo
 - [x] Verificar se a mudança afetou outras partes da interface
+
+
+## Melhorias no Modal de Preenchimento em Lote e Remoção de Ícones (Solicitado 14/01/2026)
+
+- [x] Adicionar checkboxes no modal para selecionar quais exames incluir no lote
+- [x] Permitir marcar/desmarcar exames individualmente antes de definir resultado
+- [x] Remover ícones de "Alterar" abaixo de Data 1º, 2º e 3º trimestre (sem função)

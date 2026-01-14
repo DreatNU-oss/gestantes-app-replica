@@ -87,6 +87,8 @@ export default function ExamesLaboratoriais() {
   const [trimestrePreenchimentoLote, setTrimestrePreenchimentoLote] = useState<1 | 2 | 3>(1);
   // Mapa de exame -> valor selecionado ("normal" ou "alterado")
   const [selecaoExamesLote, setSelecaoExamesLote] = useState<Record<string, "normal" | "alterado">>({});
+  // Set de exames selecionados para incluir no lote
+  const [examesSelecionadosLote, setExamesSelecionadosLote] = useState<Set<string>>(new Set());
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -292,15 +294,18 @@ export default function ExamesLaboratoriais() {
       return;
     }
     
-    // Inicializar seleção com todos como "normal"
+    // Inicializar seleção com todos como "normal" e todos selecionados
     const examesQualitativos = obterExamesQualitativos(trimestre);
     const selecaoInicial: Record<string, "normal" | "alterado"> = {};
+    const examesSelecionadosInicial = new Set<string>();
     
     for (const exame of examesQualitativos) {
       selecaoInicial[exame.nome] = "normal";
+      examesSelecionadosInicial.add(exame.nome);
     }
     
     setSelecaoExamesLote(selecaoInicial);
+    setExamesSelecionadosLote(examesSelecionadosInicial);
     setTrimestrePreenchimentoLote(trimestre);
     setModalPreenchimentoLoteAberto(true);
   };
@@ -313,6 +318,9 @@ export default function ExamesLaboratoriais() {
     const chave = trimestrePreenchimentoLote.toString();
     
     for (const exame of examesQualitativos) {
+      // Só preencher exames que estão selecionados (checkbox marcado)
+      if (!examesSelecionadosLote.has(exame.nome)) continue;
+      
       const selecao = selecaoExamesLote[exame.nome];
       if (!selecao) continue;
       
@@ -332,6 +340,8 @@ export default function ExamesLaboratoriais() {
     
     if (contadorPreenchidos > 0) {
       toast.success(`${contadorPreenchidos} exames preenchidos no ${trimestrePreenchimentoLote}º trimestre`);
+    } else {
+      toast.info('Nenhum exame selecionado para preencher');
     }
   };
 
@@ -345,6 +355,33 @@ export default function ExamesLaboratoriais() {
     }
     
     setSelecaoExamesLote(novaSelecao);
+  };
+  
+  // Função para selecionar/desselecionar todos os exames no modal
+  const toggleSelecionarTodosExames = () => {
+    const examesQualitativos = obterExamesQualitativos(trimestrePreenchimentoLote);
+    const todosNomes = examesQualitativos.map(e => e.nome);
+    
+    if (examesSelecionadosLote.size === todosNomes.length) {
+      // Se todos estão selecionados, desselecionar todos
+      setExamesSelecionadosLote(new Set());
+    } else {
+      // Senão, selecionar todos
+      setExamesSelecionadosLote(new Set(todosNomes));
+    }
+  };
+  
+  // Função para toggle de um exame específico
+  const toggleExameSelecionado = (nomeExame: string) => {
+    setExamesSelecionadosLote(prev => {
+      const novoSet = new Set(prev);
+      if (novoSet.has(nomeExame)) {
+        novoSet.delete(nomeExame);
+      } else {
+        novoSet.add(nomeExame);
+      }
+      return novoSet;
+    });
   };
 
   // Função para obter a primeira data preenchida de um trimestre
@@ -945,47 +982,11 @@ export default function ExamesLaboratoriais() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-1/6">Exame</TableHead>
-              <TableHead className="text-center w-1/12">
-                <div className="flex flex-col items-center gap-1">
-                  <span>Data 1º Tri</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-xs"
-                    onClick={() => setTrimestreEdicao(1)}
-                  >
-                    Alterar
-                  </Button>
-                </div>
-              </TableHead>
+              <TableHead className="text-center w-1/12">Data 1º Tri</TableHead>
               <TableHead className="text-center w-1/6">Resultado 1º Tri</TableHead>
-              <TableHead className="text-center w-1/12">
-                <div className="flex flex-col items-center gap-1">
-                  <span>Data 2º Tri</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-xs"
-                    onClick={() => setTrimestreEdicao(2)}
-                  >
-                    Alterar
-                  </Button>
-                </div>
-              </TableHead>
+              <TableHead className="text-center w-1/12">Data 2º Tri</TableHead>
               <TableHead className="text-center w-1/6">Resultado 2º Tri</TableHead>
-              <TableHead className="text-center w-1/12">
-                <div className="flex flex-col items-center gap-1">
-                  <span>Data 3º Tri</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-xs"
-                    onClick={() => setTrimestreEdicao(3)}
-                  >
-                    Alterar
-                  </Button>
-                </div>
-              </TableHead>
+              <TableHead className="text-center w-1/12">Data 3º Tri</TableHead>
               <TableHead className="text-center w-1/6">Resultado 3º Tri</TableHead>
             </TableRow>
           </TableHeader>
@@ -1327,12 +1328,23 @@ export default function ExamesLaboratoriais() {
             <DialogHeader>
               <DialogTitle>Preencher Exames Qualitativos - {trimestrePreenchimentoLote}º Trimestre</DialogTitle>
               <DialogDescription>
-                Selecione o resultado para cada exame. Use os botões abaixo para marcar todos de uma vez.
+                Marque os exames que deseja incluir e escolha o resultado para cada um.
               </DialogDescription>
             </DialogHeader>
             
-            {/* Botões de Marcar Todos */}
-            <div className="flex gap-3 py-3 border-b">
+            {/* Botões de Ação em Lote */}
+            <div className="flex flex-wrap gap-3 py-3 border-b">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSelecionarTodosExames}
+              >
+                {examesSelecionadosLote.size === obterExamesQualitativos(trimestrePreenchimentoLote).length 
+                  ? "Desmarcar Todos" 
+                  : "Selecionar Todos"
+                }
+              </Button>
+              <div className="border-l mx-2" />
               <Button
                 variant="outline"
                 size="sm"
@@ -1340,7 +1352,7 @@ export default function ExamesLaboratoriais() {
                 onClick={() => marcarTodosNoModal("normal")}
               >
                 <Check className="mr-2 h-4 w-4" />
-                Marcar Todos Normal/Negativo
+                Todos Normal/Negativo
               </Button>
               <Button
                 variant="outline"
@@ -1348,61 +1360,83 @@ export default function ExamesLaboratoriais() {
                 className="bg-red-50 hover:bg-red-100 border-red-300 text-red-700"
                 onClick={() => marcarTodosNoModal("alterado")}
               >
-                Marcar Todos Alterado/Positivo
+                Todos Alterado/Positivo
               </Button>
             </div>
             
-            {/* Lista de Exames */}
+            {/* Lista de Exames com Checkboxes */}
             <div className="space-y-2 py-4">
-              {obterExamesQualitativos(trimestrePreenchimentoLote).map((exame) => (
-                <div 
-                  key={exame.nome} 
-                  className={`flex items-center justify-between p-3 rounded-lg border ${
-                    selecaoExamesLote[exame.nome] === "alterado" 
-                      ? "bg-red-50 border-red-200" 
-                      : "bg-green-50 border-green-200"
-                  }`}
-                >
-                  <div className="flex-1">
-                    <span className="font-medium text-gray-800">{exame.nome}</span>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {selecaoExamesLote[exame.nome] === "normal" 
-                        ? `Será preenchido como: ${exame.valorNormal}` 
-                        : `Será preenchido como: ${exame.valorAlterado}`
-                      }
+              {obterExamesQualitativos(trimestrePreenchimentoLote).map((exame) => {
+                const estaSelecionado = examesSelecionadosLote.has(exame.nome);
+                return (
+                  <div 
+                    key={exame.nome} 
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                      !estaSelecionado 
+                        ? "bg-gray-50 border-gray-200 opacity-60" 
+                        : selecaoExamesLote[exame.nome] === "alterado" 
+                          ? "bg-red-50 border-red-200" 
+                          : "bg-green-50 border-green-200"
+                    }`}
+                  >
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={estaSelecionado}
+                      onChange={() => toggleExameSelecionado(exame.nome)}
+                      className="h-5 w-5 rounded border-gray-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
+                    />
+                    
+                    {/* Nome e Preview */}
+                    <div className="flex-1">
+                      <span className={`font-medium ${estaSelecionado ? "text-gray-800" : "text-gray-500"}`}>
+                        {exame.nome}
+                      </span>
+                      {estaSelecionado && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {selecaoExamesLote[exame.nome] === "normal" 
+                            ? `Será preenchido como: ${exame.valorNormal}` 
+                            : `Será preenchido como: ${exame.valorAlterado}`
+                          }
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Botões de Seleção */}
+                    <div className="flex gap-2">
+                      <Button
+                        variant={selecaoExamesLote[exame.nome] === "normal" ? "default" : "outline"}
+                        size="sm"
+                        disabled={!estaSelecionado}
+                        className={selecaoExamesLote[exame.nome] === "normal" && estaSelecionado
+                          ? "bg-green-600 hover:bg-green-700" 
+                          : "hover:bg-green-100"
+                        }
+                        onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "normal" }))}
+                      >
+                        {exame.valorNormal}
+                      </Button>
+                      <Button
+                        variant={selecaoExamesLote[exame.nome] === "alterado" ? "default" : "outline"}
+                        size="sm"
+                        disabled={!estaSelecionado}
+                        className={selecaoExamesLote[exame.nome] === "alterado" && estaSelecionado
+                          ? "bg-red-600 hover:bg-red-700" 
+                          : "hover:bg-red-100"
+                        }
+                        onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "alterado" }))}
+                      >
+                        {exame.valorAlterado}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant={selecaoExamesLote[exame.nome] === "normal" ? "default" : "outline"}
-                      size="sm"
-                      className={selecaoExamesLote[exame.nome] === "normal" 
-                        ? "bg-green-600 hover:bg-green-700" 
-                        : "hover:bg-green-100"
-                      }
-                      onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "normal" }))}
-                    >
-                      {exame.valorNormal}
-                    </Button>
-                    <Button
-                      variant={selecaoExamesLote[exame.nome] === "alterado" ? "default" : "outline"}
-                      size="sm"
-                      className={selecaoExamesLote[exame.nome] === "alterado" 
-                        ? "bg-red-600 hover:bg-red-700" 
-                        : "hover:bg-red-100"
-                      }
-                      onClick={() => setSelecaoExamesLote(prev => ({ ...prev, [exame.nome]: "alterado" }))}
-                    >
-                      {exame.valorAlterado}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             
             <DialogFooter className="flex justify-between items-center">
               <div className="text-sm text-gray-500">
-                {Object.values(selecaoExamesLote).filter(v => v === "alterado").length} exame(s) marcado(s) como alterado
+                {examesSelecionadosLote.size} exame(s) selecionado(s) | {Array.from(examesSelecionadosLote).filter(nome => selecaoExamesLote[nome] === "alterado").length} como alterado
               </div>
               <div className="flex gap-2">
                 <Button
