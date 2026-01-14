@@ -663,6 +663,25 @@ export default function ExamesLaboratoriais() {
       const ehReagente = valor === "Reagente";
       const ehIndeterminado = valor === "Indeterminado";
       
+      // Determinar se é IgG ou IgM para definir a cor quando reagente
+      // IgG reagente = verde (indica imunidade, é bom)
+      // IgM reagente = vermelho (indica infecção recente, é preocupante)
+      const ehIgG = nomeExame.includes('IgG');
+      const ehIgM = nomeExame.includes('IgM');
+      
+      // Definir classes de cor baseado no tipo de exame
+      let corReagente = '';
+      if (ehReagente) {
+        if (ehIgG) {
+          corReagente = 'border-green-500 bg-green-50 text-green-900';
+        } else if (ehIgM) {
+          corReagente = 'border-red-500 bg-red-50 text-red-900';
+        } else {
+          // Para outros exames sorológicos (HIV, Hepatites, etc), manter vermelho
+          corReagente = 'border-red-500 bg-red-50 text-red-900';
+        }
+      }
+      
       // Handler para atalhos numéricos: 1=Reagente, 2=Não Reagente, 3=Indeterminado
       const handleKeyDownSorologico = (e: React.KeyboardEvent) => {
         if (e.key === '1') {
@@ -683,7 +702,7 @@ export default function ExamesLaboratoriais() {
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
           <SelectTrigger 
-            className={`w-full ${ehReagente ? 'border-red-500 bg-red-50 text-red-900' : ''} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
+            className={`w-full ${corReagente} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
             onKeyDown={handleKeyDownSorologico}
             title="Atalhos: 1=Reagente, 2=Não Reagente, 3=Indeterminado"
           >

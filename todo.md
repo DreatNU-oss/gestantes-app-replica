@@ -2297,3 +2297,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Corrigir erro de validação "Invalid input: expected string, received undefined" ao salvar exames
 - [x] Tratar campos de data vazios corretamente - filtrar valores undefined/null antes de enviar
+
+## Cores dos Dropdowns de Exames Sorológicos (Solicitado 14/01/2026)
+
+- [x] IgG positivo (Reagente) deve ficar verde (indica imunidade)
+- [x] IgM positivo (Reagente) deve ficar vermelho (indica infecção recente)
+- [x] Outros exames sorológicos (HIV, Hepatites) mantêm vermelho quando reagente
