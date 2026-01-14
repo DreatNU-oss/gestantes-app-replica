@@ -2263,3 +2263,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Justificativa Temporária para "Espaço Maior" (Solicitado 14/01/2026)
 
 - [x] Tornar justificativa "espaco_maior_consultas" temporária com campo de data prevista
+
+## Ajuste de Limite de Alerta (Solicitado 14/01/2026)
+
+- [x] Alterar limite de 40 dias para 32 dias para gestantes com até 34 semanas
