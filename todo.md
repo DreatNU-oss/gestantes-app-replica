@@ -2248,3 +2248,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Bug Fix - Gestante Excluída no Alerta (Solicitado 14/01/2026)
 
 - [x] Gestante excluída da lista principal deve sair automaticamente da lista de alertas
+
+## Justificativa Temporária - Consulta Agendada (Solicitado 14/01/2026)
+
+- [x] Justificativa "Paciente já está agendada" deve ser temporária (5 dias)
+- [x] Após 5 dias, se não houver consulta registrada, gestante volta para lista de alertas

@@ -410,18 +410,35 @@ export async function getGestantesSemConsultaRecente(): Promise<{
   const gestantesComParto = new Set(partosRealizadosData.map(p => p.gestanteId));
   
   // Buscar IDs das gestantes com justificativa ativa
-  const justificativasData = await db.select({ gestanteId: justificativasAlerta.gestanteId })
+  // Para justificativa "ja_agendada", verificar se passou mais de 5 dias
+  const justificativasData = await db.select()
     .from(justificativasAlerta)
     .where(eq(justificativasAlerta.ativo, 1));
-  const gestantesComJustificativa = new Set(justificativasData.map(j => j.gestanteId));
+  
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  const gestantesComJustificativa = new Set(
+    justificativasData
+      .filter(j => {
+        // Se a justificativa é "ja_agendada", ela expira após 5 dias
+        if (j.motivo === 'ja_agendada') {
+          const dataJustificativa = new Date(j.createdAt);
+          dataJustificativa.setHours(0, 0, 0, 0);
+          const diasDesdeJustificativa = Math.floor((hoje.getTime() - dataJustificativa.getTime()) / (1000 * 60 * 60 * 24));
+          // Se passou mais de 5 dias, a justificativa não é mais válida
+          return diasDesdeJustificativa <= 5;
+        }
+        // Outras justificativas são permanentes
+        return true;
+      })
+      .map(j => j.gestanteId)
+  );
   
   // Filtrar apenas gestantes ativas (sem parto realizado e sem justificativa)
   const gestantesAtivas = todasGestantes.filter(g => 
     !gestantesComParto.has(g.id) && !gestantesComJustificativa.has(g.id)
   );
-  
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
   
   const resultado: {
     gestante: Gestante;
