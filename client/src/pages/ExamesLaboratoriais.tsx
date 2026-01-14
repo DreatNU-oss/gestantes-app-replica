@@ -912,71 +912,6 @@ export default function ExamesLaboratoriais() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">{titulo}</h3>
       </div>
-      
-      {/* Botões de Copiar Data - Acima da Tabela */}
-      <div className="flex flex-wrap gap-4 mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Copiar data para múltiplos exames:</span>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-blue-100"
-          onClick={() => abrirModalCopiarData(1)}
-        >
-          1º Trimestre
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-blue-100"
-          onClick={() => abrirModalCopiarData(2)}
-        >
-          2º Trimestre
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-blue-100"
-          onClick={() => abrirModalCopiarData(3)}
-        >
-          3º Trimestre
-        </Button>
-      </div>
-      
-      {/* Botões de Preenchimento em Lote - Selecionar exames qualitativos */}
-      <div className="flex flex-wrap gap-4 mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">Preencher exames qualitativos em lote:</span>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => abrirModalPreenchimentoLote(1)}
-          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
-        >
-          1º Trimestre
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => abrirModalPreenchimentoLote(2)}
-          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
-        >
-          2º Trimestre
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-white hover:bg-green-100 border-green-300 text-green-700"
-          onClick={() => abrirModalPreenchimentoLote(3)}
-          title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
-        >
-          3º Trimestre
-        </Button>
-      </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
@@ -1062,6 +997,74 @@ export default function ExamesLaboratoriais() {
               <HistoricoInterpretacoes gestanteId={gestanteSelecionada!} tipo="exames_laboratoriais" />
               
               <div className="space-y-8 mt-6">
+                {/* Barras de Ação em Lote - Aparecem apenas uma vez */}
+                <div className="space-y-3">
+                  {/* Botões de Copiar Data */}
+                  <div className="flex flex-wrap gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-700">Copiar data para múltiplos exames:</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-blue-100"
+                      onClick={() => abrirModalCopiarData(1)}
+                    >
+                      1º Trimestre
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-blue-100"
+                      onClick={() => abrirModalCopiarData(2)}
+                    >
+                      2º Trimestre
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-blue-100"
+                      onClick={() => abrirModalCopiarData(3)}
+                    >
+                      3º Trimestre
+                    </Button>
+                  </div>
+                  
+                  {/* Botões de Preenchimento em Lote */}
+                  <div className="flex flex-wrap gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-700">Preencher exames qualitativos em lote:</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+                      onClick={() => abrirModalPreenchimentoLote(1)}
+                      title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
+                    >
+                      1º Trimestre
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+                      onClick={() => abrirModalPreenchimentoLote(2)}
+                      title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
+                    >
+                      2º Trimestre
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-green-100 border-green-300 text-green-700"
+                      onClick={() => abrirModalPreenchimentoLote(3)}
+                      title="Abre seletor para escolher quais exames marcar como Normal/Negativo ou Alterado/Positivo"
+                    >
+                      3º Trimestre
+                    </Button>
+                  </div>
+                </div>
+                
                 {renderTabelaExames("Exames de Sangue", examesSangue)}
                 {renderTabelaExames("Exames de Urina", examesUrina)}
                 {renderTabelaExames("Exames de Fezes", examesFezes)}

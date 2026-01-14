@@ -2183,3 +2183,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Adicionar checkboxes no modal para selecionar quais exames incluir no lote
 - [x] Permitir marcar/desmarcar exames individualmente antes de definir resultado
 - [x] Remover ícones de "Alterar" abaixo de Data 1º, 2º e 3º trimestre (sem função)
+
+
+## Remoção de Duplicação das Barras de Ação (Solicitado 14/01/2026)
+
+- [x] Identificar onde as barras azul e verde estão sendo renderizadas múltiplas vezes
+- [x] Manter apenas uma instância das barras na parte superior, acima do título "Exames de Sangue"
+- [x] Remover duplicações nas outras seções (Exames de Urina, Outros Exames, etc.)
