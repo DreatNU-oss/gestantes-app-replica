@@ -1147,46 +1147,65 @@ export default function ExamesLaboratoriais() {
                   open={modalAberto}
                   onOpenChange={setModalAberto}
                   dumGestante={gestante?.dum ? new Date(gestante.dum) : null}
-                  onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados) => {
+                  onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados, modoAutomatico) => {
                     console.log('[DEBUG FRONTEND] onResultados chamado');
                     console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
                     console.log('[DEBUG FRONTEND] trimestre:', trimestre);
                     console.log('[DEBUG FRONTEND] dataColeta:', dataColeta);
+                    console.log('[DEBUG FRONTEND] modoAutomatico:', modoAutomatico);
                     
                     // Converter resultados da IA para o formato esperado
-                    const trimestreNum = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
+                    const trimestreNumPadrao = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
                     const resultadosFormatados: Record<string, Record<string, string> | string> = {};
                     
                     for (const [chave, valor] of Object.entries(novosResultados)) {
                       console.log(`[DEBUG FRONTEND] Processando: ${chave} = ${valor}`);
                       
+                      // No modo automático, a chave pode conter ::trimestre::data
+                      // Formato: "NomeExame::trimestre::data" ou "NomeExame__Subcampo::trimestre::data"
+                      let nomeExameBase = chave;
+                      let subcampo: string | undefined;
+                      let trimestreNum = trimestreNumPadrao;
+                      let dataExame = dataColeta;
+                      
+                      if (modoAutomatico && chave.includes('::')) {
+                        const partes = chave.split('::');
+                        nomeExameBase = partes[0];
+                        if (partes[1]) trimestreNum = partes[1];
+                        if (partes[2]) dataExame = partes[2];
+                      }
+                      
                       // Detectar se é um exame com subcampo (formato: "NomeExame__Subcampo")
-                      if (chave.includes('__')) {
-                        console.log(`[DEBUG FRONTEND] Detectado subcampo em: ${chave}`);
-                        const [nomeExame, subcampo] = chave.split('__');
+                      if (nomeExameBase.includes('__')) {
+                        console.log(`[DEBUG FRONTEND] Detectado subcampo em: ${nomeExameBase}`);
+                        const [nomeExame, sub] = nomeExameBase.split('__');
+                        subcampo = sub;
+                        nomeExameBase = nomeExame;
                         
                         // Inicializar objeto do exame se não existir
-                        if (!resultadosFormatados[nomeExame]) {
-                          resultadosFormatados[nomeExame] = {
-                            ...(typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null ? resultados[nomeExame] : {}),
+                        if (!resultadosFormatados[nomeExameBase]) {
+                          const existente = resultados[nomeExameBase];
+                          resultadosFormatados[nomeExameBase] = {
+                            ...(typeof existente === 'object' && existente !== null ? existente as Record<string, string> : {}),
                           };
                         }
                         
                         // Adicionar subcampo ao trimestre correspondente
                         const subcampoKey = `${subcampo}_${trimestreNum}`;
                         console.log(`[DEBUG FRONTEND] subcampoKey: ${subcampoKey}`);
-                        (resultadosFormatados[nomeExame] as Record<string, string>)[subcampoKey] = valor;
+                        (resultadosFormatados[nomeExameBase] as Record<string, string>)[subcampoKey] = valor;
                         
                         // Adicionar data para o trimestre (uma vez por exame)
-                        if (dataColeta && !(resultadosFormatados[nomeExame] as Record<string, string>)[`data${trimestreNum}`]) {
-                          (resultadosFormatados[nomeExame] as Record<string, string>)[`data${trimestreNum}`] = dataColeta;
+                        if (dataExame && !(resultadosFormatados[nomeExameBase] as Record<string, string>)[`data${trimestreNum}`]) {
+                          (resultadosFormatados[nomeExameBase] as Record<string, string>)[`data${trimestreNum}`] = dataExame;
                         }
                       } else {
                         // Exame simples (sem subcampos)
-                        resultadosFormatados[chave] = {
-                          ...(typeof resultados[chave] === 'object' && resultados[chave] !== null ? resultados[chave] : {}),
+                        const existente = resultados[nomeExameBase];
+                        resultadosFormatados[nomeExameBase] = {
+                          ...(typeof existente === 'object' && existente !== null ? existente as Record<string, string> : {}),
                           [trimestreNum]: valor,
-                          ...(dataColeta ? { [`data${trimestreNum}`]: dataColeta } : {}),
+                          ...(dataExame ? { [`data${trimestreNum}`]: dataExame } : {}),
                         };
                       }
                     }

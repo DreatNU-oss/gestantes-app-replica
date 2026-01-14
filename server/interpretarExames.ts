@@ -10,17 +10,28 @@ interface ExameInterpretado {
   dataColeta?: string; // Data da coleta do exame (formato YYYY-MM-DD)
 }
 
+interface ExameComTrimestre {
+  nomeExame: string;
+  valor: string;
+  subcampo?: string;
+  dataColeta?: string;
+  trimestre?: number; // 1, 2 ou 3
+}
+
 export async function interpretarExamesComIA(
   fileBuffer: Buffer,
   mimeType: string,
-  trimestre: "primeiro" | "segundo" | "terceiro"
-): Promise<{ resultados: Record<string, string>; dataColeta?: string }> {
+  trimestre?: "primeiro" | "segundo" | "terceiro", // Agora opcional
+  dumGestante?: string // Data da última menstruação para calcular trimestre
+): Promise<{ resultados: Record<string, string>; dataColeta?: string; trimestreExtraido?: number }> {
   // 1. Upload do arquivo para S3
   const fileKey = `exames-temp/${Date.now()}-${Math.random().toString(36).substring(7)}.${mimeType.split('/')[1]}`;
   const { url: fileUrl } = await storagePut(fileKey, fileBuffer, mimeType);
 
-  // 2. Preparar lista de exames esperados para o trimestre
-  const examesEsperados = getExamesEsperadosPorTrimestre(trimestre);
+  // 2. Preparar lista de exames esperados (todos os trimestres se não especificado)
+  const examesEsperados = trimestre 
+    ? getExamesEsperadosPorTrimestre(trimestre)
+    : getAllExames();
 
   // 3. Chamar LLM com visão para interpretar o documento
   const prompt = `Você é um assistente médico especializado em interpretar resultados de exames laboratoriais de pré-natal.
@@ -97,6 +108,16 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
 3. Formato da data: YYYY-MM-DD (ex: 2025-11-11)
 4. Se todos os exames tiverem a mesma data, inclua a mesma data para todos
 5. Se não encontrar a data em lugar nenhum, deixe o campo dataColeta vazio
+6. **IMPORTANTE:** Se houver exames de datas diferentes no mesmo documento, extraia a data correta de cada exame
+
+**EXTRAÇÃO DO TRIMESTRE - AUTOMÁTICO:**
+1. Para cada exame, calcule o trimestre baseado na data de coleta${dumGestante ? ` e na DUM da gestante: ${dumGestante}` : ''}
+2. Cálculo: semanas = (dataColeta - DUM) / 7
+   - Até 13 semanas = 1º trimestre
+   - 14 a 27 semanas = 2º trimestre  
+   - 28 a 40 semanas = 3º trimestre
+3. Inclua o campo "trimestre" (1, 2 ou 3) em cada exame
+4. Se não conseguir calcular (sem DUM ou data), deixe o campo trimestre vazio
 
 **IMPORTANTE:** 
 1. Se nenhum exame for encontrado retorne: { "exames": [] }
@@ -217,11 +238,13 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
     throw new Error("LLM não retornou conteúdo válido");
   }
 
-  const parsed = JSON.parse(content) as { exames: ExameInterpretado[] };
+  const parsed = JSON.parse(content) as { exames: ExameComTrimestre[] };
 
   // 4. Converter para formato esperado pelo frontend
+  // Agora retornamos resultados com trimestre incluso na chave: "nomeExame::trimestre"
   const resultados: Record<string, string> = {};
   let dataColeta: string | undefined = undefined;
+  let trimestreExtraido: number | undefined = undefined;
   
   console.log("[DEBUG] Resposta completa da OpenAI:", JSON.stringify(parsed, null, 2));
   
@@ -246,20 +269,34 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
       dataColeta = exame.dataColeta;
     }
     
+    // Capturar trimestre extraído (primeiro encontrado)
+    if (exame.trimestre && !trimestreExtraido) {
+      trimestreExtraido = exame.trimestre;
+    }
+    
+    // Determinar o trimestre para este exame
+    const trimestreExame = exame.trimestre || trimestreExtraido || (trimestre === "primeiro" ? 1 : trimestre === "segundo" ? 2 : trimestre === "terceiro" ? 3 : undefined);
+    
+    // Incluir trimestre e data na chave se extraído automaticamente
+    const trimestreSuffix = trimestreExame ? `::${trimestreExame}` : '';
+    const dataSuffix = exame.dataColeta ? `::${exame.dataColeta}` : '';
+    
     if (exame.subcampo) {
       // Para exames com subcampos (TTGO)
-      const chave = `${exame.nomeExame}__${exame.subcampo}`;
+      const chave = `${exame.nomeExame}__${exame.subcampo}${trimestreSuffix}${dataSuffix}`;
       console.log(`[DEBUG] TTGO subcampo: ${chave} = ${exame.valor}`);
       resultados[chave] = exame.valor;
     } else {
-      resultados[exame.nomeExame] = exame.valor;
+      const chave = `${exame.nomeExame}${trimestreSuffix}${dataSuffix}`;
+      resultados[chave] = exame.valor;
     }
   }
   
   console.log("[DEBUG] Resultados finais:", JSON.stringify(resultados, null, 2));
   console.log("[DEBUG] Data coleta:", dataColeta);
+  console.log("[DEBUG] Trimestre extraído:", trimestreExtraido);
 
-  return { resultados, dataColeta };
+  return { resultados, dataColeta, trimestreExtraido };
 }
 
 function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "terceiro"): string[] {
@@ -317,4 +354,45 @@ function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "ter
   }
 
   return examesDoTrimestre;
+}
+
+
+function getAllExames(): string[] {
+  // Lista completa de todos os exames (todos os trimestres)
+  const todosExames = [
+    "Tipagem sanguínea ABO/Rh",
+    "Coombs indireto",
+    "Hemoglobina/Hematócrito",
+    "Plaquetas",
+    "Glicemia de jejum",
+    "VDRL",
+    "FTA-ABS IgG",
+    "FTA-ABS IgM",
+    "HIV",
+    "Hepatite B (HBsAg)",
+    "Anti-HBs",
+    "Hepatite C (Anti-HCV)",
+    "Toxoplasmose IgG",
+    "Toxoplasmose IgM",
+    "Rubéola IgG",
+    "Rubéola IgM",
+    "Citomegalovírus IgG",
+    "Citomegalovírus IgM",
+    "TSH",
+    "T4 Livre",
+    "Eletroforese de Hemoglobina",
+    "Ferritina",
+    "Vitamina D (25-OH)",
+    "Vitamina B12",
+    "TTGO 75g (Curva Glicêmica) - Jejum",
+    "TTGO 75g (Curva Glicêmica) - 1 hora",
+    "TTGO 75g (Curva Glicêmica) - 2 horas",
+    "EAS (Urina tipo 1)",
+    "Urocultura",
+    "Proteinúria de 24 horas",
+    "EPF (Parasitológico de Fezes)",
+    "Swab vaginal/retal EGB",
+  ];
+
+  return todosExames;
 }

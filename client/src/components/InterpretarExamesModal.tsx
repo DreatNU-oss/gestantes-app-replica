@@ -11,7 +11,7 @@ import { compressImage, formatFileSize, calculateReduction } from "@/lib/imageCo
 interface InterpretarExamesModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string, arquivosProcessados?: number) => void;
+  onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string, arquivosProcessados?: number, modoAutomatico?: boolean) => void;
   dumGestante?: Date | null;
 }
 
@@ -37,6 +37,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const [isDragging, setIsDragging] = useState(false);
   const [alertaCoerencia, setAlertaCoerencia] = useState<string | null>(null);
   const [confirmarContinuar, setConfirmarContinuar] = useState(false);
+  const [modoAutomatico, setModoAutomatico] = useState(true); // Novo: modo automático por padrão
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
 
@@ -201,7 +202,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           const result = await interpretarMutation.mutateAsync({
             fileBase64: base64Data,
             mimeType: fileToProcess.type,
-            trimestre,
+            trimestre: modoAutomatico ? undefined : trimestre, // Só envia trimestre se modo manual
+            dumGestante: modoAutomatico && dumGestante ? dumGestante.toISOString().split('T')[0] : undefined, // Envia DUM se modo automático
           });
 
           // Atualizar status do arquivo
@@ -238,14 +240,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       return;
     }
 
-    // Validar data de coleta
-    if (!dataColeta) {
+    // Validar data de coleta apenas se modo manual
+    if (!modoAutomatico && !dataColeta) {
       toast.error('Por favor, informe a data de coleta dos exames');
       return;
     }
 
-    // Validar confirmação se houver alerta de coerência
-    if (alertaCoerencia && !confirmarContinuar) {
+    // Validar confirmação se houver alerta de coerência (apenas modo manual)
+    if (!modoAutomatico && alertaCoerencia && !confirmarContinuar) {
       toast.error('Por favor, confirme que deseja continuar mesmo com o alerta de coerência');
       return;
     }
@@ -293,8 +295,9 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
         toast.success(mensagem);
       }
       
-      // Usar data de coleta informada pelo usuário ao invés da extraída pela IA
-      onResultados(combinedResultados, trimestre, dataColeta, successCount);
+      // Se modo automático, usar data extraída pela IA; se manual, usar data informada pelo usuário
+      const dataFinal = modoAutomatico ? lastDataColeta : dataColeta;
+      onResultados(combinedResultados, trimestre, dataFinal, successCount, modoAutomatico);
       
       // Aguardar um pouco para mostrar os status antes de fechar
       setTimeout(() => {
@@ -321,6 +324,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setLastDataColeta(undefined);
     setAlertaCoerencia(null);
     setConfirmarContinuar(false);
+    setModoAutomatico(true); // Reset para modo automático
     onOpenChange(false);
   };
 
@@ -335,50 +339,81 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Data de Coleta */}
-          <div className="space-y-3">
-            <Label htmlFor="data-coleta" className="text-base font-semibold">
-              Data de Coleta <span className="text-destructive">*</span>
-            </Label>
-            <input
-              id="data-coleta"
-              type="date"
-              value={dataColeta}
-              onChange={(e) => setDataColeta(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              required
-            />
+          {/* Toggle Modo Automático */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-base font-semibold text-blue-900">Modo Automático</Label>
+                <p className="text-sm text-blue-700 mt-1">
+                  {modoAutomatico 
+                    ? "A IA irá extrair automaticamente a data e o trimestre de cada exame do arquivo."
+                    : "Você precisa informar manualmente a data e o trimestre dos exames."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setModoAutomatico(!modoAutomatico)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  modoAutomatico ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    modoAutomatico ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
-          {/* Seleção de Trimestre */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">
-              Trimestre dos Exames <span className="text-destructive">*</span>
-            </Label>
-            <RadioGroup value={trimestre} onValueChange={(value) => setTrimestre(value as typeof trimestre)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="primeiro" id="primeiro" />
-                <Label htmlFor="primeiro" className="font-normal cursor-pointer">
-                  1º Trimestre (até 13 semanas)
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="segundo" id="segundo" />
-                <Label htmlFor="segundo" className="font-normal cursor-pointer">
-                  2º Trimestre (14 a 27 semanas)
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="terceiro" id="terceiro" />
-                <Label htmlFor="terceiro" className="font-normal cursor-pointer">
-                  3º Trimestre (28 a 40 semanas)
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+          {/* Data de Coleta - apenas modo manual */}
+          {!modoAutomatico && (
+            <div className="space-y-3">
+              <Label htmlFor="data-coleta" className="text-base font-semibold">
+                Data de Coleta <span className="text-destructive">*</span>
+              </Label>
+              <input
+                id="data-coleta"
+                type="date"
+                value={dataColeta}
+                onChange={(e) => setDataColeta(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                required
+              />
+            </div>
+          )}
 
-          {/* Alerta de Coerência */}
-          {alertaCoerencia && (
+          {/* Seleção de Trimestre - apenas modo manual */}
+          {!modoAutomatico && (
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">
+                Trimestre dos Exames <span className="text-destructive">*</span>
+              </Label>
+              <RadioGroup value={trimestre} onValueChange={(value) => setTrimestre(value as typeof trimestre)}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="primeiro" id="primeiro" />
+                  <Label htmlFor="primeiro" className="font-normal cursor-pointer">
+                    1º Trimestre (até 13 semanas)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="segundo" id="segundo" />
+                  <Label htmlFor="segundo" className="font-normal cursor-pointer">
+                    2º Trimestre (14 a 27 semanas)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="terceiro" id="terceiro" />
+                  <Label htmlFor="terceiro" className="font-normal cursor-pointer">
+                    3º Trimestre (28 a 40 semanas)
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
+
+          {/* Alerta de Coerência - apenas modo manual */}
+          {!modoAutomatico && alertaCoerencia && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 space-y-3">
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-yellow-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">

@@ -1214,7 +1214,8 @@ export const appRouter = router({
       .input(z.object({
         fileBase64: z.string(),
         mimeType: z.string(),
-        trimestre: z.enum(["primeiro", "segundo", "terceiro"]),
+        trimestre: z.enum(["primeiro", "segundo", "terceiro"]).optional(), // Agora opcional
+        dumGestante: z.string().optional(), // DUM para calcular trimestre automaticamente
       }))
       .mutation(async ({ input }) => {
         try {
@@ -1222,13 +1223,14 @@ export const appRouter = router({
           const fileBuffer = Buffer.from(input.fileBase64, 'base64');
           
           // Chamar função de interpretação
-          const { resultados, dataColeta } = await interpretarExamesComIA(
+          const { resultados, dataColeta, trimestreExtraido } = await interpretarExamesComIA(
             fileBuffer,
             input.mimeType,
-            input.trimestre
+            input.trimestre,
+            input.dumGestante
           );
           
-          return { success: true, resultados, dataColeta };
+          return { success: true, resultados, dataColeta, trimestreExtraido };
         } catch (error) {
           console.error('Erro ao interpretar exames:', error);
           throw new TRPCError({ 

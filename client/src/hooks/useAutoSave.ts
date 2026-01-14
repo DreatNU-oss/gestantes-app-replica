@@ -18,7 +18,7 @@ export function useAutoSave<T>(
   delay: number = 500
 ) {
   const [savedAt, setSavedAt] = useState<number | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const initialLoadRef = useRef(false);
 
   // Carregar rascunho salvo na primeira renderização

@@ -2314,3 +2314,19 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Datas de exames não preenchidos: fundo branco
 - [x] Datas de exames preenchidos: fundo verde (mesmo verde dos resultados normais)
+
+## IA Extração Automática de Data/Trimestre (Solicitado 14/01/2026)
+
+- [ ] Remover exigência de data e trimestre antes do upload na interpretação por IA
+- [ ] Atualizar prompt da IA para extrair data e trimestre automaticamente de cada exame
+- [ ] Permitir que um único arquivo contenha exames de múltiplos trimestres
+- [ ] Manter especificação manual apenas para adição manual de exames
+
+
+## IA Extração Automática de Data e Trimestre (Solicitado 14/01/2026)
+
+- [x] Remover exigência de data e trimestre antes do upload quando usar IA
+- [x] IA extrair automaticamente a data e trimestre de cada exame do arquivo
+- [x] Permitir múltiplos trimestres em um único arquivo
+- [x] Manter especificação manual apenas para adição manual de exames
+- [x] Toggle de modo automático/manual no modal
