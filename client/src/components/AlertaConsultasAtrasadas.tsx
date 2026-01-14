@@ -1,10 +1,27 @@
-import { AlertTriangle, Calendar, Clock, Phone, Baby } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, Calendar, Clock, Phone, Baby, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
-import { useLocation } from "wouter";
-import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
+import { toast } from "sonner";
 
 interface GestanteAlerta {
   gestante: {
@@ -19,11 +36,40 @@ interface GestanteAlerta {
   faixaIG: string;
 }
 
+const MOTIVOS_JUSTIFICATIVA = [
+  { value: "ja_agendada", label: "Paciente já está agendada" },
+  { value: "desistiu_prenatal", label: "Paciente desistiu do pré-natal" },
+  { value: "abortamento", label: "Paciente evoluiu para abortamento" },
+  { value: "mudou_cidade", label: "Paciente mudou-se para outra cidade" },
+  { value: "evoluiu_parto", label: "Paciente evoluiu para parto" },
+  { value: "espaco_maior_consultas", label: "Paciente decidiu um espaço maior entre as consultas por conta própria" },
+] as const;
+
+type MotivoJustificativa = typeof MOTIVOS_JUSTIFICATIVA[number]["value"];
+
 export function AlertaConsultasAtrasadas() {
-  const [, setLocation] = useLocation();
-  const { setGestanteAtiva } = useGestanteAtiva();
+  const [modalAberto, setModalAberto] = useState(false);
+  const [gestanteSelecionada, setGestanteSelecionada] = useState<GestanteAlerta | null>(null);
+  const [motivoSelecionado, setMotivoSelecionado] = useState<MotivoJustificativa | "">("");
+  const [observacoes, setObservacoes] = useState("");
+  
+  const utils = trpc.useUtils();
   
   const { data: gestantesAtrasadas, isLoading } = trpc.gestantes.semConsultaRecente.useQuery();
+
+  const criarJustificativaMutation = trpc.gestantes.criarJustificativa.useMutation({
+    onSuccess: () => {
+      toast.success("Justificativa registrada com sucesso!");
+      setModalAberto(false);
+      setGestanteSelecionada(null);
+      setMotivoSelecionado("");
+      setObservacoes("");
+      utils.gestantes.semConsultaRecente.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao registrar justificativa: " + error.message);
+    }
+  });
 
   const formatarData = (date: Date | null): string => {
     if (!date) return "Nunca consultou";
@@ -39,12 +85,24 @@ export function AlertaConsultasAtrasadas() {
     return `${ig.semanas}s ${ig.dias}d`;
   };
 
-  const handleVerDetalhes = (gestante: GestanteAlerta['gestante']) => {
-    setGestanteAtiva({
-      id: gestante.id,
-      nome: gestante.nome
+  const handleAbrirModal = (gestante: GestanteAlerta) => {
+    setGestanteSelecionada(gestante);
+    setMotivoSelecionado("");
+    setObservacoes("");
+    setModalAberto(true);
+  };
+
+  const handleConfirmarJustificativa = () => {
+    if (!gestanteSelecionada || !motivoSelecionado) {
+      toast.error("Selecione um motivo para a justificativa");
+      return;
+    }
+
+    criarJustificativaMutation.mutate({
+      gestanteId: gestanteSelecionada.gestante.id,
+      motivo: motivoSelecionado,
+      observacoes: observacoes || undefined
     });
-    setLocation("/agendamento");
   };
 
   // Função para determinar a cor do badge baseado na faixa de IG
@@ -56,18 +114,6 @@ export function AlertaConsultasAtrasadas() {
         return 'bg-orange-100 text-orange-800 border-orange-300';
       default:
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-    }
-  };
-
-  // Função para determinar a cor do card baseado na urgência
-  const getCardColor = (faixaIG: string): string => {
-    switch (faixaIG) {
-      case 'Após 36 semanas':
-        return 'border-red-300 bg-red-50';
-      case '34-36 semanas':
-        return 'border-orange-300 bg-orange-50';
-      default:
-        return 'border-yellow-300 bg-yellow-50';
     }
   };
 
@@ -86,179 +132,187 @@ export function AlertaConsultasAtrasadas() {
     'Até 34 semanas': gestantesAtrasadas.filter((g: GestanteAlerta) => g.faixaIG === 'Até 34 semanas' || g.faixaIG === 'Sem IG'),
   };
 
-  return (
-    <Card className="border-orange-300 bg-orange-50">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-orange-800">
-          <AlertTriangle className="h-5 w-5" />
-          Gestantes com Consulta Atrasada
-          <Badge variant="destructive" className="ml-2">
-            {gestantesAtrasadas.length}
+  const renderGestanteCard = (item: GestanteAlerta, corBorda: string, corTexto: string, corBotao: string) => (
+    <div 
+      key={item.gestante.id} 
+      className={`flex items-center justify-between p-3 bg-white rounded-lg border ${corBorda}`}
+    >
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          <p className="font-medium text-gray-900">{item.gestante.nome}</p>
+          <Badge variant="outline" className={getBadgeColor(item.faixaIG)}>
+            <Baby className="h-3 w-3 mr-1" />
+            {formatarIG(item.igAtual)}
           </Badge>
-        </CardTitle>
-        <p className="text-sm text-orange-700 mt-1">
-          Limite dinâmico: até 34 sem (35 dias) | 34-36 sem (15 dias) | após 36 sem (8 dias)
-        </p>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Gestantes após 36 semanas - URGENTE */}
-          {gestantesPorFaixa['Após 36 semanas'].length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-red-800 flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
-                Após 36 semanas - URGENTE (limite: 8 dias)
-              </h4>
-              {gestantesPorFaixa['Após 36 semanas'].map((item: GestanteAlerta) => (
-                <div 
-                  key={item.gestante.id} 
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-red-200"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">{item.gestante.nome}</p>
-                      <Badge variant="outline" className={getBadgeColor(item.faixaIG)}>
-                        <Baby className="h-3 w-3 mr-1" />
-                        {formatarIG(item.igAtual)}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
-                        Última: {formatarData(item.ultimaConsulta)}
-                      </span>
-                      <span className="flex items-center gap-1 text-red-600 font-medium">
-                        <Clock className="h-3.5 w-3.5" />
-                        {item.diasSemConsulta === Infinity ? "Sem consultas" : `${item.diasSemConsulta} dias`}
-                      </span>
-                      {item.gestante.telefone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3.5 w-3.5" />
-                          {item.gestante.telefone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleVerDetalhes(item.gestante)}
-                    className="border-red-300 text-red-700 hover:bg-red-100"
-                  >
-                    Agendar
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Gestantes 34-36 semanas - ATENÇÃO */}
-          {gestantesPorFaixa['34-36 semanas'].length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-orange-800 flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
-                34-36 semanas - ATENÇÃO (limite: 15 dias)
-              </h4>
-              {gestantesPorFaixa['34-36 semanas'].map((item: GestanteAlerta) => (
-                <div 
-                  key={item.gestante.id} 
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">{item.gestante.nome}</p>
-                      <Badge variant="outline" className={getBadgeColor(item.faixaIG)}>
-                        <Baby className="h-3 w-3 mr-1" />
-                        {formatarIG(item.igAtual)}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
-                        Última: {formatarData(item.ultimaConsulta)}
-                      </span>
-                      <span className="flex items-center gap-1 text-orange-600 font-medium">
-                        <Clock className="h-3.5 w-3.5" />
-                        {item.diasSemConsulta === Infinity ? "Sem consultas" : `${item.diasSemConsulta} dias`}
-                      </span>
-                      {item.gestante.telefone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3.5 w-3.5" />
-                          {item.gestante.telefone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleVerDetalhes(item.gestante)}
-                    className="border-orange-300 text-orange-700 hover:bg-orange-100"
-                  >
-                    Agendar
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Gestantes até 34 semanas */}
-          {gestantesPorFaixa['Até 34 semanas'].length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-yellow-800 flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
-                Até 34 semanas (limite: 35 dias)
-              </h4>
-              {gestantesPorFaixa['Até 34 semanas'].slice(0, 5).map((item: GestanteAlerta) => (
-                <div 
-                  key={item.gestante.id} 
-                  className="flex items-center justify-between p-3 bg-white rounded-lg border border-yellow-200"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">{item.gestante.nome}</p>
-                      <Badge variant="outline" className={getBadgeColor(item.faixaIG)}>
-                        <Baby className="h-3 w-3 mr-1" />
-                        {formatarIG(item.igAtual)}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
-                        Última: {formatarData(item.ultimaConsulta)}
-                      </span>
-                      <span className="flex items-center gap-1 text-yellow-700 font-medium">
-                        <Clock className="h-3.5 w-3.5" />
-                        {item.diasSemConsulta === Infinity ? "Sem consultas" : `${item.diasSemConsulta} dias`}
-                      </span>
-                      {item.gestante.telefone && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="h-3.5 w-3.5" />
-                          {item.gestante.telefone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleVerDetalhes(item.gestante)}
-                    className="border-yellow-300 text-yellow-700 hover:bg-yellow-100"
-                  >
-                    Agendar
-                  </Button>
-                </div>
-              ))}
-              
-              {gestantesPorFaixa['Até 34 semanas'].length > 5 && (
-                <p className="text-sm text-yellow-700 text-center pt-2">
-                  E mais {gestantesPorFaixa['Até 34 semanas'].length - 5} gestante(s) nesta faixa...
-                </p>
-              )}
-            </div>
+        </div>
+        <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+          <span className="flex items-center gap-1">
+            <Calendar className="h-3.5 w-3.5" />
+            Última: {formatarData(item.ultimaConsulta)}
+          </span>
+          <span className={`flex items-center gap-1 ${corTexto} font-medium`}>
+            <Clock className="h-3.5 w-3.5" />
+            {item.diasSemConsulta === Infinity ? "Sem consultas" : `${item.diasSemConsulta} dias`}
+          </span>
+          {item.gestante.telefone && (
+            <span className="flex items-center gap-1">
+              <Phone className="h-3.5 w-3.5" />
+              {item.gestante.telefone}
+            </span>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <Button 
+        variant="outline" 
+        size="sm"
+        onClick={() => handleAbrirModal(item)}
+        className={corBotao}
+      >
+        <FileText className="h-4 w-4 mr-1" />
+        Justificativa
+      </Button>
+    </div>
+  );
+
+  return (
+    <>
+      <Card className="border-orange-300 bg-orange-50">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-orange-800">
+            <AlertTriangle className="h-5 w-5" />
+            Gestantes com Consulta Atrasada
+            <Badge variant="destructive" className="ml-2">
+              {gestantesAtrasadas.length}
+            </Badge>
+          </CardTitle>
+          <p className="text-sm text-orange-700 mt-1">
+            Limite dinâmico: até 34 sem (35 dias) | 34-36 sem (15 dias) | após 36 sem (8 dias)
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Gestantes após 36 semanas - URGENTE */}
+            {gestantesPorFaixa['Após 36 semanas'].length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-red-800 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
+                  Após 36 semanas - URGENTE (limite: 8 dias)
+                </h4>
+                {gestantesPorFaixa['Após 36 semanas'].map((item: GestanteAlerta) => 
+                  renderGestanteCard(
+                    item, 
+                    "border-red-200", 
+                    "text-red-600",
+                    "border-red-300 text-red-700 hover:bg-red-100"
+                  )
+                )}
+              </div>
+            )}
+
+            {/* Gestantes 34-36 semanas - ATENÇÃO */}
+            {gestantesPorFaixa['34-36 semanas'].length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-orange-800 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
+                  34-36 semanas - ATENÇÃO (limite: 15 dias)
+                </h4>
+                {gestantesPorFaixa['34-36 semanas'].map((item: GestanteAlerta) => 
+                  renderGestanteCard(
+                    item, 
+                    "border-orange-200", 
+                    "text-orange-600",
+                    "border-orange-300 text-orange-700 hover:bg-orange-100"
+                  )
+                )}
+              </div>
+            )}
+
+            {/* Gestantes até 34 semanas */}
+            {gestantesPorFaixa['Até 34 semanas'].length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-yellow-800 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
+                  Até 34 semanas (limite: 35 dias)
+                </h4>
+                {gestantesPorFaixa['Até 34 semanas'].slice(0, 5).map((item: GestanteAlerta) => 
+                  renderGestanteCard(
+                    item, 
+                    "border-yellow-200", 
+                    "text-yellow-700",
+                    "border-yellow-300 text-yellow-700 hover:bg-yellow-100"
+                  )
+                )}
+                
+                {gestantesPorFaixa['Até 34 semanas'].length > 5 && (
+                  <p className="text-sm text-yellow-700 text-center pt-2">
+                    E mais {gestantesPorFaixa['Até 34 semanas'].length - 5} gestante(s) nesta faixa...
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modal de Justificativa */}
+      <Dialog open={modalAberto} onOpenChange={setModalAberto}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Registrar Justificativa</DialogTitle>
+            <DialogDescription>
+              {gestanteSelecionada && (
+                <span>
+                  Selecione o motivo para remover <strong>{gestanteSelecionada.gestante.nome}</strong> da lista de alertas.
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="motivo">Motivo da Justificativa *</Label>
+              <Select 
+                value={motivoSelecionado} 
+                onValueChange={(value) => setMotivoSelecionado(value as MotivoJustificativa)}
+              >
+                <SelectTrigger id="motivo">
+                  <SelectValue placeholder="Selecione o motivo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOTIVOS_JUSTIFICATIVA.map((motivo) => (
+                    <SelectItem key={motivo.value} value={motivo.value}>
+                      {motivo.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="observacoes">Observações (opcional)</Label>
+              <Textarea
+                id="observacoes"
+                placeholder="Adicione observações adicionais se necessário..."
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModalAberto(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleConfirmarJustificativa}
+              disabled={!motivoSelecionado || criarJustificativaMutation.isPending}
+            >
+              {criarJustificativaMutation.isPending ? "Salvando..." : "Confirmar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

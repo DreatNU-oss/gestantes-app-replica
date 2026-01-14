@@ -1,0 +1,76 @@
+{
+  "query": "SELECT id, gestanteId, dataParto, tipoParto FROM partosRealizados ORDER BY dataParto DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, dataParto, tipoParto FROM partosRealizados ORDER BY dataParto DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "270002",
+      "gestanteId": "330031",
+      "dataParto": "2026-01-06",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "270001",
+      "gestanteId": "330002",
+      "dataParto": "2026-01-03",
+      "tipoParto": "normal"
+    },
+    {
+      "id": "270003",
+      "gestanteId": "330068",
+      "dataParto": "2026-01-02",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "240001",
+      "gestanteId": "330004",
+      "dataParto": "2025-12-30",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "210001",
+      "gestanteId": "330096",
+      "dataParto": "2025-12-29",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "180001",
+      "gestanteId": "330033",
+      "dataParto": "2025-12-28",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "150002",
+      "gestanteId": "330058",
+      "dataParto": "2025-12-27",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "150001",
+      "gestanteId": "330039",
+      "dataParto": "2025-12-26",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "120001",
+      "gestanteId": "300004",
+      "dataParto": "2025-12-22",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "90001",
+      "gestanteId": "330005",
+      "dataParto": "2025-12-19",
+      "tipoParto": "cesarea"
+    },
+    {
+      "id": "30001",
+      "gestanteId": "300005",
+      "dataParto": "2025-12-17",
+      "tipoParto": "cesarea"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tdataParto\ttipoParto\n270002\t330031\t2026-01-06\tcesarea\n270001\t330002\t2026-01-03\tnormal\n270003\t330068\t2026-01-02\tcesarea\n240001\t330004\t2025-12-30\tcesarea\n210001\t330096\t2025-12-29\tcesarea\n180001\t330033\t2025-12-28\tcesarea\n150002\t330058\t2025-12-27\tcesarea\n150001\t330039\t2025-12-26\tcesarea\n120001\t300004\t2025-12-22\tcesarea\n90001\t330005\t2025-12-19\tcesarea\n30001\t300005\t2025-12-17\tcesarea\n",
+  "stderr": "",
+  "execution_time_ms": 371
+}

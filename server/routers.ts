@@ -59,7 +59,10 @@ import {
   createMedicamento,
   updateMedicamento,
   deleteMedicamento,
-  getGestantesSemConsultaRecente
+  getGestantesSemConsultaRecente,
+  createJustificativa,
+  getJustificativaByGestanteId,
+  deleteJustificativa
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -541,6 +544,30 @@ export const appRouter = router({
     // Alerta de gestantes sem consulta recente (limite dinâmico baseado na IG)
     semConsultaRecente: protectedProcedure
       .query(() => getGestantesSemConsultaRecente()),
+    
+    // Justificativas para exclusão do alerta de consulta atrasada
+    criarJustificativa: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        motivo: z.enum([
+          "ja_agendada",
+          "desistiu_prenatal",
+          "abortamento",
+          "mudou_cidade",
+          "evoluiu_parto",
+          "espaco_maior_consultas"
+        ]),
+        observacoes: z.string().optional()
+      }))
+      .mutation(({ input }) => createJustificativa(input)),
+    
+    buscarJustificativa: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => getJustificativaByGestanteId(input.gestanteId)),
+    
+    removerJustificativa: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .mutation(({ input }) => deleteJustificativa(input.gestanteId)),
   }),
 
   consultasPrenatal: router({

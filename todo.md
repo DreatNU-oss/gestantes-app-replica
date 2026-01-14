@@ -2215,3 +2215,18 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Entre 34 e 36 semanas: alerta após 15 dias sem consulta
 - [x] Após 36 semanas: alerta após 8 dias sem consulta
 - [x] Exibir informação da idade gestacional e período de alerta no card
+
+
+## Bug Fix e Sistema de Justificativas para Alertas (Solicitado 14/01/2026)
+
+- [x] Corrigir bug: gestantes com parto registrado não estão saindo da lista de alertas
+- [x] Criar tabela de justificativas no banco de dados
+- [x] Trocar botão "Agendar" por "Justificativa" no alerta
+- [x] Implementar modal com opções de justificativa:
+  - [x] Paciente já está agendada
+  - [x] Paciente desistiu do pré-natal
+  - [x] Paciente evoluiu para abortamento
+  - [x] Paciente mudou-se para outra cidade
+  - [x] Paciente evoluiu para parto
+  - [x] Paciente decidiu um espaço maior entre as consultas por conta própria
+- [x] Filtrar gestantes com justificativa da lista de alertas

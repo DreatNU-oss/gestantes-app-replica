@@ -211,6 +211,13 @@
       "when": 1768249310821,
       "tag": "0029_skinny_vivisector",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1768352515831,
+      "tag": "0030_cooing_the_anarchist",
+      "breakpoints": true
     }
   ]
 }

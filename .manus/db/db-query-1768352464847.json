@@ -1,0 +1,130 @@
+{
+  "query": "SELECT * FROM partosRealizados LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM partosRealizados LIMIT 10;",
+  "rows": [
+    {
+      "id": "30001",
+      "gestanteId": "300005",
+      "dataParto": "2025-12-17",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-300005-1766109681206-fzsf0w.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-300005-1766109681206-fzsf0w.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-19 02:01:21",
+      "updatedAt": "2025-12-19 02:01:21"
+    },
+    {
+      "id": "90001",
+      "gestanteId": "330005",
+      "dataParto": "2025-12-19",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330005-1766163085623-knk2bf.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330005-1766163085623-knk2bf.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-19 16:51:26",
+      "updatedAt": "2025-12-19 16:51:26"
+    },
+    {
+      "id": "120001",
+      "gestanteId": "300004",
+      "dataParto": "2025-12-22",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-300004-1766412563490-i17kw.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-300004-1766412563490-i17kw.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-22 14:09:23",
+      "updatedAt": "2025-12-22 14:09:23"
+    },
+    {
+      "id": "150001",
+      "gestanteId": "330039",
+      "dataParto": "2025-12-26",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330039-1766842519662-9rynwi.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330039-1766842519662-9rynwi.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-27 13:35:19",
+      "updatedAt": "2025-12-27 13:35:19"
+    },
+    {
+      "id": "150002",
+      "gestanteId": "330058",
+      "dataParto": "2025-12-27",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330058-1766842531731-i5uiv.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330058-1766842531731-i5uiv.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-27 13:35:31",
+      "updatedAt": "2025-12-27 13:35:31"
+    },
+    {
+      "id": "180001",
+      "gestanteId": "330033",
+      "dataParto": "2025-12-28",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330033-1766938147459-1d3w39.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330033-1766938147459-1d3w39.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-28 16:09:07",
+      "updatedAt": "2025-12-28 16:09:07"
+    },
+    {
+      "id": "210001",
+      "gestanteId": "330096",
+      "dataParto": "2025-12-29",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330096-1767017050355-re0g1c.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330096-1767017050355-re0g1c.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-29 14:04:10",
+      "updatedAt": "2025-12-29 14:04:10"
+    },
+    {
+      "id": "240001",
+      "gestanteId": "330004",
+      "dataParto": "2025-12-30",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330004-1767095954879-pu7bj.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330004-1767095954879-pu7bj.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2025-12-30 11:59:15",
+      "updatedAt": "2025-12-30 11:59:15"
+    },
+    {
+      "id": "270001",
+      "gestanteId": "330002",
+      "dataParto": "2026-01-03",
+      "tipoParto": "normal",
+      "medicoId": "3",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330002-1768215982264-nf913p.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330002-1768215982264-nf913p.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2026-01-12 11:06:22",
+      "updatedAt": "2026-01-12 11:06:22"
+    },
+    {
+      "id": "270002",
+      "gestanteId": "330031",
+      "dataParto": "2026-01-06",
+      "tipoParto": "cesarea",
+      "medicoId": "3",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330031-1768216057229-wfqzel.pdf",
+      "pdfKey": "cartoes-prenatal/gestante-330031-1768216057229-wfqzel.pdf",
+      "observacoes": "NULL",
+      "createdAt": "2026-01-12 11:07:37",
+      "updatedAt": "2026-01-12 11:07:37"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tdataParto\ttipoParto\tmedicoId\tpdfUrl\tpdfKey\tobservacoes\tcreatedAt\tupdatedAt\n30001\t300005\t2025-12-17\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-300005-1766109681206-fzsf0w.pdf\tcartoes-prenatal/gestante-300005-1766109681206-fzsf0w.pdf\tNULL\t2025-12-19 02:01:21\t2025-12-19 02:01:21\n90001\t330005\t2025-12-19\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330005-1766163085623-knk2bf.pdf\tcartoes-prenatal/gestante-330005-1766163085623-knk2bf.pdf\tNULL\t2025-12-19 16:51:26\t2025-12-19 16:51:26\n120001\t300004\t2025-12-22\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-300004-1766412563490-i17kw.pdf\tcartoes-prenatal/gestante-300004-1766412563490-i17kw.pdf\tNULL\t2025-12-22 14:09:23\t2025-12-22 14:09:23\n150001\t330039\t2025-12-26\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330039-1766842519662-9rynwi.pdf\tcartoes-prenatal/gestante-330039-1766842519662-9rynwi.pdf\tNULL\t2025-12-27 13:35:19\t2025-12-27 13:35:19\n150002\t330058\t2025-12-27\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330058-1766842531731-i5uiv.pdf\tcartoes-prenatal/gestante-330058-1766842531731-i5uiv.pdf\tNULL\t2025-12-27 13:35:31\t2025-12-27 13:35:31\n180001\t330033\t2025-12-28\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330033-1766938147459-1d3w39.pdf\tcartoes-prenatal/gestante-330033-1766938147459-1d3w39.pdf\tNULL\t2025-12-28 16:09:07\t2025-12-28 16:09:07\n210001\t330096\t2025-12-29\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330096-1767017050355-re0g1c.pdf\tcartoes-prenatal/gestante-330096-1767017050355-re0g1c.pdf\tNULL\t2025-12-29 14:04:10\t2025-12-29 14:04:10\n240001\t330004\t2025-12-30\tcesarea\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330004-1767095954879-pu7bj.pdf\tcartoes-prenatal/gestante-330004-1767095954879-pu7bj.pdf\tNULL\t2025-12-30 11:59:15\t2025-12-30 11:59:15\n270001\t330002\t2026-01-03\tnormal\t3\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330002-1768215982264-nf913p.pdf\tcartoes-prenatal/gestante-330002-1768215982264-nf913p.pdf\tNULL\t2026-01-12 11:06:22\t2026-01-12 11:06:22\n270002\t330031\t2026-01-06\tcesarea\t3\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/cartoes-prenatal/gestante-330031-1768216057229-wfqzel.pdf\tcartoes-prenatal/gestante-330031-1768216057229-wfqzel.pdf\tNULL\t2026-01-12 11:07:37\t2026-01-12 11:07:37\n",
+  "stderr": "",
+  "execution_time_ms": 418
+}

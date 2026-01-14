@@ -39,7 +39,10 @@ import {
   FatorRisco,
   medicamentosGestacao,
   InsertMedicamentoGestacao,
-  MedicamentoGestacao
+  MedicamentoGestacao,
+  justificativasAlerta,
+  InsertJustificativaAlerta,
+  JustificativaAlerta
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -402,8 +405,16 @@ export async function getGestantesSemConsultaRecente(): Promise<{
   const partosRealizadosData = await db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
   const gestantesComParto = new Set(partosRealizadosData.map(p => p.gestanteId));
   
-  // Filtrar apenas gestantes ativas (sem parto realizado)
-  const gestantesAtivas = todasGestantes.filter(g => !gestantesComParto.has(g.id));
+  // Buscar IDs das gestantes com justificativa ativa
+  const justificativasData = await db.select({ gestanteId: justificativasAlerta.gestanteId })
+    .from(justificativasAlerta)
+    .where(eq(justificativasAlerta.ativo, 1));
+  const gestantesComJustificativa = new Set(justificativasData.map(j => j.gestanteId));
+  
+  // Filtrar apenas gestantes ativas (sem parto realizado e sem justificativa)
+  const gestantesAtivas = todasGestantes.filter(g => 
+    !gestantesComParto.has(g.id) && !gestantesComJustificativa.has(g.id)
+  );
   
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
@@ -751,4 +762,67 @@ export async function deleteMedicamento(id: number): Promise<void> {
   
   // Soft delete - apenas marca como inativo
   await db.update(medicamentosGestacao).set({ ativo: 0 }).where(eq(medicamentosGestacao.id, id));
+}
+
+
+// ============ JUSTIFICATIVAS DE ALERTA ============
+
+export async function getJustificativaByGestanteId(gestanteId: number): Promise<JustificativaAlerta | null> {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(justificativasAlerta)
+    .where(and(
+      eq(justificativasAlerta.gestanteId, gestanteId),
+      eq(justificativasAlerta.ativo, 1)
+    ))
+    .orderBy(desc(justificativasAlerta.createdAt))
+    .limit(1);
+  
+  return result[0] || null;
+}
+
+export async function getJustificativasAtivas(): Promise<JustificativaAlerta[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(justificativasAlerta)
+    .where(eq(justificativasAlerta.ativo, 1))
+    .orderBy(desc(justificativasAlerta.createdAt));
+}
+
+export async function createJustificativa(data: InsertJustificativaAlerta): Promise<JustificativaAlerta> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Desativar justificativas anteriores da mesma gestante
+  await db.update(justificativasAlerta)
+    .set({ ativo: 0 })
+    .where(eq(justificativasAlerta.gestanteId, data.gestanteId));
+  
+  const result = await db.insert(justificativasAlerta).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(justificativasAlerta).where(eq(justificativasAlerta.id, insertedId)).limit(1);
+  return inserted[0] as JustificativaAlerta;
+}
+
+export async function deleteJustificativa(gestanteId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(justificativasAlerta)
+    .set({ ativo: 0 })
+    .where(eq(justificativasAlerta.gestanteId, gestanteId));
+}
+
+export async function getGestantesIdsComJustificativaAtiva(): Promise<Set<number>> {
+  const db = await getDb();
+  if (!db) return new Set();
+  
+  const justificativas = await db.select({ gestanteId: justificativasAlerta.gestanteId })
+    .from(justificativasAlerta)
+    .where(eq(justificativasAlerta.ativo, 1));
+  
+  return new Set(justificativas.map(j => j.gestanteId));
 }

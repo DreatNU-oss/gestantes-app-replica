@@ -508,3 +508,28 @@ export const medicamentosGestacao = mysqlTable("medicamentosGestacao", {
 
 export type MedicamentoGestacao = typeof medicamentosGestacao.$inferSelect;
 export type InsertMedicamentoGestacao = typeof medicamentosGestacao.$inferInsert;
+
+
+/**
+ * Tabela de justificativas para exclusão de alertas de consulta atrasada
+ */
+export const justificativasAlerta = mysqlTable("justificativasAlerta", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  motivo: mysqlEnum("motivo", [
+    "ja_agendada",
+    "desistiu_prenatal",
+    "abortamento",
+    "mudou_cidade",
+    "evoluiu_parto",
+    "espaco_maior_consultas"
+  ]).notNull(),
+  observacoes: text("observacoes"),
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo (excluir do alerta), 0 = inativo (voltar ao alerta)
+  criadoPor: int("criadoPor"), // ID do usuário que criou
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type JustificativaAlerta = typeof justificativasAlerta.$inferSelect;
+export type InsertJustificativaAlerta = typeof justificativasAlerta.$inferInsert;
