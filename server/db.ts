@@ -745,10 +745,16 @@ export async function hasAltoRisco(gestanteId: number): Promise<boolean> {
     .where(and(
       eq(fatoresRisco.gestanteId, gestanteId),
       eq(fatoresRisco.ativo, 1)
-    ))
-    .limit(1);
+    ));
   
-  return fatores.length > 0;
+  // Filtrar fatores de risco que não são "Alergia a medicamento"
+  // Apenas outros fatores de risco devem ativar o badge de Alto Risco
+  const fatoresRelevantes = fatores.filter(f => 
+    f.descricao?.toLowerCase() !== 'alergia a medicamento' &&
+    f.descricao?.toLowerCase() !== 'alergia a medicamentos'
+  );
+  
+  return fatoresRelevantes.length > 0;
 }
 
 // ============ MEDICAMENTOS NA GESTAÇÃO ============

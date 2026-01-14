@@ -124,6 +124,12 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
   }
 
   const fatoresAtivos = fatores.filter(f => f.ativo === 1);
+  
+  // Verificar se tem fatores de risco relevantes (excluindo "Alergia a medicamento")
+  const temFatoresRelevantes = fatoresAtivos.some(f => 
+    f.descricao?.toLowerCase() !== 'alergia a medicamento' &&
+    f.descricao?.toLowerCase() !== 'alergia a medicamentos'
+  );
 
   return (
     <Card>
@@ -131,7 +137,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
         <CardTitle className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-orange-500" />
           Fatores de Risco
-          {fatoresAtivos.length > 0 && (
+          {temFatoresRelevantes && (
             <Badge variant="destructive" className="ml-auto">
               Alto Risco
             </Badge>

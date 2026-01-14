@@ -2267,3 +2267,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Ajuste de Limite de Alerta (Solicitado 14/01/2026)
 
 - [x] Alterar limite de 40 dias para 32 dias para gestantes com até 34 semanas
+
+## Badge Alto Risco - Excluir Alergia a Medicamento (Solicitado 14/01/2026)
+
+- [x] Gestantes com apenas "Alergia a medicamento" não devem exibir badge de Alto Risco
+- [x] Apenas outros fatores de risco devem ativar o badge
