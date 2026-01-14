@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `justificativasAlerta` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`gestanteId` int NOT NULL,\n\t`motivo` enum('ja_agendada','desistiu_prenatal','abortamento','mudou_cidade','evoluiu_parto','espaco_maior_consultas') NOT NULL,\n\t`observacoes` text,\n\t`ativo` int NOT NULL DEFAULT 1,\n\t`criadoPor` int,\n\t`dataPrevistaConsulta` date,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `justificativasAlerta_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute CREATE TABLE IF NOT EXISTS `justificativasAlerta` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`gestanteId` int NOT NULL,\n\t`motivo` enum('ja_agendada','desistiu_prenatal','abortamento','mudou_cidade','evoluiu_parto','espaco_maior_consultas') NOT NULL,\n\t`observacoes` text,\n\t`ativo` int NOT NULL DEFAULT 1,\n\t`criadoPor` int,\n\t`dataPrevistaConsulta` date,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `justificativasAlerta_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 424
+}

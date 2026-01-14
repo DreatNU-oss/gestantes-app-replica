@@ -2286,3 +2286,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Investigar erro "NotFoundError: Failed to execute 'removeChild' on 'Node'" - causado por extensões do navegador/Google Translate
 - [x] Adicionar meta tag para desabilitar tradução automática
 - [x] Melhorar ErrorBoundary com mensagem específica para esse erro
+
+## Bug Fix - Justificativa Não Remove da Lista (Solicitado 14/01/2026)
+
+- [x] Investigar por que Letícia Celeste e Wanna não saíram da lista após justificativa
+- [x] Verificar se justificativas estão sendo salvas no banco - tabela não existia em produção
+- [x] Criar tabela justificativasAlerta no banco de produção
