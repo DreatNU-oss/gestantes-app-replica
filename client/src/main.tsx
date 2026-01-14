@@ -43,6 +43,8 @@ const trpcClient = trpc.createClient({
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
+      // Usar POST para evitar erro 414 URI Too Long em requisições com muitos dados
+      methodOverride: 'POST',
       fetch(input, init) {
         return globalThis.fetch(input, {
           ...(init ?? {}),

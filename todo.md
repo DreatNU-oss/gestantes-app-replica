@@ -2272,3 +2272,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Gestantes com apenas "Alergia a medicamento" não devem exibir badge de Alto Risco
 - [x] Apenas outros fatores de risco devem ativar o badge
+
+## Bug Fix - Permissão Justificativa (Solicitado 14/01/2026)
+
+- [x] Corrigir erro 414 URI Too Long - adicionado methodOverride: 'POST' no httpBatchLink

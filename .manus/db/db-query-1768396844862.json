@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, name, email, role, openId FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, name, email, role, openId FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Andre Schlemper",
+      "email": "DreatNU@yahoo.com",
+      "role": "admin",
+      "openId": "moPqAXbkbFcXAzv6e3vipU"
+    },
+    {
+      "id": "930027",
+      "name": "Crislaine Borges",
+      "email": "crislaineluciano256@gmail.com",
+      "role": "user",
+      "openId": "RjCeSaRf3oATjQXqZUjvw5"
+    },
+    {
+      "id": "2160015",
+      "name": "allinemiguelreis",
+      "email": "allinemiguelreis@hotmail.com",
+      "role": "user",
+      "openId": "BRJ6HD8Yqoksfx5rwnBg6A"
+    },
+    {
+      "id": "2790001",
+      "name": "jenifertc",
+      "email": "jenifertc@hotmail.com",
+      "role": "user",
+      "openId": "dwVxzWjmr6gYvGkETx3GaL"
+    },
+    {
+      "id": "10650236",
+      "name": "Brunna.avellino",
+      "email": "Brunna.avellino@gmail.com",
+      "role": "user",
+      "openId": "nrHPsE9N6YFkpdMGdEFMEf"
+    },
+    {
+      "id": "12600357",
+      "name": "brunna.avellino",
+      "email": "brunna.avellino@icloud.com",
+      "role": "user",
+      "openId": "QRjA3ZrwzdJ5GhtwrRedGe"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\topenId\n1\tAndre Schlemper\tDreatNU@yahoo.com\tadmin\tmoPqAXbkbFcXAzv6e3vipU\n930027\tCrislaine Borges\tcrislaineluciano256@gmail.com\tuser\tRjCeSaRf3oATjQXqZUjvw5\n2160015\tallinemiguelreis\tallinemiguelreis@hotmail.com\tuser\tBRJ6HD8Yqoksfx5rwnBg6A\n2790001\tjenifertc\tjenifertc@hotmail.com\tuser\tdwVxzWjmr6gYvGkETx3GaL\n10650236\tBrunna.avellino\tBrunna.avellino@gmail.com\tuser\tnrHPsE9N6YFkpdMGdEFMEf\n12600357\tbrunna.avellino\tbrunna.avellino@icloud.com\tuser\tQRjA3ZrwzdJ5GhtwrRedGe\n",
+  "stderr": "",
+  "execution_time_ms": 385
+}
