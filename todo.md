@@ -2330,3 +2330,10 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 - [x] Permitir múltiplos trimestres em um único arquivo
 - [x] Manter especificação manual apenas para adição manual de exames
 - [x] Toggle de modo automático/manual no modal
+
+## Refinamento da Extração de Dados da IA (Solicitado 14/01/2026)
+
+- [x] Melhorar identificação e categorização automática do tipo de cada exame
+- [x] Atualizar prompt da IA com instruções mais detalhadas para classificação
+- [x] Adicionar categorias organizadas: Hemograma, Sorologias, Bioquímica, Urina/Fezes, Tipagem, Curva Glicêmica, Estreptococo
+- [x] Incluir mapeamento de variações de nomes para nomes padronizados

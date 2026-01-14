@@ -44,20 +44,52 @@ Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENA
 1. Retorne APENAS os exames que estão presentes no documento
 2. NÃO invente ou estime valores
 3. Para cada exame encontrado, extraia o valor exato como está escrito
-4. **ACEITE VARIAÇÕES DE NOMES** - Os exames podem aparecer com nomes ligeiramente diferentes no laudo:
-   * "Hemoglobina" ou "Hb" = "Hemoglobina/Hematócrito"
-   * "Anti-HIV" ou "HIV 1 e 2" = "HIV"
-   * "HBsAg" = "Hepatite B (HBsAg)"
-   * "Anti-HCV" = "Hepatite C (Anti-HCV)"
-   * "Toxo IgG" = "Toxoplasmose IgG"
-   * "Rubéola IgG" = "Rubéola IgG"
-   * "CMV IgG" = "Citomegalovírus IgG"
-   * "Glicose" ou "Glicemia" = "Glicemia de jejum"
-   * "EAS" ou "Urina I" ou "Urina tipo 1" = "EAS (Urina tipo 1)"
-   * "Urocultura" ou "Cultura de Urina" = "Urocultura"
-   * "EPF" ou "Parasitológico" = "EPF (Parasitológico de Fezes)"
+4. **IDENTIFICAÇÃO E CATEGORIZAÇÃO DE EXAMES** - Use as seguintes categorias para identificar corretamente cada exame:
+
+   **HEMOGRAMA (Exames de Sangue):**
+   * "Hemoglobina", "Hb", "Hemograma" = "Hemoglobina/Hematócrito"
+   * "Plaquetas", "Contagem de Plaquetas" = "Plaquetas"
+   * "Leucócitos", "Glóbulos Brancos" = "Leucócitos"
+
+   **SOROLOGIAS (Infecções):**
+   * "Anti-HIV", "HIV 1 e 2", "HIV", "Sorologia para HIV" = "HIV"
+   * "HBsAg", "Antígeno de Superfície Hepatite B" = "Hepatite B (HBsAg)"
+   * "Anti-HCV", "Hepatite C" = "Hepatite C (Anti-HCV)"
+   * "VDRL", "Sífilis", "RPR", "FTA-ABS" = "VDRL"
+   * "Toxo IgG", "Toxoplasmose IgG", "Anti-Toxoplasma IgG" = "Toxoplasmose IgG"
+   * "Toxo IgM", "Toxoplasmose IgM", "Anti-Toxoplasma IgM" = "Toxoplasmose IgM"
+   * "Rubéola IgG", "Anti-Rubéola IgG" = "Rubéola IgG"
+   * "Rubéola IgM", "Anti-Rubéola IgM" = "Rubéola IgM"
+   * "CMV IgG", "Citomegalovírus IgG", "Anti-CMV IgG" = "Citomegalovírus IgG"
+   * "CMV IgM", "Citomegalovírus IgM", "Anti-CMV IgM" = "Citomegalovírus IgM"
+
+   **BIOQUÍMICA (Metabólicos):**
+   * "Glicose", "Glicemia", "Glicemia de Jejum" = "Glicemia de jejum"
+   * "TSH", "Hormônio Tireoestimulante" = "TSH"
+   * "T4 Livre", "Tiroxina Livre" = "T4 Livre"
+   * "Ferritina", "Ferritina Sérica" = "Ferritina"
+   * "Vitamina D", "25-OH Vitamina D" = "Vitamina D (25-OH)"
+   * "Vitamina B12", "Cobalamina" = "Vitamina B12"
+
+   **URINA E FEZES:**
+   * "EAS", "Urina I", "Urina tipo 1", "Sumário de Urina", "Urinálise" = "EAS (Urina tipo 1)"
+   * "Urocultura", "Cultura de Urina" = "Urocultura"
+   * "EPF", "Parasitológico", "Parasitológico de Fezes", "Protoparasitológico" = "EPF (Parasitológico de Fezes)"
+   * "Proteinúria 24h", "Proteínas na Urina 24 horas" = "Proteinúria de 24 horas"
+
+   **TIPAGEM SANGUÍNEA:**
+   * "Tipo Sanguíneo", "Tipagem ABO", "Grupo Sanguíneo" = "Tipo Sanguíneo e Fator Rh"
+   * "Coombs Indireto", "Teste de Coombs Indireto" = "Coombs Indireto"
+
+   **CURVA GLICÊMICA:**
+   * "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica" = "TTGO 75g (Curva Glicêmica)"
+
+   **ESTREPTOCOCO:**
+   * "Swab Vaginal", "Swab Retal", "Swab Vaginal/Retal", "EGB", "Estreptococo Grupo B" = "Swab vaginal/retal EGB"
+
 5. Para exames com subcampos (como TTGO), retorne cada subcampo separadamente
 6. **PROCURE TODOS OS EXAMES** - Não pare após encontrar alguns, continue procurando em todas as páginas
+7. **USE O NOME PADRONIZADO** - Sempre retorne o nome do exame conforme a lista acima (após o sinal de =), não o nome que aparece no documento
 
 **EXTRAÇÃO DE VALORES NUMÉRICOS:**
 - **SEMPRE extraia valores numéricos quando disponíveis**, mesmo que haja interpretação qualitativa
