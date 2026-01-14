@@ -123,6 +123,8 @@ async function startServer() {
     createExpressMiddleware({
       router: appRouter,
       createContext,
+      // Permitir que o cliente use POST para queries (necessário para evitar erro 414 URI Too Long)
+      allowMethodOverride: true,
     })
   );
   

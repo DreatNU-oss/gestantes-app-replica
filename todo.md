@@ -2276,3 +2276,7 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Bug Fix - Permissão Justificativa (Solicitado 14/01/2026)
 
 - [x] Corrigir erro 414 URI Too Long - adicionado methodOverride: 'POST' no httpBatchLink
+
+## Bug Fix - POST em Queries tRPC (Solicitado 14/01/2026)
+
+- [x] Corrigir erro "Unsupported POST-request to query procedure" - adicionado allowMethodOverride: true no servidor
