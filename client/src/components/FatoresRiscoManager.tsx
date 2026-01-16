@@ -55,6 +55,8 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
   const addFatorMutation = trpc.gestantes.addFatorRisco.useMutation({
     onSuccess: () => {
       utils.gestantes.getFatoresRisco.invalidate({ gestanteId });
+      // Não invalidar gestantes.list aqui para evitar fechar o formulário
+      // A lista será atualizada quando o formulário for fechado
       toast.success("Fator de risco adicionado");
       setShowAddForm(false);
       setNovoFator({ tipo: "", descricao: "" });
@@ -167,6 +169,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   )}
                 </div>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => handleRemoveFator(fator.id)}
@@ -181,6 +184,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
 
         {!showAddForm ? (
           <Button
+            type="button"
             variant="outline"
             size="sm"
             onClick={() => setShowAddForm(true)}
@@ -252,6 +256,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
 
             <div className="flex gap-2">
               <Button
+                type="button"
                 onClick={handleAddFator}
                 disabled={addFatorMutation.isPending}
                 size="sm"
@@ -260,6 +265,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                 Adicionar
               </Button>
               <Button
+                type="button"
                 variant="outline"
                 onClick={() => {
                   setShowAddForm(false);

@@ -2386,3 +2386,16 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Fix Puppeteer/Chrome launch failure when generating PDF on birth registration
 - [x] Use alternative PDF generation method that works in production (replaced Puppeteer with PDFKit)
+
+
+## Risk Factor Save Behavior Fix (16/01/2026)
+
+- [ ] Fix risk factor save to not close the patient registration form
+- [ ] Keep form open after saving risk factor to allow continued editing
+
+
+## Risk Factor Save Behavior Fix (16/01/2026)
+
+- [x] Fix risk factor save to not close the patient registration form
+- [x] Keep form open after saving risk factor to allow continued editing
+- [x] Add type="button" to all buttons in FatoresRiscoManager to prevent form submission
