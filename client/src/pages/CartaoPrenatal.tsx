@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -1319,11 +1319,20 @@ export default function CartaoPrenatal() {
         {/* Informações da Gestante */}
         {gestante && (
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
                 Dados da Gestante
               </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLocation(`/dashboard?editar=${gestante.id}`)}
+                className="flex items-center gap-2"
+              >
+                <UserCog className="h-4 w-4" />
+                Editar Cadastro
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-6">

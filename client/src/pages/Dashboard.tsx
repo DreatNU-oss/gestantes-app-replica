@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useLocation } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { useLocation, useSearch } from "wouter";
 import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -70,6 +70,8 @@ const formatarDataSegura = (dateValue: Date | string | null | undefined): string
 
 export default function Dashboard() {
   const { gestanteAtiva, setGestanteAtiva } = useGestanteAtiva();
+  const [, setLocation] = useLocation();
+  const searchString = useSearch();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
@@ -96,6 +98,22 @@ export default function Dashboard() {
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
   const utils = trpc.useUtils();
+
+  // Detectar parâmetro de edição na URL (vindo do Cartão de Pré-Natal)
+  useEffect(() => {
+    const params = new URLSearchParams(searchString);
+    const editarId = params.get('editar');
+    
+    if (editarId) {
+      const id = parseInt(editarId);
+      if (!isNaN(id)) {
+        setEditingId(id);
+        setShowForm(true);
+        // Limpar o parâmetro da URL
+        setLocation('/dashboard', { replace: true });
+      }
+    }
+  }, [searchString, setLocation]);
 
   const deleteMutation = trpc.gestantes.delete.useMutation({
     onSuccess: () => {

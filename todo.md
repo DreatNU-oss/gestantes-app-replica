@@ -2357,3 +2357,8 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Corrigir datas dos Marcos Importantes no Cartão de Pré-Natal que estão 1 dia a menos
 - [x] Verificar consistência entre datas no cabeçalho e nos marcos
+
+
+## Atalho para Edição de Gestante (16/01/2026)
+
+- [x] Adicionar botão de atalho no Cartão de Pré-Natal para editar dados da gestante em consulta
