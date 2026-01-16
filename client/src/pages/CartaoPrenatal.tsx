@@ -197,11 +197,15 @@ export default function CartaoPrenatal() {
     ...(condutasPersonalizadas?.map(c => c.nome) || [])
   ];
 
+  const utils = trpc.useUtils();
+
   const createMutation = trpc.consultasPrenatal.create.useMutation({
     onSuccess: () => {
       toast.success("Consulta registrada com sucesso!");
       refetchConsultas();
       resetForm();
+      // Invalidar cache de alertas de consultas atrasadas
+      utils.gestantes.semConsultaRecente.invalidate();
     },
     onError: (error) => {
       toast.error(`Erro ao registrar consulta: ${error.message}`);
@@ -213,6 +217,8 @@ export default function CartaoPrenatal() {
       toast.success("Consulta atualizada com sucesso!");
       refetchConsultas();
       resetForm();
+      // Invalidar cache de alertas de consultas atrasadas
+      utils.gestantes.semConsultaRecente.invalidate();
     },
     onError: (error) => {
       toast.error(`Erro ao atualizar consulta: ${error.message}`);

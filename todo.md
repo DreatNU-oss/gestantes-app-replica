@@ -2368,3 +2368,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Corrigir pontos que sumiram nos gráficos de peso após correção de timezone
 - [x] Corrigir posicionamento do peso de hoje que aparece no início do gráfico
+
+
+## Correção de Alertas de Demora para Consulta (16/01/2026)
+
+- [x] Corrigir alerta de demora para consulta que não desaparece após registrar nova consulta
+- [x] Tornar atualização do alerta automática após salvar consulta
