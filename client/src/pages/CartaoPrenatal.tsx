@@ -1135,13 +1135,25 @@ export default function CartaoPrenatal() {
     }
   };
 
+  // Função auxiliar para normalizar data para formato YYYY-MM-DD
+  const normalizarData = (data: string | Date): string => {
+    if (!data) return '';
+    const dataStr = typeof data === 'string' ? data : data.toISOString();
+    // Extrair apenas a parte da data (YYYY-MM-DD), ignorando timestamp se houver
+    return dataStr.split('T')[0];
+  };
+
   const calcularIG = (dataConsulta: string) => {
     if (!gestante?.dum) return null;
     
-    // Adicionar T12:00:00 para evitar problemas de fuso horário
-    const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
-    const dum = new Date(dumStr + 'T12:00:00');
-    const consulta = new Date(dataConsulta + 'T12:00:00');
+    // Normalizar as datas para formato YYYY-MM-DD e adicionar T12:00:00
+    const dumNormalizada = normalizarData(gestante.dum);
+    const consultaNormalizada = normalizarData(dataConsulta);
+    
+    if (!dumNormalizada || !consultaNormalizada) return null;
+    
+    const dum = new Date(dumNormalizada + 'T12:00:00');
+    const consulta = new Date(consultaNormalizada + 'T12:00:00');
     
     // Validar se as datas são válidas
     if (isNaN(dum.getTime()) || isNaN(consulta.getTime())) return null;
@@ -1160,10 +1172,14 @@ export default function CartaoPrenatal() {
   const calcularIGPorUS = (dataConsulta: string) => {
     if (!gestante?.dataUltrassom || !gestante?.igUltrassomSemanas) return null;
     
-    // Adicionar T12:00:00 para evitar problemas de fuso horário
-    const ultrassomStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
-    const ultrassom = new Date(ultrassomStr + 'T12:00:00');
-    const consulta = new Date(dataConsulta + 'T12:00:00');
+    // Normalizar as datas para formato YYYY-MM-DD e adicionar T12:00:00
+    const ultrassomNormalizada = normalizarData(gestante.dataUltrassom);
+    const consultaNormalizada = normalizarData(dataConsulta);
+    
+    if (!ultrassomNormalizada || !consultaNormalizada) return null;
+    
+    const ultrassom = new Date(ultrassomNormalizada + 'T12:00:00');
+    const consulta = new Date(consultaNormalizada + 'T12:00:00');
     
     // Validar se as datas são válidas
     if (isNaN(ultrassom.getTime()) || isNaN(consulta.getTime())) return null;

@@ -2362,3 +2362,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 ## Atalho para Edição de Gestante (16/01/2026)
 
 - [x] Adicionar botão de atalho no Cartão de Pré-Natal para editar dados da gestante em consulta
+
+
+## Correção de Gráficos de Peso (16/01/2026)
+
+- [x] Corrigir pontos que sumiram nos gráficos de peso após correção de timezone
+- [x] Corrigir posicionamento do peso de hoje que aparece no início do gráfico
