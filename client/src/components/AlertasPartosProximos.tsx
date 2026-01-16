@@ -41,7 +41,9 @@ export function AlertasPartosProximos({
 }) {
   const calcularDPP = (gestante: Gestante): Date | null => {
     if (!gestante.dum) return null;
-    const dum = new Date(gestante.dum);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+    const dum = new Date(dumStr + 'T12:00:00');
     const dpp = new Date(dum);
     dpp.setDate(dpp.getDate() + 280); // 40 semanas
     return dpp;
@@ -49,7 +51,9 @@ export function AlertasPartosProximos({
 
   const calcularDPPUltrassom = (gestante: Gestante): Date | null => {
     if (!gestante.dataUltrassom || gestante.igUltrassomSemanas === null) return null;
-    const dataUS = new Date(gestante.dataUltrassom);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+    const dataUS = new Date(dataUSStr + 'T12:00:00');
     const diasGestacao = (gestante.igUltrassomSemanas! * 7) + (gestante.igUltrassomDias || 0);
     const diasRestantes = 280 - diasGestacao;
     const dpp = new Date(dataUS);
@@ -120,12 +124,13 @@ export function AlertasPartosProximos({
 
   const calcularIdadeGestacional = (gestante: Gestante): number | null => {
     const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
+    hoje.setHours(12, 0, 0, 0);
 
     // Priorizar IG por US
     if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-      const dataUS = new Date(gestante.dataUltrassom);
-      dataUS.setHours(0, 0, 0, 0);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+      const dataUS = new Date(dataUSStr + 'T12:00:00');
       // Correção: subtrair 1 dia para não contar o dia do ultrassom
       const diasDesdeUS = Math.floor((hoje.getTime() - dataUS.getTime()) / (1000 * 60 * 60 * 24));
       const diasGestacaoUS = ((gestante.igUltrassomSemanas ?? 0) * 7) + (gestante.igUltrassomDias || 0);
@@ -135,8 +140,9 @@ export function AlertasPartosProximos({
 
     // Fallback para DUM
     if (gestante.dum) {
-      const dum = new Date(gestante.dum);
-      dum.setHours(0, 0, 0, 0);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+      const dum = new Date(dumStr + 'T12:00:00');
       // Subtrair 1 dia para corrigir contagem inclusiva
       return Math.floor((hoje.getTime() - dum.getTime()) / (1000 * 60 * 60 * 24)) - 1;
     }

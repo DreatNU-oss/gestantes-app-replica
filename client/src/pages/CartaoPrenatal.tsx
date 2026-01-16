@@ -678,7 +678,9 @@ export default function CartaoPrenatal() {
         pdf.text('Marcos Importantes da Gesta\u00e7\u00e3o', 20, y);
         y += 10;
         
-        const dppUS = new Date(gestante.calculado.dppUS);
+        // Adicionar T12:00:00 para evitar problemas de fuso horário
+        const dppUSStr = typeof gestante.calculado.dppUS === 'string' ? gestante.calculado.dppUS : gestante.calculado.dppUS;
+        const dppUS = new Date(dppUSStr + 'T12:00:00');
         const concepcao = new Date(dppUS);
         concepcao.setDate(concepcao.getDate() - 280);
         
@@ -1018,7 +1020,9 @@ export default function CartaoPrenatal() {
   const calcularMarcos = () => {
     if (!gestante?.calculado?.dppUS) return [];
     
-    const dppUS = new Date(gestante.calculado.dppUS);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dppUSStr = typeof gestante.calculado.dppUS === 'string' ? gestante.calculado.dppUS : gestante.calculado.dppUS;
+    const dppUS = new Date(dppUSStr + 'T12:00:00');
     const marcos = [];
     
     // Concepção
@@ -1134,8 +1138,10 @@ export default function CartaoPrenatal() {
   const calcularIG = (dataConsulta: string) => {
     if (!gestante?.dum) return null;
     
-    const dum = new Date(gestante.dum);
-    const consulta = new Date(dataConsulta);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+    const dum = new Date(dumStr + 'T12:00:00');
+    const consulta = new Date(dataConsulta + 'T12:00:00');
     
     // Validar se as datas são válidas
     if (isNaN(dum.getTime()) || isNaN(consulta.getTime())) return null;
@@ -1154,8 +1160,10 @@ export default function CartaoPrenatal() {
   const calcularIGPorUS = (dataConsulta: string) => {
     if (!gestante?.dataUltrassom || !gestante?.igUltrassomSemanas) return null;
     
-    const ultrassom = new Date(gestante.dataUltrassom);
-    const consulta = new Date(dataConsulta);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const ultrassomStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+    const ultrassom = new Date(ultrassomStr + 'T12:00:00');
+    const consulta = new Date(dataConsulta + 'T12:00:00');
     
     // Validar se as datas são válidas
     if (isNaN(ultrassom.getTime()) || isNaN(consulta.getTime())) return null;
@@ -1183,7 +1191,9 @@ export default function CartaoPrenatal() {
   // Calcula data para uma semana específica pelo Ultrassom
   const calcularDataPorUS = (semanas: number, dias: number = 0) => {
     if (!gestante?.dataUltrassom || gestante?.igUltrassomSemanas === null || gestante?.igUltrassomDias === null) return null;
-    const dataUS = new Date(gestante.dataUltrassom);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+    const dataUS = new Date(dataUSStr + 'T12:00:00');
     const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
     const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
     const dataAlvo = new Date(dataUS);

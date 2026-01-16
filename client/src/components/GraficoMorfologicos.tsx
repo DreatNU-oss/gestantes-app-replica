@@ -54,7 +54,9 @@ export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
       gestante.igUltrassomSemanas !== null &&
       gestante.igUltrassomSemanas !== undefined
     ) {
-      const dataUS = new Date(gestante.dataUltrassom);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+      const dataUS = new Date(dataUSStr + 'T12:00:00');
       const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias ?? 0);
       const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
       const dataAlvo = new Date(dataUS);
@@ -64,7 +66,9 @@ export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
 
     // Fallback: Cálculo pela DUM
     if (gestante.dum) {
-      const dum = new Date(gestante.dum);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+      const dum = new Date(dumStr + 'T12:00:00');
       const totalDias = semanas * 7 + dias;
       const dataAlvo = new Date(dum);
       dataAlvo.setDate(dataAlvo.getDate() + totalDias);

@@ -58,7 +58,9 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
   const calcularDPP = (gestante: GestanteComCalculos): Date | null => {
     // Prioridade 1: Data Programada
     if (gestante.dataPartoProgramado) {
-      return new Date(gestante.dataPartoProgramado);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dataStr = typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : gestante.dataPartoProgramado;
+      return new Date(dataStr + 'T12:00:00');
     }
 
     // Prioridade 2: DPP pelo Ultrassom
@@ -70,14 +72,18 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
       const igTotalDias =
         gestante.igUltrassomSemanas * 7 + (gestante.igUltrassomDias || 0);
       const diasRestantes = 280 - igTotalDias;
-      const dpp = new Date(gestante.dataUltrassom);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+      const dpp = new Date(dataUSStr + 'T12:00:00');
       dpp.setDate(dpp.getDate() + diasRestantes + 1); // +1 para contar o dia do US
       return dpp;
     }
 
     // Prioridade 3: DPP pela DUM
     if (gestante.dum) {
-      const dpp = new Date(gestante.dum);
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+      const dpp = new Date(dumStr + 'T12:00:00');
       dpp.setDate(dpp.getDate() + 280);
       return dpp;
     }

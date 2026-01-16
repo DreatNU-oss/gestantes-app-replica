@@ -48,7 +48,9 @@ export default function MarcosImportantes() {
   // Calcula data para uma semana específica pela DUM
   const calcularDataPorDUM = (semanas: number, dias: number = 0) => {
     if (!gestante?.dum) return null;
-    const dum = new Date(gestante.dum);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+    const dum = new Date(dumStr + 'T12:00:00');
     const totalDias = semanas * 7 + dias;
     const dataAlvo = new Date(dum);
     dataAlvo.setDate(dataAlvo.getDate() + totalDias);
@@ -58,7 +60,9 @@ export default function MarcosImportantes() {
   // Calcula data para uma semana específica pelo Ultrassom
   const calcularDataPorUS = (semanas: number, dias: number = 0) => {
     if (!gestante?.dataUltrassom || gestante?.igUltrassomSemanas === null || gestante?.igUltrassomDias === null) return null;
-    const dataUS = new Date(gestante.dataUltrassom);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+    const dataUS = new Date(dataUSStr + 'T12:00:00');
     const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
     const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
     const dataAlvo = new Date(dataUS);
@@ -69,7 +73,9 @@ export default function MarcosImportantes() {
   // Calcula DPP pelo ultrassom
   const calcularDppUS = () => {
     if (gestante?.igUltrassomSemanas === null || gestante?.igUltrassomDias === null || !gestante?.dataUltrassom) return null;
-    const dataUS = new Date(gestante.dataUltrassom);
+    // Adicionar T12:00:00 para evitar problemas de fuso horário
+    const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+    const dataUS = new Date(dataUSStr + 'T12:00:00');
     const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
     const diasRestantes = 280 - igUltrassomDias;
     const dpp = new Date(dataUS);

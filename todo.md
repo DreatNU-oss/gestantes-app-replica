@@ -2351,3 +2351,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Fix NaN error when saving Urocultura exam results
 - [ ] Fix green colorization for exam date fields
+
+
+## Correção de Datas nos Marcos Importantes (16/01/2026)
+
+- [x] Corrigir datas dos Marcos Importantes no Cartão de Pré-Natal que estão 1 dia a menos
+- [x] Verificar consistência entre datas no cabeçalho e nos marcos
