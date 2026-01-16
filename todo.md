@@ -2374,3 +2374,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Corrigir alerta de demora para consulta que não desaparece após registrar nova consulta
 - [x] Tornar atualização do alerta automática após salvar consulta
+
+
+## Alert System Enhancement (16/01/2026)
+
+- [x] Implement automatic refresh of overdue appointment alerts on application load
+- [x] Add window focus listener to refresh alerts when returning to the app

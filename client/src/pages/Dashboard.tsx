@@ -94,7 +94,15 @@ export default function Dashboard() {
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
   const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{id: number, nome: string} | null>(null);
   
-  const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery({ searchTerm, sortBy });
+  const { data: gestantes, isLoading, refetch: refetchGestantes } = trpc.gestantes.list.useQuery(
+    { searchTerm, sortBy },
+    {
+      // Refetch on window focus to ensure data is always up-to-date
+      refetchOnWindowFocus: true,
+      // Refetch when the component mounts (app opens)
+      refetchOnMount: 'always',
+    }
+  );
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
   const utils = trpc.useUtils();

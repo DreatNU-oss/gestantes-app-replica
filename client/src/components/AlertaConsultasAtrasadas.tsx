@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AlertTriangle, Calendar, Clock, Phone, Baby, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,7 +56,33 @@ export function AlertaConsultasAtrasadas() {
   
   const utils = trpc.useUtils();
   
-  const { data: gestantesAtrasadas, isLoading } = trpc.gestantes.semConsultaRecente.useQuery();
+  const { data: gestantesAtrasadas, isLoading, refetch } = trpc.gestantes.semConsultaRecente.useQuery(
+    undefined,
+    {
+      // Refetch on window focus to ensure alerts are always up-to-date
+      refetchOnWindowFocus: true,
+      // Refetch when the component mounts (app opens)
+      refetchOnMount: 'always',
+      // Keep data fresh - refetch every 5 minutes in background
+      refetchInterval: 5 * 60 * 1000,
+      // Don't refetch in background when window is not focused
+      refetchIntervalInBackground: false,
+    }
+  );
+
+  // Force refetch when the page becomes visible (e.g., switching tabs)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        refetch();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [refetch]);
 
   const criarJustificativaMutation = trpc.gestantes.criarJustificativa.useMutation({
     onSuccess: () => {
