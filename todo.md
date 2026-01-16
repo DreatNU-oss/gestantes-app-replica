@@ -2380,3 +2380,9 @@ Ao editar o registro principal de uma gestante, ela deve ser automaticamente sel
 
 - [x] Implement automatic refresh of overdue appointment alerts on application load
 - [x] Add window focus listener to refresh alerts when returning to the app
+
+
+## PDF Generation Error Fix (16/01/2026)
+
+- [x] Fix Puppeteer/Chrome launch failure when generating PDF on birth registration
+- [x] Use alternative PDF generation method that works in production (replaced Puppeteer with PDFKit)
