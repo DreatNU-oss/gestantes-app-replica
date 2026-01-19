@@ -1443,19 +1443,21 @@ export default function CartaoPrenatal() {
             <CardContent>
               <div className="space-y-2">
                 <Label htmlFor="dataPartoProgramado">Selecione a data programada</Label>
-                <Input
-                  id="dataPartoProgramado"
-                  type="date"
-                  value={gestante.dataPartoProgramado || ""}
-                  onChange={(e) => {
-                    const novaData = e.target.value;
-                    updateGestanteMutation.mutate({
-                      id: gestanteSelecionada!,
-                      dataPartoProgramado: novaData,
-                    });
-                  }}
-                  className="max-w-xs"
-                />
+                <div className="flex gap-2 items-center">
+                  <Input
+                    id="dataPartoProgramado"
+                    type="date"
+                    value={gestante.dataPartoProgramado || ""}
+                    onChange={(e) => {
+                      const novaData = e.target.value;
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        dataPartoProgramado: novaData,
+                      });
+                    }}
+                    className="max-w-xs"
+                  />
+                </div>
                 {gestante.dataPartoProgramado && (
                   <p className="text-sm text-muted-foreground">
                     Data programada: {formatarData(gestante.dataPartoProgramado)}

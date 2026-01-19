@@ -135,3 +135,10 @@
 - [x] Remover campo editável de dentro dos "Dados da Gestante"
 - [x] Criar seção dedicada para "Data Planejada para o Parto" com auto-save
 - [x] Usar estilo similar às outras seções (Fatores de Risco, Medicamentos)
+
+
+## Fix API Error on Cartão Prenatal (19/01/2026)
+
+- [ ] Investigar erro "Unexpected token '<', is not valid JSON"
+- [ ] Corrigir causa raiz do erro no backend
+- [x] Fix API query error on /cartao-prenatal page
