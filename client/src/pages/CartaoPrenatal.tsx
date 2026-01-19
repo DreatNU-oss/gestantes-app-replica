@@ -1425,22 +1425,42 @@ export default function CartaoPrenatal() {
                     <Label className="text-muted-foreground text-sm">Abortos</Label>
                     <p className="font-medium">{gestante.abortos || "-"}</p>
                   </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Data Planejada para o Parto</Label>
-                    <Input
-                      type="date"
-                      value={gestante.dataPartoProgramado || ""}
-                      onChange={(e) => {
-                        const novaData = e.target.value;
-                        updateGestanteMutation.mutate({
-                          id: gestanteSelecionada!,
-                          dataPartoProgramado: novaData,
-                        });
-                      }}
-                      className="font-semibold text-lg h-auto py-1"
-                    />
-                  </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Data Planejada para o Parto */}
+        {gestanteSelecionada && gestante && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Data Planejada para o Parto
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="dataPartoProgramado">Selecione a data programada</Label>
+                <Input
+                  id="dataPartoProgramado"
+                  type="date"
+                  value={gestante.dataPartoProgramado || ""}
+                  onChange={(e) => {
+                    const novaData = e.target.value;
+                    updateGestanteMutation.mutate({
+                      id: gestanteSelecionada!,
+                      dataPartoProgramado: novaData,
+                    });
+                  }}
+                  className="max-w-xs"
+                />
+                {gestante.dataPartoProgramado && (
+                  <p className="text-sm text-muted-foreground">
+                    Data programada: {formatarData(gestante.dataPartoProgramado)}
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>

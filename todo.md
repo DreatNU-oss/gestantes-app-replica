@@ -121,3 +121,17 @@
 
 - [x] Tornar campo "Data Planejada para o Parto" editável no Cartão de Pré-Natal
 - [x] Adicionar input de data com salvamento automático
+
+
+## Move Data Planejada to Dedicated Section (19/01/2026)
+
+- [ ] Remover campo editável de dentro dos "Dados da Gestante"
+- [ ] Criar seção dedicada para "Data Planejada para o Parto" com auto-save
+- [ ] Usar estilo similar às outras seções (Fatores de Risco, Medicamentos)
+
+
+## Move Data Planejada to Dedicated Section (19/01/2026)
+
+- [x] Remover campo editável de dentro dos "Dados da Gestante"
+- [x] Criar seção dedicada para "Data Planejada para o Parto" com auto-save
+- [x] Usar estilo similar às outras seções (Fatores de Risco, Medicamentos)
