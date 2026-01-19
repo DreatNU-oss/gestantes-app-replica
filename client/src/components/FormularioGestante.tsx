@@ -125,21 +125,7 @@ export default function FormularioGestante({
   const { data: medicos = [] } = trpc.medicos.listar.useQuery();
   const { data: planos = [] } = trpc.planosSaude.listar.useQuery();
 
-  // Auto-save: restaurar dados ao carregar (apenas para novos cadastros)
-  useEffect(() => {
-    if (!gestanteId) {
-      const draft = loadDraft();
-      if (draft) {
-        setFormData(draft);
-        if (draft.tipoDUM) {
-          setTipoDUM(draft.tipoDUM);
-        }
-        toast.info('Rascunho restaurado', {
-          description: 'Seus dados foram recuperados automaticamente.',
-        });
-      }
-    }
-  }, []);
+  // Rascunho removido: formulário sempre abre em branco para novos cadastros
   
   // Salvar estado inicial do formulário
   useEffect(() => {

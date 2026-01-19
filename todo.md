@@ -65,3 +65,9 @@
 ## Fix NaN in Birth Distribution Graph (19/01/2026)
 
 - [ ] Corrigir valores NaN na coluna IG Atual do gráfico de distribuição de partos
+
+
+## Remove Draft from New Patient Form (19/01/2026)
+
+- [x] Remover funcionalidade de rascunho do formulário de nova gestante
+- [x] Garantir que ao clicar em "Nova Gestante" todos os campos apareçam em branco
