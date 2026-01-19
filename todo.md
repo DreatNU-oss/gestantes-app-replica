@@ -47,3 +47,4 @@
 
 - [x] Investigar por que os Marcos Importantes da Marcela Bellato Reis não aparecem
 - [x] Corrigir a lógica de cálculo/exibição dos marcos (agora usa DUM quando US não disponível)
+- [x] Corrigir bug onde igUltrassomDias com valor 0 não era salvo corretamente

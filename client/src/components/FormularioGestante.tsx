@@ -471,7 +471,7 @@ export default function FormularioGestante({
       abortos: formData.abortos ? parseInt(formData.abortos) : undefined,
       dum: tipoDUM === "incerta" ? "Incerta" : tipoDUM === "incompativel" ? "Incompatível com US" : (formData.dum || undefined),
       igUltrassomSemanas: formData.igUltrassomSemanas ? parseInt(formData.igUltrassomSemanas) : undefined,
-      igUltrassomDias: formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : undefined,
+      igUltrassomDias: formData.igUltrassomDias !== '' ? parseInt(formData.igUltrassomDias) : undefined,
       dataUltrassom: formData.dataUltrassom || undefined,
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
       observacoes: formData.observacoes || undefined,
