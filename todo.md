@@ -71,3 +71,17 @@
 
 - [x] Remover funcionalidade de rascunho do formulário de nova gestante
 - [x] Garantir que ao clicar em "Nova Gestante" todos os campos apareçam em branco
+
+
+## Add Exit Confirmation Dialog (19/01/2026)
+
+- [ ] Implementar aviso de confirmação ao sair do formulário com dados não salvos
+- [ ] Detectar mudanças no formulário comparando com estado inicial
+- [ ] Mostrar dialog de confirmação antes de cancelar/voltar
+
+
+## Add Exit Confirmation Dialog (19/01/2026)
+
+- [x] Implementar aviso de confirmação ao sair do formulário com dados não salvos
+- [x] Detectar mudanças no formulário comparando com estado inicial
+- [x] Mostrar dialog de confirmação antes de cancelar/voltar
