@@ -1,0 +1,18 @@
+{
+  "query": "SHOW COLUMNS FROM justificativasAlerta WHERE Field = 'motivo';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW COLUMNS FROM justificativasAlerta WHERE Field = 'motivo';",
+  "rows": [
+    {
+      "Field": "motivo",
+      "Type": "enum('ja_agendada','consulta_apos_morfologico','parto_proximo_ctg_doppler','desistiu_prenatal','abortamento','mudou_cidade','evoluiu_parto','espaco_maior_consultas')",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nmotivo\tenum('ja_agendada','consulta_apos_morfologico','parto_proximo_ctg_doppler','desistiu_prenatal','abortamento','mudou_cidade','evoluiu_parto','espaco_maior_consultas')\tNO\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

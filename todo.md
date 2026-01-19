@@ -48,3 +48,10 @@
 - [x] Investigar por que os Marcos Importantes da Marcela Bellato Reis não aparecem
 - [x] Corrigir a lógica de cálculo/exibição dos marcos (agora usa DUM quando US não disponível)
 - [x] Corrigir bug onde igUltrassomDias com valor 0 não era salvo corretamente
+
+
+## Bug - Justificativas não funcionam em produção (19/01/2026)
+
+- [x] Investigar por que justificativas não estão sendo salvas em produção
+- [x] Verificar se a tabela justificativasAlerta existe no banco de produção
+- [x] Sincronizar schema com produção (adicionados novos valores ao enum motivo)
