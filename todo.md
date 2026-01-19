@@ -55,3 +55,8 @@
 - [x] Investigar por que justificativas não estão sendo salvas em produção
 - [x] Verificar se a tabela justificativasAlerta existe no banco de produção
 - [x] Sincronizar schema com produção (adicionados novos valores ao enum motivo)
+
+
+## Auto-fill Days Field (19/01/2026)
+
+- [ ] Implementar preenchimento automático de 0 no campo de dias do ultrassom quando vazio
