@@ -109,3 +109,15 @@
 
 - [x] Adicionar campo "Data Planejada para o Parto" no Cartão de Pré-Natal
 - [x] Permitir visualização e edição do campo
+
+
+## Make Data Planejada Editable in Cartão (19/01/2026)
+
+- [ ] Tornar campo "Data Planejada para o Parto" editável no Cartão de Pré-Natal
+- [ ] Adicionar input de data com salvamento automático
+
+
+## Make Data Planejada Editable in Cartão (19/01/2026)
+
+- [x] Tornar campo "Data Planejada para o Parto" editável no Cartão de Pré-Natal
+- [x] Adicionar input de data com salvamento automático

@@ -239,6 +239,16 @@ export default function CartaoPrenatal() {
     },
   });
 
+  const updateGestanteMutation = trpc.gestantes.update.useMutation({
+    onSuccess: () => {
+      toast.success("Data planejada atualizada!");
+      utils.gestantes.get.invalidate({ id: gestanteSelecionada! });
+    },
+    onError: (error) => {
+      toast.error(`Erro ao atualizar: ${error.message}`);
+    },
+  });
+
   const gerarPDFMutation = trpc.pdf.gerarCartaoPrenatal.useMutation();
 
   const handleGerarPDF = async () => {
@@ -1417,7 +1427,18 @@ export default function CartaoPrenatal() {
                   </div>
                   <div>
                     <Label className="text-muted-foreground text-sm">Data Planejada para o Parto</Label>
-                    <p className="font-semibold text-lg">{gestante.dataPartoProgramado ? formatarData(gestante.dataPartoProgramado) : "-"}</p>
+                    <Input
+                      type="date"
+                      value={gestante.dataPartoProgramado || ""}
+                      onChange={(e) => {
+                        const novaData = e.target.value;
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          dataPartoProgramado: novaData,
+                        });
+                      }}
+                      className="font-semibold text-lg h-auto py-1"
+                    />
                   </div>
                 </div>
               </div>
