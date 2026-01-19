@@ -97,3 +97,15 @@
 
 - [x] Pré-selecionar "Nenhum" no campo Médico
 - [x] Pré-selecionar "A Definir" no campo Tipo de Parto
+
+
+## Add Data Planejada to Cartão de Pré-Natal (19/01/2026)
+
+- [ ] Adicionar campo "Data Planejada para o Parto" no Cartão de Pré-Natal
+- [ ] Permitir visualização e edição do campo
+
+
+## Add Data Planejada to Cartão de Pré-Natal (19/01/2026)
+
+- [x] Adicionar campo "Data Planejada para o Parto" no Cartão de Pré-Natal
+- [x] Permitir visualização e edição do campo

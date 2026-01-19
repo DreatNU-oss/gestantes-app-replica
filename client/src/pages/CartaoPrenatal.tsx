@@ -1415,6 +1415,10 @@ export default function CartaoPrenatal() {
                     <Label className="text-muted-foreground text-sm">Abortos</Label>
                     <p className="font-medium">{gestante.abortos || "-"}</p>
                   </div>
+                  <div>
+                    <Label className="text-muted-foreground text-sm">Data Planejada para o Parto</Label>
+                    <p className="font-semibold text-lg">{gestante.dataPartoProgramado ? formatarData(gestante.dataPartoProgramado) : "-"}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
