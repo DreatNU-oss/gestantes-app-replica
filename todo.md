@@ -85,3 +85,15 @@
 - [x] Implementar aviso de confirmação ao sair do formulário com dados não salvos
 - [x] Detectar mudanças no formulário comparando com estado inicial
 - [x] Mostrar dialog de confirmação antes de cancelar/voltar
+
+
+## Set Default Values in New Patient Form (19/01/2026)
+
+- [ ] Pré-selecionar "Nenhum" no campo Médico
+- [ ] Pré-selecionar "A Definir" no campo Tipo de Parto
+
+
+## Set Default Values in New Patient Form (19/01/2026)
+
+- [x] Pré-selecionar "Nenhum" no campo Médico
+- [x] Pré-selecionar "A Definir" no campo Tipo de Parto
