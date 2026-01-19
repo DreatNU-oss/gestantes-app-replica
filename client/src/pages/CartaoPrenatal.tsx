@@ -1028,15 +1028,16 @@ export default function CartaoPrenatal() {
   };
 
   const calcularMarcos = () => {
-    if (!gestante?.calculado?.dppUS) return [];
+    // Usar DPP por US se disponível, senão usar DPP por DUM
+    const dppStr = gestante?.calculado?.dppUS || gestante?.calculado?.dpp;
+    if (!dppStr) return [];
     
     // Adicionar T12:00:00 para evitar problemas de fuso horário
-    const dppUSStr = typeof gestante.calculado.dppUS === 'string' ? gestante.calculado.dppUS : gestante.calculado.dppUS;
-    const dppUS = new Date(dppUSStr + 'T12:00:00');
+    const dpp = new Date(dppStr + 'T12:00:00');
     const marcos = [];
     
     // Concepção
-    const concepcao = new Date(dppUS);
+    const concepcao = new Date(dpp);
     concepcao.setDate(concepcao.getDate() - 280);
     marcos.push({ titulo: "Concepção", data: concepcao.toLocaleDateString("pt-BR") });
     
@@ -1082,7 +1083,7 @@ export default function CartaoPrenatal() {
     marcos.push({ titulo: "Termo Completo", data: termoCompleto.toLocaleDateString("pt-BR") });
     
     // DPP (40 semanas)
-    marcos.push({ titulo: "DPP (40 semanas)", data: dppUS.toLocaleDateString("pt-BR") });
+    marcos.push({ titulo: "DPP (40 semanas)", data: dpp.toLocaleDateString("pt-BR") });
     
     return marcos;
   };
@@ -1214,17 +1215,32 @@ export default function CartaoPrenatal() {
     return d.toLocaleDateString('pt-BR');
   };
 
-  // Calcula data para uma semana específica pelo Ultrassom
+  // Calcula data para uma semana específica pelo Ultrassom ou DUM
   const calcularDataPorUS = (semanas: number, dias: number = 0) => {
-    if (!gestante?.dataUltrassom || gestante?.igUltrassomSemanas === null || gestante?.igUltrassomDias === null) return null;
-    // Adicionar T12:00:00 para evitar problemas de fuso horário
-    const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
-    const dataUS = new Date(dataUSStr + 'T12:00:00');
-    const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
-    const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
-    const dataAlvo = new Date(dataUS);
-    dataAlvo.setDate(dataAlvo.getDate() + diasDesdeUS);
-    return dataAlvo;
+    // Tentar usar dados de ultrassom primeiro
+    if (gestante?.dataUltrassom && gestante?.igUltrassomSemanas !== null && gestante?.igUltrassomDias !== null) {
+      // Adicionar T12:00:00 para evitar problemas de fuso horário
+      const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : gestante.dataUltrassom;
+      const dataUS = new Date(dataUSStr + 'T12:00:00');
+      const igUltrassomDias = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
+      const diasDesdeUS = semanas * 7 + dias - igUltrassomDias;
+      const dataAlvo = new Date(dataUS);
+      dataAlvo.setDate(dataAlvo.getDate() + diasDesdeUS);
+      return dataAlvo;
+    }
+    
+    // Fallback: usar DUM se disponível
+    if (gestante?.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US") {
+      const dumStr = typeof gestante.dum === 'string' ? gestante.dum : gestante.dum;
+      const dumDate = new Date(dumStr + 'T12:00:00');
+      // A DUM corresponde à semana 0, dia 0 da gestação
+      const diasDesdedum = semanas * 7 + dias;
+      const dataAlvo = new Date(dumDate);
+      dataAlvo.setDate(dataAlvo.getDate() + diasDesdedum);
+      return dataAlvo;
+    }
+    
+    return null;
   };
 
   const copiarTexto = (texto: string) => {

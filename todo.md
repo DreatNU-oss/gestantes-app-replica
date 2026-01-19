@@ -41,3 +41,9 @@
 
 - [x] Adicionar opção "Consulta será após o morfológico" na lista de justificativas
 - [x] Configurar para solicitar data da consulta agendada (como "ja_agendada")
+
+
+## Bug - Marcos Importantes não aparecem (19/01/2026)
+
+- [x] Investigar por que os Marcos Importantes da Marcela Bellato Reis não aparecem
+- [x] Corrigir a lógica de cálculo/exibição dos marcos (agora usa DUM quando US não disponível)

@@ -1,0 +1,40 @@
+{
+  "query": "SELECT * FROM gestantes WHERE nome LIKE '%Marcela%' OR nome LIKE '%Bellato%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM gestantes WHERE nome LIKE '%Marcela%' OR nome LIKE '%Bellato%';",
+  "rows": [
+    {
+      "id": "1440002",
+      "userId": "1",
+      "nome": "Marcela Bellato Reis",
+      "telefone": "NULL",
+      "email": "marcelabreis@hotmail.com",
+      "dataNascimento": "1993-09-15",
+      "planoSaudeId": "3",
+      "carteirinhaUnimed": "NULL",
+      "medicoId": "1",
+      "tipoPartoDesejado": "a_definir",
+      "gesta": "4",
+      "para": "NULL",
+      "partosNormais": "NULL",
+      "cesareas": "NULL",
+      "abortos": "3",
+      "dum": "Incerta",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "NULL",
+      "dataUltrassom": "2025-12-16",
+      "cartaoPrenatalUrl": "NULL",
+      "guiaExameUrl": "NULL",
+      "documentosUrls": "NULL",
+      "createdAt": "2026-01-19 13:36:23",
+      "updatedAt": "2026-01-19 13:36:23",
+      "dataPartoProgramado": "NULL",
+      "observacoes": "NULL",
+      "altura": "169",
+      "pesoInicial": "80000"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tnome\ttelefone\temail\tdataNascimento\tplanoSaudeId\tcarteirinhaUnimed\tmedicoId\ttipoPartoDesejado\tgesta\tpara\tpartosNormais\tcesareas\tabortos\tdum\tigUltrassomSemanas\tigUltrassomDias\tdataUltrassom\tcartaoPrenatalUrl\tguiaExameUrl\tdocumentosUrls\tcreatedAt\tupdatedAt\tdataPartoProgramado\tobservacoes\taltura\tpesoInicial\n1440002\t1\tMarcela Bellato Reis\tNULL\tmarcelabreis@hotmail.com\t1993-09-15\t3\tNULL\t1\ta_definir\t4\tNULL\tNULL\tNULL\t3\tIncerta\t7\tNULL\t2025-12-16\tNULL\tNULL\tNULL\t2026-01-19 13:36:23\t2026-01-19 13:36:23\tNULL\tNULL\t169\t80000\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}
