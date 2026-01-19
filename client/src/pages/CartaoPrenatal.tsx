@@ -120,9 +120,13 @@ export default function CartaoPrenatal() {
     if (mostrarFormulario && !consultaEditando) {
       const draft = loadDraft();
       if (draft) {
-        setFormData(draft);
+        // Sempre usar a data atual para novas consultas, ignorando a data do rascunho
+        setFormData({
+          ...draft,
+          dataConsulta: getDataHoje()
+        });
         toast.info('Rascunho restaurado', {
-          description: 'Seus dados foram recuperados automaticamente.',
+          description: 'Seus dados foram recuperados automaticamente. Data atualizada para hoje.',
         });
       }
     }
