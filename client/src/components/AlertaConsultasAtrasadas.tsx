@@ -38,6 +38,7 @@ interface GestanteAlerta {
 
 const MOTIVOS_JUSTIFICATIVA = [
   { value: "ja_agendada", label: "Paciente já está agendada" },
+  { value: "consulta_apos_morfologico", label: "Consulta será após o morfológico" },
   { value: "parto_proximo_ctg_doppler", label: "Parto próximo, com cardiotocografia/Doppler em dia" },
   { value: "desistiu_prenatal", label: "Paciente desistiu do pré-natal" },
   { value: "abortamento", label: "Paciente evoluiu para abortamento" },
@@ -129,7 +130,7 @@ export function AlertaConsultasAtrasadas() {
     }
 
     // Validar data prevista para justificativas temporárias
-    if ((motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') && !dataPrevistaConsulta) {
+    if ((motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'consulta_apos_morfologico' || motivoSelecionado === 'espaco_maior_consultas') && !dataPrevistaConsulta) {
       toast.error("Informe a data prevista da consulta");
       return;
     }
@@ -137,7 +138,7 @@ export function AlertaConsultasAtrasadas() {
     criarJustificativaMutation.mutate({
       gestanteId: gestanteSelecionada.gestante.id,
       motivo: motivoSelecionado,
-      dataPrevistaConsulta: (motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') ? dataPrevistaConsulta : undefined,
+      dataPrevistaConsulta: (motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'consulta_apos_morfologico' || motivoSelecionado === 'espaco_maior_consultas') ? dataPrevistaConsulta : undefined,
       observacoes: observacoes || undefined
     });
   };
@@ -322,7 +323,7 @@ export function AlertaConsultasAtrasadas() {
             </div>
 
             {/* Campo de data prevista - aparece para justificativas temporárias */}
-            {(motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'espaco_maior_consultas') && (
+            {(motivoSelecionado === 'ja_agendada' || motivoSelecionado === 'consulta_apos_morfologico' || motivoSelecionado === 'espaco_maior_consultas') && (
               <div className="space-y-2">
                 <Label htmlFor="dataPrevista">Data Prevista da Consulta *</Label>
                 <input

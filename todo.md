@@ -35,3 +35,9 @@
 - [x] Implementar UI para adicionar justificativa nos alertas de consulta atrasada
 - [x] Adicionar opção pré-definida: "Parto próximo, com cardiotocografia/Doppler em dia"
 - [x] Exibir justificativa no alerta quando preenchida
+
+
+## Nova Justificativa - Consulta após Morfológico (19/01/2026)
+
+- [x] Adicionar opção "Consulta será após o morfológico" na lista de justificativas
+- [x] Configurar para solicitar data da consulta agendada (como "ja_agendada")

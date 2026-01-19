@@ -225,6 +225,13 @@
       "when": 1768355948433,
       "tag": "0031_lonely_scorpion",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "5",
+      "when": 1768828727762,
+      "tag": "0032_illegal_kabuki",
+      "breakpoints": true
     }
   ]
 }

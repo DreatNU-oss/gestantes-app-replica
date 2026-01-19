@@ -518,6 +518,8 @@ export const justificativasAlerta = mysqlTable("justificativasAlerta", {
   gestanteId: int("gestanteId").notNull(),
   motivo: mysqlEnum("motivo", [
     "ja_agendada",
+    "consulta_apos_morfologico",
+    "parto_proximo_ctg_doppler",
     "desistiu_prenatal",
     "abortamento",
     "mudou_cidade",

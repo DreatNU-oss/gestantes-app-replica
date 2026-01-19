@@ -1,0 +1,1 @@
+ALTER TABLE `justificativasAlerta` MODIFY COLUMN `motivo` enum('ja_agendada','consulta_apos_morfologico','parto_proximo_ctg_doppler','desistiu_prenatal','abortamento','mudou_cidade','evoluiu_parto','espaco_maior_consultas') NOT NULL;

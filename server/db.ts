@@ -421,8 +421,8 @@ export async function getGestantesSemConsultaRecente(): Promise<{
   const gestantesComJustificativa = new Set(
     justificativasData
       .filter(j => {
-        // Justificativas temporárias: "ja_agendada" e "espaco_maior_consultas"
-        if (j.motivo === 'ja_agendada' || j.motivo === 'espaco_maior_consultas') {
+        // Justificativas temporárias: "ja_agendada", "consulta_apos_morfologico" e "espaco_maior_consultas"
+        if (j.motivo === 'ja_agendada' || j.motivo === 'consulta_apos_morfologico' || j.motivo === 'espaco_maior_consultas') {
           // Se tem data prevista da consulta, usar ela como referência
           if (j.dataPrevistaConsulta) {
             const dataPrevista = new Date(j.dataPrevistaConsulta);

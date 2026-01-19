@@ -551,6 +551,7 @@ export const appRouter = router({
         gestanteId: z.number(),
         motivo: z.enum([
           "ja_agendada",
+          "consulta_apos_morfologico",
           "parto_proximo_ctg_doppler",
           "desistiu_prenatal",
           "abortamento",
