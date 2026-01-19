@@ -142,3 +142,8 @@
 - [ ] Investigar erro "Unexpected token '<', is not valid JSON"
 - [ ] Corrigir causa raiz do erro no backend
 - [x] Fix API query error on /cartao-prenatal page
+
+## Evolution Charts in Cartão de Pré-Natal
+- [x] Create AU (Altura Uterina) evolution chart component
+- [x] Create blood pressure evolution chart component
+- [x] Integrate both charts into Cartão de Pré-Natal page

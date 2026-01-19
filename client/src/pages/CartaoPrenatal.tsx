@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { GraficoPeso } from "@/components/GraficoPeso";
+import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
+import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import MedicamentosManager from "@/components/MedicamentosManager";
@@ -2008,6 +2010,38 @@ export default function CartaoPrenatal() {
                       ? 'DUM'
                       : 'US' // Fallback para US se nenhum estiver disponível
                 }
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Gráfico de Altura Uterina */}
+        {gestante && consultas && consultas.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Evolução da Altura Uterina (AU)</CardTitle>
+              <CardDescription>Acompanhamento da altura uterina ao longo da gestação</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoAlturaUterina
+                consultas={consultas}
+                dum={gestante.dum}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Gráfico de Pressão Arterial */}
+        {gestante && consultas && consultas.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Evolução da Pressão Arterial</CardTitle>
+              <CardDescription>Acompanhamento da pressão arterial ao longo da gestação</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoPressaoArterial
+                consultas={consultas}
+                dum={gestante.dum}
               />
             </CardContent>
           </Card>
