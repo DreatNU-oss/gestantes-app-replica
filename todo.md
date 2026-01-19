@@ -26,3 +26,12 @@
 ## Consultation Date Default Fix (19/01/2026)
 
 - [x] Fix new consultation form to always use current date as default instead of draft/old value
+
+
+## Justificativa para Alertas de Consulta Atrasada (19/01/2026)
+
+- [x] Adicionar campo de justificativa no banco de dados (tabela gestantes ou nova tabela)
+- [x] Criar endpoint para salvar/atualizar justificativa
+- [x] Implementar UI para adicionar justificativa nos alertas de consulta atrasada
+- [x] Adicionar opção pré-definida: "Parto próximo, com cardiotocografia/Doppler em dia"
+- [x] Exibir justificativa no alerta quando preenchida

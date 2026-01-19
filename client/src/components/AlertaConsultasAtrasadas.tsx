@@ -38,6 +38,7 @@ interface GestanteAlerta {
 
 const MOTIVOS_JUSTIFICATIVA = [
   { value: "ja_agendada", label: "Paciente já está agendada" },
+  { value: "parto_proximo_ctg_doppler", label: "Parto próximo, com cardiotocografia/Doppler em dia" },
   { value: "desistiu_prenatal", label: "Paciente desistiu do pré-natal" },
   { value: "abortamento", label: "Paciente evoluiu para abortamento" },
   { value: "mudou_cidade", label: "Paciente mudou-se para outra cidade" },
