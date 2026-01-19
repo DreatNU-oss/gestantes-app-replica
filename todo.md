@@ -60,3 +60,8 @@
 ## Auto-fill Days Field (19/01/2026)
 
 - [ ] Implementar preenchimento automático de 0 no campo de dias do ultrassom quando vazio
+
+
+## Fix NaN in Birth Distribution Graph (19/01/2026)
+
+- [ ] Corrigir valores NaN na coluna IG Atual do gráfico de distribuição de partos

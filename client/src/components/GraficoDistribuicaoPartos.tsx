@@ -175,13 +175,28 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
         const dppFormatada = dpp ? new Date(dpp).toLocaleDateString("pt-BR") : "-";
         
         let igAtual = "-";
-        if (gestante.dum) {
-          const hoje = new Date();
-          const dum = new Date(gestante.dum);
+        const hoje = new Date();
+        
+        // Tentar calcular pela DUM primeiro
+        if (gestante.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US") {
+          const dumStr = typeof gestante.dum === 'string' ? gestante.dum.split('T')[0] : gestante.dum;
+          const dum = new Date(dumStr + 'T12:00:00');
           const diffMs = hoje.getTime() - dum.getTime();
           const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
           const semanas = Math.floor(diffDias / 7);
           const dias = diffDias % 7;
+          igAtual = `${semanas}s ${dias}d`;
+        }
+        // Se não tiver DUM, calcular pelo ultrassom
+        else if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined) {
+          const dataUSStr = typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom.split('T')[0] : gestante.dataUltrassom;
+          const dataUS = new Date(dataUSStr + 'T12:00:00');
+          const diffMs = hoje.getTime() - dataUS.getTime();
+          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const igUSEmDias = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
+          const igAtualEmDias = igUSEmDias + diffDias;
+          const semanas = Math.floor(igAtualEmDias / 7);
+          const dias = igAtualEmDias % 7;
           igAtual = `${semanas}s ${dias}d`;
         }
         
