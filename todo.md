@@ -185,3 +185,5 @@
 ## Melhorar Legibilidade dos Valores nos Gráficos
 - [ ] Ajustar posicionamento dos valores no gráfico de AU (acima dos pontos)
 - [ ] Ajustar posicionamento dos valores no gráfico de PA (acima dos pontos)
+
+- [x] Adicionar ícones de aviso no histórico de consultas para AU fora dos percentis 10-90 ou PA ≥140/90

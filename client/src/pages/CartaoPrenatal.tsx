@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -27,6 +27,8 @@ import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import MedicamentosManager from "@/components/MedicamentosManager";
 import { toast } from "sonner";
+import { isAUAbnormal } from "@/lib/auReferenceData";
+import { isBPAbnormal } from "@/lib/bpValidation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -1921,11 +1923,29 @@ export default function CartaoPrenatal() {
                           </div>
                         </TableCell>
                         <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
-                        <TableCell>{consulta.pressaoArterial || "-"}</TableCell>
                         <TableCell>
-                          {consulta.alturaUterina === -1 ? (
-                            <span className="text-muted-foreground italic">Útero não palpável</span>
-                          ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
+                          <div className="flex items-center gap-2">
+                            {consulta.pressaoArterial || "-"}
+                            {isBPAbnormal(consulta.pressaoArterial) && (
+                              <span title="Pressão arterial ≥140/90 mmHg">
+                                <AlertTriangle className="h-4 w-4 text-red-600" />
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span>
+                              {consulta.alturaUterina === -1 ? (
+                                <span className="text-muted-foreground italic">Útero não palpável</span>
+                              ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
+                            </span>
+                            {consulta.alturaUterina && consulta.alturaUterina !== -1 && isAUAbnormal(consulta.alturaUterina / 10, consulta.igDumSemanas || consulta.igUltrassomSemanas) && (
+                              <span title="Altura uterina fora dos percentis 10-90">
+                                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           {consulta.bcf === 1 ? (
