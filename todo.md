@@ -199,3 +199,6 @@
 - [x] Modificar gráfico de Pressão Arterial para eixo X fixo de 4 a 42 semanas
 - [x] Adicionar curvas de referência completas ao gráfico
 - [x] Dados medidos da paciente devem aparecer sobrepostos às curvas
+
+## Reorganizar Filtros na Página Gestantes (20/01/2026)
+- [x] Mover filtro de Plano de Saúde para a mesma linha dos outros filtros
