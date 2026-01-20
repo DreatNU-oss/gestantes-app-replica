@@ -297,6 +297,9 @@ export default function FormularioGestante({
       setHasUnsavedChanges(false);
       toast.success("Gestante cadastrada com sucesso!");
       
+      // Passar os dados da gestante para o callback onSuccess (para seleção automática)
+      onSuccess(data);
+      
       // Mostrar modal para iniciar consulta
       setCreatedGestanteId(data.id);
       setCreatedGestanteName(formData.nome);
@@ -1040,7 +1043,7 @@ export default function FormularioGestante({
                 variant="outline"
                 onClick={() => {
                   setShowStartConsultaModal(false);
-                  onSuccess();
+                  // Não precisa chamar onSuccess aqui pois já foi chamado no createMutation.onSuccess
                 }}
               >
                 Não, voltar

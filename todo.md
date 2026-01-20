@@ -210,3 +210,7 @@
 - [x] Investigar formulário de cadastro de gestantes
 - [x] Corrigir validação do campo medicoId que está enviando NaN
 - [x] Testar cadastro de gestante após correção
+
+## Seleção Automática de Gestante Após Cadastro (20/01/2026)
+- [x] Modificar Dashboard para selecionar automaticamente a gestante recém-cadastrada após salvar (funcionalidade já existente)
+- [x] Garantir que a gestante apareça selecionada no sidebar e pronta para iniciar consulta (funcionalidade já existente)
