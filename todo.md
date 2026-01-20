@@ -155,3 +155,10 @@
 - [ ] Ensure gestational age is calculated and saved in consultation form
 
 - [x] Garantir cálculo e salvamento correto de IG nas consultas
+
+## Backfill IG Fields
+- [ ] Criar script para preencher campos de IG em consultas antigas
+- [ ] Executar script e verificar gráficos
+## Backfill IG Fields
+- [x] Criar script para preencher campos de IG em consultas antigas
+- [x] Executar script e verificar gráficos
