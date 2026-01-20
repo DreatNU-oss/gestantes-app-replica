@@ -170,6 +170,12 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   dataConsulta: date("dataConsulta").notNull(),
   igSemanas: int("igSemanas"),
   igDias: int("igDias"),
+  // IG calculada pela DUM
+  igDumSemanas: int("igDumSemanas"),
+  igDumDias: int("igDumDias"),
+  // IG calculada pelo Ultrassom
+  igUltrassomSemanas: int("igUltrassomSemanas"),
+  igUltrassomDias: int("igUltrassomDias"),
   peso: int("peso"), // em gramas
   pressaoArterial: varchar("pressaoArterial", { length: 20 }),
   alturaUterina: int("alturaUterina"), // em mm

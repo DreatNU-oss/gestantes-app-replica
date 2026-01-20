@@ -1108,6 +1108,10 @@ export default function CartaoPrenatal() {
       return;
     }
 
+    // Calcular IG pela DUM e pelo Ultrassom
+    const igDUM = calcularIG(formData.dataConsulta);
+    const igUS = calcularIGPorUS(formData.dataConsulta);
+
     const data = {
       gestanteId: gestanteSelecionada,
       dataConsulta: formData.dataConsulta,
@@ -1119,6 +1123,12 @@ export default function CartaoPrenatal() {
       conduta: formData.conduta.length > 0 ? JSON.stringify(formData.conduta) : undefined,
       condutaComplementacao: formData.condutaComplementacao || undefined,
       observacoes: formData.observacoes || undefined,
+      // Salvar IG calculada pela DUM
+      igDumSemanas: (igDUM && !isNaN(igDUM.semanas)) ? igDUM.semanas : undefined,
+      igDumDias: (igDUM && !isNaN(igDUM.dias)) ? igDUM.dias : undefined,
+      // Salvar IG calculada pelo Ultrassom
+      igUltrassomSemanas: (igUS && !isNaN(igUS.semanas)) ? igUS.semanas : undefined,
+      igUltrassomDias: (igUS && !isNaN(igUS.dias)) ? igUS.dias : undefined,
     };
 
     if (consultaEditando) {

@@ -150,3 +150,8 @@
 
 ## Add Reference Curve to AU Chart
 - [x] Add reference curve showing expected AU values by gestational week
+
+## Fix IG Calculation in Consultations
+- [ ] Ensure gestational age is calculated and saved in consultation form
+
+- [x] Garantir cálculo e salvamento correto de IG nas consultas

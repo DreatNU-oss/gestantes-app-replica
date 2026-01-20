@@ -232,6 +232,13 @@
       "when": 1768828727762,
       "tag": "0032_illegal_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "5",
+      "when": 1768907464225,
+      "tag": "0033_moaning_metal_master",
+      "breakpoints": true
     }
   ]
 }
