@@ -10,6 +10,7 @@ interface InputExameValidadoProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -22,7 +23,8 @@ export function InputExameValidado({
   value,
   onChange,
   placeholder = "Resultado",
-  className = ""
+  className = "",
+  onKeyDown
 }: InputExameValidadoProps) {
   // Validar o resultado atual
   const validacao = validarResultado(nomeExame, value, trimestre);
@@ -82,6 +84,9 @@ export function InputExameValidado({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        data-field-type="resultado"
+        data-trimestre={trimestre}
         className={`
           ${className}
           ${estilo.borderColor}

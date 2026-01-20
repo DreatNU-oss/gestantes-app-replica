@@ -35,6 +35,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Função auxiliar para navegação inteligente por TAB
+const navegarParaProximoResultado = (trimestreAtual: number) => {
+  // Buscar todos os campos de resultado do mesmo trimestre
+  const camposResultado = Array.from(
+    document.querySelectorAll<HTMLInputElement | HTMLButtonElement>(
+      `[data-field-type="resultado"][data-trimestre="${trimestreAtual}"]`
+    )
+  );
+  
+  // Encontrar o elemento atualmente focado
+  const elementoAtual = document.activeElement;
+  const indiceAtual = camposResultado.indexOf(elementoAtual as HTMLInputElement | HTMLButtonElement);
+  
+  // Se encontrou o elemento atual e há um próximo
+  if (indiceAtual !== -1 && indiceAtual < camposResultado.length - 1) {
+    const proximoCampo = camposResultado[indiceAtual + 1];
+    proximoCampo.focus();
+    return true;
+  }
+  
+  return false;
+};
+
 // Lista de exames sorológicos que devem ter dropdown Reagente/Não Reagente
 const EXAMES_SOROLOGICOS = [
   "FTA-ABS IgG",
@@ -541,7 +564,17 @@ export default function ExamesLaboratoriais() {
           >
             <SelectTrigger 
               className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : ''}`}
-              onKeyDown={handleKeyDownEAS}
+              data-field-type="resultado"
+              data-trimestre={trimestre}
+              onKeyDown={(e) => {
+                handleKeyDownEAS(e);
+                if (e.key === 'Tab' && !e.shiftKey) {
+                  const navegou = navegarParaProximoResultado(trimestre);
+                  if (navegou) {
+                    e.preventDefault();
+                  }
+                }
+              }}
               title="Atalhos: 1=Normal, 2=Alterado"
             >
               <SelectValue placeholder="1/2" />
@@ -591,7 +624,17 @@ export default function ExamesLaboratoriais() {
           >
             <SelectTrigger 
               className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
-              onKeyDown={handleKeyDownUrocultura}
+              data-field-type="resultado"
+              data-trimestre={trimestre}
+              onKeyDown={(e) => {
+                handleKeyDownUrocultura(e);
+                if (e.key === 'Tab' && !e.shiftKey) {
+                  const navegou = navegarParaProximoResultado(trimestre);
+                  if (navegou) {
+                    e.preventDefault();
+                  }
+                }
+              }}
               title="Atalhos: 1=Positiva, 2=Negativa"
             >
               <SelectValue placeholder="1/2" />
@@ -645,7 +688,17 @@ export default function ExamesLaboratoriais() {
         >
           <SelectTrigger 
             className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
-            onKeyDown={handleKeyDownEPF}
+            data-field-type="resultado"
+            data-trimestre={trimestre}
+            onKeyDown={(e) => {
+              handleKeyDownEPF(e);
+              if (e.key === 'Tab' && !e.shiftKey) {
+                const navegou = navegarParaProximoResultado(trimestre);
+                if (navegou) {
+                  e.preventDefault();
+                }
+              }
+            }}
             title="Atalhos: 1=Positivo, 2=Negativo"
           >
             <SelectValue placeholder="1/2" />
@@ -709,7 +762,17 @@ export default function ExamesLaboratoriais() {
         >
           <SelectTrigger 
             className={`w-full ${corResultado} ${ehIndeterminado ? 'border-yellow-500 bg-yellow-50 text-yellow-900' : ''}`}
-            onKeyDown={handleKeyDownSorologico}
+            data-field-type="resultado"
+            data-trimestre={trimestre}
+            onKeyDown={(e) => {
+              handleKeyDownSorologico(e);
+              if (e.key === 'Tab' && !e.shiftKey) {
+                const navegou = navegarParaProximoResultado(trimestre);
+                if (navegou) {
+                  e.preventDefault();
+                }
+              }
+            }}
             title="Atalhos: 1=Reagente, 2=Não Reagente, 3=Indeterminado"
           >
             <SelectValue placeholder="1/2/3" />
@@ -730,6 +793,14 @@ export default function ExamesLaboratoriais() {
         trimestre={trimestre}
         value={valor}
         onChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        onKeyDown={(e) => {
+          if (e.key === 'Tab' && !e.shiftKey) {
+            const navegou = navegarParaProximoResultado(trimestre);
+            if (navegou) {
+              e.preventDefault();
+            }
+          }
+        }}
         className="w-full"
       />
     );

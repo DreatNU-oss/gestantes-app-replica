@@ -214,3 +214,9 @@
 ## Seleção Automática de Gestante Após Cadastro (20/01/2026)
 - [x] Modificar Dashboard para selecionar automaticamente a gestante recém-cadastrada após salvar (funcionalidade já existente)
 - [x] Garantir que a gestante apareça selecionada no sidebar e pronta para iniciar consulta (funcionalidade já existente)
+
+## Navegação Inteligente por TAB nos Exames Laboratoriais (20/01/2026)
+- [x] Investigar estrutura atual do formulário de exames laboratoriais
+- [x] Implementar navegação por TAB que pula automaticamente para o próximo campo de resultado dentro do mesmo trimestre
+- [x] Garantir que TAB pule campos de data e vá direto para o próximo resultado
+- [x] Testar navegação com diferentes cenários (primeiro, segundo e terceiro trimestres)
