@@ -105,6 +105,17 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
   const sistolicas = dadosFiltrados.map((d) => d.sistolica);
   const diastolicas = dadosFiltrados.map((d) => d.diastolica);
 
+  // Identificar pontos com PA anormal (≥140/90)
+  const pontosAnormais = dadosFiltrados.map((d) => d.sistolica >= 140 || d.diastolica >= 90);
+  
+  // Cores dos pontos (vermelho para anormais, cor padrão para normais)
+  const coresSistolica = pontosAnormais.map((anormal) => 
+    anormal ? "rgb(220, 38, 38)" : "rgb(239, 68, 68)"
+  );
+  const coresDiastolica = pontosAnormais.map((anormal) => 
+    anormal ? "rgb(220, 38, 38)" : "rgb(59, 130, 246)"
+  );
+
   const data = {
     labels,
     datasets: [
@@ -114,8 +125,11 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
         borderColor: "rgb(239, 68, 68)",
         backgroundColor: "rgba(239, 68, 68, 0.1)",
         tension: 0.3,
-        pointRadius: 5,
-        pointHoverRadius: 7,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: coresSistolica,
+        pointBorderColor: coresSistolica,
+        pointBorderWidth: 2,
       },
       {
         label: "Diastólica (mmHg)",
@@ -123,8 +137,11 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
         borderColor: "rgb(59, 130, 246)",
         backgroundColor: "rgba(59, 130, 246, 0.1)",
         tension: 0.3,
-        pointRadius: 5,
-        pointHoverRadius: 7,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: coresDiastolica,
+        pointBorderColor: coresDiastolica,
+        pointBorderWidth: 2,
       },
     ],
   };

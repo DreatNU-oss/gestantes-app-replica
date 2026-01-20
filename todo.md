@@ -162,3 +162,6 @@
 ## Backfill IG Fields
 - [x] Criar script para preencher campos de IG em consultas antigas
 - [x] Executar script e verificar gráficos
+
+## Highlight Abnormal Blood Pressure
+- [x] Modificar gráfico de PA para destacar valores ≥140/90 em vermelho
