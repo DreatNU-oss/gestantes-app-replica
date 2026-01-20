@@ -165,3 +165,6 @@
 
 ## Highlight Abnormal Blood Pressure
 - [x] Modificar gráfico de PA para destacar valores ≥140/90 em vermelho
+
+## Add Normal Range Zone to AU Chart
+- [x] Adicionar faixa sombreada de ±2cm no gráfico de AU

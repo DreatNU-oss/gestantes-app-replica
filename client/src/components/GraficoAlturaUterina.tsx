@@ -105,10 +105,31 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
   // Gerar curva de referência (AU esperada = semanas de IG)
   // Entre 20-34 semanas: AU (cm) ≈ semanas de IG ± 2cm
   const valoresReferencia = dadosFiltrados.map((d) => d.ig);
+  const valoresReferenciaMin = dadosFiltrados.map((d) => d.ig - 2);
+  const valoresReferenciaMax = dadosFiltrados.map((d) => d.ig + 2);
 
   const data = {
     labels,
     datasets: [
+      {
+        label: "Zona Normal (+2cm)",
+        data: valoresReferenciaMax,
+        borderColor: "transparent",
+        backgroundColor: "rgba(156, 163, 175, 0.15)",
+        fill: "+1",
+        tension: 0.3,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+      },
+      {
+        label: "Zona Normal (-2cm)",
+        data: valoresReferenciaMin,
+        borderColor: "transparent",
+        backgroundColor: "rgba(156, 163, 175, 0.15)",
+        tension: 0.3,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+      },
       {
         label: "AU Esperada (referência)",
         data: valoresReferencia,
