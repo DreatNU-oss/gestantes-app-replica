@@ -102,17 +102,49 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
   // Preparar dados (eixo Y) - altura uterina
   const valores = dadosFiltrados.map((d) => d.au);
 
-  // Gerar curva de referência (AU esperada = semanas de IG)
-  // Entre 20-34 semanas: AU (cm) ≈ semanas de IG ± 2cm
-  const valoresReferencia = dadosFiltrados.map((d) => d.ig);
-  const valoresReferenciaMin = dadosFiltrados.map((d) => d.ig - 2);
-  const valoresReferenciaMax = dadosFiltrados.map((d) => d.ig + 2);
+  // Dados oficiais de referência (Ministério da Saúde/FEBRASGO - Percentis 10 e 90)
+  const referenceData: Record<number, { min: number; max: number; median: number }> = {
+    12: { min: 10, max: 12, median: 11 },
+    13: { min: 6, max: 14, median: 10 },
+    14: { min: 9, max: 16, median: 12.5 },
+    15: { min: 10, max: 18, median: 14 },
+    16: { min: 11, max: 19, median: 15 },
+    17: { min: 13, max: 24, median: 18.5 },
+    18: { min: 13, max: 23, median: 18 },
+    19: { min: 14, max: 24, median: 19 },
+    20: { min: 18, max: 22, median: 20 },
+    21: { min: 16, max: 24, median: 20 },
+    22: { min: 17, max: 26, median: 21.5 },
+    23: { min: 19, max: 27, median: 23 },
+    24: { min: 19, max: 28, median: 23.5 },
+    25: { min: 20, max: 28, median: 24 },
+    26: { min: 21, max: 30, median: 25.5 },
+    27: { min: 23, max: 29, median: 26 },
+    28: { min: 24, max: 32, median: 28 },
+    29: { min: 24, max: 35, median: 29.5 },
+    30: { min: 25, max: 34, median: 29.5 },
+    31: { min: 25, max: 35, median: 30 },
+    32: { min: 26, max: 36, median: 31 },
+    33: { min: 27, max: 35, median: 31 },
+    34: { min: 27, max: 36, median: 31.5 },
+    35: { min: 28, max: 37, median: 32.5 },
+    36: { min: 29, max: 37, median: 33 },
+    37: { min: 30, max: 38, median: 34 },
+    38: { min: 31, max: 39, median: 35 },
+    39: { min: 31, max: 38, median: 34.5 },
+    40: { min: 32, max: 36, median: 34 },
+  };
+
+  // Mapear valores de referência para cada consulta
+  const valoresReferencia = dadosFiltrados.map((d) => referenceData[d.ig]?.median || d.ig);
+  const valoresReferenciaMin = dadosFiltrados.map((d) => referenceData[d.ig]?.min || d.ig - 2);
+  const valoresReferenciaMax = dadosFiltrados.map((d) => referenceData[d.ig]?.max || d.ig + 2);
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Zona Normal (+2cm)",
+        label: "Percentil 90 (limite superior)",
         data: valoresReferenciaMax,
         borderColor: "transparent",
         backgroundColor: "rgba(156, 163, 175, 0.15)",
@@ -122,7 +154,7 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
         pointHoverRadius: 0,
       },
       {
-        label: "Zona Normal (-2cm)",
+        label: "Percentil 10 (limite inferior)",
         data: valoresReferenciaMin,
         borderColor: "transparent",
         backgroundColor: "rgba(156, 163, 175, 0.15)",
@@ -131,7 +163,7 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
         pointHoverRadius: 0,
       },
       {
-        label: "AU Esperada (referência)",
+        label: "Mediana (referência)",
         data: valoresReferencia,
         borderColor: "rgb(156, 163, 175)",
         backgroundColor: "transparent",

@@ -176,3 +176,6 @@
 ## Remove DPP Filter from Gestantes Page
 - [x] Remover filtro de "Período de DPP" da página Gestantes
 - [x] Mover filtro Plano de Saúde para a mesma linha dos outros filtros
+
+## Update AU Chart with Official Reference Ranges
+- [x] Atualizar gráfico de AU com faixas de referência oficiais (percentis 10-90) do Ministério da Saúde
