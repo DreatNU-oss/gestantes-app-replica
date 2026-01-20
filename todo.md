@@ -192,3 +192,10 @@
 - [x] Modificar gráfico de Altura Uterina para exibir eixo X fixo de 12 a 42 semanas
 - [x] Garantir que curvas de referência (percentis 10-90) sejam sempre exibidas completas
 - [x] Dados medidos da paciente devem aparecer sobrepostos às curvas de referência
+
+## Criar Gráfico de PA com Curvas de Referência (20/01/2026)
+- [x] Extrair dados de referência de PA do PDF fornecido
+- [x] Criar arquivo com valores de referência (percentis) para PA sistólica e diastólica
+- [x] Modificar gráfico de Pressão Arterial para eixo X fixo de 4 a 42 semanas
+- [x] Adicionar curvas de referência completas ao gráfico
+- [x] Dados medidos da paciente devem aparecer sobrepostos às curvas
