@@ -38,109 +38,94 @@ interface GraficoAlturaUterinaProps {
   dum?: string | null;
 }
 
+// Dados oficiais de referência (Ministério da Saúde/FEBRASGO - Percentis 10 e 90)
+const referenceData: Record<number, { min: number; max: number; median: number }> = {
+  12: { min: 10, max: 12, median: 11 },
+  13: { min: 6, max: 14, median: 10 },
+  14: { min: 9, max: 16, median: 12.5 },
+  15: { min: 10, max: 18, median: 14 },
+  16: { min: 11, max: 19, median: 15 },
+  17: { min: 13, max: 24, median: 18.5 },
+  18: { min: 13, max: 23, median: 18 },
+  19: { min: 14, max: 24, median: 19 },
+  20: { min: 18, max: 22, median: 20 },
+  21: { min: 16, max: 24, median: 20 },
+  22: { min: 17, max: 26, median: 21.5 },
+  23: { min: 19, max: 27, median: 23 },
+  24: { min: 19, max: 28, median: 23.5 },
+  25: { min: 20, max: 28, median: 24 },
+  26: { min: 21, max: 30, median: 25.5 },
+  27: { min: 23, max: 29, median: 26 },
+  28: { min: 24, max: 32, median: 28 },
+  29: { min: 24, max: 35, median: 29.5 },
+  30: { min: 25, max: 34, median: 29.5 },
+  31: { min: 25, max: 35, median: 30 },
+  32: { min: 26, max: 36, median: 31 },
+  33: { min: 27, max: 35, median: 31 },
+  34: { min: 27, max: 36, median: 31.5 },
+  35: { min: 28, max: 37, median: 32.5 },
+  36: { min: 29, max: 37, median: 33 },
+  37: { min: 30, max: 38, median: 34 },
+  38: { min: 31, max: 39, median: 35 },
+  39: { min: 31, max: 38, median: 34.5 },
+  40: { min: 32, max: 36, median: 34 },
+  41: { min: 35, max: 40, median: 37.5 },
+  42: { min: 35, max: 41, median: 38 },
+};
+
 export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaProps) {
-  // Filtrar consultas com AU válida e ordenar por data
-  const consultasValidas = consultas
-    .filter((c) => {
-      if (!c.alturaUterina) return false;
-      const au = typeof c.alturaUterina === 'string' ? parseFloat(c.alturaUterina) : c.alturaUterina;
-      return au > 0;
-    })
-    .sort((a, b) => {
-      const dataA = a.dataConsulta instanceof Date ? a.dataConsulta : new Date(a.dataConsulta);
-      const dataB = b.dataConsulta instanceof Date ? b.dataConsulta : new Date(b.dataConsulta);
-      return dataA.getTime() - dataB.getTime();
-    });
-
-  if (consultasValidas.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">
-        Nenhum dado de altura uterina registrado
-      </div>
-    );
-  }
-
   // Calcular IG em semanas para cada consulta
-  const dadosGrafico = consultasValidas.map((consulta) => {
-    let igSemanas = 0;
+  const dadosConsultas = consultas
+    .map((consulta) => {
+      if (!consulta.alturaUterina) return null;
+      
+      const au = typeof consulta.alturaUterina === 'string' 
+        ? parseFloat(consulta.alturaUterina) 
+        : consulta.alturaUterina;
+      
+      if (au <= 0) return null;
 
-    // Priorizar IG do ultrassom, depois DUM
-    if (consulta.igUltrassomSemanas !== null && consulta.igUltrassomSemanas !== undefined) {
-      igSemanas = consulta.igUltrassomSemanas;
-      if (consulta.igUltrassomDias) {
-        igSemanas += consulta.igUltrassomDias / 7;
+      let igSemanas = 0;
+
+      // Priorizar IG do ultrassom, depois DUM
+      if (consulta.igUltrassomSemanas !== null && consulta.igUltrassomSemanas !== undefined) {
+        igSemanas = consulta.igUltrassomSemanas;
+        if (consulta.igUltrassomDias) {
+          igSemanas += consulta.igUltrassomDias / 7;
+        }
+      } else if (consulta.igDumSemanas !== null && consulta.igDumSemanas !== undefined) {
+        igSemanas = consulta.igDumSemanas;
+        if (consulta.igDumDias) {
+          igSemanas += consulta.igDumDias / 7;
+        }
       }
-    } else if (consulta.igDumSemanas !== null && consulta.igDumSemanas !== undefined) {
-      igSemanas = consulta.igDumSemanas;
-      if (consulta.igDumDias) {
-        igSemanas += consulta.igDumDias / 7;
-      }
-    }
 
-    const au = typeof consulta.alturaUterina === 'string' 
-      ? parseFloat(consulta.alturaUterina) 
-      : consulta.alturaUterina || 0;
+      const igArredondada = Math.round(igSemanas);
+      
+      // Filtrar apenas IGs >= 12 semanas
+      if (igArredondada < 12) return null;
 
-    return {
-      ig: Math.round(igSemanas),
-      au: au / 10, // Converter de mm para cm
-    };
+      return {
+        ig: igArredondada,
+        au: au / 10, // Converter de mm para cm
+      };
+    })
+    .filter((d): d is { ig: number; au: number } => d !== null);
+
+  // Criar eixo X fixo de 12 a 42 semanas
+  const todasSemanas = Array.from({ length: 31 }, (_, i) => 12 + i); // 12 a 42
+  const labels = todasSemanas.map((s) => `${s}s`);
+
+  // Criar arrays de referência completos (12 a 42 semanas)
+  const valoresP10 = todasSemanas.map((s) => referenceData[s]?.min || null);
+  const valoresP90 = todasSemanas.map((s) => referenceData[s]?.max || null);
+  const valoresMediana = todasSemanas.map((s) => referenceData[s]?.median || null);
+
+  // Criar array de dados medidos (null onde não há medição)
+  const valoresMedidos = todasSemanas.map((semana) => {
+    const consulta = dadosConsultas.find((d) => d.ig === semana);
+    return consulta ? consulta.au : null;
   });
-
-  // Filtrar apenas IGs >= 12 semanas
-  const dadosFiltrados = dadosGrafico.filter((d) => d.ig >= 12);
-
-  if (dadosFiltrados.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">
-        Nenhuma consulta com IG ≥ 12 semanas
-      </div>
-    );
-  }
-
-  // Preparar labels (eixo X) - semanas de IG
-  const labels = dadosFiltrados.map((d) => `${d.ig}s`);
-
-  // Preparar dados (eixo Y) - altura uterina
-  const valores = dadosFiltrados.map((d) => d.au);
-
-  // Dados oficiais de referência (Ministério da Saúde/FEBRASGO - Percentis 10 e 90)
-  const referenceData: Record<number, { min: number; max: number; median: number }> = {
-    12: { min: 10, max: 12, median: 11 },
-    13: { min: 6, max: 14, median: 10 },
-    14: { min: 9, max: 16, median: 12.5 },
-    15: { min: 10, max: 18, median: 14 },
-    16: { min: 11, max: 19, median: 15 },
-    17: { min: 13, max: 24, median: 18.5 },
-    18: { min: 13, max: 23, median: 18 },
-    19: { min: 14, max: 24, median: 19 },
-    20: { min: 18, max: 22, median: 20 },
-    21: { min: 16, max: 24, median: 20 },
-    22: { min: 17, max: 26, median: 21.5 },
-    23: { min: 19, max: 27, median: 23 },
-    24: { min: 19, max: 28, median: 23.5 },
-    25: { min: 20, max: 28, median: 24 },
-    26: { min: 21, max: 30, median: 25.5 },
-    27: { min: 23, max: 29, median: 26 },
-    28: { min: 24, max: 32, median: 28 },
-    29: { min: 24, max: 35, median: 29.5 },
-    30: { min: 25, max: 34, median: 29.5 },
-    31: { min: 25, max: 35, median: 30 },
-    32: { min: 26, max: 36, median: 31 },
-    33: { min: 27, max: 35, median: 31 },
-    34: { min: 27, max: 36, median: 31.5 },
-    35: { min: 28, max: 37, median: 32.5 },
-    36: { min: 29, max: 37, median: 33 },
-    37: { min: 30, max: 38, median: 34 },
-    38: { min: 31, max: 39, median: 35 },
-    39: { min: 31, max: 38, median: 34.5 },
-    40: { min: 32, max: 36, median: 34 },
-  };
-
-  // Mapear valores de referência para cada consulta
-  const valoresReferencia = dadosFiltrados.map((d) => referenceData[d.ig]?.median || d.ig);
-  const valoresP10 = dadosFiltrados.map((d) => referenceData[d.ig]?.min || d.ig - 2);
-  const valoresP90 = dadosFiltrados.map((d) => referenceData[d.ig]?.max || d.ig + 2);
 
   const data = {
     labels,
@@ -174,7 +159,7 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
       },
       {
         label: "Mediana (referência)",
-        data: valoresReferencia,
+        data: valoresMediana,
         borderColor: "rgb(156, 163, 175)",
         backgroundColor: "transparent",
         borderDash: [5, 5],
@@ -187,14 +172,15 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
       },
       {
         label: "Altura Uterina (cm)",
-        data: valores,
+        data: valoresMedidos,
         borderColor: "rgb(168, 85, 247)",
         backgroundColor: "rgba(168, 85, 247, 0.1)",
         tension: 0.3,
         pointRadius: 5,
         pointHoverRadius: 7,
+        spanGaps: false, // Não conectar pontos com gaps
         datalabels: {
-          display: true,
+          display: (context: any) => context.dataset.data[context.dataIndex] !== null,
           align: "top" as const,
           anchor: "end" as const,
           offset: 4,
@@ -223,6 +209,7 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
       tooltip: {
         callbacks: {
           label: function (context) {
+            if (context.parsed.y === null) return "";
             return `AU: ${context.parsed.y} cm`;
           },
         },

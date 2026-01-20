@@ -187,3 +187,8 @@
 - [ ] Ajustar posicionamento dos valores no gráfico de PA (acima dos pontos)
 
 - [x] Adicionar ícones de aviso no histórico de consultas para AU fora dos percentis 10-90 ou PA ≥140/90
+
+## Ajustar Eixo X do Gráfico de AU (20/01/2026)
+- [x] Modificar gráfico de Altura Uterina para exibir eixo X fixo de 12 a 42 semanas
+- [x] Garantir que curvas de referência (percentis 10-90) sejam sempre exibidas completas
+- [x] Dados medidos da paciente devem aparecer sobrepostos às curvas de referência
