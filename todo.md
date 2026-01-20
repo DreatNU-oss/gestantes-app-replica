@@ -147,3 +147,6 @@
 - [x] Create AU (Altura Uterina) evolution chart component
 - [x] Create blood pressure evolution chart component
 - [x] Integrate both charts into Cartão de Pré-Natal page
+
+## Add Reference Curve to AU Chart
+- [x] Add reference curve showing expected AU values by gestational week

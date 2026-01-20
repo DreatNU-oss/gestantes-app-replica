@@ -102,9 +102,23 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
   // Preparar dados (eixo Y) - altura uterina
   const valores = dadosFiltrados.map((d) => d.au);
 
+  // Gerar curva de referência (AU esperada = semanas de IG)
+  // Entre 20-34 semanas: AU (cm) ≈ semanas de IG ± 2cm
+  const valoresReferencia = dadosFiltrados.map((d) => d.ig);
+
   const data = {
     labels,
     datasets: [
+      {
+        label: "AU Esperada (referência)",
+        data: valoresReferencia,
+        borderColor: "rgb(156, 163, 175)",
+        backgroundColor: "transparent",
+        borderDash: [5, 5],
+        tension: 0.3,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+      },
       {
         label: "Altura Uterina (cm)",
         data: valores,
