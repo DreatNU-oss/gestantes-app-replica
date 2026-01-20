@@ -10,6 +10,7 @@ import {
   Legend,
   ChartOptions,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(
   CategoryScale,
@@ -18,7 +19,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 interface Consulta {
@@ -137,33 +139,38 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
 
   // Mapear valores de referência para cada consulta
   const valoresReferencia = dadosFiltrados.map((d) => referenceData[d.ig]?.median || d.ig);
-  const valoresReferenciaMin = dadosFiltrados.map((d) => referenceData[d.ig]?.min || d.ig - 2);
-  const valoresReferenciaMax = dadosFiltrados.map((d) => referenceData[d.ig]?.max || d.ig + 2);
+  const valoresP10 = dadosFiltrados.map((d) => referenceData[d.ig]?.min || d.ig - 2);
+  const valoresP90 = dadosFiltrados.map((d) => referenceData[d.ig]?.max || d.ig + 2);
 
   const data = {
     labels,
     datasets: [
       {
         label: "Percentil 10 (limite inferior)",
-        data: valoresReferenciaMin,
-        borderColor: "rgba(156, 163, 175, 0.5)",
+        data: valoresP10,
+        borderColor: "rgb(156, 163, 175)",
         backgroundColor: "transparent",
         borderDash: [3, 3],
         tension: 0.3,
         pointRadius: 0,
         pointHoverRadius: 0,
-        fill: false,
+        datalabels: {
+          display: false,
+        },
       },
       {
         label: "Percentil 90 (limite superior)",
-        data: valoresReferenciaMax,
-        borderColor: "rgba(156, 163, 175, 0.5)",
+        data: valoresP90,
+        borderColor: "rgb(156, 163, 175)",
         backgroundColor: "rgba(156, 163, 175, 0.2)",
         borderDash: [3, 3],
         fill: "-1",
         tension: 0.3,
         pointRadius: 0,
         pointHoverRadius: 0,
+        datalabels: {
+          display: false,
+        },
       },
       {
         label: "Mediana (referência)",
@@ -174,6 +181,9 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
         tension: 0.3,
         pointRadius: 0,
         pointHoverRadius: 0,
+        datalabels: {
+          display: false,
+        },
       },
       {
         label: "Altura Uterina (cm)",
@@ -183,6 +193,18 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
         tension: 0.3,
         pointRadius: 5,
         pointHoverRadius: 7,
+        datalabels: {
+          display: true,
+          align: "top" as const,
+          anchor: "end" as const,
+          offset: 4,
+          color: "rgb(168, 85, 247)",
+          font: {
+            size: 11,
+            weight: "bold" as const,
+          },
+          formatter: (value: number | null) => value ? `${value} cm` : "",
+        },
       },
     ],
   };

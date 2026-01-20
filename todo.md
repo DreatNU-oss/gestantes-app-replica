@@ -181,3 +181,7 @@
 - [x] Atualizar gráfico de AU com faixas de referência oficiais (percentis 10-90) do Ministério da Saúde
 
 - [x] Corrigir área sombreada não visível no gráfico de AU (entre percentis 10-90)
+
+## Melhorar Legibilidade dos Valores nos Gráficos
+- [ ] Ajustar posicionamento dos valores no gráfico de AU (acima dos pontos)
+- [ ] Ajustar posicionamento dos valores no gráfico de PA (acima dos pontos)

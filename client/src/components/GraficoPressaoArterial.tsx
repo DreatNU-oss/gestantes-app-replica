@@ -10,6 +10,7 @@ import {
   Legend,
   ChartOptions,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(
   CategoryScale,
@@ -18,7 +19,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 interface Consulta {
@@ -130,6 +132,18 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
         pointBackgroundColor: coresSistolica,
         pointBorderColor: coresSistolica,
         pointBorderWidth: 2,
+        datalabels: {
+          display: true,
+          align: "top" as const,
+          anchor: "end" as const,
+          offset: 4,
+          color: (context: any) => pontosAnormais[context.dataIndex] ? "rgb(220, 38, 38)" : "rgb(239, 68, 68)",
+          font: {
+            size: 10,
+            weight: "bold" as const,
+          },
+          formatter: (value: number | null) => value ? `${value}` : "",
+        },
       },
       {
         label: "Diastólica (mmHg)",
@@ -142,6 +156,18 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
         pointBackgroundColor: coresDiastolica,
         pointBorderColor: coresDiastolica,
         pointBorderWidth: 2,
+        datalabels: {
+          display: true,
+          align: "bottom" as const,
+          anchor: "end" as const,
+          offset: 4,
+          color: (context: any) => pontosAnormais[context.dataIndex] ? "rgb(220, 38, 38)" : "rgb(59, 130, 246)",
+          font: {
+            size: 10,
+            weight: "bold" as const,
+          },
+          formatter: (value: number | null) => value ? `${value}` : "",
+        },
       },
     ],
   };
