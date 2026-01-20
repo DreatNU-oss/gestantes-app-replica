@@ -168,3 +168,7 @@
 
 ## Add Normal Range Zone to AU Chart
 - [x] Adicionar faixa sombreada de ±2cm no gráfico de AU
+
+## Fix AU Chart Issues
+- [x] Corrigir valores de AU exibidos 10x maior (mm ao invés de cm)
+- [x] Alterar eixo X do gráfico de AU para iniciar em 12 semanas

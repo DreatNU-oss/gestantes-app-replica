@@ -1,0 +1,80 @@
+{
+  "query": "SELECT id, dataConsulta, alturaUterina, igDumSemanas, igUltrassomSemanas FROM consultasPrenatal WHERE alturaUterina IS NOT NULL LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataConsulta, alturaUterina, igDumSemanas, igUltrassomSemanas FROM consultasPrenatal WHERE alturaUterina IS NOT NULL LIMIT 10;",
+  "rows": [
+    {
+      "id": "1770003",
+      "dataConsulta": "2025-11-30",
+      "alturaUterina": "26",
+      "igDumSemanas": "28",
+      "igUltrassomSemanas": "28"
+    },
+    {
+      "id": "1770004",
+      "dataConsulta": "2025-12-01",
+      "alturaUterina": "13",
+      "igDumSemanas": "12",
+      "igUltrassomSemanas": "13"
+    },
+    {
+      "id": "1770007",
+      "dataConsulta": "2025-12-01",
+      "alturaUterina": "24",
+      "igDumSemanas": "26",
+      "igUltrassomSemanas": "25"
+    },
+    {
+      "id": "1770008",
+      "dataConsulta": "2025-12-01",
+      "alturaUterina": "26",
+      "igDumSemanas": "27",
+      "igUltrassomSemanas": "26"
+    },
+    {
+      "id": "1770009",
+      "dataConsulta": "2025-12-01",
+      "alturaUterina": "30",
+      "igDumSemanas": "37",
+      "igUltrassomSemanas": "37"
+    },
+    {
+      "id": "1770010",
+      "dataConsulta": "2025-12-01",
+      "alturaUterina": "27",
+      "igDumSemanas": "33",
+      "igUltrassomSemanas": "33"
+    },
+    {
+      "id": "1770011",
+      "dataConsulta": "2025-12-02",
+      "alturaUterina": "30",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "NULL"
+    },
+    {
+      "id": "1770013",
+      "dataConsulta": "2025-12-02",
+      "alturaUterina": "33",
+      "igDumSemanas": "34",
+      "igUltrassomSemanas": "33"
+    },
+    {
+      "id": "1770014",
+      "dataConsulta": "2025-12-02",
+      "alturaUterina": "24",
+      "igDumSemanas": "25",
+      "igUltrassomSemanas": "25"
+    },
+    {
+      "id": "1770015",
+      "dataConsulta": "2025-12-02",
+      "alturaUterina": "28",
+      "igDumSemanas": "33",
+      "igUltrassomSemanas": "33"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataConsulta\talturaUterina\tigDumSemanas\tigUltrassomSemanas\n1770003\t2025-11-30\t26\t28\t28\n1770004\t2025-12-01\t13\t12\t13\n1770007\t2025-12-01\t24\t26\t25\n1770008\t2025-12-01\t26\t27\t26\n1770009\t2025-12-01\t30\t37\t37\n1770010\t2025-12-01\t27\t33\t33\n1770011\t2025-12-02\t30\tNULL\tNULL\n1770013\t2025-12-02\t33\t34\t33\n1770014\t2025-12-02\t24\t25\t25\n1770015\t2025-12-02\t28\t33\t33\n",
+  "stderr": "",
+  "execution_time_ms": 109
+}

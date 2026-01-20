@@ -81,17 +81,17 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
 
     return {
       ig: Math.round(igSemanas),
-      au,
+      au: au / 10, // Converter de mm para cm
     };
   });
 
-  // Filtrar apenas IGs >= 4 semanas
-  const dadosFiltrados = dadosGrafico.filter((d) => d.ig >= 4);
+  // Filtrar apenas IGs >= 12 semanas
+  const dadosFiltrados = dadosGrafico.filter((d) => d.ig >= 12);
 
   if (dadosFiltrados.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-muted-foreground">
-        Nenhuma consulta com IG ≥ 4 semanas
+        Nenhuma consulta com IG ≥ 12 semanas
       </div>
     );
   }
