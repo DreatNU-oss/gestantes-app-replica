@@ -172,3 +172,7 @@
 ## Fix AU Chart Issues
 - [x] Corrigir valores de AU exibidos 10x maior (mm ao invés de cm)
 - [x] Alterar eixo X do gráfico de AU para iniciar em 12 semanas
+
+## Remove DPP Filter from Gestantes Page
+- [x] Remover filtro de "Período de DPP" da página Gestantes
+- [x] Mover filtro Plano de Saúde para a mesma linha dos outros filtros

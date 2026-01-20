@@ -364,23 +364,6 @@ export default function Dashboard() {
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-muted-foreground">Período de DPP:</span>
-              <Input
-                type="date"
-                value={filterDppInicio}
-                onChange={(e) => setFilterDppInicio(e.target.value)}
-                className="w-auto"
-              />
-              <span className="text-sm text-muted-foreground">até</span>
-              <Input
-                type="date"
-                value={filterDppFim}
-                onChange={(e) => setFilterDppFim(e.target.value)}
-                className="w-auto"
-              />
-            </div>
           </div>
           </CardContent>
         </Card>
