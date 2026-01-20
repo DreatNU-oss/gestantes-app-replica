@@ -205,3 +205,8 @@
 
 ## Ajustar Cor da Linha de Limite Diastólica no Gráfico de PA (20/01/2026)
 - [x] Alterar cor da linha tracejada do limite de hipertensão diastólica (90 mmHg) de vermelho para azul
+
+## BUG: Erro ao Cadastrar Gestante - medicoId NaN (20/01/2026)
+- [x] Investigar formulário de cadastro de gestantes
+- [x] Corrigir validação do campo medicoId que está enviando NaN
+- [x] Testar cadastro de gestante após correção
