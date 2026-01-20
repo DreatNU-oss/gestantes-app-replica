@@ -202,3 +202,6 @@
 
 ## Reorganizar Filtros na Página Gestantes (20/01/2026)
 - [x] Mover filtro de Plano de Saúde para a mesma linha dos outros filtros
+
+## Ajustar Cor da Linha de Limite Diastólica no Gráfico de PA (20/01/2026)
+- [x] Alterar cor da linha tracejada do limite de hipertensão diastólica (90 mmHg) de vermelho para azul

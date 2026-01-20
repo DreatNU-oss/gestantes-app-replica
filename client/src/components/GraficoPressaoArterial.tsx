@@ -223,7 +223,7 @@ export function GraficoPressaoArterial({ consultas, dum }: GraficoPressaoArteria
       {
         label: "Limite Hipertensão (90 mmHg)",
         data: todasSemanas.map(() => 90),
-        borderColor: "rgba(220, 38, 38, 0.5)",
+        borderColor: "rgba(59, 130, 246, 0.6)",
         backgroundColor: "transparent",
         borderDash: [8, 4],
         borderWidth: 2,
