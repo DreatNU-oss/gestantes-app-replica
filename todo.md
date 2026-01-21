@@ -220,3 +220,12 @@
 - [x] Implementar navegação por TAB que pula automaticamente para o próximo campo de resultado dentro do mesmo trimestre
 - [x] Garantir que TAB pule campos de data e vá direto para o próximo resultado
 - [x] Testar navegação com diferentes cenários (primeiro, segundo e terceiro trimestres)
+
+
+## BUG: IA não Interpreta Ultrassons Completamente (21/01/2026)
+- [x] Investigar código de interpretação de ultrassom
+- [x] Corrigir extração de Data do Exame (campo obrigatório)
+- [x] Corrigir extração de DPP (Data Provável do Parto)
+- [x] Corrigir extração de Ducto Venoso (DV) no morfológico 1º tri
+- [x] Corrigir extração de IPs das Uterinas (Doppler)
+- [x] Garantir que todos os campos do formulário sejam extraídos quando presentes no laudo
