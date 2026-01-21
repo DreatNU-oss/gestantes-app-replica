@@ -251,3 +251,12 @@
 ## Migrar Sistema de E-mails de Resend para Gmail SMTP (21/01/2026)
 - [x] Atualizar arquivo de envio de e-mails para usar Gmail SMTP (nodemailer) em vez de Resend
 - [x] Testar envio de lembretes automáticos via Gmail
+
+
+## Limpeza e Otimização de Código (21/01/2026)
+- [x] Analisar e remover dependências não utilizadas no package.json (6 pacotes removidos: resend, puppeteer, vaul, cmdk, embla-carousel-react, input-otp)
+- [x] Remover código morto e imports não utilizados no servidor (3 arquivos removidos)
+- [x] Remover código morto e imports não utilizados no cliente (32 componentes UI + 5 páginas/componentes removidos)
+- [x] Limpar scripts temporários e arquivos obsoletos (5 scripts removidos)
+- [x] Remover configurações do Resend (migrado para Gmail) - email-service.ts atualizado
+- [x] Consolidar código duplicado

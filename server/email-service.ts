@@ -1,18 +1,19 @@
-import { Resend } from "resend";
-
-let resend: Resend | null = null;
-
-if (process.env.RESEND_API_KEY) {
-  resend = new Resend(process.env.RESEND_API_KEY);
-}
-
-// Email sender - use Resend's default onboarding email (only sends to account owner email in test mode)
-const FROM_EMAIL = "Mais Mulher <onboarding@resend.dev>";
+import nodemailer from "nodemailer";
+import { getDb } from "./db";
+import { configuracoesEmail } from '../drizzle/schema';
+import { eq } from 'drizzle-orm';
 
 interface SendVerificationCodeParams {
   to: string;
   code: string;
   gestanteNome?: string;
+}
+
+async function getConfig(chave: string): Promise<string | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const configs = await db.select().from(configuracoesEmail).where(eq(configuracoesEmail.chave, chave));
+  return configs.length > 0 ? configs[0].valor : null;
 }
 
 export async function sendVerificationCode({
@@ -22,15 +23,26 @@ export async function sendVerificationCode({
 }: SendVerificationCodeParams): Promise<{ success: boolean; error?: string }> {
   const greeting = gestanteNome ? `Olá ${gestanteNome}` : "Olá";
 
-  if (!resend) {
-    console.warn("[Email] Resend não configurado - RESEND_API_KEY não definida");
-    return { success: false, error: "Email service not configured" };
-  }
-
   try {
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: [to],
+    const gmailUser = await getConfig('gmail_user');
+    const gmailPass = await getConfig('gmail_app_password');
+    
+    if (!gmailUser || !gmailPass) {
+      console.warn("[Email] Gmail não configurado - credenciais não definidas");
+      return { success: false, error: "Email service not configured" };
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailPass,
+      },
+    });
+
+    const result = await transporter.sendMail({
+      from: `"Clínica Mais Mulher" <${gmailUser}>`,
+      to: to,
       subject: `${code} - Código de Verificação | Mais Mulher`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -63,12 +75,7 @@ export async function sendVerificationCode({
       `,
     });
 
-    if (error) {
-      console.error("[Email] Failed to send verification code:", error);
-      return { success: false, error: error.message };
-    }
-
-    console.log("[Email] Verification code sent successfully:", data?.id);
+    console.log("[Email] Verification code sent successfully:", result.messageId);
     return { success: true };
   } catch (err) {
     console.error("[Email] Exception sending verification code:", err);
