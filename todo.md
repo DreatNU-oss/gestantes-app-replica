@@ -229,3 +229,10 @@
 - [x] Corrigir extração de Ducto Venoso (DV) no morfológico 1º tri
 - [x] Corrigir extração de IPs das Uterinas (Doppler)
 - [x] Garantir que todos os campos do formulário sejam extraídos quando presentes no laudo
+
+
+## Validação Visual de Campos Preenchidos pela IA (21/01/2026)
+- [x] Implementar estado para rastrear quais campos foram preenchidos pela IA
+- [x] Adicionar estilo visual de destaque amarelo nos campos preenchidos automaticamente
+- [x] Permitir que o usuário revise e confirme os dados antes de salvar
+- [x] Limpar destaque quando usuário editar manualmente o campo
