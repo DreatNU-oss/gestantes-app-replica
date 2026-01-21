@@ -100,6 +100,11 @@ export async function solicitarCodigoAcesso(
   };
 }
 
+// Fixed verification code for Apple Review test account
+// Email: dreatnu@yahoo.com | Code: 123456
+const TEST_EMAIL = "dreatnu@yahoo.com";
+const TEST_CODE = "123456";
+
 // Validar código e criar sessão
 export async function validarCodigoECriarSessao(
   contato: string,
@@ -116,28 +121,35 @@ export async function validarCodigoECriarSessao(
     return { success: false, error: 'Gestante não encontrada' };
   }
   
-  // Buscar código válido
-  const codigoValido = await db.select()
-    .from(codigosAcessoGestante)
-    .where(
-      and(
-        eq(codigosAcessoGestante.gestanteId, gestante.id),
-        eq(codigosAcessoGestante.codigo, codigo),
-        eq(codigosAcessoGestante.usado, 0),
-        gt(codigosAcessoGestante.expiraEm, new Date())
+  // Check if it's the Apple Review test account with fixed code
+  const isTestAccount = contato.toLowerCase() === TEST_EMAIL && codigo === TEST_CODE;
+  
+  if (!isTestAccount) {
+    // Normal flow: Buscar código válido no banco
+    const codigoValido = await db.select()
+      .from(codigosAcessoGestante)
+      .where(
+        and(
+          eq(codigosAcessoGestante.gestanteId, gestante.id),
+          eq(codigosAcessoGestante.codigo, codigo),
+          eq(codigosAcessoGestante.usado, 0),
+          gt(codigosAcessoGestante.expiraEm, new Date())
+        )
       )
-    )
-    .orderBy(desc(codigosAcessoGestante.createdAt))
-    .limit(1);
-  
-  if (!codigoValido[0]) {
-    return { success: false, error: 'Código inválido ou expirado' };
+      .orderBy(desc(codigosAcessoGestante.createdAt))
+      .limit(1);
+    
+    if (!codigoValido[0]) {
+      return { success: false, error: 'Código inválido ou expirado' };
+    }
+    
+    // Marcar código como usado
+    await db.update(codigosAcessoGestante)
+      .set({ usado: 1 })
+      .where(eq(codigosAcessoGestante.id, codigoValido[0].id));
+  } else {
+    console.log(`[Gestante Auth] Apple Review test account login: ${TEST_EMAIL}`);
   }
-  
-  // Marcar código como usado
-  await db.update(codigosAcessoGestante)
-    .set({ usado: 1 })
-    .where(eq(codigosAcessoGestante.id, codigoValido[0].id));
   
   // Gerar JWT
   const expiraEm = new Date(Date.now() + SESSAO_EXPIRACAO_DIAS * 24 * 60 * 60 * 1000);
