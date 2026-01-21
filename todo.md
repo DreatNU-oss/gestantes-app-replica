@@ -260,3 +260,8 @@
 - [x] Limpar scripts temporários e arquivos obsoletos (5 scripts removidos)
 - [x] Remover configurações do Resend (migrado para Gmail) - email-service.ts atualizado
 - [x] Consolidar código duplicado
+
+
+## Seleção Automática de Gestante ao Clicar no Menu (21/01/2026)
+- [x] Implementar seleção automática ao clicar no nome da gestante no menu seletor
+- [x] Gestante deve aparecer selecionada no sidebar após o clique
