@@ -134,6 +134,7 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
   tipo: mysqlEnum("tipo", [
     "alergia_medicamentos",
     "alteracoes_morfologicas_fetais",
+    "cirurgia_uterina_previa",
     "diabetes_gestacional",
     "diabetes_tipo2",
     "dpoc_asma",
@@ -141,16 +142,16 @@ export const fatoresRisco = mysqlTable("fatoresRisco", {
     "fator_preditivo_dheg",
     "fator_rh_negativo",
     "gemelar",
-    "hipotireoidismo",
     "hipertensao",
+    "hipotireoidismo",
     "historico_familiar_dheg",
     "idade_avancada",
     "incompetencia_istmo_cervical",
     "mal_passado_obstetrico",
     "malformacoes_mullerianas",
+    "outro",
     "sobrepeso_obesidade",
-    "trombofilia",
-    "outro"
+    "trombofilia"
   ]).notNull(),
   descricao: text("descricao"), // Para "outro" ou detalhes adicionais
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = resolvido/inativo
@@ -542,3 +543,20 @@ export const justificativasAlerta = mysqlTable("justificativasAlerta", {
 
 export type JustificativaAlerta = typeof justificativasAlerta.$inferSelect;
 export type InsertJustificativaAlerta = typeof justificativasAlerta.$inferInsert;
+
+/**
+ * Tabela de histórico de textos de Observação e Conduta
+ * Armazena textos utilizados com contador de uso para autocomplete inteligente
+ */
+export const historicoTextos = mysqlTable("historicoTextos", {
+  id: int("id").autoincrement().primaryKey(),
+  tipo: mysqlEnum("tipo", ["observacao", "conduta_complementacao"]).notNull(),
+  texto: text("texto").notNull(),
+  contadorUso: int("contadorUso").default(1).notNull(), // Incrementa cada vez que o texto é usado
+  ultimoUso: timestamp("ultimoUso").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type HistoricoTexto = typeof historicoTextos.$inferSelect;
+export type InsertHistoricoTexto = typeof historicoTextos.$inferInsert;

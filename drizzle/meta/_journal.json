@@ -239,6 +239,27 @@
       "when": 1768907464225,
       "tag": "0033_moaning_metal_master",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1769024448379,
+      "tag": "0034_deep_imperial_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "5",
+      "when": 1769024577531,
+      "tag": "0035_unknown_saracen",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "5",
+      "when": 1769024679814,
+      "tag": "0036_brave_alex_power",
+      "breakpoints": true
     }
   ]
 }

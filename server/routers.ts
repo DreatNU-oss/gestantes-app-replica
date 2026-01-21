@@ -500,6 +500,7 @@ export const appRouter = router({
         tipo: z.enum([
           "alergia_medicamentos",
           "alteracoes_morfologicas_fetais",
+          "cirurgia_uterina_previa",
           "diabetes_gestacional",
           "diabetes_tipo2",
           "dpoc_asma",
@@ -507,16 +508,16 @@ export const appRouter = router({
           "fator_preditivo_dheg",
           "fator_rh_negativo",
           "gemelar",
-          "hipotireoidismo",
           "hipertensao",
+          "hipotireoidismo",
           "historico_familiar_dheg",
           "idade_avancada",
           "incompetencia_istmo_cervical",
           "mal_passado_obstetrico",
           "malformacoes_mullerianas",
+          "outro",
           "sobrepeso_obesidade",
-          "trombofilia",
-          "outro"
+          "trombofilia"
         ]),
         descricao: z.string().optional(),
       }))
@@ -1645,6 +1646,7 @@ export const appRouter = router({
         tipo: z.enum([
           "alergia_medicamentos",
           "alteracoes_morfologicas_fetais",
+          "cirurgia_uterina_previa",
           "diabetes_gestacional",
           "diabetes_tipo2",
           "dpoc_asma",
@@ -1652,16 +1654,16 @@ export const appRouter = router({
           "fator_preditivo_dheg",
           "fator_rh_negativo",
           "gemelar",
-          "hipotireoidismo",
           "hipertensao",
+          "hipotireoidismo",
           "historico_familiar_dheg",
           "idade_avancada",
           "incompetencia_istmo_cervical",
           "mal_passado_obstetrico",
           "malformacoes_mullerianas",
+          "outro",
           "sobrepeso_obesidade",
-          "trombofilia",
-          "outro"
+          "trombofilia"
         ]),
       }))
       .mutation(({ input }) => createFatorRisco(input)),
@@ -1715,6 +1717,92 @@ export const appRouter = router({
     deleteMedicamento: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deleteMedicamento(input.id)),
+  }),
+
+  // Router de Histórico de Textos (Autocomplete)
+  historicoTextos: router({
+    // Buscar sugestões ordenadas por frequência de uso
+    getSugestoes: protectedProcedure
+      .input(z.object({
+        tipo: z.enum(["observacao", "conduta_complementacao"]),
+        busca: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const { historicoTextos } = await import('../drizzle/schema');
+        
+        // Buscar textos do tipo especificado
+        let query = db
+          .select()
+          .from(historicoTextos)
+          .where(eq(historicoTextos.tipo, input.tipo))
+          .orderBy(desc(historicoTextos.contadorUso), desc(historicoTextos.ultimoUso))
+          .limit(20);
+        
+        const resultados = await query;
+        
+        // Se houver busca, filtrar por texto similar
+        if (input.busca && input.busca.trim()) {
+          const buscaLower = input.busca.toLowerCase();
+          return resultados.filter(r => 
+            r.texto.toLowerCase().includes(buscaLower)
+          );
+        }
+        
+        return resultados;
+      }),
+    
+    // Registrar uso de texto (incrementar contador ou criar novo)
+    registrarUso: protectedProcedure
+      .input(z.object({
+        tipo: z.enum(["observacao", "conduta_complementacao"]),
+        texto: z.string().min(1),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        
+        const { historicoTextos } = await import('../drizzle/schema');
+        
+        // Buscar se o texto já existe
+        const existente = await db
+          .select()
+          .from(historicoTextos)
+          .where(
+            and(
+              eq(historicoTextos.tipo, input.tipo),
+              eq(historicoTextos.texto, input.texto)
+            )
+          )
+          .limit(1);
+        
+        if (existente.length > 0) {
+          // Incrementar contador de uso
+          await db
+            .update(historicoTextos)
+            .set({
+              contadorUso: sql`${historicoTextos.contadorUso} + 1`,
+              ultimoUso: new Date(),
+            })
+            .where(eq(historicoTextos.id, existente[0].id));
+          
+          return { id: existente[0].id, novo: false };
+        } else {
+          // Criar novo registro
+          const [novoRegistro] = await db
+            .insert(historicoTextos)
+            .values({
+              tipo: input.tipo,
+              texto: input.texto,
+              contadorUso: 1,
+              ultimoUso: new Date(),
+            });
+          
+          return { id: novoRegistro.insertId, novo: true };
+        }
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

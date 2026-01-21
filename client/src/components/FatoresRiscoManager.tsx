@@ -20,26 +20,28 @@ interface FatoresRiscoManagerProps {
   idadeGestante?: number | null;
 }
 
+// Fatores de risco em ordem alfabética
 const FATORES_RISCO_LABELS: Record<string, string> = {
   alergia_medicamentos: "Alergia a medicamentos",
   alteracoes_morfologicas_fetais: "Alterações morfológicas fetais",
+  cirurgia_uterina_previa: "Cirurgia Uterina Prévia",
   diabetes_gestacional: "Diabetes Gestacional",
   diabetes_tipo2: "Diabetes Tipo 2",
   dpoc_asma: "DPOC/Asma",
   epilepsia: "Epilepsia",
-  fator_preditivo_dheg: "Fator Preditivo Positivo para DHEG em Morfo 1º trimestre",
+  fator_preditivo_dheg: "Fator Preditivo Positivo para DHEG (Hist. Familiar, Doppler uterinas e/ou outros fatores de risco)",
   fator_rh_negativo: "Fator Rh Negativo",
   gemelar: "Gemelar",
-  hipotireoidismo: "Hipotireoidismo",
   hipertensao: "Hipertensão",
+  hipotireoidismo: "Hipotireoidismo",
   historico_familiar_dheg: "Mãe/irmã com histórico de DHEG",
   idade_avancada: "Idade ≥ 35 anos",
   incompetencia_istmo_cervical: "Incompetência Istmo-cervical",
   mal_passado_obstetrico: "Mal Passado Obstétrico",
   malformacoes_mullerianas: "Malformações Müllerianas (Útero bicorno/septado/arqueado)",
+  outro: "Outro",
   sobrepeso_obesidade: "Sobrepeso/obesidade",
   trombofilia: "Trombofilia",
-  outro: "Outro",
 };
 
 export default function FatoresRiscoManager({ gestanteId, idadeGestante }: FatoresRiscoManagerProps) {
@@ -207,33 +209,27 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
+                  {/* Fatores em ordem alfabética */}
                   <SelectItem value="alergia_medicamentos">Alergia a medicamentos</SelectItem>
                   <SelectItem value="alteracoes_morfologicas_fetais">Alterações morfológicas fetais</SelectItem>
+                  <SelectItem value="cirurgia_uterina_previa">Cirurgia Uterina Prévia</SelectItem>
                   <SelectItem value="diabetes_gestacional">Diabetes Gestacional</SelectItem>
                   <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
                   <SelectItem value="dpoc_asma">DPOC/Asma</SelectItem>
                   <SelectItem value="epilepsia">Epilepsia</SelectItem>
-                  <SelectItem value="fator_preditivo_dheg">Fator Preditivo Positivo para DHEG em Morfo 1º trimestre</SelectItem>
+                  <SelectItem value="fator_preditivo_dheg">Fator Preditivo Positivo para DHEG (Hist. Familiar, Doppler uterinas e/ou outros fatores de risco)</SelectItem>
                   <SelectItem value="fator_rh_negativo">Fator Rh Negativo</SelectItem>
                   <SelectItem value="gemelar">Gemelar</SelectItem>
-                  <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
                   <SelectItem value="hipertensao">Hipertensão</SelectItem>
-                  <SelectItem value="historico_familiar_dheg">
-                    Mãe/irmã com histórico de DHEG
-                  </SelectItem>
+                  <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
+                  <SelectItem value="historico_familiar_dheg">Mãe/irmã com histórico de DHEG</SelectItem>
                   <SelectItem value="idade_avancada">Idade ≥ 35 anos</SelectItem>
-                  <SelectItem value="incompetencia_istmo_cervical">
-                    Incompetência Istmo-cervical
-                  </SelectItem>
-                  <SelectItem value="mal_passado_obstetrico">
-                    Mal Passado Obstétrico
-                  </SelectItem>
-                  <SelectItem value="malformacoes_mullerianas">
-                    Malformações Müllerianas (Útero bicorno/septado/arqueado)
-                  </SelectItem>
+                  <SelectItem value="incompetencia_istmo_cervical">Incompetência Istmo-cervical</SelectItem>
+                  <SelectItem value="mal_passado_obstetrico">Mal Passado Obstétrico</SelectItem>
+                  <SelectItem value="malformacoes_mullerianas">Malformações Müllerianas (Útero bicorno/septado/arqueado)</SelectItem>
+                  <SelectItem value="outro">Outro</SelectItem>
                   <SelectItem value="sobrepeso_obesidade">Sobrepeso/obesidade</SelectItem>
                   <SelectItem value="trombofilia">Trombofilia</SelectItem>
-                  <SelectItem value="outro">Outro</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -270,3 +270,16 @@
 ## Limpar Campo de Busca Automaticamente (21/01/2026)
 - [x] Implementar limpeza automática do campo de busca após seleção de gestante
 - [x] Campo deve ser resetado para vazio após onSelect ser acionado
+
+
+## Autocomplete Inteligente em Observação e Conduta (21/01/2026)
+- [x] Criar tabela no banco para armazenar histórico de textos de Observação e Conduta
+- [x] Criar endpoint para buscar sugestões ordenadas por frequência de uso
+- [x] Criar endpoint para registrar uso de texto (incrementar contador)
+- [x] Implementar componente de autocomplete com sugestões do histórico
+- [x] Integrar autocomplete nos campos de Observação e Conduta do formulário de consulta
+- [x] Testar funcionalidade de sugestões e contagem de uso
+
+## Atualizar Fatores de Risco (21/01/2026)
+- [x] Adicionar novo fator de risco: "Cirurgia Uterina Prévia"
+- [x] Atualizar texto do fator "Preditivo DHEG" para "Fator Preditivo Positivo para DHEG (Hist. Familiar, Doppler uterinas e/ou outros fatores de risco)"

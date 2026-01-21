@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
@@ -1755,21 +1756,23 @@ export default function CartaoPrenatal() {
                 {/* Conduta Complementação */}
                 <div>
                   <Label>Conduta (complementação):</Label>
-                  <Textarea
+                  <TextareaComAutocomplete
                     value={formData.condutaComplementacao}
-                    onChange={(e) => setFormData({ ...formData, condutaComplementacao: e.target.value })}
+                    onChange={(condutaComplementacao) => setFormData({ ...formData, condutaComplementacao })}
                     placeholder="Complementação da conduta..."
                     rows={2}
+                    tipo="conduta_complementacao"
                   />
                 </div>
 
                 <div>
                   <Label>Observações</Label>
-                  <Textarea
+                  <TextareaComAutocomplete
                     value={formData.observacoes}
-                    onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+                    onChange={(observacoes) => setFormData({ ...formData, observacoes })}
                     placeholder="Observações da consulta..."
                     rows={3}
+                    tipo="observacao"
                   />
                 </div>
                 <div className="flex gap-2">
