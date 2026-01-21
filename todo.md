@@ -265,3 +265,8 @@
 ## Seleção Automática de Gestante ao Clicar no Menu (21/01/2026)
 - [x] Implementar seleção automática ao clicar no nome da gestante no menu seletor
 - [x] Gestante deve aparecer selecionada no sidebar após o clique
+
+
+## Limpar Campo de Busca Automaticamente (21/01/2026)
+- [x] Implementar limpeza automática do campo de busca após seleção de gestante
+- [x] Campo deve ser resetado para vazio após onSelect ser acionado

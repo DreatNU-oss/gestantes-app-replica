@@ -313,7 +313,10 @@ export default function Dashboard() {
                 gestantes={gestantes || []}
                 value={searchTerm}
                 onChange={setSearchTerm}
-                onSelect={(gestante) => setGestanteAtiva({ id: gestante.id, nome: gestante.nome })}
+                onSelect={(gestante) => {
+                  setGestanteAtiva({ id: gestante.id, nome: gestante.nome });
+                  setSearchTerm(""); // Limpar campo de busca após seleção
+                }}
                 placeholder="Buscar por nome..."
               />
               
