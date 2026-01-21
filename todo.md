@@ -236,3 +236,18 @@
 - [x] Adicionar estilo visual de destaque amarelo nos campos preenchidos automaticamente
 - [x] Permitir que o usuário revise e confirme os dados antes de salvar
 - [x] Limpar destaque quando usuário editar manualmente o campo
+
+
+## Criar Gestante de Teste Completa (21/01/2026)
+- [x] Criar gestante TESTE TESTE com 36 anos, alto risco por idade
+- [x] Configurar 36 semanas de gestação (DUM e USG)
+- [x] Adicionar medicamentos: Polivitamínico e AAS
+- [x] Criar 8 consultas mensais desde 7 semanas com PA normal e AU na curva
+- [x] Registrar peso inicial 56kg, altura 165cm, ganho adequado
+- [x] Cadastrar ultrassons: 1º US, Morfo 1º tri, Morfo 2º tri, USG Doppler
+- [x] Preencher exames laboratoriais de todos os trimestres com valores normais
+
+
+## Migrar Sistema de E-mails de Resend para Gmail SMTP (21/01/2026)
+- [x] Atualizar arquivo de envio de e-mails para usar Gmail SMTP (nodemailer) em vez de Resend
+- [x] Testar envio de lembretes automáticos via Gmail

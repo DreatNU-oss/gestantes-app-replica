@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { getDb } from './db';
 import { configuracoesEmail, logsEmails } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
@@ -14,16 +14,23 @@ async function getConfig(chave: string): Promise<string | null> {
 }
 
 /**
- * Cria cliente Resend com configurações do banco
+ * Cria transporter do Nodemailer para Gmail SMTP
  */
-async function createResendClient() {
-  const apiKey = await getConfig('resend_api_key');
+async function createGmailTransporter() {
+  const smtpEmail = await getConfig('smtp_email');
+  const smtpSenha = await getConfig('smtp_senha');
   
-  if (!apiKey) {
-    throw new Error('Chave API do Resend não encontrada. Configure resend_api_key.');
+  if (!smtpEmail || !smtpSenha) {
+    throw new Error('Configurações SMTP não encontradas. Configure smtp_email e smtp_senha.');
   }
   
-  return new Resend(apiKey);
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: smtpEmail,
+      pass: smtpSenha
+    }
+  });
 }
 
 /**
@@ -73,7 +80,7 @@ function criarTemplateEmail(titulo: string, conteudo: string): string {
 }
 
 /**
- * Envia e-mail e registra no log
+ * Envia e-mail via Gmail SMTP e registra no log
  */
 export async function enviarEmail(params: {
   gestanteId: number;
@@ -87,12 +94,13 @@ export async function enviarEmail(params: {
   if (!db) throw new Error('Banco de dados não disponível');
   
   try {
-    const resend = await createResendClient();
+    const transporter = await createGmailTransporter();
     const htmlContent = criarTemplateEmail(params.titulo, params.conteudo);
     
-    const emailFrom = await getConfig('resend_from_email') || 'onboarding@resend.dev';
-    const result = await resend.emails.send({
-      from: emailFrom,
+    const smtpEmail = await getConfig('smtp_email');
+    
+    await transporter.sendMail({
+      from: `"Clínica Mais Mulher" <${smtpEmail}>`,
       to: params.destinatario,
       subject: params.assunto,
       html: htmlContent,
