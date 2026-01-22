@@ -339,3 +339,9 @@
 
 ## Correção de Texto no PDF (22/01/2026)
 - [x] Corrigir texto do fator de risco "Idade >= 35 anos" no PDF
+
+## Fonte Unicode no PDF (22/01/2026)
+- [x] Baixar e configurar fonte Noto Sans com suporte Unicode
+- [x] Atualizar código do PDF para usar a fonte Unicode
+- [x] Restaurar caracteres especiais (≥, ≤, °, ü) nos textos
+- [x] Testar geração do PDF com caracteres especiais

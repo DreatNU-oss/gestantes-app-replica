@@ -85,6 +85,19 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           bufferPages: true
         });
 
+        // Registrar fontes Unicode (Noto Sans)
+        const fontsDir = path.join(process.cwd(), 'server/fonts');
+        const notoSansRegular = path.join(fontsDir, 'NotoSans-Regular.ttf');
+        const notoSansBold = path.join(fontsDir, 'NotoSans-Bold.ttf');
+        
+        // Verificar se as fontes existem e usar como padrão
+        const usarNotoSans = fs.existsSync(notoSansRegular) && fs.existsSync(notoSansBold);
+        if (usarNotoSans) {
+          doc.registerFont('NotoSans', notoSansRegular);
+          doc.registerFont('NotoSans-Bold', notoSansBold);
+          doc.font('NotoSans'); // Definir como fonte padrão
+        }
+
         const chunks: Buffer[] = [];
         doc.on('data', (chunk) => chunks.push(chunk));
         doc.on('end', () => resolve(Buffer.concat(chunks)));
@@ -168,7 +181,7 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             hipotireoidismo: 'Hipotireoidismo',
             hipertensao: 'Hipertensão',
             historico_familiar_dheg: 'Histórico familiar de DHEG',
-            idade_avancada: 'Idade >= 35 anos',
+            idade_avancada: 'Idade ≥ 35 anos',
             incompetencia_istmo_cervical: 'Incompetência Istmo-cervical',
             mal_passado_obstetrico: 'Mal Passado Obstétrico',
             malformacoes_mullerianas: 'Malformações Müllerianas',
