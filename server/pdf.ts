@@ -72,7 +72,7 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
     
     // Buscar todos os dados necessários
     const dados = await buscarDadosCartaoPrenatal(gestanteId);
-    const { gestante, consultas, fatoresRisco, medicamentos } = dados;
+    const { gestante, consultas, fatoresRisco, medicamentos, examesAgrupados, ultrassons, marcos } = dados;
     
     console.log('[PDF] Gerando PDF com PDFKit...');
     
@@ -300,8 +300,174 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           });
         }
 
-        // Rodapé
-        const pageCount = doc.bufferedPageRange().count;
+        // Marcos Importantes
+        if (marcos.length > 0) {
+          // Nova página se necessário
+          if (doc.y > 550) {
+            doc.addPage();
+          }
+          
+          doc.fontSize(14).fillColor(corPrimaria).text('Marcos Importantes');
+          doc.moveDown(0.5);
+          
+          let xPos = 50;
+          let yPos = doc.y;
+          
+          marcos.forEach((marco) => {
+            const larguraTexto = doc.widthOfString(marco.titulo) + 20;
+            
+            if (xPos + larguraTexto > 545) {
+              xPos = 50;
+              yPos += 30;
+            }
+            
+            // Cores baseadas no status (tons mais claros)
+            let bgColor = '#e8f5e9'; // Verde claro - concluido
+            let textColor = '#2e7d32';
+            if (marco.status === 'atual') {
+              bgColor = '#fff3e0'; // Laranja claro
+              textColor = '#e65100';
+            } else if (marco.status === 'pendente') {
+              bgColor = '#f5f5f5'; // Cinza claro
+              textColor = '#616161';
+            }
+            
+            // Badge de marco
+            doc.roundedRect(xPos, yPos, larguraTexto, 25, 8).fillColor(bgColor).fill();
+            doc.fontSize(8).fillColor(textColor).text(marco.titulo, xPos + 10, yPos + 4);
+            doc.fontSize(7).fillColor(textColor).text(`${marco.semanaInicio}-${marco.semanaFim}s`, xPos + 10, yPos + 14);
+            
+            xPos += larguraTexto + 10;
+          });
+          
+          doc.y = yPos + 40;
+          doc.moveDown(1);
+        }
+
+        // Ultrassons
+        if (ultrassons.length > 0) {
+          // Nova página se necessário
+          if (doc.y > 550) {
+            doc.addPage();
+          }
+          
+          doc.fontSize(14).fillColor(corPrimaria).text('Ultrassons');
+          doc.moveDown(0.5);
+          
+          // Cabeçalho da tabela
+          const tableTop = doc.y;
+          doc.fontSize(8).fillColor('white');
+          doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
+          
+          doc.fillColor('white');
+          doc.text('Tipo', 55, tableTop + 5, { width: 120 });
+          doc.text('Data', 180, tableTop + 5, { width: 60 });
+          doc.text('IG', 245, tableTop + 5, { width: 50 });
+          doc.text('Observações', 300, tableTop + 5, { width: 245 });
+          
+          doc.y = tableTop + 18;
+          
+          const tiposUltrassom: Record<string, string> = {
+            'primeiro_ultrassom': '1º Ultrassom',
+            'morfologico_1tri': 'Morfológico 1º Tri',
+            'ultrassom_obstetrico': 'US Obstétrico',
+            'morfologico_2tri': 'Morfológico 2º Tri',
+            'ecocardiograma_fetal': 'Ecocardiograma Fetal',
+            'ultrassom_seguimento': 'US Seguimento',
+          };
+          
+          ultrassons.slice(0, 10).forEach((us, index) => {
+            const rowY = doc.y;
+            
+            // Nova página se necessário
+            if (rowY > 720) {
+              doc.addPage();
+              doc.y = 50;
+            }
+            
+            // Fundo alternado
+            if (index % 2 === 0) {
+              doc.rect(50, doc.y, 495, 20).fillColor('#f9f9f9').fill();
+            }
+            
+            const currentY = doc.y;
+            const dados = us.dados as any || {};
+            
+            doc.fontSize(8).fillColor(corTexto);
+            doc.text(tiposUltrassom[us.tipoUltrassom] || us.tipoUltrassom, 55, currentY + 5, { width: 120 });
+            doc.text(us.dataExame ? formatarData(us.dataExame) : '-', 180, currentY + 5, { width: 60 });
+            doc.text(us.idadeGestacional || '-', 245, currentY + 5, { width: 50 });
+            
+            // Extrair observações relevantes dos dados
+            let obs = '';
+            if (dados.observacoes) obs = dados.observacoes;
+            else if (dados.ccn) obs = `CCN: ${dados.ccn}`;
+            else if (dados.tn) obs = `TN: ${dados.tn}`;
+            else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}`;
+            
+            doc.text(obs.substring(0, 50), 300, currentY + 5, { width: 245 });
+            
+            doc.y = currentY + 20;
+          });
+          
+          doc.moveDown(1);
+        }
+
+        // Exames Laboratoriais
+        if (examesAgrupados.length > 0) {
+          // Nova página
+          doc.addPage();
+          
+          doc.fontSize(14).fillColor(corPrimaria).text('Exames Laboratoriais');
+          doc.moveDown(0.5);
+          
+          // Cabeçalho da tabela
+          const tableTop = doc.y;
+          doc.fontSize(7).fillColor('white');
+          doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
+          
+          doc.fillColor('white');
+          doc.text('Exame', 55, tableTop + 5, { width: 90 });
+          doc.text('1º Tri Data', 150, tableTop + 5, { width: 50 });
+          doc.text('1º Tri Res.', 205, tableTop + 5, { width: 50 });
+          doc.text('2º Tri Data', 260, tableTop + 5, { width: 50 });
+          doc.text('2º Tri Res.', 315, tableTop + 5, { width: 50 });
+          doc.text('3º Tri Data', 370, tableTop + 5, { width: 50 });
+          doc.text('3º Tri Res.', 425, tableTop + 5, { width: 70 });
+          
+          doc.y = tableTop + 18;
+          
+          examesAgrupados.forEach((exame, index) => {
+            const rowY = doc.y;
+            
+            // Nova página se necessário
+            if (rowY > 720) {
+              doc.addPage();
+              doc.y = 50;
+            }
+            
+            // Fundo alternado
+            if (index % 2 === 0) {
+              doc.rect(50, doc.y, 495, 16).fillColor('#f9f9f9').fill();
+            }
+            
+            const currentY = doc.y;
+            
+            doc.fontSize(7).fillColor(corTexto);
+            doc.text(exame.nome.substring(0, 18), 55, currentY + 4, { width: 90 });
+            doc.text(exame.trimestre1.data ? formatarData(exame.trimestre1.data) : '-', 150, currentY + 4, { width: 50 });
+            doc.text((exame.trimestre1.resultado || '-').substring(0, 10), 205, currentY + 4, { width: 50 });
+            doc.text(exame.trimestre2.data ? formatarData(exame.trimestre2.data) : '-', 260, currentY + 4, { width: 50 });
+            doc.text((exame.trimestre2.resultado || '-').substring(0, 10), 315, currentY + 4, { width: 50 });
+            doc.text(exame.trimestre3.data ? formatarData(exame.trimestre3.data) : '-', 370, currentY + 4, { width: 50 });
+            doc.text((exame.trimestre3.resultado || '-').substring(0, 12), 425, currentY + 4, { width: 70 });
+            
+            doc.y = currentY + 16;
+          });
+        }
+
+        // Rodaé
+        const pageCount = doc.bufferedPageRange().count;;
         for (let i = 0; i < pageCount; i++) {
           doc.switchToPage(i);
           doc.fontSize(8).fillColor(corCinza);

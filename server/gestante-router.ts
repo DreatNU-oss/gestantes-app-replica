@@ -625,6 +625,10 @@ export const gestanteRouter = router({
       const gestante = await validateGestanteToken(input.token);
       const consultas = await gestanteDb.getConsultasByGestanteId(gestante.id);
       const ultrassons = await gestanteDb.getUltrassonsByGestanteId(gestante.id);
+      const exames = await gestanteDb.getExamesByGestanteId(gestante.id);
+      const fatoresRisco = await gestanteDb.getFatoresRiscoByGestanteId(gestante.id);
+      const medicamentos = await gestanteDb.getMedicamentosByGestanteId(gestante.id);
+      
       let idade = null;
       if (gestante.dataNascimento) {
         const dataNasc = new Date(gestante.dataNascimento);
@@ -638,11 +642,78 @@ export const gestanteRouter = router({
         dpp.setDate(dpp.getDate() + 280);
         dppDUM = dpp.toISOString().split('T')[0];
       }
+      
+      // Agrupar exames por trimestre
+      const nomesExames = [
+        'Hemograma', 'Tipo Sanguíneo', 'Glicemia Jejum', 'TSH', 'T4 Livre',
+        'Uréia', 'Creatinina', 'TGO', 'TGP', 'Urina I', 'Urocultura',
+        'HIV', 'VDRL', 'Hepatite B (HBsAg)', 'Hepatite C (Anti-HCV)',
+        'Toxoplasmose IgG', 'Toxoplasmose IgM', 'Rubéola IgG', 'Rubéola IgM',
+        'CMV IgG', 'CMV IgM', 'Coombs Indireto', 'TOTG 75g', 'Estreptococo Grupo B'
+      ];
+      
+      const examesAgrupados = nomesExames.map(nome => {
+        const resultado: any = { nome, trimestre1: undefined, trimestre2: undefined, trimestre3: undefined };
+        exames.forEach((ex: any) => {
+          if (ex.tipoExame.toLowerCase().includes(nome.toLowerCase()) ||
+              nome.toLowerCase().includes(ex.tipoExame.toLowerCase())) {
+            let trimestre = 1;
+            if (ex.igSemanas !== null) {
+              if (ex.igSemanas >= 28) trimestre = 3;
+              else if (ex.igSemanas >= 14) trimestre = 2;
+            }
+            const key = `trimestre${trimestre}`;
+            resultado[key] = {
+              resultado: ex.resultado || '',
+              data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
+            };
+          }
+        });
+        return resultado;
+      }).filter(e => e.trimestre1 || e.trimestre2 || e.trimestre3);
+      
+      // Calcular marcos importantes
+      let marcos: any[] = [];
+      let dataBase: Date | null = null;
+      let igBaseSemanas = 0;
+      let igBaseDias = 0;
+      
+      if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+        dataBase = new Date(gestante.dataUltrassom + 'T12:00:00');
+        igBaseSemanas = gestante.igUltrassomSemanas;
+        igBaseDias = gestante.igUltrassomDias || 0;
+      } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
+        dataBase = new Date(gestante.dum + 'T12:00:00');
+      }
+      
+      if (dataBase) {
+        const marcosDefinidos = [
+          { titulo: '1º Ultrassom', semanaInicio: 6, semanaFim: 9 },
+          { titulo: 'Morfológico 1º Tri', semanaInicio: 11, semanaFim: 14 },
+          { titulo: 'Morfológico 2º Tri', semanaInicio: 20, semanaFim: 24 },
+          { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
+          { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
+          { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: 36 },
+          { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
+          { titulo: 'Termo de Gestação', semanaInicio: 37, semanaFim: 42 },
+        ];
+        
+        marcos = marcosDefinidos.map(m => {
+          const diasAteSemanaInicio = ((m.semanaInicio - igBaseSemanas) * 7) - igBaseDias;
+          const dataEstimada = new Date(dataBase!.getTime() + (diasAteSemanaInicio * 24 * 60 * 60 * 1000));
+          return {
+            titulo: m.titulo,
+            data: dataEstimada.toISOString().split('T')[0],
+            periodo: `${m.semanaInicio}-${m.semanaFim}s`
+          };
+        });
+      }
+      
       const dadosPdf = {
         gestante: {
           nome: gestante.nome,
           idade: idade,
-          dum: gestante.dum ? new Date(gestante.dum).toISOString().split('T')[0] : null,
+          dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompatível') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
           dppDUM: dppDUM,
           dppUS: null,
           gesta: gestante.gesta,
@@ -656,24 +727,33 @@ export const gestanteRouter = router({
           igDUM: c.igDumSemanas ? `${c.igDumSemanas}s${c.igDumDias || 0}d` : '',
           igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
           peso: c.peso,
-          pa: null,
-          au: null,
+          pa: c.pressaoSistolica && c.pressaoDiastolica ? `${c.pressaoSistolica}/${c.pressaoDiastolica}` : null,
+          au: c.alturaUterina,
           bcf: c.bcf,
-          mf: null,
+          mf: c.movimentosFetais ? 1 : null,
           conduta: c.conduta,
           condutaComplementacao: c.condutaComplementacao,
           observacoes: c.observacoes,
         })),
-        marcos: [],
-        ultrassons: ultrassons.map((u: any) => ({
-          data: u.dataExame ? new Date(u.dataExame).toISOString().split('T')[0] : '',
-          ig: '',
-          tipo: u.tipoUltrassom || '',
-          observacoes: null,
-        })),
-        exames: [],
-        fatoresRisco: [],
-        medicamentos: [],
+        marcos: marcos,
+        ultrassons: ultrassons.map((u: any) => {
+          const dados = u.dados || {};
+          let obs = '';
+          if (dados.observacoes) obs = dados.observacoes;
+          else if (dados.ccn) obs = `CCN: ${dados.ccn}`;
+          else if (dados.tn) obs = `TN: ${dados.tn}`;
+          else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}`;
+          
+          return {
+            data: u.dataExame || '',
+            ig: u.idadeGestacional || '',
+            tipo: u.tipoUltrassom || '',
+            observacoes: obs || null,
+          };
+        }),
+        exames: examesAgrupados,
+        fatoresRisco: fatoresRisco.map((f: any) => ({ tipo: f.tipo })),
+        medicamentos: medicamentos.map((m: any) => ({ tipo: m.tipo, especificacao: m.especificacao })),
       };
       const pdfBuffer = await gerarPdfCartaoPrenatal(dadosPdf);
       const pdfBase64 = pdfBuffer.toString('base64');

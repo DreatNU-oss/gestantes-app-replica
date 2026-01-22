@@ -295,4 +295,14 @@
 - [x] Adicionar import de gerarPdfCartaoPrenatal no gestante-router.ts
 - [x] Adicionar endpoint gerarPdfCartao após endpoint ultrassons
 - [ ] Testar geração de PDF via API
-- [ ] Publicar alterações
+- [x] Publicar alterações
+
+
+## Incluir Exames, Marcos e Ultrassons no PDF (21/01/2026)
+- [x] Implementar agrupamento de exames laboratoriais por trimestre para o PDF
+- [x] Adicionar marcos importantes ao PDF do cartão de pré-natal
+- [x] Adicionar ultrassons ao PDF do cartão de pré-natal
+- [x] Atualizar botão "Visualizar para Impressão" com dados completos
+- [x] Atualizar botão "Baixar PDF Profissional" com dados completos
+- [x] Atualizar endpoint da API mobile com dados completos
+- [ ] Testar geração de PDF com todos os dados

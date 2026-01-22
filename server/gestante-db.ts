@@ -187,3 +187,30 @@ export async function createLogAcesso(data: InsertLogAcessoGestante): Promise<vo
   
   await db.insert(logsAcessoGestante).values(data);
 }
+
+
+// ============ Fatores de Risco Operations ============
+
+export async function getFatoresRiscoByGestanteId(gestanteId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const { fatoresRisco } = await import('../drizzle/schema');
+  const { eq } = await import('drizzle-orm');
+  
+  return db.select().from(fatoresRisco)
+    .where(eq(fatoresRisco.gestanteId, gestanteId));
+}
+
+// ============ Medicamentos Operations ============
+
+export async function getMedicamentosByGestanteId(gestanteId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const { medicamentosGestacao } = await import('../drizzle/schema');
+  const { eq } = await import('drizzle-orm');
+  
+  return db.select().from(medicamentosGestacao)
+    .where(eq(medicamentosGestacao.gestanteId, gestanteId));
+}
