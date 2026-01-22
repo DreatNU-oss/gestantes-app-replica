@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(1560002, 'Hemoglobina', 3, '11.2 g/dL', '2025-10-10'),\n(1560002, 'Hematócrito', 3, '34%', '2025-10-10'),\n(1560002, 'Glicemia de Jejum', 3, '80 mg/dL', '2025-10-10'),\n(1560002, 'Coombs Indireto', 3, 'Negativo', '2025-10-10'),\n(1560002, 'VDRL', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'HIV', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'Hepatite B HBsAg', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'Estreptococo Grupo B', 3, 'Negativo', '2025-10-10'),\n(1560002, 'Urina Tipo I', 3, 'Normal', '2025-10-10'),\n(1560002, 'Urocultura', 3, 'Negativa', '2025-10-10');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(1560002, 'Hemoglobina', 3, '11.2 g/dL', '2025-10-10'),\n(1560002, 'Hematócrito', 3, '34%', '2025-10-10'),\n(1560002, 'Glicemia de Jejum', 3, '80 mg/dL', '2025-10-10'),\n(1560002, 'Coombs Indireto', 3, 'Negativo', '2025-10-10'),\n(1560002, 'VDRL', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'HIV', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'Hepatite B HBsAg', 3, 'Não Reagente', '2025-10-10'),\n(1560002, 'Estreptococo Grupo B', 3, 'Negativo', '2025-10-10'),\n(1560002, 'Urina Tipo I', 3, 'Normal', '2025-10-10'),\n(1560002, 'Urocultura', 3, 'Negativa', '2025-10-10');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 376
+}

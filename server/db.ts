@@ -42,7 +42,9 @@ import {
   MedicamentoGestacao,
   justificativasAlerta,
   InsertJustificativaAlerta,
-  JustificativaAlerta
+  JustificativaAlerta,
+  resultadosExames,
+  ResultadoExame
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -527,6 +529,15 @@ export async function getExamesByGestanteId(gestanteId: number): Promise<ExameLa
   return db.select().from(examesLaboratoriais)
     .where(eq(examesLaboratoriais.gestanteId, gestanteId))
     .orderBy(desc(examesLaboratoriais.dataExame));
+}
+
+// Função para buscar resultados de exames da tabela resultadosExames (usada para PDF)
+export async function getResultadosExamesByGestanteId(gestanteId: number): Promise<ResultadoExame[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(resultadosExames)
+    .where(eq(resultadosExames.gestanteId, gestanteId));
 }
 
 export async function getExameById(id: number): Promise<ExameLaboratorial | undefined> {

@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(1560002, 'Hemoglobina', 2, '11.8 g/dL', '2025-07-20'),\n(1560002, 'Hematócrito', 2, '36%', '2025-07-20'),\n(1560002, 'Glicemia de Jejum', 2, '82 mg/dL', '2025-07-20'),\n(1560002, 'TOTG 75g', 2, 'Jejum: 78 | 1h: 145 | 2h: 118', '2025-07-20'),\n(1560002, 'Coombs Indireto', 2, 'Negativo', '2025-07-20'),\n(1560002, 'VDRL', 2, 'Não Reagente', '2025-07-20'),\n(1560002, 'Toxoplasmose IgM', 2, 'Não Reagente', '2025-07-20'),\n(1560002, 'Urina Tipo I', 2, 'Normal', '2025-07-20'),\n(1560002, 'Urocultura', 2, 'Negativa', '2025-07-20');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(1560002, 'Hemoglobina', 2, '11.8 g/dL', '2025-07-20'),\n(1560002, 'Hematócrito', 2, '36%', '2025-07-20'),\n(1560002, 'Glicemia de Jejum', 2, '82 mg/dL', '2025-07-20'),\n(1560002, 'TOTG 75g', 2, 'Jejum: 78 | 1h: 145 | 2h: 118', '2025-07-20'),\n(1560002, 'Coombs Indireto', 2, 'Negativo', '2025-07-20'),\n(1560002, 'VDRL', 2, 'Não Reagente', '2025-07-20'),\n(1560002, 'Toxoplasmose IgM', 2, 'Não Reagente', '2025-07-20'),\n(1560002, 'Urina Tipo I', 2, 'Normal', '2025-07-20'),\n(1560002, 'Urocultura', 2, 'Negativa', '2025-07-20');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 373
+}

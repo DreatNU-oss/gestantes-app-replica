@@ -1,0 +1,110 @@
+{
+  "query": "SELECT * FROM resultadosExames WHERE gestanteId = 1560002 LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM resultadosExames WHERE gestanteId = 1560002 LIMIT 10;",
+  "rows": [
+    {
+      "id": "630001",
+      "gestanteId": "1560002",
+      "nomeExame": "hemograma",
+      "trimestre": "1",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630002",
+      "gestanteId": "1560002",
+      "nomeExame": "tipoSanguineo",
+      "trimestre": "1",
+      "resultado": "A+",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630003",
+      "gestanteId": "1560002",
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630004",
+      "gestanteId": "1560002",
+      "nomeExame": "tsh",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630005",
+      "gestanteId": "1560002",
+      "nomeExame": "hiv",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630006",
+      "gestanteId": "1560002",
+      "nomeExame": "vdrl",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630007",
+      "gestanteId": "1560002",
+      "nomeExame": "hepatiteB",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630008",
+      "gestanteId": "1560002",
+      "nomeExame": "hepatiteC",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630009",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "id": "630010",
+      "gestanteId": "1560002",
+      "nomeExame": "rubeola",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-01-21 16:18:46",
+      "dataExame": "2025-07-08"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeExame\ttrimestre\tresultado\tcreatedAt\tupdatedAt\tdataExame\n630001\t1560002\themograma\t1\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630002\t1560002\ttipoSanguineo\t1\tA+\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630003\t1560002\tglicemiaJejum\t1\t85 mg/dL\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630004\t1560002\ttsh\t1\t2.1 mUI/L\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630005\t1560002\thiv\t1\tNão reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630006\t1560002\tvdrl\t1\tNão reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630007\t1560002\thepatiteB\t1\tNão reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630008\t1560002\thepatiteC\t1\tNão reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630009\t1560002\ttoxoplasmose\t1\tIgG reagente / IgM não reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n630010\t1560002\trubeola\t1\tIgG reagente / IgM não reagente\t2026-01-21 16:18:46\t2026-01-21 16:18:46\t2025-07-08\n",
+  "stderr": "",
+  "execution_time_ms": 366
+}

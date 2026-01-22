@@ -313,3 +313,17 @@
 - [x] Verificar logs do servidor para identificar erro
 - [x] Corrigir função de geração de PDF (erro era temporário, PDF funciona corretamente)
 - [x] Testar geração de PDF após correção
+
+
+## Adicionar Exames Laboratoriais para TESTE TESTE (22/01/2026)
+- [x] Identificar ID da gestante TESTE TESTE no banco de dados
+- [x] Inserir exames laboratoriais do 1º trimestre (valores normais)
+- [x] Inserir exames laboratoriais do 2º trimestre (valores normais)
+- [x] Inserir exames laboratoriais do 3º trimestre (valores normais)
+- [x] Gerar PDF e validar exibição dos exames
+
+## Adicionar Gráficos e Seções Faltando no HTML de Impressão (22/01/2026)
+- [x] Adicionar gráfico de AU (Altura Uterina) na página de impressão HTML
+- [x] Adicionar gráfico de PA (Pressão Arterial) na página de impressão HTML
+- [x] Adicionar seção de Exames Laboratoriais na página de impressão HTML
+- [x] Adicionar seção de Ultrassons na página de impressão HTML

@@ -1,6 +1,6 @@
-import { getGestanteById, getConsultasByGestanteId, getFatoresRiscoByGestanteId, getMedicamentosByGestanteId, getExamesByGestanteId } from './db';
+import { getGestanteById, getConsultasByGestanteId, getFatoresRiscoByGestanteId, getMedicamentosByGestanteId, getResultadosExamesByGestanteId } from './db';
 import { buscarUltrassons } from './ultrassons';
-import { Gestante, ConsultaPrenatal, FatorRisco, MedicamentoGestacao, ExameLaboratorial, Ultrassom } from '../drizzle/schema';
+import { Gestante, ConsultaPrenatal, FatorRisco, MedicamentoGestacao, ExameLaboratorial, Ultrassom, ResultadoExame } from '../drizzle/schema';
 
 // Interface para exames agrupados por trimestre
 export interface ExameAgrupado {
@@ -32,7 +32,7 @@ export interface DadosCartaoPrenatal {
 /**
  * Agrupa exames laboratoriais por trimestre
  */
-function agruparExamesPorTrimestre(exames: ExameLaboratorial[]): ExameAgrupado[] {
+function agruparExamesPorTrimestre(exames: ResultadoExame[]): ExameAgrupado[] {
   // Lista de exames padrão
   const nomesExames = [
     'Hemograma',
@@ -69,22 +69,19 @@ function agruparExamesPorTrimestre(exames: ExameLaboratorial[]): ExameAgrupado[]
   }));
 
   // Mapear exames do banco para o formato agrupado
+  // A tabela resultadosExames tem: nomeExame, trimestre (1, 2 ou 3), resultado, dataExame
   exames.forEach(exame => {
     const index = resultado.findIndex(e => 
-      e.nome.toLowerCase().includes(exame.tipoExame.toLowerCase()) ||
-      exame.tipoExame.toLowerCase().includes(e.nome.toLowerCase())
+      e.nome.toLowerCase().includes(exame.nomeExame.toLowerCase()) ||
+      exame.nomeExame.toLowerCase().includes(e.nome.toLowerCase())
     );
     
     if (index !== -1) {
-      // Determinar trimestre baseado na IG do exame
-      let trimestre = 1;
-      if (exame.igSemanas !== null) {
-        if (exame.igSemanas >= 28) trimestre = 3;
-        else if (exame.igSemanas >= 14) trimestre = 2;
-      }
+      // Usar o trimestre diretamente do banco (1, 2 ou 3)
+      const trimestre = exame.trimestre;
       const key = `trimestre${trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
       resultado[index][key] = {
-        data: exame.dataExame ? exame.dataExame.toISOString().split('T')[0] : null,
+        data: exame.dataExame ? (typeof exame.dataExame === 'string' ? exame.dataExame : exame.dataExame.toISOString().split('T')[0]) : null,
         resultado: exame.resultado,
       };
     }
@@ -172,7 +169,7 @@ export async function buscarDadosCartaoPrenatal(gestanteId: number): Promise<Dad
     getConsultasByGestanteId(gestanteId),
     getFatoresRiscoByGestanteId(gestanteId),
     getMedicamentosByGestanteId(gestanteId),
-    getExamesByGestanteId(gestanteId),
+    getResultadosExamesByGestanteId(gestanteId),
     buscarUltrassons(gestanteId),
   ]);
 

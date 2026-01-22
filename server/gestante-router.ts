@@ -577,18 +577,17 @@ export const gestanteRouter = router({
       const gestante = await validateGestanteToken(input.token);
       const examesList = await gestanteDb.getExamesByGestanteId(gestante.id);
       
-      // Group exams by name
-      const examesByName: Record<string, Array<{ data: string; resultado: string; igSemanas: number; igDias: number }>> = {};
+      // Group exams by name - agora usando campos da tabela resultadosExames
+      const examesByName: Record<string, Array<{ data: string; resultado: string; trimestre: number }>> = {};
       
       for (const exame of examesList) {
-        if (!examesByName[exame.tipoExame]) {
-          examesByName[exame.tipoExame] = [];
+        if (!examesByName[exame.nomeExame]) {
+          examesByName[exame.nomeExame] = [];
         }
-        examesByName[exame.tipoExame].push({
+        examesByName[exame.nomeExame].push({
           data: exame.dataExame ? new Date(exame.dataExame).toISOString().split("T")[0] : "",
           resultado: exame.resultado || "",
-          igSemanas: exame.igSemanas || 0,
-          igDias: exame.igDias || 0,
+          trimestre: exame.trimestre,
         });
       }
       
@@ -644,33 +643,39 @@ export const gestanteRouter = router({
       }
       
       // Agrupar exames por trimestre
-      const nomesExames = [
-        'Hemograma', 'Tipo Sanguíneo', 'Glicemia Jejum', 'TSH', 'T4 Livre',
-        'Uréia', 'Creatinina', 'TGO', 'TGP', 'Urina I', 'Urocultura',
-        'HIV', 'VDRL', 'Hepatite B (HBsAg)', 'Hepatite C (Anti-HCV)',
-        'Toxoplasmose IgG', 'Toxoplasmose IgM', 'Rubéola IgG', 'Rubéola IgM',
-        'CMV IgG', 'CMV IgM', 'Coombs Indireto', 'TOTG 75g', 'Estreptococo Grupo B'
-      ];
+      // Os exames vêm da tabela resultadosExames com campos: nomeExame, trimestre, resultado, dataExame
+      const examesAgrupados: { nome: string; trimestre1?: { resultado: string; data?: string }; trimestre2?: { resultado: string; data?: string }; trimestre3?: { resultado: string; data?: string } }[] = [];
       
-      const examesAgrupados = nomesExames.map(nome => {
-        const resultado: any = { nome, trimestre1: undefined, trimestre2: undefined, trimestre3: undefined };
-        exames.forEach((ex: any) => {
-          if (ex.tipoExame.toLowerCase().includes(nome.toLowerCase()) ||
-              nome.toLowerCase().includes(ex.tipoExame.toLowerCase())) {
-            let trimestre = 1;
-            if (ex.igSemanas !== null) {
-              if (ex.igSemanas >= 28) trimestre = 3;
-              else if (ex.igSemanas >= 14) trimestre = 2;
-            }
-            const key = `trimestre${trimestre}`;
-            resultado[key] = {
-              resultado: ex.resultado || '',
-              data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
-            };
-          }
-        });
-        return resultado;
-      }).filter(e => e.trimestre1 || e.trimestre2 || e.trimestre3);
+      // Agrupar por nome de exame
+      const examesPorNome = new Map<string, { nome: string; trimestre1?: { resultado: string; data?: string }; trimestre2?: { resultado: string; data?: string }; trimestre3?: { resultado: string; data?: string } }>();
+      
+      exames.forEach((ex: any) => {
+        // Ignorar observações gerais (trimestre 0)
+        if (ex.trimestre === 0) return;
+        
+        const nomeExame = ex.nomeExame;
+        if (!examesPorNome.has(nomeExame)) {
+          examesPorNome.set(nomeExame, { nome: nomeExame });
+        }
+        
+        const exameAgrupado = examesPorNome.get(nomeExame)!;
+        const key = `trimestre${ex.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+        
+        // Só adicionar se tiver resultado
+        if (ex.resultado) {
+          exameAgrupado[key] = {
+            resultado: ex.resultado,
+            data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
+          };
+        }
+      });
+      
+      // Converter Map para array e filtrar exames sem resultados
+      examesPorNome.forEach((exame) => {
+        if (exame.trimestre1 || exame.trimestre2 || exame.trimestre3) {
+          examesAgrupados.push(exame);
+        }
+      });
       
       // Calcular marcos importantes
       let marcos: any[] = [];

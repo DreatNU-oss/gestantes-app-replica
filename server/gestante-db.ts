@@ -6,6 +6,7 @@ import {
   sessoesGestante,
   consultasPrenatal,
   examesLaboratoriais,
+  resultadosExames,
   ultrassons,
   logsAcessoGestante,
   type Gestante,
@@ -139,15 +140,17 @@ export async function createConsulta(data: InsertConsultaPrenatal): Promise<numb
 
 // ============ Exames Operations ============
 
+// Buscar exames da tabela resultadosExames (usada pela interface de exames laboratoriais)
 export async function getExamesByGestanteId(gestanteId: number) {
   const db = await getDb();
   if (!db) return [];
   
+  // Buscar da tabela resultadosExames que é onde os exames são salvos pela interface
   return db
     .select()
-    .from(examesLaboratoriais)
-    .where(eq(examesLaboratoriais.gestanteId, gestanteId))
-    .orderBy(desc(examesLaboratoriais.dataExame));
+    .from(resultadosExames)
+    .where(eq(resultadosExames.gestanteId, gestanteId))
+    .orderBy(resultadosExames.trimestre, resultadosExames.nomeExame);
 }
 
 export async function createExame(data: InsertExameLaboratorial): Promise<number> {

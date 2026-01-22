@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { GraficoPeso } from "@/components/GraficoPeso";
+import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
+import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { Loader2 } from "lucide-react";
 
 export default function CartaoPrenatalImpressao() {
@@ -315,6 +317,128 @@ export default function CartaoPrenatalImpressao() {
         />
       </div>
 
+      {/* Gráfico de Altura Uterina */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Evolução da Altura Uterina (AU)</h2>
+        <GraficoAlturaUterina
+          consultas={consultas.map((c: any) => {
+            const igUS = calcularIGPorUS(c.dataConsulta);
+            const igDUM = calcularIG(c.dataConsulta);
+            return {
+              id: c.id,
+              dataConsulta: c.dataConsulta,
+              alturaUterina: c.alturaUterina,
+              igDumSemanas: igDUM?.semanas || null,
+              igDumDias: igDUM?.dias || null,
+              igUltrassomSemanas: igUS?.semanas || null,
+              igUltrassomDias: igUS?.dias || null,
+            };
+          })}
+          dum={gestante.dum}
+        />
+      </div>
+
+      {/* Gráfico de Pressão Arterial */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Evolução da Pressão Arterial</h2>
+        <GraficoPressaoArterial
+          consultas={consultas.map((c: any) => {
+            const igUS = calcularIGPorUS(c.dataConsulta);
+            const igDUM = calcularIG(c.dataConsulta);
+            return {
+              id: c.id,
+              dataConsulta: c.dataConsulta,
+              pressaoArterial: c.pressaoArterial,
+              igDumSemanas: igDUM?.semanas || null,
+              igDumDias: igDUM?.dias || null,
+              igUltrassomSemanas: igUS?.semanas || null,
+              igUltrassomDias: igUS?.dias || null,
+            };
+          })}
+          dum={gestante.dum}
+        />
+      </div>
+
+      {/* Exames Laboratoriais */}
+      {exames && Object.keys(exames).length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Exames Laboratoriais</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {[1, 2, 3].map((trimestre) => {
+              // Filtrar exames que têm resultado para este trimestre
+              const examesTrimestre = Object.entries(exames)
+                .filter(([nomeExame, valor]) => {
+                  if (nomeExame === 'outros_observacoes') return false;
+                  if (typeof valor === 'object' && valor !== null) {
+                    return (valor as Record<string, string>)[trimestre.toString()] !== undefined;
+                  }
+                  return false;
+                })
+                .map(([nomeExame, valor]) => ({
+                  nomeExame,
+                  resultado: (valor as Record<string, string>)[trimestre.toString()]
+                }));
+              
+              if (examesTrimestre.length === 0) return null;
+              return (
+                <div key={trimestre} className="border border-gray-300 rounded p-3">
+                  <h3 className="font-semibold text-sm mb-2 text-center bg-gray-100 py-1 rounded">
+                    {trimestre === 1 ? '1º Trimestre' : trimestre === 2 ? '2º Trimestre' : '3º Trimestre'}
+                  </h3>
+                  <div className="space-y-1 text-xs">
+                    {examesTrimestre.map((exame) => (
+                      <div key={exame.nomeExame} className="flex justify-between">
+                        <span className="font-medium">{exame.nomeExame.replace(/_/g, ' ')}:</span>
+                        <span>{exame.resultado || '-'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Ultrassons */}
+      {ultrassons && ultrassons.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Ultrassons</h2>
+          <div className="space-y-4">
+            {ultrassons.map((us: any) => (
+              <div key={us.id} className="border border-gray-300 rounded p-3">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-sm">
+                    {us.tipo === 'primeiro_ultrassom' ? '1º Ultrassom' :
+                     us.tipo === 'morfologico_1_tri' ? 'Morfológico 1º Tri' :
+                     us.tipo === 'morfologico_2_tri' ? 'Morfológico 2º Tri' :
+                     us.tipo === 'obstetrico' ? 'Obstétrico' :
+                     us.tipo === 'ecocardiograma' ? 'Ecocardiograma' :
+                     us.tipo === 'seguimento' ? 'Seguimento' : us.tipo}
+                  </h3>
+                  <span className="text-xs text-gray-500">
+                    {us.dataExame ? new Date(us.dataExame + 'T12:00:00').toLocaleDateString('pt-BR') : '-'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {us.idadeGestacional && <div><span className="font-medium">IG:</span> {us.idadeGestacional}</div>}
+                  {us.pesoFetal && <div><span className="font-medium">Peso:</span> {us.pesoFetal}</div>}
+                  {us.translucenciaNucal && <div><span className="font-medium">TN:</span> {us.translucenciaNucal}</div>}
+                  {us.placentaLocalizacao && <div><span className="font-medium">Placenta:</span> {us.placentaLocalizacao}</div>}
+                  {us.liquidoAmniotico && <div><span className="font-medium">LA:</span> {us.liquidoAmniotico}</div>}
+                  {us.apresentacao && <div><span className="font-medium">Apresentação:</span> {us.apresentacao}</div>}
+                  {us.sexoFetal && <div><span className="font-medium">Sexo:</span> {us.sexoFetal}</div>}
+                </div>
+                {us.observacoes && (
+                  <div className="mt-2 text-xs text-gray-600">
+                    <span className="font-medium">Obs:</span> {us.observacoes}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );
