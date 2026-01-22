@@ -274,6 +274,43 @@ export const gestanteRouter = router({
       dispositivo: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
+      // Fixed verification code for Apple Review test account
+      const TEST_EMAIL = "dreatnu@yahoo.com";
+      const TEST_CODE = "123456";
+
+      // Check if it's the Apple Review test account with fixed code
+      if (input.contato.toLowerCase() === TEST_EMAIL && input.codigo === TEST_CODE) {
+        const gestante = await gestanteDb.getGestanteByEmail(TEST_EMAIL);
+        if (gestante) {
+          const token = generateToken();
+          const expiraEm = new Date();
+          expiraEm.setDate(expiraEm.getDate() + 30);
+          
+          await gestanteDb.createSession({
+            gestanteId: gestante.id,
+            token,
+            dispositivo: input.dispositivo || "Apple Review",
+            expiraEm,
+          });
+          
+          await gestanteDb.createLogAcesso({
+            gestanteId: gestante.id,
+            acao: "login_test_code",
+          });
+          
+          return {
+            success: true,
+            token,
+            gestante: {
+              id: gestante.id,
+              nome: gestante.nome,
+              email: gestante.email,
+            },
+            expiraEm: expiraEm.toISOString(),
+          };
+        }
+      }
+
       const codigoRecord = await gestanteDb.getValidVerificationCode(input.contato, input.codigo);
       
       if (!codigoRecord) {

@@ -283,3 +283,9 @@
 ## Atualizar Fatores de Risco (21/01/2026)
 - [x] Adicionar novo fator de risco: "Cirurgia Uterina Prévia"
 - [x] Atualizar texto do fator "Preditivo DHEG" para "Fator Preditivo Positivo para DHEG (Hist. Familiar, Doppler uterinas e/ou outros fatores de risco)"
+
+
+## Código de Verificação Fixo Apple Review (21/01/2026)
+- [x] Adicionar código de verificação fixo (123456) para email dreatnu@yahoo.com
+- [x] Implementar no arquivo server/gestante-router.ts na função validarCodigo
+- [ ] Publicar alterações
