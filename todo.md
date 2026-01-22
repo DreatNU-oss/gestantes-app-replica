@@ -336,3 +336,6 @@
 - [x] Implementar geração de gráfico de PA como imagem no servidor
 - [x] Integrar gráficos no PDF usando PDFKit
 - [x] Testar geração do PDF com gráficos para TESTE TESTE
+
+## Correção de Texto no PDF (22/01/2026)
+- [x] Corrigir texto do fator de risco "Idade >= 35 anos" no PDF

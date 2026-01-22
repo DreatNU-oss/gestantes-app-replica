@@ -168,7 +168,7 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             hipotireoidismo: 'Hipotireoidismo',
             hipertensao: 'Hipertensão',
             historico_familiar_dheg: 'Histórico familiar de DHEG',
-            idade_avancada: 'Idade ≥ 35 anos',
+            idade_avancada: 'Idade >= 35 anos',
             incompetencia_istmo_cervical: 'Incompetência Istmo-cervical',
             mal_passado_obstetrico: 'Mal Passado Obstétrico',
             malformacoes_mullerianas: 'Malformações Müllerianas',
