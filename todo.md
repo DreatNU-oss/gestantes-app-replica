@@ -305,4 +305,11 @@
 - [x] Atualizar botão "Visualizar para Impressão" com dados completos
 - [x] Atualizar botão "Baixar PDF Profissional" com dados completos
 - [x] Atualizar endpoint da API mobile com dados completos
-- [ ] Testar geração de PDF com todos os dados
+- [x] Testar geração de PDF com todos os dados
+
+
+## BUG: Erro ao Gerar PDF - Retorna HTML em vez de JSON (22/01/2026)
+- [x] Investigar causa do erro "Unexpected token '<'" na geração de PDF
+- [x] Verificar logs do servidor para identificar erro
+- [x] Corrigir função de geração de PDF (erro era temporário, PDF funciona corretamente)
+- [x] Testar geração de PDF após correção
