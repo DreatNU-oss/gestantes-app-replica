@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import * as gestanteDb from "./gestante-db";
 import { randomBytes, createHash } from "crypto";
 import { sendVerificationCode } from "./email-service";
+import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
 
 // Generate 6-digit verification code
 function generateCode(): string {
@@ -613,6 +614,75 @@ export const gestanteRouter = router({
           ...u,
           dataExame: u.dataExame ? new Date(u.dataExame).toISOString().split("T")[0] : null,
         })),
+      };
+    }),
+  
+  
+  // POST /gerar-pdf-cartao
+  gerarPdfCartao: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .mutation(async ({ input }) => {
+      const gestante = await validateGestanteToken(input.token);
+      const consultas = await gestanteDb.getConsultasByGestanteId(gestante.id);
+      const ultrassons = await gestanteDb.getUltrassonsByGestanteId(gestante.id);
+      let idade = null;
+      if (gestante.dataNascimento) {
+        const dataNasc = new Date(gestante.dataNascimento);
+        const hoje = new Date();
+        idade = Math.floor((hoje.getTime() - dataNasc.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+      }
+      let dppDUM = null;
+      if (gestante.dum) {
+        const dum = new Date(gestante.dum);
+        const dpp = new Date(dum);
+        dpp.setDate(dpp.getDate() + 280);
+        dppDUM = dpp.toISOString().split('T')[0];
+      }
+      const dadosPdf = {
+        gestante: {
+          nome: gestante.nome,
+          idade: idade,
+          dum: gestante.dum ? new Date(gestante.dum).toISOString().split('T')[0] : null,
+          dppDUM: dppDUM,
+          dppUS: null,
+          gesta: gestante.gesta,
+          para: gestante.para,
+          abortos: gestante.abortos,
+          partosNormais: null,
+          cesareas: gestante.cesareas,
+        },
+        consultas: consultas.map((c: any) => ({
+          dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
+          igDUM: c.igDumSemanas ? `${c.igDumSemanas}s${c.igDumDias || 0}d` : '',
+          igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
+          peso: c.peso,
+          pa: null,
+          au: null,
+          bcf: c.bcf,
+          mf: null,
+          conduta: c.conduta,
+          condutaComplementacao: c.condutaComplementacao,
+          observacoes: c.observacoes,
+        })),
+        marcos: [],
+        ultrassons: ultrassons.map((u: any) => ({
+          data: u.dataExame ? new Date(u.dataExame).toISOString().split('T')[0] : '',
+          ig: '',
+          tipo: u.tipoUltrassom || '',
+          observacoes: null,
+        })),
+        exames: [],
+        fatoresRisco: [],
+        medicamentos: [],
+      };
+      const pdfBuffer = await gerarPdfCartaoPrenatal(dadosPdf);
+      const pdfBase64 = pdfBuffer.toString('base64');
+      const nomeGestante = gestante.nome.replace(/\s+/g, '-').toLowerCase();
+      const filename = `cartao-prenatal-${nomeGestante}.pdf`;
+      return {
+        success: true,
+        pdf: pdfBase64,
+        filename: filename,
       };
     }),
   

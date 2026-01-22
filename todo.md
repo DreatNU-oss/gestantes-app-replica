@@ -288,4 +288,11 @@
 ## Código de Verificação Fixo Apple Review (21/01/2026)
 - [x] Adicionar código de verificação fixo (123456) para email dreatnu@yahoo.com
 - [x] Implementar no arquivo server/gestante-router.ts na função validarCodigo
+- [x] Publicar alterações
+
+
+## Endpoint para Gerar PDF do Cartão de Pré-Natal (21/01/2026)
+- [x] Adicionar import de gerarPdfCartaoPrenatal no gestante-router.ts
+- [x] Adicionar endpoint gerarPdfCartao após endpoint ultrassons
+- [ ] Testar geração de PDF via API
 - [ ] Publicar alterações
