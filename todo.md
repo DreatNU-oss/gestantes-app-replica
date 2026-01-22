@@ -327,3 +327,12 @@
 - [x] Adicionar gráfico de PA (Pressão Arterial) na página de impressão HTML
 - [x] Adicionar seção de Exames Laboratoriais na página de impressão HTML
 - [x] Adicionar seção de Ultrassons na página de impressão HTML
+
+
+## Adicionar Gráficos de Evolução no PDF (22/01/2026)
+- [x] Analisar estrutura atual do PDF e identificar como adicionar gráficos
+- [x] Implementar geração de gráfico de Peso como imagem no servidor
+- [x] Implementar geração de gráfico de AU como imagem no servidor
+- [x] Implementar geração de gráfico de PA como imagem no servidor
+- [x] Integrar gráficos no PDF usando PDFKit
+- [x] Testar geração do PDF com gráficos para TESTE TESTE

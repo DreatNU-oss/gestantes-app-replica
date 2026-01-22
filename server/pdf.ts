@@ -3,6 +3,7 @@ import { writeFileSync } from 'fs';
 import path from 'path';
 import fs from 'fs';
 import { buscarDadosCartaoPrenatal } from './pdfData';
+import { gerarGraficoAU, gerarGraficoPA, gerarGraficoPeso } from './pdfCharts';
 
 /**
  * Formata data para pt-BR
@@ -76,7 +77,7 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
     
     console.log('[PDF] Gerando PDF com PDFKit...');
     
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const doc = new PDFDocument({ 
           size: 'A4', 
@@ -411,6 +412,38 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           });
           
           doc.moveDown(1);
+        }
+
+        // Gráficos de Evolução
+        if (consultas.length > 0) {
+          doc.addPage();
+          
+          doc.fontSize(14).fillColor(corPrimaria).text('Gráficos de Evolução');
+          doc.moveDown(0.5);
+          
+          try {
+            // Gráfico de Peso
+            const graficoPesoBuffer = await gerarGraficoPeso(consultas, gestante.pesoInicial || null, gestante.altura || null);
+            doc.image(graficoPesoBuffer, 50, doc.y, { width: 495, height: 180 });
+            doc.y += 190;
+            
+            // Gráfico de AU
+            const graficoAUBuffer = await gerarGraficoAU(consultas);
+            doc.image(graficoAUBuffer, 50, doc.y, { width: 495, height: 180 });
+            doc.y += 190;
+            
+            // Nova página para PA
+            doc.addPage();
+            
+            // Gráfico de PA
+            const graficoPABuffer = await gerarGraficoPA(consultas);
+            doc.image(graficoPABuffer, 50, 50, { width: 495, height: 180 });
+            doc.y = 240;
+            
+          } catch (chartError) {
+            console.error('[PDF] Erro ao gerar gráficos:', chartError);
+            doc.fontSize(10).fillColor(corCinza).text('Erro ao gerar gráficos de evolução');
+          }
         }
 
         // Exames Laboratoriais
