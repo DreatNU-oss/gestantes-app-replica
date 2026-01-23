@@ -367,3 +367,9 @@
 - [x] Aplicar fonte bold nos cabeçalhos da tabela de exames laboratoriais
 - [x] Aplicar fonte bold nos cabeçalhos da tabela de ultrassons
 - [x] Testar geração do PDF com cabeçalhos em negrito
+
+## Otimização de Largura das Colunas nas Tabelas do PDF (22/01/2026)
+- [x] Ajustar largura das colunas na tabela de Histórico de Consultas
+- [x] Ajustar largura das colunas na tabela de Ultrassons
+- [x] Ajustar largura das colunas na tabela de Exames Laboratoriais
+- [x] Testar geração do PDF com novas larguras

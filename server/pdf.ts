@@ -266,18 +266,18 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(8).fillColor('white');
           doc.rect(50, tableTop, 495, 20).fillColor(corPrimaria).fill();
           
-          // Aplicar negrito nos cabeçalhos
+          // Aplicar negrito nos cabeçalhos - Larguras otimizadas
           if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
-          doc.text('Data', 55, tableTop + 6, { width: 50 });
-          doc.text('IG DUM', 110, tableTop + 6, { width: 45 });
-          doc.text('IG US', 160, tableTop + 6, { width: 45 });
-          doc.text('Peso', 210, tableTop + 6, { width: 40 });
-          doc.text('PA', 255, tableTop + 6, { width: 45 });
-          doc.text('AU', 305, tableTop + 6, { width: 30 });
-          doc.text('BCF', 340, tableTop + 6, { width: 30 });
-          doc.text('Conduta', 375, tableTop + 6, { width: 80 });
-          doc.text('Obs', 460, tableTop + 6, { width: 85 });
+          doc.text('Data', 55, tableTop + 6, { width: 55 });
+          doc.text('IG DUM', 110, tableTop + 6, { width: 40 });
+          doc.text('IG US', 150, tableTop + 6, { width: 40 });
+          doc.text('Peso', 190, tableTop + 6, { width: 45 });
+          doc.text('PA', 235, tableTop + 6, { width: 40 });
+          doc.text('AU', 275, tableTop + 6, { width: 25 });
+          doc.text('BCF', 300, tableTop + 6, { width: 25 });
+          doc.text('Conduta', 325, tableTop + 6, { width: 100 });
+          doc.text('Observações', 425, tableTop + 6, { width: 120 });
           
           // Voltar para fonte normal
           if (usarNotoSans) doc.font('NotoSans');
@@ -311,19 +311,19 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             ) : null;
             
             doc.fontSize(8).fillColor(corTexto);
-            doc.text(formatarData(consulta.dataConsulta), 55, currentY + 5, { width: 50 });
-            doc.text(igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : '-', 110, currentY + 5, { width: 45 });
-            doc.text(igUS ? `${igUS.semanas}s ${igUS.dias}d` : '-', 160, currentY + 5, { width: 45 });
-            doc.text(consulta.peso ? `${consulta.peso} kg` : '-', 210, currentY + 5, { width: 40 });
-            doc.text(consulta.pressaoArterial || '-', 255, currentY + 5, { width: 45 });
-            doc.text(consulta.alturaUterina ? `${consulta.alturaUterina}` : '-', 305, currentY + 5, { width: 30 });
-            doc.text(consulta.bcf ? 'Sim' : '-', 340, currentY + 5, { width: 30 });
+            doc.text(formatarData(consulta.dataConsulta), 55, currentY + 5, { width: 55 });
+            doc.text(igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : '-', 110, currentY + 5, { width: 40 });
+            doc.text(igUS ? `${igUS.semanas}s ${igUS.dias}d` : '-', 150, currentY + 5, { width: 40 });
+            doc.text(consulta.peso ? `${consulta.peso} kg` : '-', 190, currentY + 5, { width: 45 });
+            doc.text(consulta.pressaoArterial || '-', 235, currentY + 5, { width: 40 });
+            doc.text(consulta.alturaUterina ? `${consulta.alturaUterina}` : '-', 275, currentY + 5, { width: 25 });
+            doc.text(consulta.bcf ? 'Sim' : '-', 300, currentY + 5, { width: 25 });
             
             const condutaTexto = consulta.conduta || '-';
-            doc.text(condutaTexto.substring(0, 15), 375, currentY + 5, { width: 80 });
+            doc.text(condutaTexto.substring(0, 20), 325, currentY + 5, { width: 100 });
             
             const obsTexto = consulta.observacoes || '-';
-            doc.text(obsTexto.substring(0, 20), 460, currentY + 5, { width: 85 });
+            doc.text(obsTexto.substring(0, 30), 425, currentY + 5, { width: 120 });
             
             doc.y = currentY + 22;
           });
@@ -392,13 +392,13 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(8).fillColor('white');
           doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
           
-          // Aplicar negrito nos cabeçalhos
+          // Aplicar negrito nos cabeçalhos - Larguras otimizadas
           if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
-          doc.text('Tipo', 55, tableTop + 5, { width: 120 });
-          doc.text('Data', 180, tableTop + 5, { width: 60 });
-          doc.text('IG', 245, tableTop + 5, { width: 50 });
-          doc.text('Observações', 300, tableTop + 5, { width: 245 });
+          doc.text('Tipo', 55, tableTop + 5, { width: 110 });
+          doc.text('Data', 165, tableTop + 5, { width: 65 });
+          doc.text('IG', 230, tableTop + 5, { width: 45 });
+          doc.text('Observações', 275, tableTop + 5, { width: 270 });
           
           // Voltar para fonte normal
           if (usarNotoSans) doc.font('NotoSans');
@@ -432,18 +432,18 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             const dados = us.dados as any || {};
             
             doc.fontSize(8).fillColor(corTexto);
-            doc.text(tiposUltrassom[us.tipoUltrassom] || us.tipoUltrassom, 55, currentY + 5, { width: 120 });
-            doc.text(us.dataExame ? formatarData(us.dataExame) : '-', 180, currentY + 5, { width: 60 });
-            doc.text(us.idadeGestacional || '-', 245, currentY + 5, { width: 50 });
+            doc.text(tiposUltrassom[us.tipoUltrassom] || us.tipoUltrassom, 55, currentY + 5, { width: 110 });
+            doc.text(us.dataExame ? formatarData(us.dataExame) : '-', 165, currentY + 5, { width: 65 });
+            doc.text(us.idadeGestacional || '-', 230, currentY + 5, { width: 45 });
             
             // Extrair observações relevantes dos dados
             let obs = '';
             if (dados.observacoes) obs = dados.observacoes;
-            else if (dados.ccn) obs = `CCN: ${dados.ccn}`;
-            else if (dados.tn) obs = `TN: ${dados.tn}`;
-            else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}`;
+            else if (dados.ccn) obs = `CCN: ${dados.ccn}mm`;
+            else if (dados.tn) obs = `TN: ${dados.tn}mm`;
+            else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}g`;
             
-            doc.text(obs.substring(0, 50), 300, currentY + 5, { width: 245 });
+            doc.text(obs.substring(0, 60), 275, currentY + 5, { width: 270 });
             
             doc.y = currentY + 20;
           });
@@ -500,16 +500,16 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(7).fillColor('white');
           doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
           
-          // Aplicar negrito nos cabeçalhos
+          // Aplicar negrito nos cabeçalhos - Larguras otimizadas
           if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
-          doc.text('Exame', 55, tableTop + 5, { width: 90 });
-          doc.text('1º Tri Data', 150, tableTop + 5, { width: 50 });
-          doc.text('1º Tri Res.', 205, tableTop + 5, { width: 50 });
-          doc.text('2º Tri Data', 260, tableTop + 5, { width: 50 });
-          doc.text('2º Tri Res.', 315, tableTop + 5, { width: 50 });
-          doc.text('3º Tri Data', 370, tableTop + 5, { width: 50 });
-          doc.text('3º Tri Res.', 425, tableTop + 5, { width: 70 });
+          doc.text('Exame', 55, tableTop + 5, { width: 95 });
+          doc.text('1º Tri Data', 150, tableTop + 5, { width: 55 });
+          doc.text('1º Tri Res.', 205, tableTop + 5, { width: 55 });
+          doc.text('2º Tri Data', 260, tableTop + 5, { width: 55 });
+          doc.text('2º Tri Res.', 315, tableTop + 5, { width: 55 });
+          doc.text('3º Tri Data', 370, tableTop + 5, { width: 55 });
+          doc.text('3º Tri Res.', 425, tableTop + 5, { width: 75 });
           
           // Voltar para fonte normal
           if (usarNotoSans) doc.font('NotoSans');
@@ -533,13 +533,13 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             const currentY = doc.y;
             
             doc.fontSize(7).fillColor(corTexto);
-            doc.text(exame.nome.substring(0, 18), 55, currentY + 4, { width: 90 });
-            doc.text(exame.trimestre1.data ? formatarData(exame.trimestre1.data) : '-', 150, currentY + 4, { width: 50 });
-            doc.text((exame.trimestre1.resultado || '-').substring(0, 10), 205, currentY + 4, { width: 50 });
-            doc.text(exame.trimestre2.data ? formatarData(exame.trimestre2.data) : '-', 260, currentY + 4, { width: 50 });
-            doc.text((exame.trimestre2.resultado || '-').substring(0, 10), 315, currentY + 4, { width: 50 });
-            doc.text(exame.trimestre3.data ? formatarData(exame.trimestre3.data) : '-', 370, currentY + 4, { width: 50 });
-            doc.text((exame.trimestre3.resultado || '-').substring(0, 12), 425, currentY + 4, { width: 70 });
+            doc.text(exame.nome.substring(0, 20), 55, currentY + 4, { width: 95 });
+            doc.text(exame.trimestre1.data ? formatarData(exame.trimestre1.data) : '-', 150, currentY + 4, { width: 55 });
+            doc.text((exame.trimestre1.resultado || '-').substring(0, 12), 205, currentY + 4, { width: 55 });
+            doc.text(exame.trimestre2.data ? formatarData(exame.trimestre2.data) : '-', 260, currentY + 4, { width: 55 });
+            doc.text((exame.trimestre2.resultado || '-').substring(0, 12), 315, currentY + 4, { width: 55 });
+            doc.text(exame.trimestre3.data ? formatarData(exame.trimestre3.data) : '-', 370, currentY + 4, { width: 55 });
+            doc.text((exame.trimestre3.resultado || '-').substring(0, 14), 425, currentY + 4, { width: 75 });
             
             doc.y = currentY + 16;
           });
