@@ -373,3 +373,9 @@
 - [x] Ajustar largura das colunas na tabela de Ultrassons
 - [x] Ajustar largura das colunas na tabela de Exames Laboratoriais
 - [x] Testar geração do PDF com novas larguras
+
+## Quebra de Linha Automática no PDF (22/01/2026)
+- [x] Implementar quebra de linha automática na coluna Conduta
+- [x] Implementar quebra de linha automática na coluna Observações
+- [x] Ajustar altura das linhas dinamicamente baseado no conteúdo
+- [x] Testar geração do PDF com textos longos

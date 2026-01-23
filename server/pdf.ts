@@ -284,22 +284,15 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           
           doc.y = tableTop + 20;
           
-          // Linhas da tabela
+          // Linhas da tabela com quebra de linha automática
           consultas.slice(0, 15).forEach((consulta, index) => {
             const rowY = doc.y;
             
             // Nova página se necessário
-            if (rowY > 720) {
+            if (rowY > 700) {
               doc.addPage();
               doc.y = 50;
             }
-            
-            // Fundo alternado
-            if (index % 2 === 0) {
-              doc.rect(50, doc.y, 495, 22).fillColor('#f9f9f9').fill();
-            }
-            
-            const currentY = doc.y;
             
             // Calcular IGs
             const igDUM = calcularIG(consulta.dataConsulta, gestante.dum);
@@ -310,6 +303,23 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
               gestante.igUltrassomDias
             ) : null;
             
+            // Textos das colunas Conduta e Observações
+            const condutaTexto = consulta.conduta || '-';
+            const obsTexto = consulta.observacoes || '-';
+            
+            // Calcular altura necessária para a linha baseado no texto mais longo
+            doc.fontSize(8);
+            const condutaHeight = doc.heightOfString(condutaTexto, { width: 100 });
+            const obsHeight = doc.heightOfString(obsTexto, { width: 120 });
+            const rowHeight = Math.max(22, Math.max(condutaHeight, obsHeight) + 10);
+            
+            const currentY = doc.y;
+            
+            // Fundo alternado com altura dinâmica
+            if (index % 2 === 0) {
+              doc.rect(50, currentY, 495, rowHeight).fillColor('#f9f9f9').fill();
+            }
+            
             doc.fontSize(8).fillColor(corTexto);
             doc.text(formatarData(consulta.dataConsulta), 55, currentY + 5, { width: 55 });
             doc.text(igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : '-', 110, currentY + 5, { width: 40 });
@@ -319,13 +329,13 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             doc.text(consulta.alturaUterina ? `${consulta.alturaUterina}` : '-', 275, currentY + 5, { width: 25 });
             doc.text(consulta.bcf ? 'Sim' : '-', 300, currentY + 5, { width: 25 });
             
-            const condutaTexto = consulta.conduta || '-';
-            doc.text(condutaTexto.substring(0, 20), 325, currentY + 5, { width: 100 });
+            // Conduta com quebra de linha automática
+            doc.text(condutaTexto, 325, currentY + 5, { width: 100, lineBreak: true });
             
-            const obsTexto = consulta.observacoes || '-';
-            doc.text(obsTexto.substring(0, 30), 425, currentY + 5, { width: 120 });
+            // Observações com quebra de linha automática
+            doc.text(obsTexto, 425, currentY + 5, { width: 120, lineBreak: true });
             
-            doc.y = currentY + 22;
+            doc.y = currentY + rowHeight;
           });
         }
 
@@ -418,23 +428,12 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             const rowY = doc.y;
             
             // Nova página se necessário
-            if (rowY > 720) {
+            if (rowY > 700) {
               doc.addPage();
               doc.y = 50;
             }
             
-            // Fundo alternado
-            if (index % 2 === 0) {
-              doc.rect(50, doc.y, 495, 20).fillColor('#f9f9f9').fill();
-            }
-            
-            const currentY = doc.y;
             const dados = us.dados as any || {};
-            
-            doc.fontSize(8).fillColor(corTexto);
-            doc.text(tiposUltrassom[us.tipoUltrassom] || us.tipoUltrassom, 55, currentY + 5, { width: 110 });
-            doc.text(us.dataExame ? formatarData(us.dataExame) : '-', 165, currentY + 5, { width: 65 });
-            doc.text(us.idadeGestacional || '-', 230, currentY + 5, { width: 45 });
             
             // Extrair observações relevantes dos dados
             let obs = '';
@@ -443,9 +442,27 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             else if (dados.tn) obs = `TN: ${dados.tn}mm`;
             else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}g`;
             
-            doc.text(obs.substring(0, 60), 275, currentY + 5, { width: 270 });
+            // Calcular altura necessária para a linha baseado no texto
+            doc.fontSize(8);
+            const obsHeight = doc.heightOfString(obs || '-', { width: 270 });
+            const rowHeight = Math.max(20, obsHeight + 10);
             
-            doc.y = currentY + 20;
+            const currentY = doc.y;
+            
+            // Fundo alternado com altura dinâmica
+            if (index % 2 === 0) {
+              doc.rect(50, currentY, 495, rowHeight).fillColor('#f9f9f9').fill();
+            }
+            
+            doc.fontSize(8).fillColor(corTexto);
+            doc.text(tiposUltrassom[us.tipoUltrassom] || us.tipoUltrassom, 55, currentY + 5, { width: 110 });
+            doc.text(us.dataExame ? formatarData(us.dataExame) : '-', 165, currentY + 5, { width: 65 });
+            doc.text(us.idadeGestacional || '-', 230, currentY + 5, { width: 45 });
+            
+            // Observações com quebra de linha automática
+            doc.text(obs || '-', 275, currentY + 5, { width: 270, lineBreak: true });
+            
+            doc.y = currentY + rowHeight;
           });
           
           doc.moveDown(0.5);
