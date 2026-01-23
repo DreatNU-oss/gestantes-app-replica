@@ -211,11 +211,29 @@ export default function CartaoPrenatalImpressao() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Medicamentos em Uso</h2>
           <div className="flex flex-wrap gap-2">
-            {medicamentos.map((med: any) => (
-              <span key={med.id} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                {med.nome}
-              </span>
-            ))}
+            {medicamentos.map((med: any) => {
+              // Mapeamento de tipos para nomes legíveis
+              const tipoNomes: Record<string, string> = {
+                aas: "AAS 100mg/dia",
+                anti_hipertensivos: "Anti-hipertensivos",
+                calcio: "Cálcio",
+                enoxaparina: "Enoxaparina",
+                insulina: "Insulina",
+                levotiroxina: "Levotiroxina",
+                medicamentos_inalatorios: "Medicamentos Inalatórios",
+                polivitaminicos: "Polivitamínico gestacional",
+                progestagenos: "Progestágenos",
+                psicotropicos: "Psicotrópicos",
+                outros: "Outros"
+              };
+              const nome = tipoNomes[med.tipo] || med.tipo;
+              const especificacao = med.especificacao ? ` (${med.especificacao})` : "";
+              return (
+                <span key={med.id} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                  {nome}{especificacao}
+                </span>
+              );
+            })}
           </div>
         </div>
       )}

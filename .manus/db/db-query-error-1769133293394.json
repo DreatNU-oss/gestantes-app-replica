@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, gestante_id, data_consulta, ig_dum_semanas, ig_dum_dias, ig_ultrassom_semanas, ig_ultrassom_dias, altura_uterina FROM consultas_prenatais WHERE gestante_id = 1560002 ORDER BY data_consulta;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestante_id, data_consulta, ig_dum_semanas, ig_dum_dias, ig_ultrassom_semanas, ig_ultrassom_dias, altura_uterina FROM consultas_prenatais WHERE gestante_id = 1560002 ORDER BY data_consulta;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'bsa4q7amjsjesmafoocq7a.consultas_prenatais' doesn't exist"
+  ]
+}

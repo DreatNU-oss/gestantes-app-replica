@@ -115,13 +115,12 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.image(logoPath, 50, 40, { width: 150 });
         }
 
-        // Título
-        doc.moveDown(2.5);
+        // Título - posicionado ao lado do logo, não sobrepondo
         if (usarNotoSans) doc.font('NotoSans-Bold');
-        doc.fontSize(24).fillColor(corPrimaria).text('Cartão de Pré-natal', { align: 'center' });
+        doc.fontSize(24).fillColor(corPrimaria).text('Cartão de Pré-natal', 210, 50, { align: 'center', width: 335 });
         if (usarNotoSans) doc.font('NotoSans');
-        doc.fontSize(10).fillColor(corCinza).text('Clínica Mais Mulher', { align: 'center' });
-        doc.moveDown(0.5);
+        doc.fontSize(10).fillColor(corCinza).text('Clínica Mais Mulher', 210, 80, { align: 'center', width: 335 });
+        doc.y = 110; // Posicionar abaixo do logo e título
         
         // Linha separadora
         doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor(corPrimaria).lineWidth(2).stroke();

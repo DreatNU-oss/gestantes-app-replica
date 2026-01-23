@@ -389,3 +389,8 @@
 - [x] Adicionar nome completo da paciente no cabeçalho das páginas 2+
 - [x] Manter primeira página sem cabeçalho adicional (já tem logo e título)
 - [x] Testar geração do PDF com cabeçalho
+
+## Correções de Bugs (23/01/2026)
+- [ ] Medicamentos em uso não aparecem no HTML de impressão
+- [ ] Título "Cartão de Pré-natal" sobrepondo o logo no PDF
+- [x] Pontos não visíveis no gráfico de AU no PDF (corrigido: conversão de mm para cm)

@@ -118,6 +118,7 @@ export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buf
   ctx.setLineDash([]);
   
   // Processar dados das consultas
+  
   const dataPoints: ChartDataPoint[] = consultas
     .filter(c => c.alturaUterina && c.alturaUterina > 0)
     .map(c => {
@@ -125,10 +126,13 @@ export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buf
       if (c.igUltrassomDias) igSemanas += c.igUltrassomDias / 7;
       else if (c.igDumDias) igSemanas += c.igDumDias / 7;
       
+      // Converter de mm para cm (valores no banco estão em mm)
+      const auCm = (c.alturaUterina as number) / 10;
+      
       return {
         x: igSemanas,
-        y: c.alturaUterina as number,
-        label: `${c.alturaUterina}cm`
+        y: auCm,
+        label: `${auCm}cm`
       };
     })
     .filter(p => p.x >= 12 && p.x <= 42)
@@ -147,17 +151,34 @@ export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buf
     
     // Desenhar pontos e labels
     dataPoints.forEach(p => {
-      // Ponto
-      ctx.fillStyle = '#8B4049';
+      // Contorno branco do ponto (para destacar)
+      ctx.fillStyle = '#FFFFFF';
       ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 4, 0, Math.PI * 2);
+      ctx.arc(scaleX(p.x), scaleY(p.y), 7, 0, Math.PI * 2);
       ctx.fill();
       
-      // Label
-      ctx.fillStyle = '#333333';
-      ctx.font = '10px Arial';
+      // Borda do ponto
+      ctx.strokeStyle = '#8B4049';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(scaleX(p.x), scaleY(p.y), 6, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Ponto preenchido
+      ctx.fillStyle = '#8B4049';
+      ctx.beginPath();
+      ctx.arc(scaleX(p.x), scaleY(p.y), 5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Label com fundo branco para melhor legibilidade
+      const labelText = `${p.y}`;
+      ctx.font = 'bold 10px Arial';
+      const textWidth = ctx.measureText(labelText).width;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.fillRect(scaleX(p.x) - textWidth/2 - 2, scaleY(p.y) - 20, textWidth + 4, 14);
+      ctx.fillStyle = '#8B4049';
       ctx.textAlign = 'center';
-      ctx.fillText(`${p.y}`, scaleX(p.x), scaleY(p.y) - 8);
+      ctx.fillText(labelText, scaleX(p.x), scaleY(p.y) - 9);
     });
   }
   
