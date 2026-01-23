@@ -350,3 +350,9 @@
 - [x] Identificar todos os títulos e cabeçalhos no código do PDF
 - [x] Aplicar NotoSans-Bold nos títulos e cabeçalhos
 - [x] Testar geração do PDF com fontes bold
+
+## Ajuste de Espaçamento no PDF (22/01/2026)
+- [x] Analisar espaçamentos atuais no código do PDF
+- [x] Otimizar espaçamentos entre seções e elementos
+- [x] Testar geração do PDF com novos espaçamentos
+- [x] Substituir fonte NotoSans por DejaVu Sans (suporte completo a Unicode, inclui ≥)

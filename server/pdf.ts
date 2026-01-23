@@ -87,14 +87,14 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
 
         // Registrar fontes Unicode (Noto Sans)
         const fontsDir = path.join(process.cwd(), 'server/fonts');
-        const notoSansRegular = path.join(fontsDir, 'NotoSans-Regular.ttf');
-        const notoSansBold = path.join(fontsDir, 'NotoSans-Bold.ttf');
+                // Usar DejaVu Sans que tem suporte completo a Unicode (inclui ≥, ≤, °, etc.)
+        const dejaVuSansRegular = path.join(process.cwd(), 'server/fonts/DejaVuSans.ttf');
+        const dejaVuSansBold = path.join(process.cwd(), 'server/fonts/DejaVuSans-Bold.ttf');
+        const usarNotoSans = fs.existsSync(dejaVuSansRegular) && fs.existsSync(dejaVuSansBold);
         
-        // Verificar se as fontes existem e usar como padrão
-        const usarNotoSans = fs.existsSync(notoSansRegular) && fs.existsSync(notoSansBold);
         if (usarNotoSans) {
-          doc.registerFont('NotoSans', notoSansRegular);
-          doc.registerFont('NotoSans-Bold', notoSansBold);
+          doc.registerFont('NotoSans', dejaVuSansRegular);
+          doc.registerFont('NotoSans-Bold', dejaVuSansBold);
           doc.font('NotoSans'); // Definir como fonte padrão
         }
 
@@ -116,16 +116,16 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         }
 
         // Título
-        doc.moveDown(4);
+        doc.moveDown(2.5);
         if (usarNotoSans) doc.font('NotoSans-Bold');
         doc.fontSize(24).fillColor(corPrimaria).text('Cartão de Pré-natal', { align: 'center' });
         if (usarNotoSans) doc.font('NotoSans');
         doc.fontSize(10).fillColor(corCinza).text('Clínica Mais Mulher', { align: 'center' });
-        doc.moveDown(1);
+        doc.moveDown(0.5);
         
         // Linha separadora
         doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor(corPrimaria).lineWidth(2).stroke();
-        doc.moveDown(1);
+        doc.moveDown(0.7);
 
         // Dados da Gestante
         if (usarNotoSans) doc.font('NotoSans-Bold');
@@ -169,8 +169,8 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           : '-';
         doc.fontSize(11).fillColor(corTexto).text(igUSDisplay, 390, yInicial + 47);
         
-        doc.y = yInicial + 110;
-        doc.moveDown(1);
+        doc.y = yInicial + 100;
+        doc.moveDown(0.7);
 
         // Fatores de Risco
         if (fatoresRisco.length > 0) {
@@ -210,13 +210,14 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             
             // Badge de fator de risco
             doc.roundedRect(xPos, yPos, larguraTexto, 20, 10).fillColor('#fee2e2').fill();
+            if (usarNotoSans) doc.font('NotoSans');
             doc.fontSize(9).fillColor('#991b1b').text(nome, xPos + 10, yPos + 5);
             
             xPos += larguraTexto + 10;
           });
           
-          doc.y = yPos + 30;
-          doc.moveDown(1);
+          doc.y = yPos + 25;
+          doc.moveDown(0.5);
         }
 
         // Medicamentos
@@ -244,12 +245,11 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             
             xPos += larguraTexto + 10;
           });
-          
-          doc.y = yPos + 30;
-          doc.moveDown(1);
+                 doc.y = yPos + 25;
+          doc.moveDown(0.5);
         }
 
-        // Consultas Pré-natais
+        // Histórico de Consultas
         if (consultas.length > 0) {
           // Nova página se necessário
           if (doc.y > 550) {
@@ -366,8 +366,8 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             xPos += larguraTexto + 10;
           });
           
-          doc.y = yPos + 40;
-          doc.moveDown(1);
+          doc.y = yPos + 35;
+          doc.moveDown(0.5);
         }
 
         // Ultrassons
@@ -438,7 +438,7 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             doc.y = currentY + 20;
           });
           
-          doc.moveDown(1);
+          doc.moveDown(0.5);
         }
 
         // Gráficos de Evolução
