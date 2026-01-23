@@ -350,15 +350,24 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
+          // Renderizar marcos em formato de tabela com datas
+          const marcoWidth = 160;
+          const marcoHeight = 45;
+          const marcosPerRow = 3;
           let xPos = 50;
           let yPos = doc.y;
           
-          marcos.forEach((marco) => {
-            const larguraTexto = doc.widthOfString(marco.titulo) + 20;
-            
-            if (xPos + larguraTexto > 545) {
+          marcos.forEach((marco, index) => {
+            // Nova linha se necessário
+            if (index > 0 && index % marcosPerRow === 0) {
               xPos = 50;
-              yPos += 30;
+              yPos += marcoHeight + 10;
+            }
+            
+            // Verificar se precisa de nova página
+            if (yPos > 700) {
+              doc.addPage();
+              yPos = 50;
             }
             
             // Cores baseadas no status (tons mais claros)
@@ -372,15 +381,27 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
               textColor = '#616161';
             }
             
-            // Badge de marco
-            doc.roundedRect(xPos, yPos, larguraTexto, 25, 8).fillColor(bgColor).fill();
-            doc.fontSize(8).fillColor(textColor).text(marco.titulo, xPos + 10, yPos + 4);
-            doc.fontSize(7).fillColor(textColor).text(`${marco.semanaInicio}-${marco.semanaFim}s`, xPos + 10, yPos + 14);
+            // Card do marco
+            doc.roundedRect(xPos, yPos, marcoWidth, marcoHeight, 6).fillColor(bgColor).fill();
             
-            xPos += larguraTexto + 10;
+            // Título do marco
+            if (usarNotoSans) doc.font('NotoSans-Bold');
+            doc.fontSize(9).fillColor(textColor).text(marco.titulo, xPos + 8, yPos + 6, { width: marcoWidth - 16 });
+            
+            // Semanas
+            if (usarNotoSans) doc.font('NotoSans');
+            doc.fontSize(7).fillColor(textColor).text(`${marco.semanaInicio}-${marco.semanaFim} semanas`, xPos + 8, yPos + 20);
+            
+            // Data estimada
+            if (marco.dataEstimada) {
+              const dataFormatada = new Date(marco.dataEstimada + 'T12:00:00').toLocaleDateString('pt-BR');
+              doc.fontSize(8).fillColor(textColor).text(dataFormatada, xPos + 8, yPos + 32);
+            }
+            
+            xPos += marcoWidth + 10;
           });
           
-          doc.y = yPos + 35;
+          doc.y = yPos + marcoHeight + 15;
           doc.moveDown(0.5);
         }
 

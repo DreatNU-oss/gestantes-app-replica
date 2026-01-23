@@ -394,3 +394,9 @@
 - [ ] Medicamentos em uso não aparecem no HTML de impressão
 - [ ] Título "Cartão de Pré-natal" sobrepondo o logo no PDF
 - [x] Pontos não visíveis no gráfico de AU no PDF (corrigido: conversão de mm para cm)
+
+
+## Correções HTML e PDF - Ultrassons e Marcos (23/01/2026)
+- [x] Ultrassons no HTML de impressão aparecem incompletos - exibir todos os dados registrados
+- [x] Marcos Importantes não aparecem no HTML de impressão - adicionar seção com datas calculadas
+- [x] Marcos Importantes no PDF mostram apenas IG sem datas - já estava mostrando datas (verificado)

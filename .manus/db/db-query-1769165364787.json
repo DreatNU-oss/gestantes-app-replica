@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, idadeGestacional, dados FROM ultrassons WHERE gestanteId = 1560002;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, idadeGestacional, dados FROM ultrassons WHERE gestanteId = 1560002;",
+  "rows": [
+    {
+      "id": "510001",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2025-07-01",
+      "idadeGestacional": "7s 0d",
+      "dados": "{\"bcf\": \"145 bpm\", \"ccn\": \"10mm\", \"corpoLuteo\": \"Presente\", \"dpp\": \"2026-02-18\", \"hematoma\": \"Não\", \"sacoVitelino\": \"Presente\"}"
+    },
+    {
+      "id": "510002",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-08-05",
+      "idadeGestacional": "12s 0d",
+      "dados": "{\"coloUterino\": \"38mm\", \"ductoVenoso\": \"Normal\", \"ipsUterinas\": \"1.2 / 1.3\", \"malformacoes\": \"Não\", \"ossoNasal\": \"Normal\", \"riscoPreEclampsia\": \"Baixo risco\", \"tn\": \"1.2mm\"}"
+    },
+    {
+      "id": "510003",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-10-14",
+      "idadeGestacional": "22s 0d",
+      "dados": "{\"biometria\": \"DBP: 52mm, CC: 195mm, CA: 175mm, CF: 38mm\", \"coloUterino\": \"35mm\", \"distanciaOCI\": \"4cm\", \"dopplers\": \"AU: IP 1.0, ACM: IP 1.8\", \"grauPlacenta\": \"I\", \"morfologiaFetal\": \"Crânio, face, coluna, tórax, coração, abdome e membros sem alterações\", \"observacoes\": \"Exame sem alterações morfológicas\", \"pesoEstimado\": \"480g\", \"placenta\": \"Anterior\", \"sexoFetal\": \"Feminino\"}"
+    },
+    {
+      "id": "510004",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2025-12-24",
+      "idadeGestacional": "32s 0d",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"distanciaOCI\": \"5cm\", \"dopplers\": \"AU: IP 0.9, ACM: IP 1.7, DV: IP 0.5\", \"grauPlacenta\": \"II\", \"liquidoAmniotico\": \"Normal\", \"movimentosFetais\": \"Presentes\", \"observacoes\": \"Crescimento fetal adequado, Doppler normal\", \"percentil\": \"P50\", \"pesoEstimado\": \"1850g\", \"placenta\": \"Anterior\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\n510001\tprimeiro_ultrassom\t2025-07-01\t7s 0d\t{\"bcf\": \"145 bpm\", \"ccn\": \"10mm\", \"corpoLuteo\": \"Presente\", \"dpp\": \"2026-02-18\", \"hematoma\": \"Não\", \"sacoVitelino\": \"Presente\"}\n510002\tmorfologico_1tri\t2025-08-05\t12s 0d\t{\"coloUterino\": \"38mm\", \"ductoVenoso\": \"Normal\", \"ipsUterinas\": \"1.2 / 1.3\", \"malformacoes\": \"Não\", \"ossoNasal\": \"Normal\", \"riscoPreEclampsia\": \"Baixo risco\", \"tn\": \"1.2mm\"}\n510003\tmorfologico_2tri\t2025-10-14\t22s 0d\t{\"biometria\": \"DBP: 52mm, CC: 195mm, CA: 175mm, CF: 38mm\", \"coloUterino\": \"35mm\", \"distanciaOCI\": \"4cm\", \"dopplers\": \"AU: IP 1.0, ACM: IP 1.8\", \"grauPlacenta\": \"I\", \"morfologiaFetal\": \"Crânio, face, coluna, tórax, coração, abdome e membros sem alterações\", \"observacoes\": \"Exame sem alterações morfológicas\", \"pesoEstimado\": \"480g\", \"placenta\": \"Anterior\", \"sexoFetal\": \"Feminino\"}\n510004\tultrassom_seguimento\t2025-12-24\t32s 0d\t{\"apresentacao\": \"Cefálica\", \"distanciaOCI\": \"5cm\", \"dopplers\": \"AU: IP 0.9, ACM: IP 1.7, DV: IP 0.5\", \"grauPlacenta\": \"II\", \"liquidoAmniotico\": \"Normal\", \"movimentosFetais\": \"Presentes\", \"observacoes\": \"Crescimento fetal adequado, Doppler normal\", \"percentil\": \"P50\", \"pesoEstimado\": \"1850g\", \"placenta\": \"Anterior\"}\n",
+  "stderr": "",
+  "execution_time_ms": 633
+}

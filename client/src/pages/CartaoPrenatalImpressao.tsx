@@ -423,37 +423,218 @@ export default function CartaoPrenatalImpressao() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Ultrassons</h2>
           <div className="space-y-4">
-            {ultrassons.map((us: any) => (
-              <div key={us.id} className="border border-gray-300 rounded p-3">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-semibold text-sm">
-                    {us.tipo === 'primeiro_ultrassom' ? '1º Ultrassom' :
-                     us.tipo === 'morfologico_1_tri' ? 'Morfológico 1º Tri' :
-                     us.tipo === 'morfologico_2_tri' ? 'Morfológico 2º Tri' :
-                     us.tipo === 'obstetrico' ? 'Obstétrico' :
-                     us.tipo === 'ecocardiograma' ? 'Ecocardiograma' :
-                     us.tipo === 'seguimento' ? 'Seguimento' : us.tipo}
-                  </h3>
-                  <span className="text-xs text-gray-500">
-                    {us.dataExame ? new Date(us.dataExame + 'T12:00:00').toLocaleDateString('pt-BR') : '-'}
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {us.idadeGestacional && <div><span className="font-medium">IG:</span> {us.idadeGestacional}</div>}
-                  {us.pesoFetal && <div><span className="font-medium">Peso:</span> {us.pesoFetal}</div>}
-                  {us.translucenciaNucal && <div><span className="font-medium">TN:</span> {us.translucenciaNucal}</div>}
-                  {us.placentaLocalizacao && <div><span className="font-medium">Placenta:</span> {us.placentaLocalizacao}</div>}
-                  {us.liquidoAmniotico && <div><span className="font-medium">LA:</span> {us.liquidoAmniotico}</div>}
-                  {us.apresentacao && <div><span className="font-medium">Apresentação:</span> {us.apresentacao}</div>}
-                  {us.sexoFetal && <div><span className="font-medium">Sexo:</span> {us.sexoFetal}</div>}
-                </div>
-                {us.observacoes && (
-                  <div className="mt-2 text-xs text-gray-600">
-                    <span className="font-medium">Obs:</span> {us.observacoes}
+            {ultrassons.map((us: any) => {
+              // Os dados estão no campo JSON 'dados'
+              const dados = us.dados || {};
+              
+              // Mapeamento de tipos para nomes legíveis
+              const tipoNomes: Record<string, string> = {
+                'primeiro_ultrassom': '1º Ultrassom',
+                'morfologico_1tri': 'Morfológico 1º Trimestre',
+                'ultrassom_obstetrico': 'Ultrassom Obstétrico',
+                'morfologico_2tri': 'Morfológico 2º Trimestre',
+                'ecocardiograma_fetal': 'Ecocardiograma Fetal',
+                'ultrassom_seguimento': 'Ultrassom de Seguimento',
+              };
+              
+              // Mapeamento de campos para labels legíveis
+              const campoLabels: Record<string, string> = {
+                // 1º Ultrassom
+                ccn: 'CCN',
+                bcf: 'BCF',
+                sacoVitelino: 'Saco Vitelino',
+                hematoma: 'Hematoma/Coleções',
+                corpoLuteo: 'Corpo Lúteo',
+                dpp: 'DPP',
+                // Morfo 1º Tri
+                tn: 'Translucência Nucal',
+                ductoVenoso: 'Ducto Venoso',
+                valvaTricuspide: 'Valva Tricúspide',
+                dopplerUterinas: 'Doppler Uterinas',
+                ipsUterinas: 'IPs Uterinas',
+                incisuraPresente: 'Incisura',
+                coloUterino: 'Colo Uterino',
+                colo: 'Colo Uterino',
+                riscoTrissomias: 'Risco Trissomias',
+                riscoPreEclampsia: 'Risco Pré-Eclâmpsia',
+                ossoNasal: 'Osso Nasal',
+                malformacoes: 'Malformações',
+                // Obstétrico e Morfo 2º Tri
+                biometria: 'Biometria',
+                pesoEstimado: 'Peso Estimado',
+                pesoFetal: 'Peso Fetal',
+                placenta: 'Placenta',
+                placentaLocalizacao: 'Placenta',
+                grauPlacenta: 'Grau Placenta',
+                placentaGrau: 'Grau Placenta',
+                distanciaOCI: 'Distância OCI',
+                placentaDistanciaOI: 'Distância OI',
+                liquidoAmniotico: 'Líquido Amniótico',
+                coloUterinoTV: 'Colo Uterino (TV)',
+                coloUterinoMedida: 'Medida Colo',
+                morfologiaFetal: 'Morfologia Fetal',
+                avaliacaoAnatomica: 'Avaliação Anatômica',
+                dopplers: 'Dopplers',
+                sexoFetal: 'Sexo Fetal',
+                // Seguimento
+                percentil: 'Percentil',
+                percentilPeso: 'Percentil Peso',
+                movimentosFetais: 'Movimentos Fetais',
+                apresentacao: 'Apresentação',
+                apresentacaoFetal: 'Apresentação',
+                // Ecocardiograma
+                conclusao: 'Conclusão',
+                // Geral
+                observacoes: 'Observações',
+              };
+              
+              // Campos que devem ser exibidos em linha separada (textos longos)
+              const camposLongos = ['biometria', 'morfologiaFetal', 'avaliacaoAnatomica', 'conclusao', 'observacoes'];
+              
+              // Separar campos curtos e longos
+              const camposCurtos = Object.entries(dados).filter(([key]) => !camposLongos.includes(key) && dados[key]);
+              const camposLongosPreenchidos = Object.entries(dados).filter(([key]) => camposLongos.includes(key) && dados[key]);
+              
+              return (
+                <div key={us.id} className="border border-gray-300 rounded p-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-semibold text-sm">
+                      {tipoNomes[us.tipoUltrassom] || us.tipoUltrassom}
+                    </h3>
+                    <span className="text-xs text-gray-500">
+                      {us.dataExame ? new Date(us.dataExame + 'T12:00:00').toLocaleDateString('pt-BR') : '-'}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
+                  
+                  {/* IG sempre primeiro */}
+                  {us.idadeGestacional && (
+                    <div className="text-xs mb-2">
+                      <span className="font-medium">Idade Gestacional:</span> {us.idadeGestacional}
+                    </div>
+                  )}
+                  
+                  {/* Campos curtos em grid */}
+                  {camposCurtos.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                      {camposCurtos.map(([key, value]) => (
+                        <div key={key}>
+                          <span className="font-medium">{campoLabels[key] || key}:</span> {String(value)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Campos longos em linhas separadas */}
+                  {camposLongosPreenchidos.length > 0 && (
+                    <div className="mt-2 space-y-1 text-xs">
+                      {camposLongosPreenchidos.map(([key, value]) => (
+                        <div key={key} className="text-gray-600">
+                          <span className="font-medium">{campoLabels[key] || key}:</span> {String(value)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Marcos Importantes */}
+      {gestante && (gestante.calculado?.dppUS || gestante.calculado?.dpp) && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Marcos Importantes</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {(() => {
+              // Usar DPP por US se disponível, senão usar DPP por DUM
+              const dppValue = gestante.calculado?.dppUS || gestante.calculado?.dpp;
+              if (!dppValue) return null;
+              
+              // Converter para Date - pode ser string ou objeto Date
+              let dpp: Date;
+              if (dppValue instanceof Date) {
+                dpp = dppValue;
+              } else {
+                // Converter string para Date
+                const dppStr = String(dppValue);
+                dpp = new Date(dppStr.includes('T') ? dppStr : dppStr + 'T12:00:00');
+              }
+              
+              // Verificar se a data é válida
+              if (isNaN(dpp.getTime())) return null;
+              const marcos = [];
+              
+              // Concepção
+              const concepcao = new Date(dpp);
+              concepcao.setDate(concepcao.getDate() - 280);
+              marcos.push({ titulo: "Concepção", ig: "0 semanas", data: concepcao.toLocaleDateString("pt-BR") });
+              
+              // Morfológico 1º Tri (11-14 semanas)
+              const morf1Inicio = new Date(concepcao);
+              morf1Inicio.setDate(morf1Inicio.getDate() + 77);
+              const morf1Fim = new Date(concepcao);
+              morf1Fim.setDate(morf1Fim.getDate() + 98);
+              marcos.push({ titulo: "Morfológico 1º Tri", ig: "11-14 semanas", data: `${morf1Inicio.toLocaleDateString("pt-BR")} a ${morf1Fim.toLocaleDateString("pt-BR")}` });
+              
+              // 13 Semanas
+              const s13 = new Date(concepcao);
+              s13.setDate(s13.getDate() + 91);
+              marcos.push({ titulo: "13 Semanas", ig: "13 semanas", data: s13.toLocaleDateString("pt-BR") });
+              
+              // Morfológico 2º Tri (20-24 semanas)
+              const morf2Inicio = new Date(concepcao);
+              morf2Inicio.setDate(morf2Inicio.getDate() + 140);
+              const morf2Fim = new Date(concepcao);
+              morf2Fim.setDate(morf2Fim.getDate() + 168);
+              marcos.push({ titulo: "Morfológico 2º Tri", ig: "20-24 semanas", data: `${morf2Inicio.toLocaleDateString("pt-BR")} a ${morf2Fim.toLocaleDateString("pt-BR")}` });
+              
+              // Vacina dTpa (27 semanas)
+              const dtpa = new Date(concepcao);
+              dtpa.setDate(dtpa.getDate() + 189);
+              marcos.push({ titulo: "Vacina dTpa", ig: "27 semanas", data: dtpa.toLocaleDateString("pt-BR") });
+              
+              // Vacina Bronquiolite (32-36 semanas)
+              const bronqInicio = new Date(concepcao);
+              bronqInicio.setDate(bronqInicio.getDate() + 224);
+              const bronqFim = new Date(concepcao);
+              bronqFim.setDate(bronqFim.getDate() + 252);
+              marcos.push({ titulo: "Vacina Bronquiolite", ig: "32-36 semanas", data: `${bronqInicio.toLocaleDateString("pt-BR")} a ${bronqFim.toLocaleDateString("pt-BR")}` });
+              
+              // Termo Precoce (37 semanas)
+              const termoPrecoce = new Date(concepcao);
+              termoPrecoce.setDate(termoPrecoce.getDate() + 259);
+              marcos.push({ titulo: "Termo Precoce", ig: "37 semanas", data: termoPrecoce.toLocaleDateString("pt-BR") });
+              
+              // Termo Completo (39 semanas)
+              const termoCompleto = new Date(concepcao);
+              termoCompleto.setDate(termoCompleto.getDate() + 273);
+              marcos.push({ titulo: "Termo Completo", ig: "39 semanas", data: termoCompleto.toLocaleDateString("pt-BR") });
+              
+              // DPP (40 semanas)
+              marcos.push({ titulo: "DPP", ig: "40 semanas", data: dpp.toLocaleDateString("pt-BR") });
+              
+              // Cores suaves para cada marco
+              const cores = [
+                'bg-pink-50 border-pink-200',
+                'bg-purple-50 border-purple-200',
+                'bg-blue-50 border-blue-200',
+                'bg-indigo-50 border-indigo-200',
+                'bg-green-50 border-green-200',
+                'bg-teal-50 border-teal-200',
+                'bg-yellow-50 border-yellow-200',
+                'bg-orange-50 border-orange-200',
+                'bg-red-50 border-red-200',
+              ];
+              
+              return marcos.map((marco, index) => (
+                <div key={index} className={`border rounded p-2 ${cores[index % cores.length]}`}>
+                  <div className="font-semibold text-sm text-gray-800">{marco.titulo}</div>
+                  <div className="text-xs text-gray-600">{marco.ig}</div>
+                  <div className="text-xs font-medium text-gray-700 mt-1">{marco.data}</div>
+                </div>
+              ));
+            })()}
           </div>
         </div>
       )}
