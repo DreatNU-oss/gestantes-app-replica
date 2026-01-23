@@ -345,3 +345,8 @@
 - [x] Atualizar código do PDF para usar a fonte Unicode
 - [x] Restaurar caracteres especiais (≥, ≤, °, ü) nos textos
 - [x] Testar geração do PDF com caracteres especiais
+
+## Fonte Bold nos Títulos do PDF (22/01/2026)
+- [x] Identificar todos os títulos e cabeçalhos no código do PDF
+- [x] Aplicar NotoSans-Bold nos títulos e cabeçalhos
+- [x] Testar geração do PDF com fontes bold

@@ -117,7 +117,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
 
         // Título
         doc.moveDown(4);
+        if (usarNotoSans) doc.font('NotoSans-Bold');
         doc.fontSize(24).fillColor(corPrimaria).text('Cartão de Pré-natal', { align: 'center' });
+        if (usarNotoSans) doc.font('NotoSans');
         doc.fontSize(10).fillColor(corCinza).text('Clínica Mais Mulher', { align: 'center' });
         doc.moveDown(1);
         
@@ -126,7 +128,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         doc.moveDown(1);
 
         // Dados da Gestante
+        if (usarNotoSans) doc.font('NotoSans-Bold');
         doc.fontSize(16).fillColor(corPrimaria).text('Dados da Gestante');
+        if (usarNotoSans) doc.font('NotoSans');
         doc.moveDown(0.5);
         
         const yInicial = doc.y;
@@ -170,7 +174,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
 
         // Fatores de Risco
         if (fatoresRisco.length > 0) {
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Fatores de Risco');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           const nomesRisco: Record<string, string> = {
@@ -215,7 +221,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
 
         // Medicamentos
         if (medicamentos.length > 0) {
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Medicamentos em Uso');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           let xPos = 50;
@@ -248,7 +256,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             doc.addPage();
           }
           
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Histórico de Consultas');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           // Cabeçalho da tabela
@@ -321,7 +331,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             doc.addPage();
           }
           
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Marcos Importantes');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           let xPos = 50;
@@ -365,7 +377,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
             doc.addPage();
           }
           
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Ultrassons');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           // Cabeçalho da tabela
@@ -431,7 +445,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         if (consultas.length > 0) {
           doc.addPage();
           
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Gráficos de Evolução');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           try {
@@ -464,7 +480,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           // Nova página
           doc.addPage();
           
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fontSize(14).fillColor(corPrimaria).text('Exames Laboratoriais');
+          if (usarNotoSans) doc.font('NotoSans');
           doc.moveDown(0.5);
           
           // Cabeçalho da tabela
