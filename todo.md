@@ -379,3 +379,13 @@
 - [x] Implementar quebra de linha automática na coluna Observações
 - [x] Ajustar altura das linhas dinamicamente baseado no conteúdo
 - [x] Testar geração do PDF com textos longos
+
+## Numeração de Páginas no PDF (22/01/2026)
+- [x] Implementar numeração de páginas no formato "Página X de Y"
+- [x] Posicionar numeração no rodapé centralizado de cada página
+- [x] Testar geração do PDF com numeração de páginas (já estava implementado)
+
+## Cabeçalho com Nome da Paciente no PDF (22/01/2026)
+- [x] Adicionar nome completo da paciente no cabeçalho das páginas 2+
+- [x] Manter primeira página sem cabeçalho adicional (já tem logo e título)
+- [x] Testar geração do PDF com cabeçalho

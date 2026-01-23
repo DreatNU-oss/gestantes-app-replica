@@ -567,6 +567,18 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         for (let i = 0; i < pageCount; i++) {
           doc.switchToPage(i);
           
+          // Cabeçalho com nome da paciente (apenas páginas 2+)
+          if (i > 0) {
+            doc.save();
+            if (usarNotoSans) doc.font('NotoSans-Bold');
+            doc.fontSize(10).fillColor(corPrimaria);
+            doc.text(`Paciente: ${gestante.nome || '-'}`, 50, 25, { align: 'left' });
+            if (usarNotoSans) doc.font('NotoSans');
+            // Linha separadora fina abaixo do cabeçalho
+            doc.moveTo(50, 40).lineTo(545, 40).strokeColor(corSecundaria).lineWidth(0.5).stroke();
+            doc.restore();
+          }
+          
           // Marca d'água - Logo centralizado com opacidade reduzida
           if (fs.existsSync(logoPath)) {
             doc.save();
