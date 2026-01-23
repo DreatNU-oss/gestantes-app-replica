@@ -400,3 +400,9 @@
 - [x] Ultrassons no HTML de impressão aparecem incompletos - exibir todos os dados registrados
 - [x] Marcos Importantes não aparecem no HTML de impressão - adicionar seção com datas calculadas
 - [x] Marcos Importantes no PDF mostram apenas IG sem datas - já estava mostrando datas (verificado)
+
+
+## Atualizar Política de Privacidade Bilíngue (23/01/2026)
+- [x] Substituir conteúdo da página /politicadeprivacidade pelo HTML bilíngue
+- [x] Validar seletor de idioma (Português/English)
+- [x] Testar alternância entre idiomas
