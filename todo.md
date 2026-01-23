@@ -361,3 +361,9 @@
 - [x] Implementar marca d'água com logo da clínica em todas as páginas do PDF
 - [x] Ajustar opacidade para ser discreta mas visível
 - [x] Testar geração do PDF com marca d'água
+
+## Cabeçalhos em Negrito nas Tabelas do PDF (22/01/2026)
+- [x] Aplicar fonte bold nos cabeçalhos da tabela de consultas
+- [x] Aplicar fonte bold nos cabeçalhos da tabela de exames laboratoriais
+- [x] Aplicar fonte bold nos cabeçalhos da tabela de ultrassons
+- [x] Testar geração do PDF com cabeçalhos em negrito

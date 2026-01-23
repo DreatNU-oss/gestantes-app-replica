@@ -266,6 +266,8 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(8).fillColor('white');
           doc.rect(50, tableTop, 495, 20).fillColor(corPrimaria).fill();
           
+          // Aplicar negrito nos cabeçalhos
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
           doc.text('Data', 55, tableTop + 6, { width: 50 });
           doc.text('IG DUM', 110, tableTop + 6, { width: 45 });
@@ -276,6 +278,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.text('BCF', 340, tableTop + 6, { width: 30 });
           doc.text('Conduta', 375, tableTop + 6, { width: 80 });
           doc.text('Obs', 460, tableTop + 6, { width: 85 });
+          
+          // Voltar para fonte normal
+          if (usarNotoSans) doc.font('NotoSans');
           
           doc.y = tableTop + 20;
           
@@ -387,11 +392,16 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(8).fillColor('white');
           doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
           
+          // Aplicar negrito nos cabeçalhos
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
           doc.text('Tipo', 55, tableTop + 5, { width: 120 });
           doc.text('Data', 180, tableTop + 5, { width: 60 });
           doc.text('IG', 245, tableTop + 5, { width: 50 });
           doc.text('Observações', 300, tableTop + 5, { width: 245 });
+          
+          // Voltar para fonte normal
+          if (usarNotoSans) doc.font('NotoSans');
           
           doc.y = tableTop + 18;
           
@@ -490,6 +500,8 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.fontSize(7).fillColor('white');
           doc.rect(50, tableTop, 495, 18).fillColor(corPrimaria).fill();
           
+          // Aplicar negrito nos cabeçalhos
+          if (usarNotoSans) doc.font('NotoSans-Bold');
           doc.fillColor('white');
           doc.text('Exame', 55, tableTop + 5, { width: 90 });
           doc.text('1º Tri Data', 150, tableTop + 5, { width: 50 });
@@ -498,6 +510,9 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           doc.text('2º Tri Res.', 315, tableTop + 5, { width: 50 });
           doc.text('3º Tri Data', 370, tableTop + 5, { width: 50 });
           doc.text('3º Tri Res.', 425, tableTop + 5, { width: 70 });
+          
+          // Voltar para fonte normal
+          if (usarNotoSans) doc.font('NotoSans');
           
           doc.y = tableTop + 18;
           
