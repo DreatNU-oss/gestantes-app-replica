@@ -356,3 +356,8 @@
 - [x] Otimizar espaçamentos entre seções e elementos
 - [x] Testar geração do PDF com novos espaçamentos
 - [x] Substituir fonte NotoSans por DejaVu Sans (suporte completo a Unicode, inclui ≥)
+
+## Marca d'Água no PDF (22/01/2026)
+- [x] Implementar marca d'água com logo da clínica em todas as páginas do PDF
+- [x] Ajustar opacidade para ser discreta mas visível
+- [x] Testar geração do PDF com marca d'água

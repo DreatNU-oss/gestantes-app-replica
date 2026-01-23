@@ -530,10 +530,24 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
           });
         }
 
-        // Rodaé
-        const pageCount = doc.bufferedPageRange().count;;
+        // Marca d'água e Rodapé
+        const pageCount = doc.bufferedPageRange().count;
         for (let i = 0; i < pageCount; i++) {
           doc.switchToPage(i);
+          
+          // Marca d'água - Logo centralizado com opacidade reduzida
+          if (fs.existsSync(logoPath)) {
+            doc.save();
+            doc.opacity(0.08); // Opacidade bem baixa para ser discreta
+            // Centralizar o logo na página (A4: 595 x 842 pontos)
+            const watermarkWidth = 300;
+            const watermarkX = (595 - watermarkWidth) / 2;
+            const watermarkY = (842 - 150) / 2; // Centralizado verticalmente
+            doc.image(logoPath, watermarkX, watermarkY, { width: watermarkWidth });
+            doc.restore();
+          }
+          
+          // Rodapé
           doc.fontSize(8).fillColor(corCinza);
           doc.text(
             `Gerado em ${new Date().toLocaleDateString('pt-BR')} - Página ${i + 1} de ${pageCount}`,
