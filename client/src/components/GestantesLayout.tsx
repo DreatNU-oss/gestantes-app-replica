@@ -46,6 +46,7 @@ import { trpc } from "@/lib/trpc";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ModalInfoGestante from "@/components/ModalInfoGestante";
 
 const menuItems = [
   { icon: Users, label: "Gestantes", path: "/dashboard" },
@@ -78,6 +79,8 @@ export default function GestantesLayout({
   const [busca, setBusca] = useState("");
   const [sugestoes, setSugestoes] = useState<Array<{ id: number; nome: string }>>([]);
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoGestante, setInfoGestante] = useState<{ id: number; nome: string } | null>(null);
 
   // Buscar gestantes para autocomplete
   const { data: gestantes } = trpc.gestantes.list.useQuery({
@@ -99,6 +102,8 @@ export default function GestantesLayout({
     setGestanteAtiva(gestante);
     setBusca("");
     setMostrarSugestoes(false);
+    setInfoGestante(gestante);
+    setShowInfoModal(true);
   };
 
   useEffect(() => {
@@ -309,6 +314,14 @@ export default function GestantesLayout({
           </main>
         </SidebarInset>
       </div>
+
+      {/* Modal de Informações da Gestante */}
+      <ModalInfoGestante
+        open={showInfoModal}
+        onOpenChange={setShowInfoModal}
+        gestanteId={infoGestante?.id || null}
+        gestanteNome={infoGestante?.nome || ""}
+      />
     </SidebarProvider>
   );
 }

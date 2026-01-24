@@ -45,6 +45,7 @@ import { AlertaConsultasAtrasadas } from "@/components/AlertaConsultasAtrasadas"
 import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import AltoRiscoBadge from "@/components/AltoRiscoBadge";
+import ModalInfoGestante from "@/components/ModalInfoGestante";
 
 // Função para formatar data de forma segura, evitando problemas de timezone
 const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
@@ -93,6 +94,10 @@ export default function Dashboard() {
   // Estados para diálogo de confirmação de consulta
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
   const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{id: number, nome: string} | null>(null);
+  
+  // Estados para modal de informações da gestante
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoGestante, setInfoGestante] = useState<{id: number, nome: string} | null>(null);
   
   const { data: gestantes, isLoading, refetch: refetchGestantes } = trpc.gestantes.list.useQuery(
     { searchTerm, sortBy },
@@ -420,7 +425,11 @@ export default function Dashboard() {
                           <Button
                             variant={gestanteAtiva?.id === g.id ? "default" : "outline"}
                             size="sm"
-                            onClick={() => setGestanteAtiva({ id: g.id, nome: g.nome })}
+                            onClick={() => {
+                              setGestanteAtiva({ id: g.id, nome: g.nome });
+                              setInfoGestante({ id: g.id, nome: g.nome });
+                              setShowInfoModal(true);
+                            }}
                           >
                             {gestanteAtiva?.id === g.id ? "Selecionada" : "Selecionar"}
                           </Button>
@@ -602,6 +611,14 @@ export default function Dashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Modal de Informações da Gestante */}
+      <ModalInfoGestante
+        open={showInfoModal}
+        onOpenChange={setShowInfoModal}
+        gestanteId={infoGestante?.id || null}
+        gestanteNome={infoGestante?.nome || ""}
+      />
     </GestantesLayout>
   );
 }

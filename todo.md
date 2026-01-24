@@ -406,3 +406,12 @@
 - [x] Substituir conteúdo da página /politicadeprivacidade pelo HTML bilíngue
 - [x] Validar seletor de idioma (Português/English)
 - [x] Testar alternância entre idiomas
+
+
+## Modal de Informações ao Selecionar Gestante (24/01/2026)
+- [x] Criar componente de modal para exibir informações da gestante
+- [x] Exibir Fatores de Risco no modal
+- [x] Exibir Medicamentos em Uso no modal
+- [x] Exibir Observações do cadastro (se houver) no modal
+- [x] Integrar modal ao fluxo de seleção de gestante (Dashboard e Sidebar)
+- [x] Testar funcionalidade com diferentes gestantes
