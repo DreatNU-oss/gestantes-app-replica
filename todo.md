@@ -415,3 +415,9 @@
 - [x] Exibir Observações do cadastro (se houver) no modal
 - [x] Integrar modal ao fluxo de seleção de gestante (Dashboard e Sidebar)
 - [x] Testar funcionalidade com diferentes gestantes
+
+
+## Modal de Informações ao Abrir Consulta (27/01/2026)
+- [x] Exibir modal automaticamente ao abrir página de consulta
+- [x] Mostrar Fatores de Risco, Medicamentos em Uso e Observações da gestante
+- [x] Testar funcionalidade

@@ -27,6 +27,7 @@ import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import MedicamentosManager from "@/components/MedicamentosManager";
+import ModalInfoGestante from "@/components/ModalInfoGestante";
 import { toast } from "sonner";
 import { isAUAbnormal } from "@/lib/auReferenceData";
 import { isBPAbnormal } from "@/lib/bpValidation";
@@ -66,12 +67,14 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
+      setShowInfoModal(true);
       // Limpar query params da URL
       window.history.replaceState({}, '', '/cartao-prenatal');
     }
   }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -1498,7 +1501,10 @@ export default function CartaoPrenatal() {
 
         {/* Botão Nova Consulta */}
         {gestanteSelecionada && !mostrarFormulario && (
-          <Button onClick={() => setMostrarFormulario(true)}>
+          <Button onClick={() => {
+            setMostrarFormulario(true);
+            setShowInfoModal(true);
+          }}>
             <Plus className="h-4 w-4 mr-2" />
             Nova Consulta
           </Button>
@@ -2127,6 +2133,14 @@ export default function CartaoPrenatal() {
             exames={exames || []}
           />
         )}
+
+        {/* Modal de Informações da Gestante ao abrir consulta */}
+        <ModalInfoGestante
+          open={showInfoModal}
+          onOpenChange={setShowInfoModal}
+          gestanteId={gestanteSelecionada}
+          gestanteNome={gestante?.nome || ""}
+        />
       </div>
     </GestantesLayout>
   );
