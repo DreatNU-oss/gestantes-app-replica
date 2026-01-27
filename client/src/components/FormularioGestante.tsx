@@ -957,6 +957,11 @@ export default function FormularioGestante({
                 Math.floor((new Date().getTime() - new Date(formData.dataNascimento).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
                 : null
             }
+            imcGestante={
+              formData.altura && formData.pesoInicial ?
+                parseFloat(formData.pesoInicial) / Math.pow(parseFloat(formData.altura) / 100, 2)
+                : null
+            }
           />
         )}
 

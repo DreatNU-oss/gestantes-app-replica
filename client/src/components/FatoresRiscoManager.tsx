@@ -18,6 +18,7 @@ import { toast } from "sonner";
 interface FatoresRiscoManagerProps {
   gestanteId: number;
   idadeGestante?: number | null;
+  imcGestante?: number | null;
 }
 
 // Fatores de risco padrão (fallback se o banco estiver vazio)
@@ -44,7 +45,7 @@ const FATORES_RISCO_LABELS_DEFAULT: Record<string, string> = {
   trombofilia: "Trombofilia",
 };
 
-export default function FatoresRiscoManager({ gestanteId, idadeGestante }: FatoresRiscoManagerProps) {
+export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGestante }: FatoresRiscoManagerProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [novoFator, setNovoFator] = useState({
     tipo: "",
@@ -144,6 +145,34 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
       deleteFatorMutation.mutate({ id: fatorIdadeAvancada.id });
     }
   }, [idadeGestante, fatores, isLoading, gestanteId]);
+
+  // Verificar se deve adicionar ou remover automaticamente "sobrepeso_obesidade" (apenas obesidade: IMC >= 30)
+  // Executa quando o IMC da gestante muda (após preencher altura e peso)
+  // ou quando os fatores de risco são carregados/atualizados
+  useEffect(() => {
+    // Aguarda carregar os dados
+    if (isLoading) return;
+
+    // Busca o fator de risco "sobrepeso_obesidade" ativo (se existir)
+    const fatorObesidade = fatores.find(f => f.tipo === "sobrepeso_obesidade" && f.ativo === 1);
+    const temObesidade = !!fatorObesidade;
+
+    // Caso 1: IMC >= 30 (obesidade) e não tem o fator -> adicionar automaticamente
+    if (imcGestante && imcGestante >= 30 && !temObesidade && !addFatorMutation.isPending) {
+      addFatorMutation.mutate({
+        gestanteId,
+        tipo: "sobrepeso_obesidade",
+        descricao: `Detectado automaticamente (IMC: ${imcGestante.toFixed(1)})`,
+      });
+    }
+    
+    // Caso 2: IMC < 30 e tem o fator com descrição automática -> remover automaticamente
+    if (imcGestante && imcGestante < 30 && fatorObesidade && 
+        fatorObesidade.descricao?.startsWith("Detectado automaticamente") && 
+        !deleteFatorMutation.isPending) {
+      deleteFatorMutation.mutate({ id: fatorObesidade.id });
+    }
+  }, [imcGestante, fatores, isLoading, gestanteId]);
 
   const handleAddFator = () => {
     if (!novoFator.tipo) {
