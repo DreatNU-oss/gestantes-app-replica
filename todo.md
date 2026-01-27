@@ -447,3 +447,4 @@
 - [x] Atualizar seletores no cadastro de gestantes para usar opções do banco
 - [x] Atualizar seletores no Cartão de Pré-natal para usar opções do banco
 - [x] Testar funcionalidade completa
+- [x] Adicionar Tipo de Parto Desejado e Data do Parto ao modal de informações da gestante

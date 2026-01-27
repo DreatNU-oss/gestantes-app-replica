@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, Pill, FileText, Loader2, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Pill, FileText, Loader2, ShieldAlert, Baby, Calendar } from "lucide-react";
 
 // Mapeamento de tipos de fatores de risco para labels legíveis
 const fatoresRiscoLabels: Record<string, string> = {
@@ -64,6 +64,37 @@ const medicamentosLabels: Record<string, string> = {
   outro: "Outro",
 };
 
+// Mapeamento de tipos de parto para labels legíveis
+const tipoPartoLabels: Record<string, string> = {
+  cesariana: "Cesárea",
+  normal: "Parto Normal",
+  a_definir: "A Definir",
+};
+
+// Função para formatar data no formato brasileiro
+function formatDateBR(dateStr: string | null | undefined): string {
+  if (!dateStr) return "";
+  try {
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateStr;
+  }
+}
+
+// Função para formatar Date no formato brasileiro
+function formatDateObjBR(date: Date | null | undefined): string {
+  if (!date) return "";
+  try {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return "";
+  }
+}
+
 interface ModalInfoGestanteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -105,17 +136,28 @@ export default function ModalInfoGestante({
   const temMedicamentos = medicamentos && medicamentos.length > 0;
   const temAlergias = alergias.length > 0;
   const temObservacoes = gestante?.observacoes && gestante.observacoes.trim() !== "";
+  
+  // Verificar tipo de parto e data do parto
+  const tipoParto = gestante?.tipoPartoDesejado;
+  const temTipoParto = tipoParto && tipoParto !== "a_definir";
+  
+  // Data do parto: preferência para data programada, senão usa DPP calculada
+  const dataPartoProgramado = gestante?.dataPartoProgramado;
+  const dppCalculada = gestante?.calculado?.dppUS || gestante?.calculado?.dpp;
+  const dataParto = dataPartoProgramado || (dppCalculada ? formatDateObjBR(dppCalculada) : null);
+  const isDataProgramada = !!dataPartoProgramado;
+  const temDataParto = !!dataParto;
 
   // Se não houver nenhuma informação, fechar o modal automaticamente
   useEffect(() => {
-    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes) {
+    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto) {
       // Fechar após um pequeno delay para não parecer um bug
       const timer = setTimeout(() => {
         onOpenChange(false);
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [isLoading, open, temFatoresRisco, temMedicamentos, temAlergias, temObservacoes, onOpenChange]);
+  }, [isLoading, open, temFatoresRisco, temMedicamentos, temAlergias, temObservacoes, temTipoParto, temDataParto, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -133,37 +175,78 @@ export default function ModalInfoGestante({
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Fatores de Risco */}
-            {temFatoresRisco && (
+            {/* Tipo de Parto Desejado e Data do Parto */}
+            {(temTipoParto || temDataParto) && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-amber-500" />
-                  <h3 className="font-semibold text-amber-700">Fatores de Risco</h3>
+                  <Baby className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold text-primary">Informações do Parto</h3>
                 </div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <div className="flex flex-wrap gap-2">
-                    {outrosFatoresRisco.map((fator) => (
-                      <div key={fator.id} className="space-y-1">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    {temTipoParto && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Tipo de Parto Desejado</p>
                         <Badge 
                           variant="outline" 
-                          className="bg-amber-100 text-amber-800 border-amber-300"
+                          className="bg-primary/10 text-primary border-primary/30"
                         >
-                          {fatoresRiscoLabels[fator.tipo] || fator.tipo}
+                          {tipoPartoLabels[tipoParto] || tipoParto}
                         </Badge>
-                        {fator.descricao && (
-                          <p className="text-xs text-amber-700 pl-1">{fator.descricao}</p>
-                        )}
                       </div>
-                    ))}
+                    )}
+                    {temDataParto && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {isDataProgramada ? "Data Programada" : "Data Provável (DPP)"}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span className="font-medium text-primary">
+                            {isDataProgramada ? formatDateBR(dataPartoProgramado) : dataParto}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             )}
 
+            {/* Fatores de Risco */}
+            {temFatoresRisco && (
+              <>
+                {(temTipoParto || temDataParto) && <Separator />}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    <h3 className="font-semibold text-amber-700">Fatores de Risco</h3>
+                  </div>
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex flex-wrap gap-2">
+                      {outrosFatoresRisco.map((fator) => (
+                        <div key={fator.id} className="space-y-1">
+                          <Badge 
+                            variant="outline" 
+                            className="bg-amber-100 text-amber-800 border-amber-300"
+                          >
+                            {fatoresRiscoLabels[fator.tipo] || fator.tipo}
+                          </Badge>
+                          {fator.descricao && (
+                            <p className="text-xs text-amber-700 pl-1">{fator.descricao}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             {/* Medicamentos em Uso */}
             {temMedicamentos && (
               <>
-                {temFatoresRisco && <Separator />}
+                {(temFatoresRisco || temTipoParto || temDataParto) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Pill className="h-5 w-5 text-blue-500" />
@@ -193,7 +276,7 @@ export default function ModalInfoGestante({
             {/* Alergias */}
             {temAlergias && (
               <>
-                {(temFatoresRisco || temMedicamentos) && <Separator />}
+                {(temFatoresRisco || temMedicamentos || temTipoParto || temDataParto) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="h-5 w-5 text-red-500" />
@@ -223,7 +306,7 @@ export default function ModalInfoGestante({
             {/* Observações */}
             {temObservacoes && (
               <>
-                {(temFatoresRisco || temMedicamentos || temAlergias) && <Separator />}
+                {(temFatoresRisco || temMedicamentos || temAlergias || temTipoParto || temDataParto) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-gray-500" />
@@ -239,7 +322,7 @@ export default function ModalInfoGestante({
             )}
 
             {/* Mensagem se não houver informações */}
-            {!temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && (
+            {!temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto && (
               <div className="text-center py-8 text-muted-foreground">
                 <p>Nenhuma informação adicional registrada para esta gestante.</p>
               </div>
