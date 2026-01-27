@@ -1,0 +1,125 @@
+{
+  "query": "SELECT codigo, nome, ativo FROM opcoesFatoresRisco ORDER BY codigo;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT codigo, nome, ativo FROM opcoesFatoresRisco ORDER BY codigo;",
+  "rows": [
+    {
+      "codigo": "alergia_medicamentos",
+      "nome": "Alergia a Medicamentos",
+      "ativo": "1"
+    },
+    {
+      "codigo": "alteracoes_morfologicas_fetais",
+      "nome": "Alterações Morfológicas Fetais",
+      "ativo": "1"
+    },
+    {
+      "codigo": "anemia_falciforme",
+      "nome": "Anemia Falciforme",
+      "ativo": "1"
+    },
+    {
+      "codigo": "cirurgia_uterina_previa",
+      "nome": "Cirurgia Uterina Prévia",
+      "ativo": "1"
+    },
+    {
+      "codigo": "diabetes_gestacional",
+      "nome": "Diabetes Gestacional",
+      "ativo": "1"
+    },
+    {
+      "codigo": "diabetes_tipo_1",
+      "nome": "Diabetes Tipo 1",
+      "ativo": "1"
+    },
+    {
+      "codigo": "diabetes_tipo2",
+      "nome": "Diabetes Tipo 2",
+      "ativo": "1"
+    },
+    {
+      "codigo": "dpoc_asma",
+      "nome": "DPOC / Asma",
+      "ativo": "1"
+    },
+    {
+      "codigo": "epilepsia",
+      "nome": "Epilepsia",
+      "ativo": "1"
+    },
+    {
+      "codigo": "fator_preditivo_dheg",
+      "nome": "Fator Preditivo para DHEG",
+      "ativo": "1"
+    },
+    {
+      "codigo": "fator_rh_negativo",
+      "nome": "Fator Rh Negativo",
+      "ativo": "1"
+    },
+    {
+      "codigo": "fiv_nesta_gestacao",
+      "nome": "FIV nesta gestação",
+      "ativo": "1"
+    },
+    {
+      "codigo": "gemelar",
+      "nome": "Gestação Gemelar",
+      "ativo": "1"
+    },
+    {
+      "codigo": "hipertensao",
+      "nome": "Hipertensão Arterial Sistêmica",
+      "ativo": "1"
+    },
+    {
+      "codigo": "hipotireoidismo",
+      "nome": "Hipotireoidismo",
+      "ativo": "1"
+    },
+    {
+      "codigo": "historico_familiar_dheg",
+      "nome": "Histórico Familiar de DHEG",
+      "ativo": "1"
+    },
+    {
+      "codigo": "idade_avancada",
+      "nome": "Idade ≥ 35 anos",
+      "ativo": "1"
+    },
+    {
+      "codigo": "incompetencia_istmo_cervical",
+      "nome": "Incompetência Istmo-Cervical",
+      "ativo": "1"
+    },
+    {
+      "codigo": "mal_passado_obstetrico",
+      "nome": "Mau Passado Obstétrico",
+      "ativo": "1"
+    },
+    {
+      "codigo": "malformacoes_mullerianas",
+      "nome": "Malformações Müllerianas",
+      "ativo": "1"
+    },
+    {
+      "codigo": "outro",
+      "nome": "Outro",
+      "ativo": "1"
+    },
+    {
+      "codigo": "sobrepeso_obesidade",
+      "nome": "Sobrepeso / Obesidade",
+      "ativo": "1"
+    },
+    {
+      "codigo": "trombofilia",
+      "nome": "Trombofilia",
+      "ativo": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "codigo\tnome\tativo\nalergia_medicamentos\tAlergia a Medicamentos\t1\nalteracoes_morfologicas_fetais\tAlterações Morfológicas Fetais\t1\nanemia_falciforme\tAnemia Falciforme\t1\ncirurgia_uterina_previa\tCirurgia Uterina Prévia\t1\ndiabetes_gestacional\tDiabetes Gestacional\t1\ndiabetes_tipo_1\tDiabetes Tipo 1\t1\ndiabetes_tipo2\tDiabetes Tipo 2\t1\ndpoc_asma\tDPOC / Asma\t1\nepilepsia\tEpilepsia\t1\nfator_preditivo_dheg\tFator Preditivo para DHEG\t1\nfator_rh_negativo\tFator Rh Negativo\t1\nfiv_nesta_gestacao\tFIV nesta gestação\t1\ngemelar\tGestação Gemelar\t1\nhipertensao\tHipertensão Arterial Sistêmica\t1\nhipotireoidismo\tHipotireoidismo\t1\nhistorico_familiar_dheg\tHistórico Familiar de DHEG\t1\nidade_avancada\tIdade ≥ 35 anos\t1\nincompetencia_istmo_cervical\tIncompetência Istmo-Cervical\t1\nmal_passado_obstetrico\tMau Passado Obstétrico\t1\nmalformacoes_mullerianas\tMalformações Müllerianas\t1\noutro\tOutro\t1\nsobrepeso_obesidade\tSobrepeso / Obesidade\t1\ntrombofilia\tTrombofilia\t1\n",
+  "stderr": "",
+  "execution_time_ms": 123
+}

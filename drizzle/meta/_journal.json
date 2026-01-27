@@ -267,6 +267,13 @@
       "when": 1769519258551,
       "tag": "0037_brave_vapor",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "5",
+      "when": 1769536500707,
+      "tag": "0038_curved_vindicator",
+      "breakpoints": true
     }
   ]
 }
