@@ -118,18 +118,26 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
   });
 
   // Verificar se deve adicionar automaticamente "idade_avancada"
+  // Executa quando a idade da gestante muda (após preencher data de nascimento)
+  // ou quando os fatores de risco são carregados/atualizados
   useEffect(() => {
-    if (idadeGestante && idadeGestante >= 35 && fatores.length > 0) {
-      const temIdadeAvancada = fatores.some(f => f.tipo === "idade_avancada" && f.ativo === 1);
-      if (!temIdadeAvancada) {
-        addFatorMutation.mutate({
-          gestanteId,
-          tipo: "idade_avancada",
-          descricao: "Detectado automaticamente",
-        });
-      }
+    // Só executa se temos uma idade válida >= 35 anos e os dados já carregaram
+    if (!idadeGestante || idadeGestante < 35 || isLoading) {
+      return;
     }
-  }, [idadeGestante, fatores]);
+
+    // Verifica se já existe o fator de risco "idade_avancada" ativo
+    const temIdadeAvancada = fatores.some(f => f.tipo === "idade_avancada" && f.ativo === 1);
+    
+    // Adiciona automaticamente se não existir e não estiver em processo de adição
+    if (!temIdadeAvancada && !addFatorMutation.isPending) {
+      addFatorMutation.mutate({
+        gestanteId,
+        tipo: "idade_avancada",
+        descricao: "Detectado automaticamente",
+      });
+    }
+  }, [idadeGestante, fatores, isLoading, gestanteId]);
 
   const handleAddFator = () => {
     if (!novoFator.tipo) {

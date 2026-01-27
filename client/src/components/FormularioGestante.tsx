@@ -952,11 +952,11 @@ export default function FormularioGestante({
         {gestanteId && (
           <FatoresRiscoManager 
             gestanteId={gestanteId} 
-            idadeGestante={calculosEmTempoReal.igDUM ? (
+            idadeGestante={
               formData.dataNascimento ? 
                 Math.floor((new Date().getTime() - new Date(formData.dataNascimento).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
                 : null
-            ) : null}
+            }
           />
         )}
 
