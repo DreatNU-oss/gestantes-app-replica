@@ -117,25 +117,31 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
     },
   });
 
-  // Verificar se deve adicionar automaticamente "idade_avancada"
+  // Verificar se deve adicionar ou remover automaticamente "idade_avancada"
   // Executa quando a idade da gestante muda (após preencher data de nascimento)
   // ou quando os fatores de risco são carregados/atualizados
   useEffect(() => {
-    // Só executa se temos uma idade válida >= 35 anos e os dados já carregaram
-    if (!idadeGestante || idadeGestante < 35 || isLoading) {
-      return;
-    }
+    // Aguarda carregar os dados
+    if (isLoading) return;
 
-    // Verifica se já existe o fator de risco "idade_avancada" ativo
-    const temIdadeAvancada = fatores.some(f => f.tipo === "idade_avancada" && f.ativo === 1);
-    
-    // Adiciona automaticamente se não existir e não estiver em processo de adição
-    if (!temIdadeAvancada && !addFatorMutation.isPending) {
+    // Busca o fator de risco "idade_avancada" ativo (se existir)
+    const fatorIdadeAvancada = fatores.find(f => f.tipo === "idade_avancada" && f.ativo === 1);
+    const temIdadeAvancada = !!fatorIdadeAvancada;
+
+    // Caso 1: Idade >= 35 anos e não tem o fator -> adicionar automaticamente
+    if (idadeGestante && idadeGestante >= 35 && !temIdadeAvancada && !addFatorMutation.isPending) {
       addFatorMutation.mutate({
         gestanteId,
         tipo: "idade_avancada",
         descricao: "Detectado automaticamente",
       });
+    }
+    
+    // Caso 2: Idade < 35 anos e tem o fator com descrição automática -> remover automaticamente
+    if (idadeGestante && idadeGestante < 35 && fatorIdadeAvancada && 
+        fatorIdadeAvancada.descricao === "Detectado automaticamente" && 
+        !deleteFatorMutation.isPending) {
+      deleteFatorMutation.mutate({ id: fatorIdadeAvancada.id });
     }
   }, [idadeGestante, fatores, isLoading, gestanteId]);
 

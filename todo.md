@@ -451,3 +451,4 @@
 - [x] Corrigir página de configuração de Medicamentos que não está funcionando
 - [x] Corrigir erro de validação no campo 'tipo' dos fatores de risco na página do cartão pré-natal
 - [x] Corrigir inserção automática do fator de risco 'Idade Avançada' ao preencher data de nascimento
+- [x] Implementar remoção automática do fator de risco 'Idade Avançada' quando idade < 35 anos
