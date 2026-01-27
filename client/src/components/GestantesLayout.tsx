@@ -102,8 +102,6 @@ export default function GestantesLayout({
     setGestanteAtiva(gestante);
     setBusca("");
     setMostrarSugestoes(false);
-    setInfoGestante(gestante);
-    setShowInfoModal(true);
   };
 
   useEffect(() => {
@@ -174,7 +172,11 @@ export default function GestantesLayout({
                         variant="outline"
                         size="sm"
                         className="h-8 text-xs"
-                        onClick={() => setLocation(`/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true`)}
+                        onClick={() => {
+                          setInfoGestante({ id: gestanteAtiva.id, nome: gestanteAtiva.nome });
+                          setShowInfoModal(true);
+                          setLocation(`/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true`);
+                        }}
                         title="Nova Consulta"
                       >
                         <Plus className="h-3 w-3 mr-1" />

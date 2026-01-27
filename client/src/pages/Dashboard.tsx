@@ -427,8 +427,6 @@ export default function Dashboard() {
                             size="sm"
                             onClick={() => {
                               setGestanteAtiva({ id: g.id, nome: g.nome });
-                              setInfoGestante({ id: g.id, nome: g.nome });
-                              setShowInfoModal(true);
                             }}
                           >
                             {gestanteAtiva?.id === g.id ? "Selecionada" : "Selecionar"}

@@ -427,3 +427,9 @@
 - [x] Adicionar seção de alergias no modal de informações da gestante
 - [x] Exibir alergias logo abaixo dos medicamentos em uso (em vermelho)
 - [x] Testar funcionalidade
+
+
+## Ajustar Momento de Exibição do Modal (27/01/2026)
+- [x] Remover modal da seleção de gestante (Dashboard e Sidebar)
+- [x] Manter modal apenas ao abrir nova consulta (botão Consulta no menu e + Nova Consulta no Cartão)
+- [x] Testar funcionalidade
