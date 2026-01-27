@@ -64,7 +64,7 @@ const configMenuItems = [
   { label: "Gerenciar Planos", path: "/gerenciar-planos" },
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
   { label: "Fatores de Risco", path: "/gerenciar-fatores-risco" },
-  { label: "Medicamentos", path: "/gerenciar-medicamentos-config" },
+  { label: "Medicamentos", path: "/gerenciar-medicamentos" },
   { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
 ];
 
