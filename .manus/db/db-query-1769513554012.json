@@ -1,0 +1,19 @@
+{
+  "query": "SELECT CONCAT('ID:', id, ' Tipo:', tipo, ' Ativo:', ativo) as info FROM fatoresRisco WHERE gestanteId = 42;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT CONCAT('ID:', id, ' Tipo:', tipo, ' Ativo:', ativo) as info FROM fatoresRisco WHERE gestanteId = 42;",
+  "rows": [
+    {
+      "info": "ID:1080002 Tipo:alergia_medicamentos Ativo:1"
+    },
+    {
+      "info": "ID:1080003 Tipo:alergia_medicamentos Ativo:1"
+    },
+    {
+      "info": "ID:1080004 Tipo:alergia_medicamentos Ativo:1"
+    }
+  ],
+  "messages": [],
+  "stdout": "info\nID:1080002 Tipo:alergia_medicamentos Ativo:1\nID:1080003 Tipo:alergia_medicamentos Ativo:1\nID:1080004 Tipo:alergia_medicamentos Ativo:1\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

@@ -1,0 +1,40 @@
+{
+  "query": "SELECT g.id, g.nome, fr.tipo, fr.descricao FROM gestantes g JOIN fatoresRisco fr ON g.id = fr.gestanteId WHERE fr.tipo = 'alergia_medicamentos' AND fr.ativo = 1 LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, fr.tipo, fr.descricao FROM gestantes g JOIN fatoresRisco fr ON g.id = fr.gestanteId WHERE fr.tipo = 'alergia_medicamentos' AND fr.ativo = 1 LIMIT 5;",
+  "rows": [
+    {
+      "id": "330009",
+      "nome": "Jenilda Aparecida Souza Santos",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Doclofenaco"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Dipirona"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "tipo": "alergia_medicamentos",
+      "descricao": "amoxicilina"
+    },
+    {
+      "id": "330049",
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Nimesulida"
+    },
+    {
+      "id": "330072",
+      "nome": "Lorena Luísa da Costa",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Metoclopramida"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttipo\tdescricao\n330009\tJenilda Aparecida Souza Santos\talergia_medicamentos\tDoclofenaco\n330015\tAmanda Junqueira Vilela\talergia_medicamentos\tDipirona\n330047\tFernanda Luciano Santos Gonçalves\talergia_medicamentos\tamoxicilina\n330049\tGabriela dos Santos Batista Figueiredo\talergia_medicamentos\tNimesulida\n330072\tLorena Luísa da Costa\talergia_medicamentos\tMetoclopramida\n",
+  "stderr": "",
+  "execution_time_ms": 123
+}

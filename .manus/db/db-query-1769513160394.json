@@ -1,0 +1,25 @@
+{
+  "query": "SELECT id, tipo, descricao FROM fatoresRisco WHERE gestanteId = 42 AND tipo = 'alergia_medicamentos';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipo, descricao FROM fatoresRisco WHERE gestanteId = 42 AND tipo = 'alergia_medicamentos';",
+  "rows": [
+    {
+      "id": "1080002",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Penicilina e derivados"
+    },
+    {
+      "id": "1080003",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Penicilina e derivados"
+    },
+    {
+      "id": "1080004",
+      "tipo": "alergia_medicamentos",
+      "descricao": "Penicilina e derivados"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipo\tdescricao\n1080002\talergia_medicamentos\tPenicilina e derivados\n1080003\talergia_medicamentos\tPenicilina e derivados\n1080004\talergia_medicamentos\tPenicilina e derivados\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

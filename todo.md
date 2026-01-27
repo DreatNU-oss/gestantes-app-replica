@@ -421,3 +421,9 @@
 - [x] Exibir modal automaticamente ao abrir página de consulta
 - [x] Mostrar Fatores de Risco, Medicamentos em Uso e Observações da gestante
 - [x] Testar funcionalidade
+
+
+## Incluir Alergias no Modal (27/01/2026)
+- [x] Adicionar seção de alergias no modal de informações da gestante
+- [x] Exibir alergias logo abaixo dos medicamentos em uso (em vermelho)
+- [x] Testar funcionalidade

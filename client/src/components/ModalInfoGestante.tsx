@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, Pill, FileText, Loader2 } from "lucide-react";
+import { AlertTriangle, Pill, FileText, Loader2, ShieldAlert } from "lucide-react";
 
 // Mapeamento de tipos de fatores de risco para labels legíveis
 const fatoresRiscoLabels: Record<string, string> = {
@@ -17,21 +17,34 @@ const fatoresRiscoLabels: Record<string, string> = {
   cirurgia_uterina_previa: "Cirurgia Uterina Prévia",
   diabetes_gestacional: "Diabetes Gestacional",
   diabetes_previa: "Diabetes Prévia",
+  diabetes_tipo2: "Diabetes Tipo 2",
   doenca_autoimune: "Doença Autoimune",
   doenca_cardiaca: "Doença Cardíaca",
   doenca_psiquiatrica: "Doença Psiquiátrica",
   doenca_renal: "Doença Renal",
   doenca_tireoide: "Doença da Tireoide",
+  dpoc_asma: "DPOC/Asma",
+  epilepsia: "Epilepsia",
+  fator_preditivo_dheg: "Fator Preditivo DHEG",
+  fator_rh_negativo: "Fator Rh Negativo",
+  gemelar: "Gestação Gemelar",
   gestacao_gemelar: "Gestação Gemelar",
+  hipertensao: "Hipertensão",
   hipertensao_cronica: "Hipertensão Crônica",
   hipertensao_gestacional: "Hipertensão Gestacional",
+  hipotireoidismo: "Hipotireoidismo",
+  historico_familiar_dheg: "Histórico Familiar DHEG",
+  idade_avancada: "Idade Avançada",
+  incompetencia_istmo_cervical: "Incompetência Istmo-Cervical",
   infeccao_urinaria_recorrente: "Infecção Urinária Recorrente",
+  mal_passado_obstetrico: "Mau Passado Obstétrico",
+  malformacoes_mullerianas: "Malformações Müllerianas",
   obesidade: "Obesidade",
   pe_preeclampsia: "Pré-Eclâmpsia",
   placenta_previa: "Placenta Prévia",
   restricao_crescimento_fetal: "Restrição de Crescimento Fetal",
+  sobrepeso_obesidade: "Sobrepeso/Obesidade",
   trombofilia: "Trombofilia",
-  malformacoes_mullerianas: "Malformações Müllerianas",
   outro: "Outro",
 };
 
@@ -84,20 +97,25 @@ export default function ModalInfoGestante({
 
   const isLoading = loadingFatores || loadingMedicamentos || loadingGestante;
 
-  const temFatoresRisco = fatoresRisco && fatoresRisco.length > 0;
+  // Separar alergias dos outros fatores de risco
+  const alergias = fatoresRisco?.filter(f => f.tipo === "alergia_medicamentos") || [];
+  const outrosFatoresRisco = fatoresRisco?.filter(f => f.tipo !== "alergia_medicamentos") || [];
+
+  const temFatoresRisco = outrosFatoresRisco.length > 0;
   const temMedicamentos = medicamentos && medicamentos.length > 0;
+  const temAlergias = alergias.length > 0;
   const temObservacoes = gestante?.observacoes && gestante.observacoes.trim() !== "";
 
   // Se não houver nenhuma informação, fechar o modal automaticamente
   useEffect(() => {
-    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temObservacoes) {
+    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes) {
       // Fechar após um pequeno delay para não parecer um bug
       const timer = setTimeout(() => {
         onOpenChange(false);
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [isLoading, open, temFatoresRisco, temMedicamentos, temObservacoes, onOpenChange]);
+  }, [isLoading, open, temFatoresRisco, temMedicamentos, temAlergias, temObservacoes, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -124,7 +142,7 @@ export default function ModalInfoGestante({
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                   <div className="flex flex-wrap gap-2">
-                    {fatoresRisco.map((fator) => (
+                    {outrosFatoresRisco.map((fator) => (
                       <div key={fator.id} className="space-y-1">
                         <Badge 
                           variant="outline" 
@@ -172,10 +190,40 @@ export default function ModalInfoGestante({
               </>
             )}
 
+            {/* Alergias */}
+            {temAlergias && (
+              <>
+                {(temFatoresRisco || temMedicamentos) && <Separator />}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="h-5 w-5 text-red-500" />
+                    <h3 className="font-semibold text-red-700">Alergias</h3>
+                  </div>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex flex-wrap gap-2">
+                      {alergias.map((alergia) => (
+                        <div key={alergia.id} className="space-y-1">
+                          <Badge 
+                            variant="outline" 
+                            className="bg-red-100 text-red-800 border-red-300"
+                          >
+                            Alergia a Medicamentos
+                          </Badge>
+                          {alergia.descricao && (
+                            <p className="text-xs text-red-700 pl-1">{alergia.descricao}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             {/* Observações */}
             {temObservacoes && (
               <>
-                {(temFatoresRisco || temMedicamentos) && <Separator />}
+                {(temFatoresRisco || temMedicamentos || temAlergias) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-gray-500" />
@@ -191,7 +239,7 @@ export default function ModalInfoGestante({
             )}
 
             {/* Mensagem se não houver informações */}
-            {!temFatoresRisco && !temMedicamentos && !temObservacoes && (
+            {!temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && (
               <div className="text-center py-8 text-muted-foreground">
                 <p>Nenhuma informação adicional registrada para esta gestante.</p>
               </div>

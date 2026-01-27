@@ -1,0 +1,14 @@
+{
+  "query": "SELECT tipo, COUNT(*) as qtd FROM fatoresRisco WHERE gestanteId = 42 GROUP BY tipo;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipo, COUNT(*) as qtd FROM fatoresRisco WHERE gestanteId = 42 GROUP BY tipo;",
+  "rows": [
+    {
+      "tipo": "alergia_medicamentos",
+      "qtd": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipo\tqtd\nalergia_medicamentos\t3\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}
