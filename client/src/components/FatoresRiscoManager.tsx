@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,8 +20,8 @@ interface FatoresRiscoManagerProps {
   idadeGestante?: number | null;
 }
 
-// Fatores de risco em ordem alfabética
-const FATORES_RISCO_LABELS: Record<string, string> = {
+// Fatores de risco padrão (fallback se o banco estiver vazio)
+const FATORES_RISCO_LABELS_DEFAULT: Record<string, string> = {
   alergia_medicamentos: "Alergia a medicamentos",
   alteracoes_morfologicas_fetais: "Alterações morfológicas fetais",
   cirurgia_uterina_previa: "Cirurgia Uterina Prévia",
@@ -53,12 +53,47 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
 
   const utils = trpc.useUtils();
   const { data: fatores = [], isLoading } = trpc.gestantes.getFatoresRisco.useQuery({ gestanteId });
+  
+  // Buscar opções de fatores de risco do banco de dados
+  const { data: opcoesFatoresRisco = [] } = trpc.opcoesFatoresRisco.list.useQuery();
+
+  // Criar mapa de labels a partir das opções do banco
+  const fatoresRiscoLabels = useMemo(() => {
+    if (opcoesFatoresRisco.length === 0) {
+      return FATORES_RISCO_LABELS_DEFAULT;
+    }
+    const labels: Record<string, string> = {};
+    opcoesFatoresRisco.forEach(opcao => {
+      if (opcao.ativo === 1) {
+        labels[opcao.codigo] = opcao.nome;
+      }
+    });
+    return labels;
+  }, [opcoesFatoresRisco]);
+
+  // Opções ordenadas alfabeticamente para o select
+  const opcoesOrdenadas = useMemo(() => {
+    if (opcoesFatoresRisco.length === 0) {
+      // Fallback para opções padrão
+      return Object.entries(FATORES_RISCO_LABELS_DEFAULT)
+        .map(([codigo, nome]) => ({ codigo, nome, permiteTextoLivre: codigo === 'outro' || codigo === 'alergia_medicamentos' || codigo === 'mal_passado_obstetrico' ? 1 : 0 }))
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    }
+    return opcoesFatoresRisco
+      .filter(opcao => opcao.ativo === 1)
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  }, [opcoesFatoresRisco]);
+
+  // Verificar se o tipo selecionado permite texto livre
+  const tipoPermiteTextoLivre = useMemo(() => {
+    if (!novoFator.tipo) return false;
+    const opcao = opcoesOrdenadas.find(o => o.codigo === novoFator.tipo);
+    return opcao?.permiteTextoLivre === 1;
+  }, [novoFator.tipo, opcoesOrdenadas]);
 
   const addFatorMutation = trpc.gestantes.addFatorRisco.useMutation({
     onSuccess: () => {
       utils.gestantes.getFatoresRisco.invalidate({ gestanteId });
-      // Não invalidar gestantes.list aqui para evitar fechar o formulário
-      // A lista será atualizada quando o formulário for fechado
       toast.success("Fator de risco adicionado");
       setShowAddForm(false);
       setNovoFator({ tipo: "", descricao: "" });
@@ -102,13 +137,10 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
       return;
     }
 
-    if (novoFator.tipo === "outro" && !novoFator.descricao) {
-      toast.error("Descreva o fator de risco");
-      return;
-    }
-
-    if (novoFator.tipo === "alergia_medicamentos" && !novoFator.descricao) {
-      toast.error("Especifique os medicamentos");
+    // Verificar se o tipo requer descrição
+    if (tipoPermiteTextoLivre && !novoFator.descricao) {
+      const opcao = opcoesOrdenadas.find(o => o.codigo === novoFator.tipo);
+      toast.error(`Preencha o campo de descrição para ${opcao?.nome || 'este fator'}`);
       return;
     }
 
@@ -162,7 +194,7 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
               >
                 <div className="flex-1">
                   <p className="font-medium text-sm">
-                    {FATORES_RISCO_LABELS[fator.tipo]}
+                    {fatoresRiscoLabels[fator.tipo] || fator.tipo}
                   </p>
                   {fator.descricao && (
                     <p className="text-xs text-muted-foreground mt-1">
@@ -202,42 +234,28 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante }: Fator
               <Select
                 value={novoFator.tipo}
                 onValueChange={(value) =>
-                  setNovoFator({ ...novoFator, tipo: value })
+                  setNovoFator({ ...novoFator, tipo: value, descricao: "" })
                 }
               >
                 <SelectTrigger id="tipoFator">
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Fatores em ordem alfabética */}
-                  <SelectItem value="alergia_medicamentos">Alergia a medicamentos</SelectItem>
-                  <SelectItem value="alteracoes_morfologicas_fetais">Alterações morfológicas fetais</SelectItem>
-                  <SelectItem value="cirurgia_uterina_previa">Cirurgia Uterina Prévia</SelectItem>
-                  <SelectItem value="diabetes_gestacional">Diabetes Gestacional</SelectItem>
-                  <SelectItem value="diabetes_tipo2">Diabetes Tipo 2</SelectItem>
-                  <SelectItem value="dpoc_asma">DPOC/Asma</SelectItem>
-                  <SelectItem value="epilepsia">Epilepsia</SelectItem>
-                  <SelectItem value="fator_preditivo_dheg">Fator Preditivo Positivo para DHEG (Hist. Familiar, Doppler uterinas e/ou outros fatores de risco)</SelectItem>
-                  <SelectItem value="fator_rh_negativo">Fator Rh Negativo</SelectItem>
-                  <SelectItem value="gemelar">Gemelar</SelectItem>
-                  <SelectItem value="hipertensao">Hipertensão</SelectItem>
-                  <SelectItem value="hipotireoidismo">Hipotireoidismo</SelectItem>
-                  <SelectItem value="historico_familiar_dheg">Mãe/irmã com histórico de DHEG</SelectItem>
-                  <SelectItem value="idade_avancada">Idade ≥ 35 anos</SelectItem>
-                  <SelectItem value="incompetencia_istmo_cervical">Incompetência Istmo-cervical</SelectItem>
-                  <SelectItem value="mal_passado_obstetrico">Mal Passado Obstétrico</SelectItem>
-                  <SelectItem value="malformacoes_mullerianas">Malformações Müllerianas (Útero bicorno/septado/arqueado)</SelectItem>
-                  <SelectItem value="outro">Outro</SelectItem>
-                  <SelectItem value="sobrepeso_obesidade">Sobrepeso/obesidade</SelectItem>
-                  <SelectItem value="trombofilia">Trombofilia</SelectItem>
+                  {opcoesOrdenadas.map((opcao) => (
+                    <SelectItem key={opcao.codigo} value={opcao.codigo}>
+                      {opcao.nome}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {(novoFator.tipo === "outro" || novoFator.tipo === "mal_passado_obstetrico" || novoFator.tipo === "alergia_medicamentos") && (
+            {tipoPermiteTextoLivre && (
               <div>
                 <Label htmlFor="descricao">
-                  {novoFator.tipo === "outro" ? "Descrição *" : novoFator.tipo === "alergia_medicamentos" ? "Especificar medicamentos *" : "Detalhes (opcional)"}
+                  {novoFator.tipo === "outro" ? "Descrição *" : 
+                   novoFator.tipo === "alergia_medicamentos" ? "Especificar medicamentos *" : 
+                   "Detalhes *"}
                 </Label>
                 <Input
                   id="descricao"

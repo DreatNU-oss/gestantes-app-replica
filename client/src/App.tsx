@@ -23,6 +23,8 @@ import PartosRealizados from "./pages/PartosRealizados";
 import EstatisticasPartos from "./pages/EstatisticasPartos";
 import MonitoramentoEmails from "./pages/MonitoramentoEmails";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import GerenciarFatoresRisco from "./pages/GerenciarFatoresRisco";
+import GerenciarMedicamentosConfig from "./pages/GerenciarMedicamentos";
 
 function Router() {
   return (
@@ -45,6 +47,8 @@ function Router() {
       <Route path={"/partos-realizados"} component={PartosRealizados} />
       <Route path={"/estatisticas-partos"} component={EstatisticasPartos} />
       <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
+      <Route path={"/gerenciar-fatores-risco"} component={GerenciarFatoresRisco} />
+      <Route path={"/gerenciar-medicamentos"} component={GerenciarMedicamentosConfig} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

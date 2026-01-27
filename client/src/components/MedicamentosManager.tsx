@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,8 @@ interface MedicamentosManagerProps {
   gestanteId: number;
 }
 
-const MEDICAMENTOS_LABELS: Record<string, string> = {
+// Medicamentos padrão (fallback se o banco estiver vazio)
+const MEDICAMENTOS_LABELS_DEFAULT: Record<string, string> = {
   aas: "AAS",
   anti_hipertensivos: "Anti-hipertensivos",
   calcio: "Cálcio",
@@ -42,6 +43,47 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
 
   const utils = trpc.useUtils();
   const { data: medicamentos = [], isLoading } = trpc.medicamentos.getMedicamentos.useQuery({ gestanteId });
+  
+  // Buscar opções de medicamentos do banco de dados
+  const { data: opcoesMedicamentos = [] } = trpc.opcoesMedicamentos.list.useQuery();
+
+  // Criar mapa de labels a partir das opções do banco
+  const medicamentosLabels = useMemo(() => {
+    if (opcoesMedicamentos.length === 0) {
+      return MEDICAMENTOS_LABELS_DEFAULT;
+    }
+    const labels: Record<string, string> = {};
+    opcoesMedicamentos.forEach(opcao => {
+      if (opcao.ativo === 1) {
+        labels[opcao.codigo] = opcao.nome;
+      }
+    });
+    return labels;
+  }, [opcoesMedicamentos]);
+
+  // Opções ordenadas alfabeticamente para o select
+  const opcoesOrdenadas = useMemo(() => {
+    if (opcoesMedicamentos.length === 0) {
+      // Fallback para opções padrão
+      return Object.entries(MEDICAMENTOS_LABELS_DEFAULT)
+        .map(([codigo, nome]) => ({ 
+          codigo, 
+          nome, 
+          permiteTextoLivre: ['anti_hipertensivos', 'medicamentos_inalatorios', 'insulina', 'outros'].includes(codigo) ? 1 : 0 
+        }))
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    }
+    return opcoesMedicamentos
+      .filter(opcao => opcao.ativo === 1)
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  }, [opcoesMedicamentos]);
+
+  // Verificar se o tipo selecionado permite texto livre
+  const tipoPermiteTextoLivre = useMemo(() => {
+    if (!novoMedicamento.tipo) return false;
+    const opcao = opcoesOrdenadas.find(o => o.codigo === novoMedicamento.tipo);
+    return opcao?.permiteTextoLivre === 1;
+  }, [novoMedicamento.tipo, opcoesOrdenadas]);
 
   const addMedicamentoMutation = trpc.medicamentos.addMedicamento.useMutation({
     onSuccess: () => {
@@ -75,8 +117,9 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
       return;
     }
 
-    if ((novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "medicamentos_inalatorios" || novoMedicamento.tipo === "insulina" || novoMedicamento.tipo === "outros") && !novoMedicamento.especificacao) {
-      toast.error("Especifique o medicamento");
+    if (tipoPermiteTextoLivre && !novoMedicamento.especificacao) {
+      const opcao = opcoesOrdenadas.find(o => o.codigo === novoMedicamento.tipo);
+      toast.error(`Especifique o medicamento para ${opcao?.nome || 'este tipo'}`);
       return;
     }
 
@@ -92,8 +135,6 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
       deleteMedicamentoMutation.mutate({ id });
     }
   };
-
-  const needsEspecificacao = novoMedicamento.tipo === "anti_hipertensivos" || novoMedicamento.tipo === "medicamentos_inalatorios" || novoMedicamento.tipo === "insulina" || novoMedicamento.tipo === "outros";
 
   if (isLoading) {
     return <div className="text-sm text-muted-foreground">Carregando medicamentos...</div>;
@@ -118,7 +159,7 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
               <div key={med.id} className="flex items-center justify-between rounded-lg border p-3">
                 <div className="flex-1">
                   <Badge variant="outline" className="mb-1">
-                    {MEDICAMENTOS_LABELS[med.tipo] || med.tipo}
+                    {medicamentosLabels[med.tipo] || med.tipo}
                   </Badge>
                   {med.especificacao && (
                     <p className="text-sm text-muted-foreground mt-1">{med.especificacao}</p>
@@ -143,32 +184,24 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
               <Label htmlFor="tipoMedicamento">Tipo de Medicamento</Label>
               <Select
                 value={novoMedicamento.tipo}
-                onValueChange={(value) => setNovoMedicamento({ ...novoMedicamento, tipo: value })}
+                onValueChange={(value) => setNovoMedicamento({ tipo: value, especificacao: "" })}
               >
                 <SelectTrigger id="tipoMedicamento">
                   <SelectValue placeholder="Selecione..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="aas">AAS</SelectItem>
-                  <SelectItem value="anti_hipertensivos">Anti-hipertensivos</SelectItem>
-                  <SelectItem value="calcio">Cálcio</SelectItem>
-                  <SelectItem value="enoxaparina">Enoxaparina</SelectItem>
-                  <SelectItem value="insulina">Insulina</SelectItem>
-                  <SelectItem value="levotiroxina">Levotiroxina</SelectItem>
-                  <SelectItem value="medicamentos_inalatorios">Medicamentos Inalatórios (corticosteroides/broncodilatadores)</SelectItem>
-                  <SelectItem value="polivitaminicos">Polivitamínicos / Vitaminas específicas</SelectItem>
-                  <SelectItem value="progestagenos">Progestágenos</SelectItem>
-                  <SelectItem value="psicotropicos">Psicotrópicos</SelectItem>
-                  <SelectItem value="outros">Outros</SelectItem>
+                  {opcoesOrdenadas.map((opcao) => (
+                    <SelectItem key={opcao.codigo} value={opcao.codigo}>
+                      {opcao.nome}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
-            {needsEspecificacao && (
+            {tipoPermiteTextoLivre && (
               <div className="space-y-2">
-                <Label htmlFor="especificacao">
-                  {novoMedicamento.tipo === "anti_hipertensivos" ? "Especificar quais" : "Especificar"}
-                </Label>
+                <Label htmlFor="especificacao">Especificar *</Label>
                 <Input
                   id="especificacao"
                   value={novoMedicamento.especificacao}

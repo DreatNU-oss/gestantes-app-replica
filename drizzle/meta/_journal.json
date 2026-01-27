@@ -260,6 +260,13 @@
       "when": 1769024679814,
       "tag": "0036_brave_alex_power",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "5",
+      "when": 1769519258551,
+      "tag": "0037_brave_vapor",
+      "breakpoints": true
     }
   ]
 }

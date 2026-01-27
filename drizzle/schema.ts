@@ -560,3 +560,44 @@ export const historicoTextos = mysqlTable("historicoTextos", {
 
 export type HistoricoTexto = typeof historicoTextos.$inferSelect;
 export type InsertHistoricoTexto = typeof historicoTextos.$inferInsert;
+
+
+/**
+ * Tabela de opções de fatores de risco (configuráveis pelo usuário)
+ * Permite adicionar novos tipos de fatores de risco além dos padrões do sistema
+ */
+export const opcoesFatoresRisco = mysqlTable("opcoesFatoresRisco", {
+  id: int("id").autoincrement().primaryKey(),
+  codigo: varchar("codigo", { length: 100 }).notNull().unique(), // Identificador único (slug)
+  nome: varchar("nome", { length: 255 }).notNull(), // Nome de exibição
+  descricaoPadrao: text("descricaoPadrao"), // Descrição padrão opcional
+  permiteTextoLivre: int("permiteTextoLivre").default(0).notNull(), // 1 = permite texto livre adicional
+  sistema: int("sistema").default(0).notNull(), // 1 = item do sistema (não pode ser removido), 0 = personalizado
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  ordem: int("ordem").default(0).notNull(), // Ordem de exibição (0 = alfabética)
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type OpcaoFatorRisco = typeof opcoesFatoresRisco.$inferSelect;
+export type InsertOpcaoFatorRisco = typeof opcoesFatoresRisco.$inferInsert;
+
+/**
+ * Tabela de opções de medicamentos (configuráveis pelo usuário)
+ * Permite adicionar novos tipos de medicamentos além dos padrões do sistema
+ */
+export const opcoesMedicamentos = mysqlTable("opcoesMedicamentos", {
+  id: int("id").autoincrement().primaryKey(),
+  codigo: varchar("codigo", { length: 100 }).notNull().unique(), // Identificador único (slug)
+  nome: varchar("nome", { length: 255 }).notNull(), // Nome de exibição
+  descricaoPadrao: text("descricaoPadrao"), // Descrição padrão opcional
+  permiteTextoLivre: int("permiteTextoLivre").default(0).notNull(), // 1 = permite texto livre adicional
+  sistema: int("sistema").default(0).notNull(), // 1 = item do sistema (não pode ser removido), 0 = personalizado
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  ordem: int("ordem").default(0).notNull(), // Ordem de exibição (0 = alfabética)
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type OpcaoMedicamento = typeof opcoesMedicamentos.$inferSelect;
+export type InsertOpcaoMedicamento = typeof opcoesMedicamentos.$inferInsert;

@@ -62,7 +62,16 @@ import {
   getGestantesSemConsultaRecente,
   createJustificativa,
   getJustificativaByGestanteId,
-  deleteJustificativa
+  deleteJustificativa,
+  getOpcoesFatoresRisco,
+  createOpcaoFatorRisco,
+  updateOpcaoFatorRisco,
+  deleteOpcaoFatorRisco,
+  getOpcoesMedicamentos,
+  createOpcaoMedicamento,
+  updateOpcaoMedicamento,
+  deleteOpcaoMedicamento,
+  inicializarOpcoesPadrao
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -1717,6 +1726,84 @@ export const appRouter = router({
     deleteMedicamento: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deleteMedicamento(input.id)),
+  }),
+
+  // Router de Opções de Fatores de Risco (Configuráveis)
+  opcoesFatoresRisco: router({
+    list: protectedProcedure
+      .query(async () => {
+        // Inicializar opções padrão se não existirem
+        await inicializarOpcoesPadrao();
+        return getOpcoesFatoresRisco();
+      }),
+    
+    create: protectedProcedure
+      .input(z.object({
+        codigo: z.string().min(1),
+        nome: z.string().min(1),
+        descricaoPadrao: z.string().optional(),
+        permiteTextoLivre: z.number().optional().default(0),
+      }))
+      .mutation(({ input }) => createOpcaoFatorRisco({
+        ...input,
+        sistema: 0, // Opções criadas pelo usuário não são do sistema
+      })),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        nome: z.string().optional(),
+        descricaoPadrao: z.string().optional(),
+        permiteTextoLivre: z.number().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return updateOpcaoFatorRisco(id, data);
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteOpcaoFatorRisco(input.id)),
+  }),
+
+  // Router de Opções de Medicamentos (Configuráveis)
+  opcoesMedicamentos: router({
+    list: protectedProcedure
+      .query(async () => {
+        // Inicializar opções padrão se não existirem
+        await inicializarOpcoesPadrao();
+        return getOpcoesMedicamentos();
+      }),
+    
+    create: protectedProcedure
+      .input(z.object({
+        codigo: z.string().min(1),
+        nome: z.string().min(1),
+        descricaoPadrao: z.string().optional(),
+        permiteTextoLivre: z.number().optional().default(0),
+      }))
+      .mutation(({ input }) => createOpcaoMedicamento({
+        ...input,
+        sistema: 0, // Opções criadas pelo usuário não são do sistema
+      })),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        nome: z.string().optional(),
+        descricaoPadrao: z.string().optional(),
+        permiteTextoLivre: z.number().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return updateOpcaoMedicamento(id, data);
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deleteOpcaoMedicamento(input.id)),
   }),
 
   // Router de Histórico de Textos (Autocomplete)

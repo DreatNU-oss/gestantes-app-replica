@@ -433,3 +433,17 @@
 - [x] Remover modal da seleção de gestante (Dashboard e Sidebar)
 - [x] Manter modal apenas ao abrir nova consulta (botão Consulta no menu e + Nova Consulta no Cartão)
 - [x] Testar funcionalidade
+
+
+## Gerenciamento de Fatores de Risco e Medicamentos em Configurações (27/01/2026)
+- [x] Criar tabelas no banco de dados para opções personalizadas de fatores de risco
+- [x] Criar tabelas no banco de dados para opções personalizadas de medicamentos
+- [x] Criar rotas de API para CRUD de opções de fatores de risco
+- [x] Criar rotas de API para CRUD de opções de medicamentos
+- [x] Criar página de configuração de Fatores de Risco no menu Configurações
+- [x] Criar página de configuração de Medicamentos no menu Configurações
+- [x] Adicionar suporte a texto livre em alguns itens (como alergia medicamentosa)
+- [x] Implementar ordenação alfabética automática em todos os menus e seletores
+- [x] Atualizar seletores no cadastro de gestantes para usar opções do banco
+- [x] Atualizar seletores no Cartão de Pré-natal para usar opções do banco
+- [x] Testar funcionalidade completa

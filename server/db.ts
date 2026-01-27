@@ -44,7 +44,13 @@ import {
   InsertJustificativaAlerta,
   JustificativaAlerta,
   resultadosExames,
-  ResultadoExame
+  ResultadoExame,
+  opcoesFatoresRisco,
+  InsertOpcaoFatorRisco,
+  OpcaoFatorRisco,
+  opcoesMedicamentos,
+  InsertOpcaoMedicamento,
+  OpcaoMedicamento
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -870,4 +876,162 @@ export async function getGestantesIdsComJustificativaAtiva(): Promise<Set<number
     .where(eq(justificativasAlerta.ativo, 1));
   
   return new Set(justificativas.map(j => j.gestanteId));
+}
+
+
+// ============ OPÇÕES DE FATORES DE RISCO (CONFIGURÁVEIS) ============
+
+export async function getOpcoesFatoresRisco(): Promise<OpcaoFatorRisco[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(opcoesFatoresRisco)
+    .where(eq(opcoesFatoresRisco.ativo, 1))
+    .orderBy(asc(opcoesFatoresRisco.nome));
+}
+
+export async function getOpcaoFatorRiscoByCodigo(codigo: string): Promise<OpcaoFatorRisco | null> {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(opcoesFatoresRisco)
+    .where(eq(opcoesFatoresRisco.codigo, codigo))
+    .limit(1);
+  return result[0] || null;
+}
+
+export async function createOpcaoFatorRisco(data: InsertOpcaoFatorRisco): Promise<OpcaoFatorRisco> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(opcoesFatoresRisco).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(opcoesFatoresRisco).where(eq(opcoesFatoresRisco.id, insertedId)).limit(1);
+  return inserted[0] as OpcaoFatorRisco;
+}
+
+export async function updateOpcaoFatorRisco(id: number, data: Partial<InsertOpcaoFatorRisco>): Promise<OpcaoFatorRisco | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(opcoesFatoresRisco).set(data).where(eq(opcoesFatoresRisco.id, id));
+  const updated = await db.select().from(opcoesFatoresRisco).where(eq(opcoesFatoresRisco.id, id)).limit(1);
+  return updated[0] || null;
+}
+
+export async function deleteOpcaoFatorRisco(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(opcoesFatoresRisco).set({ ativo: 0 }).where(eq(opcoesFatoresRisco.id, id));
+}
+
+// ============ OPÇÕES DE MEDICAMENTOS (CONFIGURÁVEIS) ============
+
+export async function getOpcoesMedicamentos(): Promise<OpcaoMedicamento[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(opcoesMedicamentos)
+    .where(eq(opcoesMedicamentos.ativo, 1))
+    .orderBy(asc(opcoesMedicamentos.nome));
+}
+
+export async function getOpcaoMedicamentoByCodigo(codigo: string): Promise<OpcaoMedicamento | null> {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(opcoesMedicamentos)
+    .where(eq(opcoesMedicamentos.codigo, codigo))
+    .limit(1);
+  return result[0] || null;
+}
+
+export async function createOpcaoMedicamento(data: InsertOpcaoMedicamento): Promise<OpcaoMedicamento> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(opcoesMedicamentos).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(opcoesMedicamentos).where(eq(opcoesMedicamentos.id, insertedId)).limit(1);
+  return inserted[0] as OpcaoMedicamento;
+}
+
+export async function updateOpcaoMedicamento(id: number, data: Partial<InsertOpcaoMedicamento>): Promise<OpcaoMedicamento | null> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(opcoesMedicamentos).set(data).where(eq(opcoesMedicamentos.id, id));
+  const updated = await db.select().from(opcoesMedicamentos).where(eq(opcoesMedicamentos.id, id)).limit(1);
+  return updated[0] || null;
+}
+
+export async function deleteOpcaoMedicamento(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Soft delete - apenas marca como inativo
+  await db.update(opcoesMedicamentos).set({ ativo: 0 }).where(eq(opcoesMedicamentos.id, id));
+}
+
+// Função para inicializar as opções padrão do sistema
+export async function inicializarOpcoesPadrao(): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Verificar se já existem opções
+  const existingFatores = await db.select().from(opcoesFatoresRisco).limit(1);
+  const existingMedicamentos = await db.select().from(opcoesMedicamentos).limit(1);
+  
+  // Opções padrão de fatores de risco
+  if (existingFatores.length === 0) {
+    const fatoresPadrao = [
+      { codigo: "alergia_medicamentos", nome: "Alergia a Medicamentos", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "alteracoes_morfologicas_fetais", nome: "Alterações Morfológicas Fetais", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "cirurgia_uterina_previa", nome: "Cirurgia Uterina Prévia", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "diabetes_gestacional", nome: "Diabetes Gestacional", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "diabetes_tipo2", nome: "Diabetes Tipo 2", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "dpoc_asma", nome: "DPOC / Asma", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "epilepsia", nome: "Epilepsia", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "fator_preditivo_dheg", nome: "Fator Preditivo para DHEG", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "fator_rh_negativo", nome: "Fator Rh Negativo", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "gemelar", nome: "Gestação Gemelar", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "hipertensao", nome: "Hipertensão", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "hipotireoidismo", nome: "Hipotireoidismo", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "historico_familiar_dheg", nome: "Histórico Familiar de DHEG", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "idade_avancada", nome: "Idade ≥ 35 anos", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "incompetencia_istmo_cervical", nome: "Incompetência Istmo-Cervical", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "mal_passado_obstetrico", nome: "Mau Passado Obstétrico", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "malformacoes_mullerianas", nome: "Malformações Müllerianas", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "outro", nome: "Outro", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "sobrepeso_obesidade", nome: "Sobrepeso / Obesidade", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "trombofilia", nome: "Trombofilia", permiteTextoLivre: 1, sistema: 1 },
+    ];
+    
+    for (const fator of fatoresPadrao) {
+      await db.insert(opcoesFatoresRisco).values(fator);
+    }
+  }
+  
+  // Opções padrão de medicamentos
+  if (existingMedicamentos.length === 0) {
+    const medicamentosPadrao = [
+      { codigo: "aas", nome: "AAS (Ácido Acetilsalicílico)", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "anti_hipertensivos", nome: "Anti-hipertensivos", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "calcio", nome: "Cálcio", permiteTextoLivre: 0, sistema: 1 },
+      { codigo: "enoxaparina", nome: "Enoxaparina", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "insulina", nome: "Insulina", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "levotiroxina", nome: "Levotiroxina", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "medicamentos_inalatorios", nome: "Medicamentos Inalatórios", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "polivitaminicos", nome: "Polivitamínicos / Vitaminas específicas", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "progestagenos", nome: "Progestágenos", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "psicotropicos", nome: "Psicotrópicos", permiteTextoLivre: 1, sistema: 1 },
+      { codigo: "outros", nome: "Outros", permiteTextoLivre: 1, sistema: 1 },
+    ];
+    
+    for (const medicamento of medicamentosPadrao) {
+      await db.insert(opcoesMedicamentos).values(medicamento);
+    }
+  }
 }
