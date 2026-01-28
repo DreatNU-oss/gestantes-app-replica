@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` ADD `sexoBebe` enum('masculino','feminino','nao_informado') DEFAULT 'nao_informado';

@@ -99,6 +99,7 @@ export default function FormularioGestante({
     dataUltrassom: "",
     dataPartoProgramado: "",
     nomeBebe: "",
+    sexoBebe: "nao_informado",
     observacoes: "",
     altura: "",
     pesoInicial: "",
@@ -356,6 +357,7 @@ export default function FormularioGestante({
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : (gestante.dataUltrassom as Date).toISOString().split('T')[0]) : "",
         dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "",
         nomeBebe: gestante.nomeBebe || "",
+        sexoBebe: gestante.sexoBebe || "nao_informado",
         observacoes: gestante.observacoes || "",
         altura: gestante.altura?.toString() || "",
         pesoInicial: gestante.pesoInicial ? (gestante.pesoInicial / 1000).toFixed(1) : "", // converter gramas para kg
@@ -466,6 +468,7 @@ export default function FormularioGestante({
       dataUltrassom: formData.dataUltrassom || undefined,
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
       nomeBebe: formData.nomeBebe || undefined,
+      sexoBebe: formData.sexoBebe as "masculino" | "feminino" | "nao_informado" || undefined,
       observacoes: formData.observacoes || undefined,
       altura: formData.altura ? parseInt(formData.altura) : undefined,
       pesoInicial: formData.pesoInicial ? Math.round(parseFloat(formData.pesoInicial) * 1000) : undefined, // converter kg para gramas
@@ -970,17 +973,35 @@ export default function FormularioGestante({
 
         <Card>
           <CardHeader>
-            <CardTitle>Nome do Bebê</CardTitle>
+            <CardTitle>Dados do Bebê</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="nomeBebe">Nome planejado para o bebê (opcional)</Label>
-              <Input
-                id="nomeBebe"
-                placeholder="Ex: Maria, João, etc."
-                value={formData.nomeBebe}
-                onChange={(e) => setFormData({ ...formData, nomeBebe: e.target.value })}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nomeBebe">Nome planejado para o bebê (opcional)</Label>
+                <Input
+                  id="nomeBebe"
+                  placeholder="Ex: Maria, João, etc."
+                  value={formData.nomeBebe}
+                  onChange={(e) => setFormData({ ...formData, nomeBebe: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="sexoBebe">Sexo do bebê</Label>
+                <Select
+                  value={formData.sexoBebe}
+                  onValueChange={(value) => setFormData({ ...formData, sexoBebe: value })}
+                >
+                  <SelectTrigger id="sexoBebe">
+                    <SelectValue placeholder="Selecione o sexo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="nao_informado">Não Informado</SelectItem>
+                    <SelectItem value="masculino">Masculino</SelectItem>
+                    <SelectItem value="feminino">Feminino</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>

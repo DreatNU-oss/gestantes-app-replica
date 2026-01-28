@@ -477,3 +477,11 @@
 - [x] Criar endpoint para atualizar nome do bebê
 - [x] Adicionar campo no formulário de cadastro/edição de gestante
 - [x] Exibir nome do bebê no Cartão de Pré-Natal
+
+
+## Sexo do Bebê no Cartão de Pré-Natal (28/01/2026)
+- [x] Adicionar campo sexoBebe no schema da tabela gestantes
+- [x] Atualizar endpoints de criação e atualização de gestantes
+- [x] Adicionar campo no formulário de cadastro/edição de gestante
+- [x] Exibir sexo do bebê no Cartão de Pré-Natal
+- [x] Incluir sexo do bebê no PDF gerado

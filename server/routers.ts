@@ -385,6 +385,7 @@ export const appRouter = router({
         altura: z.number().optional(),
         pesoInicial: z.number().optional(),
         nomeBebe: z.string().optional(),
+        sexoBebe: z.enum(["masculino", "feminino", "nao_informado"]).optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -411,6 +412,7 @@ export const appRouter = router({
           altura: input.altura || null,
           pesoInicial: input.pesoInicial || null,
           nomeBebe: input.nomeBebe || null,
+          sexoBebe: input.sexoBebe || "nao_informado",
           observacoes: input.observacoes || null,
         };
         
@@ -481,6 +483,7 @@ export const appRouter = router({
         dataUltrassom: z.string().optional(),
         dataPartoProgramado: z.string().optional(),
         nomeBebe: z.string().optional(),
+        sexoBebe: z.enum(["masculino", "feminino", "nao_informado"]).optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {

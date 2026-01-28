@@ -107,6 +107,9 @@ export const gestantes = mysqlTable("gestantes", {
   // Nome planejado do bebê
   nomeBebe: varchar("nomeBebe", { length: 255 }),
   
+  // Sexo do bebê
+  sexoBebe: mysqlEnum("sexoBebe", ["masculino", "feminino", "nao_informado"]).default("nao_informado"),
+  
   // Observações
   observacoes: text("observacoes"),
   

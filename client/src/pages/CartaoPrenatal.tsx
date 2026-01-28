@@ -3,6 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { trpc } from "@/lib/trpc";
@@ -372,6 +379,10 @@ export default function CartaoPrenatal() {
       y += 7;
       if (gestante.nomeBebe) {
         pdf.text(`Nome do Bebê: ${gestante.nomeBebe}`, 20, y);
+        y += 7;
+      }
+      if (gestante.sexoBebe && gestante.sexoBebe !== "nao_informado") {
+        pdf.text(`Sexo do Bebê: ${gestante.sexoBebe === "masculino" ? "Masculino" : "Feminino"}`, 20, y);
         y += 7;
       }
       y += 8;
@@ -1491,38 +1502,66 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
-        {/* Nome do Bebê */}
+        {/* Dados do Bebê */}
         {gestanteSelecionada && gestante && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Baby className="h-5 w-5" />
-                Nome do Bebê
+                Dados do Bebê
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
-                <div className="flex gap-2 items-center">
-                  <Input
-                    id="nomeBebe"
-                    placeholder="Ex: Maria, João, etc."
-                    value={gestante.nomeBebe || ""}
-                    onChange={(e) => {
-                      const novoNome = e.target.value;
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      id="nomeBebe"
+                      placeholder="Ex: Maria, João, etc."
+                      value={gestante.nomeBebe || ""}
+                      onChange={(e) => {
+                        const novoNome = e.target.value;
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          nomeBebe: novoNome,
+                        });
+                      }}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  {gestante.nomeBebe && (
+                    <p className="text-sm text-muted-foreground">
+                      Nome escolhido: <span className="font-medium text-foreground">{gestante.nomeBebe}</span>
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="sexoBebe">Sexo do bebê</Label>
+                  <Select
+                    value={gestante.sexoBebe || "nao_informado"}
+                    onValueChange={(value) => {
                       updateGestanteMutation.mutate({
                         id: gestanteSelecionada!,
-                        nomeBebe: novoNome,
+                        sexoBebe: value as "masculino" | "feminino" | "nao_informado",
                       });
                     }}
-                    className="max-w-xs"
-                  />
+                  >
+                    <SelectTrigger id="sexoBebe" className="max-w-xs">
+                      <SelectValue placeholder="Selecione o sexo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="nao_informado">Não Informado</SelectItem>
+                      <SelectItem value="masculino">Masculino</SelectItem>
+                      <SelectItem value="feminino">Feminino</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {gestante.sexoBebe && gestante.sexoBebe !== "nao_informado" && (
+                    <p className="text-sm text-muted-foreground">
+                      Sexo: <span className="font-medium text-foreground">{gestante.sexoBebe === "masculino" ? "Masculino" : "Feminino"}</span>
+                    </p>
+                  )}
                 </div>
-                {gestante.nomeBebe && (
-                  <p className="text-sm text-muted-foreground">
-                    Nome escolhido: <span className="font-medium text-foreground">{gestante.nomeBebe}</span>
-                  </p>
-                )}
               </div>
             </CardContent>
           </Card>
