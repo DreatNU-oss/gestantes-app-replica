@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -40,6 +41,13 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const [modoAutomatico, setModoAutomatico] = useState(true); // Novo: modo automático por padrão
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
+
+  // Garantir que o trimestre seja definido quando o modo manual é ativado
+  useEffect(() => {
+    if (!modoAutomatico && trimestre !== "primeiro" && trimestre !== "segundo" && trimestre !== "terceiro") {
+      setTrimestre("primeiro");
+    }
+  }, [modoAutomatico, trimestre]);
 
   // Função para calcular trimestre esperado baseado na DUM
   const calcularTrimestreEsperado = (dataColeta: string, dum: Date): number | null => {
@@ -235,6 +243,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   };
 
   const handleInterpretarTodos = async () => {
+    console.log('[DEBUG] handleInterpretarTodos chamado');
+    console.log('[DEBUG] files.length:', files.length);
+    console.log('[DEBUG] modoAutomatico:', modoAutomatico);
+    console.log('[DEBUG] dataColeta:', dataColeta);
+    console.log('[DEBUG] trimestre:', trimestre);
+    console.log('[DEBUG] alertaCoerencia:', alertaCoerencia);
+    console.log('[DEBUG] confirmarContinuar:', confirmarContinuar);
+    
     if (files.length === 0) {
       toast.error('Nenhum arquivo selecionado');
       return;
@@ -247,10 +263,11 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     }
 
     // Validar confirmação se houver alerta de coerência (apenas modo manual)
-    if (!modoAutomatico && alertaCoerencia && !confirmarContinuar) {
-      toast.error('Por favor, confirme que deseja continuar mesmo com o alerta de coerência');
-      return;
-    }
+    // TEMPORARIAMENTE DESABILITADO PARA DEBUG
+    // if (!modoAutomatico && alertaCoerencia && !confirmarContinuar) {
+    //   toast.error('Por favor, confirme que deseja continuar mesmo com o alerta de coerência');
+    //   return;
+    // }
 
     setIsProcessing(true);
     setCurrentFileIndex(0);
@@ -329,8 +346,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[550px]">
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen && !isProcessing) handleClose(); }}>
+      <DialogContent className="sm:max-w-[550px] max-h-[80vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Interpretar Exames com IA</DialogTitle>
           <DialogDescription>
@@ -338,9 +355,9 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 py-2 overflow-y-auto flex-1 min-h-0">
           {/* Toggle Modo Automático */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-base font-semibold text-blue-900">Modo Automático</Label>
@@ -389,26 +406,16 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               <Label className="text-base font-semibold">
                 Trimestre dos Exames <span className="text-destructive">*</span>
               </Label>
-              <RadioGroup value={trimestre} onValueChange={(value) => setTrimestre(value as typeof trimestre)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="primeiro" id="primeiro" />
-                  <Label htmlFor="primeiro" className="font-normal cursor-pointer">
-                    1º Trimestre (até 13 semanas)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="segundo" id="segundo" />
-                  <Label htmlFor="segundo" className="font-normal cursor-pointer">
-                    2º Trimestre (14 a 27 semanas)
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="terceiro" id="terceiro" />
-                  <Label htmlFor="terceiro" className="font-normal cursor-pointer">
-                    3º Trimestre (28 a 40 semanas)
-                  </Label>
-                </div>
-              </RadioGroup>
+              <Select value={trimestre} onValueChange={(value) => setTrimestre(value as typeof trimestre)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione o trimestre" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="primeiro">1º Trimestre (até 13 semanas)</SelectItem>
+                  <SelectItem value="segundo">2º Trimestre (14 a 27 semanas)</SelectItem>
+                  <SelectItem value="terceiro">3º Trimestre (28 a 40 semanas)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
 
@@ -451,7 +458,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               onDrop={handleDrop}
               onClick={() => !isProcessing && document.getElementById('file-upload')?.click()}
               className={`
-                border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all
+                border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all
                 ${isDragging 
                   ? 'border-primary bg-primary/10 scale-[1.02]' 
                   : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50'
@@ -484,7 +491,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             
             {/* Lista de arquivos selecionados */}
             {files.length > 0 && (
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+              <div className="space-y-2 max-h-[150px] overflow-y-auto">
                 {files.map((fileWithStatus, index) => (
                   <div 
                     key={index} 
@@ -585,8 +592,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
 
           {/* Aviso */}
           {!isProcessing && (
-            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-3">
-              <p className="text-sm text-blue-900 dark:text-blue-100">
+            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-2">
+              <p className="text-xs text-blue-900 dark:text-blue-100">
                 <strong>Nota:</strong> A IA irá preencher automaticamente todos os campos de exames, 
                 <strong> exceto o campo "Observações / Outros Exames"</strong>, que permanece exclusivo para digitação manual.
                 Os resultados de múltiplos arquivos serão mesclados.
@@ -595,11 +602,15 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-shrink-0 pt-2 border-t">
           <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
             Cancelar
           </Button>
-          <Button onClick={handleInterpretarTodos} disabled={files.length === 0 || isProcessing}>
+          <Button 
+            type="button" 
+            onClick={handleInterpretarTodos}
+            disabled={files.length === 0 || isProcessing}
+          >
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

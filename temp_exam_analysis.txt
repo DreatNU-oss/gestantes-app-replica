@@ -1,0 +1,34 @@
+# Análise do PDF de Exames - Meireceli Batista Teixeira
+Data/Hora Coleta: 15/01/2026 - 7:09 (maioria dos exames)
+
+## Exames encontrados no PDF (21 páginas):
+
+### Página 1 - HEMOGRAMA COMPLETO
+- Hemácias: 4,15 milhões/mm3
+- Hemoglobina: 12,4 g/dL
+- Hematócrito: 39,3%
+- VCM: 94,7 fl
+- HCM: 29,9 pg
+- CHCM: 31,6%
+- RDW: 12,3%
+- Leucócitos: 6.340/mm3
+- Plaquetas: 191.000/mm3
+
+### Página 2 - GRUPO SANGUÍNEO - FATOR RH
+- Grupo Sanguíneo: A
+- RH: Positivo
+
+### Página 3 - GLICOSE
+- Resultado: 71 mg/dL
+
+### Página 4 - VDRL - SORO
+- Resultado: Negativo
+
+### Página 5 - PARASITOLÓGICO
+- Resultado: Negativo
+- Data Coleta: 22/01/2026
+
+## Observações:
+- O PDF tem 21 páginas com múltiplos exames
+- A data de coleta principal é 15/01/2026
+- Alguns exames têm datas diferentes (ex: Parasitológico em 22/01/2026)

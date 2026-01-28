@@ -492,3 +492,17 @@
 - [x] Usar cores azul para masculino e rosa para feminino
 - [x] Exibir ícone/cor nos alertas de partos próximos
 - [x] Aplicar estilo visual no formulário de cadastro
+
+
+## Bug: Upload de Exames não Registrando Resultados (28/01/2026)
+- [ ] Investigar por que o upload de PDF de exames não está registrando resultados
+- [ ] Testar com arquivo Laudo.104534620.pdf da gestante Meireceli
+- [ ] Corrigir o problema identificado
+
+
+## Correção de Layout do Modal InterpretarExames (28/01/2026)
+- [x] Corrigir layout do modal InterpretarExamesModal - botão não visível em telas menores
+- [x] Garantir que o DialogFooter com os botões seja sempre visível
+- [x] Reduzir altura máxima do modal para 80vh
+- [x] Adicionar scroll interno ao conteúdo do modal
+- [x] Reduzir espaçamentos internos para melhor aproveitamento do espaço
