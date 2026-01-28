@@ -460,3 +460,5 @@
 - [ ] Corrigir extração de urocultura (positiva/negativa com bactéria identificada)
 - [ ] Garantir extração correta de todos os exames sorológicos
 - [ ] Testar com PDF fornecido e validar resultados
+- [x] IA não sobrescrever campos já preenchidos (adicionar apenas em campos vazios)
+- [x] Botão de exclusão por trimestre com confirmação

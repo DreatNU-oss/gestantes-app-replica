@@ -105,6 +105,10 @@ export default function ExamesLaboratoriais() {
   const [examesSelecionados, setExamesSelecionados] = useState<string[]>([]);
   const [dataParaCopiar, setDataParaCopiar] = useState<string>("");
   
+  // Estados para o modal de exclusão de trimestre
+  const [modalExcluirTrimestreAberto, setModalExcluirTrimestreAberto] = useState(false);
+  const [trimestreParaExcluir, setTrimestreParaExcluir] = useState<1 | 2 | 3 | null>(null);
+  
   // Estados para o modal de preenchimento em lote
   const [modalPreenchimentoLoteAberto, setModalPreenchimentoLoteAberto] = useState(false);
   const [trimestrePreenchimentoLote, setTrimestrePreenchimentoLote] = useState<1 | 2 | 3>(1);
@@ -1207,6 +1211,44 @@ export default function ExamesLaboratoriais() {
                   />
                 </div>
 
+                {/* Botões de exclusão por trimestre */}
+                <div className="flex flex-wrap gap-2 mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <span className="text-sm text-gray-600 font-medium mr-2 self-center">Limpar todos os exames do:</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => {
+                      setTrimestreParaExcluir(1);
+                      setModalExcluirTrimestreAberto(true);
+                    }}
+                  >
+                    1º Trimestre
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => {
+                      setTrimestreParaExcluir(2);
+                      setModalExcluirTrimestreAberto(true);
+                    }}
+                  >
+                    2º Trimestre
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => {
+                      setTrimestreParaExcluir(3);
+                      setModalExcluirTrimestreAberto(true);
+                    }}
+                  >
+                    3º Trimestre
+                  </Button>
+                </div>
+
                 <div className="flex justify-end items-center mt-6">
                   <Button 
                     className="bg-rose-600 hover:bg-rose-700"
@@ -1398,10 +1440,56 @@ export default function ExamesLaboratoriais() {
                     console.log('[DEBUG FRONTEND] resultadosFormatados:', resultadosFormatados);
                     
                     setResultados(prev => {
-                      const novoEstado = {
-                        ...prev,
-                        ...resultadosFormatados,
-                      };
+                      const novoEstado = { ...prev };
+                      let camposAdicionados = 0;
+                      let camposIgnorados = 0;
+                      
+                      // Mesclar resultados sem sobrescrever campos já preenchidos
+                      for (const [nomeExame, novoValor] of Object.entries(resultadosFormatados)) {
+                        if (typeof novoValor === 'object' && novoValor !== null) {
+                          // Exame com subcampos (objeto)
+                          const existente = prev[nomeExame];
+                          const existenteObj = typeof existente === 'object' && existente !== null 
+                            ? existente as Record<string, string> 
+                            : {};
+                          
+                          const mesclado: Record<string, string> = { ...existenteObj };
+                          
+                          for (const [campo, valor] of Object.entries(novoValor as Record<string, string>)) {
+                            // Verificar se o campo já tem valor preenchido
+                            const valorExistente = existenteObj[campo];
+                            const campoJaPreenchido = valorExistente && valorExistente.trim() !== '';
+                            
+                            if (campoJaPreenchido) {
+                              console.log(`[DEBUG FRONTEND] Campo ${nomeExame}.${campo} já preenchido com "${valorExistente}", ignorando novo valor "${valor}"`);
+                              camposIgnorados++;
+                            } else {
+                              mesclado[campo] = valor;
+                              camposAdicionados++;
+                              console.log(`[DEBUG FRONTEND] Campo ${nomeExame}.${campo} preenchido com "${valor}"`);
+                            }
+                          }
+                          
+                          novoEstado[nomeExame] = mesclado;
+                        } else {
+                          // Exame simples (string)
+                          const valorExistente = prev[nomeExame];
+                          const campoJaPreenchido = valorExistente && 
+                            typeof valorExistente === 'string' && 
+                            valorExistente.trim() !== '';
+                          
+                          if (campoJaPreenchido) {
+                            console.log(`[DEBUG FRONTEND] Exame ${nomeExame} já preenchido com "${valorExistente}", ignorando novo valor "${novoValor}"`);
+                            camposIgnorados++;
+                          } else {
+                            novoEstado[nomeExame] = novoValor;
+                            camposAdicionados++;
+                            console.log(`[DEBUG FRONTEND] Exame ${nomeExame} preenchido com "${novoValor}"`);
+                          }
+                        }
+                      }
+                      
+                      console.log(`[DEBUG FRONTEND] Resumo: ${camposAdicionados} campos adicionados, ${camposIgnorados} campos ignorados (já preenchidos)`);
                       console.log('[DEBUG FRONTEND] Novo estado de resultados:', novoEstado);
                       return novoEstado;
                     });
@@ -1699,6 +1787,80 @@ export default function ExamesLaboratoriais() {
                   Aplicar Preenchimento
                 </Button>
               </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Modal de Confirmação de Exclusão de Trimestre */}
+        <Dialog open={modalExcluirTrimestreAberto} onOpenChange={setModalExcluirTrimestreAberto}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-red-600">Confirmar Exclusão</DialogTitle>
+              <DialogDescription>
+                Você está prestes a apagar <strong>todos os exames e datas</strong> do <strong>{trimestreParaExcluir}º Trimestre</strong>.
+                Esta ação não pode ser desfeita.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-sm text-gray-600">
+                Todos os resultados e datas preenchidos para o {trimestreParaExcluir}º trimestre serão removidos.
+                Você precisará clicar em "Salvar Resultados" para confirmar a exclusão no banco de dados.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setModalExcluirTrimestreAberto(false);
+                  setTrimestreParaExcluir(null);
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700"
+                onClick={() => {
+                  if (!trimestreParaExcluir) return;
+                  
+                  // Limpar todos os campos do trimestre selecionado
+                  setResultados(prev => {
+                    const novosResultados = { ...prev };
+                    
+                    for (const [chave, valor] of Object.entries(novosResultados)) {
+                      if (typeof valor === 'object' && valor !== null) {
+                        const novoValor = { ...valor };
+                        
+                        // Remover campos do trimestre
+                        delete novoValor[trimestreParaExcluir.toString()];
+                        delete novoValor[`data${trimestreParaExcluir}`];
+                        delete novoValor[`obs_${trimestreParaExcluir}`];
+                        delete novoValor[`agente_${trimestreParaExcluir}`];
+                        
+                        // Remover subcampos do trimestre (para exames como TTGO)
+                        for (const key of Object.keys(novoValor)) {
+                          if (key.endsWith(`_${trimestreParaExcluir}`)) {
+                            delete novoValor[key];
+                          }
+                        }
+                        
+                        novosResultados[chave] = novoValor;
+                      }
+                    }
+                    
+                    return novosResultados;
+                  });
+                  
+                  toast.success(`Exames do ${trimestreParaExcluir}º trimestre removidos`, {
+                    description: 'Clique em "Salvar Resultados" para confirmar a exclusão.',
+                  });
+                  
+                  setModalExcluirTrimestreAberto(false);
+                  setTrimestreParaExcluir(null);
+                }}
+              >
+                Confirmar Exclusão
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
