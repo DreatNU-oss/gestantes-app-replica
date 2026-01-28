@@ -466,3 +466,14 @@
 ## Registro Automático de Polivitamínico (28/01/2026)
 - [x] Registrar uso de Polivitamínico automaticamente ao cadastrar nova gestante
 - [x] Atualizar gestantes existentes no banco de dados com Polivitamínico (verificado: todas as 128 gestantes já possuem)
+
+
+## Alterar BCF na Consulta de Pré-natal (28/01/2026)
+- [x] Mudar opções do campo BCF de "Sim/Não" para "Positivo/Não audível"
+
+
+## Nome Planejado do Bebê no Cartão de Pré-Natal (28/01/2026)
+- [x] Adicionar campo nomeBebe no schema da tabela gestantes
+- [x] Criar endpoint para atualizar nome do bebê
+- [x] Adicionar campo no formulário de cadastro/edição de gestante
+- [x] Exibir nome do bebê no Cartão de Pré-Natal

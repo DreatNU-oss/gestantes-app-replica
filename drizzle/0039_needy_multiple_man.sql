@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` ADD `nomeBebe` varchar(255);

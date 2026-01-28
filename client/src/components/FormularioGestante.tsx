@@ -98,6 +98,7 @@ export default function FormularioGestante({
     igUltrassomDias: "",
     dataUltrassom: "",
     dataPartoProgramado: "",
+    nomeBebe: "",
     observacoes: "",
     altura: "",
     pesoInicial: "",
@@ -354,6 +355,7 @@ export default function FormularioGestante({
         igUltrassomDias: gestante.igUltrassomDias?.toString() || "",
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : (gestante.dataUltrassom as Date).toISOString().split('T')[0]) : "",
         dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "",
+        nomeBebe: gestante.nomeBebe || "",
         observacoes: gestante.observacoes || "",
         altura: gestante.altura?.toString() || "",
         pesoInicial: gestante.pesoInicial ? (gestante.pesoInicial / 1000).toFixed(1) : "", // converter gramas para kg
@@ -463,6 +465,7 @@ export default function FormularioGestante({
       igUltrassomDias: formData.igUltrassomSemanas && formData.igUltrassomDias === '' ? 0 : (formData.igUltrassomDias !== '' ? parseInt(formData.igUltrassomDias) : undefined),
       dataUltrassom: formData.dataUltrassom || undefined,
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
+      nomeBebe: formData.nomeBebe || undefined,
       observacoes: formData.observacoes || undefined,
       altura: formData.altura ? parseInt(formData.altura) : undefined,
       pesoInicial: formData.pesoInicial ? Math.round(parseFloat(formData.pesoInicial) * 1000) : undefined, // converter kg para gramas
@@ -964,6 +967,23 @@ export default function FormularioGestante({
             }
           />
         )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Nome do Bebê</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="nomeBebe">Nome planejado para o bebê (opcional)</Label>
+              <Input
+                id="nomeBebe"
+                placeholder="Ex: Maria, João, etc."
+                value={formData.nomeBebe}
+                onChange={(e) => setFormData({ ...formData, nomeBebe: e.target.value })}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

@@ -282,7 +282,7 @@ export default function CartaoPrenatalImpressao() {
                       {consulta.alturaUterina === -1 ? "Não palpável" : (consulta.alturaUterina ? (consulta.alturaUterina / 10).toFixed(0) + " cm" : "-")}
                     </td>
                     <td className="border border-gray-300 px-2 py-2">
-                      {consulta.bcf === 1 ? "Sim" : "-"}
+                      {consulta.bcf === 1 ? "Positivo" : consulta.bcf === 0 ? "Não audível" : "-"}
                     </td>
                     <td className="border border-gray-300 px-2 py-2">
                       {consulta.mf === 1 ? "Sim" : "-"}

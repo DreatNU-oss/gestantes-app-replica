@@ -369,7 +369,12 @@ export default function CartaoPrenatal() {
       pdf.text(`DPP pela DUM: ${gestante.calculado?.dpp ? new Date(gestante.calculado.dpp).toLocaleDateString('pt-BR') : '-'}`, 20, y);
       y += 7;
       pdf.text(`DPP pelo Ultrassom: ${gestante.calculado?.dppUS ? new Date(gestante.calculado.dppUS).toLocaleDateString('pt-BR') : '-'}`, 20, y);
-      y += 15;
+      y += 7;
+      if (gestante.nomeBebe) {
+        pdf.text(`Nome do Bebê: ${gestante.nomeBebe}`, 20, y);
+        y += 7;
+      }
+      y += 8;
       
       // Fatores de Risco
       if (fatoresRisco && fatoresRisco.length > 0) {
@@ -585,7 +590,7 @@ export default function CartaoPrenatal() {
           }
           
           const pesoFormatado = consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : '-';
-          const bcf = consulta.bcf ? 'Sim' : 'Não';
+          const bcf = consulta.bcf === 1 ? 'Positivo' : consulta.bcf === 0 ? 'Não audível' : '-';
           const mf = consulta.mf ? 'Sim' : 'Não';
           
           pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG DUM: ${igDUMTexto} | IG US: ${igUSTexto}`, 20, y);
@@ -1486,6 +1491,43 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
+        {/* Nome do Bebê */}
+        {gestanteSelecionada && gestante && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Baby className="h-5 w-5" />
+                Nome do Bebê
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    id="nomeBebe"
+                    placeholder="Ex: Maria, João, etc."
+                    value={gestante.nomeBebe || ""}
+                    onChange={(e) => {
+                      const novoNome = e.target.value;
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        nomeBebe: novoNome,
+                      });
+                    }}
+                    className="max-w-xs"
+                  />
+                </div>
+                {gestante.nomeBebe && (
+                  <p className="text-sm text-muted-foreground">
+                    Nome escolhido: <span className="font-medium text-foreground">{gestante.nomeBebe}</span>
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Fatores de Risco */}
         {gestanteSelecionada && gestante && (
           <FatoresRiscoManager 
@@ -1635,8 +1677,8 @@ export default function CartaoPrenatal() {
                       onChange={(e) => setFormData({ ...formData, bcf: e.target.value })}
                     >
                       <option value="">Selecione...</option>
-                      <option value="1">Sim</option>
-                      <option value="0">Não</option>
+                      <option value="1">Positivo</option>
+                      <option value="0">Não audível</option>
                     </select>
                   </div>
                   <div>
@@ -1958,7 +2000,9 @@ export default function CartaoPrenatal() {
                         </TableCell>
                         <TableCell>
                           {consulta.bcf === 1 ? (
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Positivo</span>
+                          ) : consulta.bcf === 0 ? (
+                            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Não audível</span>
                           ) : "-"}
                         </TableCell>
                         <TableCell>

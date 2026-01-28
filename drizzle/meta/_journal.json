@@ -274,6 +274,13 @@
       "when": 1769536500707,
       "tag": "0038_curved_vindicator",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "5",
+      "when": 1769618966121,
+      "tag": "0039_needy_multiple_man",
+      "breakpoints": true
     }
   ]
 }

@@ -104,6 +104,9 @@ export const gestantes = mysqlTable("gestantes", {
   guiaExameUrl: text("guiaExameUrl"),
   documentosUrls: text("documentosUrls"), // JSON array de URLs
   
+  // Nome planejado do bebê
+  nomeBebe: varchar("nomeBebe", { length: 255 }),
+  
   // Observações
   observacoes: text("observacoes"),
   

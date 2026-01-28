@@ -135,7 +135,7 @@ export const CartaoPrenatalPDF = forwardRef<HTMLDivElement, CartaoPrenatalPDFPro
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.pa || "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.au ? `${consulta.au} cm` : "-"}</td>
-                    <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.bcf === 1 ? "Sim" : consulta.bcf === 0 ? "Não" : "-"}</td>
+                    <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.bcf === 1 ? "Positivo" : consulta.bcf === 0 ? "Não audível" : "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>{consulta.mf === 1 ? "Sim" : consulta.mf === 0 ? "Não" : "-"}</td>
                     <td style={{ padding: "6px", border: "1px solid #ddd" }}>
                       {(() => {

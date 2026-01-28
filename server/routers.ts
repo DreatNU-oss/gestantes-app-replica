@@ -384,6 +384,7 @@ export const appRouter = router({
         dataPartoProgramado: z.string().optional(),
         altura: z.number().optional(),
         pesoInicial: z.number().optional(),
+        nomeBebe: z.string().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -409,6 +410,7 @@ export const appRouter = router({
           dataPartoProgramado: input.dataPartoProgramado ? parseLocalDate(input.dataPartoProgramado) : null,
           altura: input.altura || null,
           pesoInicial: input.pesoInicial || null,
+          nomeBebe: input.nomeBebe || null,
           observacoes: input.observacoes || null,
         };
         
@@ -478,6 +480,7 @@ export const appRouter = router({
         igUltrassomDias: z.number().optional(),
         dataUltrassom: z.string().optional(),
         dataPartoProgramado: z.string().optional(),
+        nomeBebe: z.string().optional(),
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
