@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, nome FROM gestantes WHERE nome LIKE '%Teste Polivitaminico%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM gestantes WHERE nome LIKE '%Teste Polivitaminico%';",
+  "rows": [
+    {
+      "id": "1680002",
+      "nome": "Gestante Teste Polivitaminico"
+    },
+    {
+      "id": "1680003",
+      "nome": "Gestante Teste Polivitaminico"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n1680002\tGestante Teste Polivitaminico\n1680003\tGestante Teste Polivitaminico\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

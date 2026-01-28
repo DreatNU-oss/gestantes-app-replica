@@ -462,3 +462,7 @@
 - [ ] Testar com PDF fornecido e validar resultados
 - [x] IA não sobrescrever campos já preenchidos (adicionar apenas em campos vazios)
 - [x] Botão de exclusão por trimestre com confirmação
+
+## Registro Automático de Polivitamínico (28/01/2026)
+- [x] Registrar uso de Polivitamínico automaticamente ao cadastrar nova gestante
+- [x] Atualizar gestantes existentes no banco de dados com Polivitamínico (verificado: todas as 128 gestantes já possuem)

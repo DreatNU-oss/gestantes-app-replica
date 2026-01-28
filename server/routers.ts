@@ -414,6 +414,18 @@ export const appRouter = router({
         
         const novaGestante = await createGestante(data);
         
+        // Registrar automaticamente uso de Polivitamínico para toda nova gestante
+        try {
+          await createMedicamento({
+            gestanteId: novaGestante.id,
+            tipo: "polivitaminicos",
+            especificacao: "Adicionado automaticamente ao cadastrar gestante"
+          });
+        } catch (error) {
+          console.error("Erro ao adicionar Polivitamínico automaticamente:", error);
+          // Não falhar a criação da gestante se o medicamento não puder ser adicionado
+        }
+        
         // Retornar dados da gestante para permitir seleção automática
         return { 
           success: true,

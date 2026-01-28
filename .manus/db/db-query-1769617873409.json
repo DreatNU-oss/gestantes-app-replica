@@ -1,0 +1,15 @@
+{
+  "query": "SELECT \n  (SELECT COUNT(*) FROM gestantes) as total_gestantes,\n  (SELECT COUNT(DISTINCT gestanteId) FROM medicamentosGestacao WHERE tipo = 'polivitaminicos') as gestantes_com_polivitaminico,\n  (SELECT COUNT(*) FROM gestantes) - (SELECT COUNT(DISTINCT gestanteId) FROM medicamentosGestacao WHERE tipo = 'polivitaminicos') as gestantes_sem_polivitaminico;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  (SELECT COUNT(*) FROM gestantes) as total_gestantes,\n  (SELECT COUNT(DISTINCT gestanteId) FROM medicamentosGestacao WHERE tipo = 'polivitaminicos') as gestantes_com_polivitaminico,\n  (SELECT COUNT(*) FROM gestantes) - (SELECT COUNT(DISTINCT gestanteId) FROM medicamentosGestacao WHERE tipo = 'polivitaminicos') as gestantes_sem_polivitaminico;",
+  "rows": [
+    {
+      "total_gestantes": "128",
+      "gestantes_com_polivitaminico": "128",
+      "gestantes_sem_polivitaminico": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_gestantes\tgestantes_com_polivitaminico\tgestantes_sem_polivitaminico\n128\t128\t0\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}
