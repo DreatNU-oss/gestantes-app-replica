@@ -1235,11 +1235,93 @@ export default function ExamesLaboratoriais() {
                     const trimestreNumPadrao = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
                     const resultadosFormatados: Record<string, Record<string, string> | string> = {};
                     
+                    // Função para calcular trimestre baseado na data de coleta e DUM
+                    const calcularTrimestreAutomatico = (dataColeta: string, dum: Date | null): string => {
+                      if (!dum || !dataColeta) return trimestreNumPadrao;
+                      try {
+                        const data = new Date(dataColeta);
+                        const diffMs = data.getTime() - dum.getTime();
+                        const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                        const semanas = Math.floor(diffDias / 7);
+                        
+                        if (semanas <= 13) return "1";
+                        if (semanas <= 27) return "2";
+                        return "3";
+                      } catch {
+                        return trimestreNumPadrao;
+                      }
+                    };
+                    
+                    const dumGestanteDate = gestante?.dum ? new Date(gestante.dum) : null;
+                    
+                    // Função para normalizar valores de exames para o formato esperado pelos dropdowns
+                    const normalizarValorExame = (nomeExame: string, valor: string): { valorNormalizado: string; camposExtras?: Record<string, string> } => {
+                      const valorLower = valor.toLowerCase().trim();
+                      const camposExtras: Record<string, string> = {};
+                      
+                      // Exames sorológicos: Reagente/Não Reagente/Indeterminado
+                      if (EXAMES_SOROLOGICOS.includes(nomeExame)) {
+                        if (valorLower.includes('não reagente') || valorLower.includes('nao reagente') || valorLower.includes('negativo')) {
+                          return { valorNormalizado: 'Não Reagente' };
+                        }
+                        if (valorLower.includes('reagente') || valorLower.includes('positivo')) {
+                          return { valorNormalizado: 'Reagente' };
+                        }
+                        if (valorLower.includes('indeterminado') || valorLower.includes('inconclusivo')) {
+                          return { valorNormalizado: 'Indeterminado' };
+                        }
+                      }
+                      
+                      // EAS (Urina tipo 1): Normal/Alterado
+                      if (nomeExame === 'EAS (Urina tipo 1)') {
+                        if (valorLower.includes('alterada') || valorLower.includes('alterado') || valorLower.includes('anormal')) {
+                          // Extrair observação se houver
+                          const match = valor.match(/[Aa]lterada?\s*[-–:]?\s*(.+)/i);
+                          if (match && match[1]) {
+                            camposExtras.observacao = match[1].trim();
+                          }
+                          return { valorNormalizado: 'Alterado', camposExtras };
+                        }
+                        if (valorLower.includes('normal') || valorLower === 'negativo') {
+                          return { valorNormalizado: 'Normal' };
+                        }
+                      }
+                      
+                      // Urocultura: Positiva/Negativa
+                      if (nomeExame === 'Urocultura') {
+                        if (valorLower.includes('positiva') || valorLower.includes('positivo')) {
+                          // Extrair agente infeccioso se houver
+                          const match = valor.match(/[Pp]ositiva?\s*[-–:]?\s*(.+)/i);
+                          if (match && match[1]) {
+                            camposExtras.agente = match[1].trim();
+                          }
+                          return { valorNormalizado: 'Positiva', camposExtras };
+                        }
+                        if (valorLower.includes('negativa') || valorLower.includes('negativo')) {
+                          return { valorNormalizado: 'Negativa' };
+                        }
+                      }
+                      
+                      // EPF (Parasitológico de Fezes): Positivo/Negativo
+                      if (nomeExame === 'EPF (Parasitológico de Fezes)') {
+                        if (valorLower.includes('positivo')) {
+                          return { valorNormalizado: 'Positivo' };
+                        }
+                        if (valorLower.includes('negativo')) {
+                          return { valorNormalizado: 'Negativo' };
+                        }
+                      }
+                      
+                      // Retornar valor original se não precisar de normalização
+                      return { valorNormalizado: valor };
+                    };
+                    
                     for (const [chave, valor] of Object.entries(novosResultados)) {
                       console.log(`[DEBUG FRONTEND] Processando: ${chave} = ${valor}`);
                       
-                      // No modo automático, a chave pode conter ::trimestre::data
-                      // Formato: "NomeExame::trimestre::data" ou "NomeExame__Subcampo::trimestre::data"
+                      // No modo automático, a chave pode conter:
+                      // Formato antigo: "NomeExame::trimestre::data" 
+                      // Formato novo: "NomeExame::data" (trimestre será calculado automaticamente)
                       let nomeExameBase = chave;
                       let subcampo: string | undefined;
                       let trimestreNum = trimestreNumPadrao;
@@ -1248,8 +1330,20 @@ export default function ExamesLaboratoriais() {
                       if (modoAutomatico && chave.includes('::')) {
                         const partes = chave.split('::');
                         nomeExameBase = partes[0];
-                        if (partes[1]) trimestreNum = partes[1];
-                        if (partes[2]) dataExame = partes[2];
+                        
+                        // Verificar se partes[1] é uma data (YYYY-MM-DD) ou um número de trimestre
+                        if (partes[1]) {
+                          if (/^\d{4}-\d{2}-\d{2}$/.test(partes[1])) {
+                            // É uma data - calcular trimestre automaticamente
+                            dataExame = partes[1];
+                            trimestreNum = calcularTrimestreAutomatico(dataExame, dumGestanteDate);
+                            console.log(`[DEBUG FRONTEND] Data detectada: ${dataExame}, trimestre calculado: ${trimestreNum}`);
+                          } else {
+                            // É um número de trimestre
+                            trimestreNum = partes[1];
+                            if (partes[2]) dataExame = partes[2];
+                          }
+                        }
                       }
                       
                       // Detectar se é um exame com subcampo (formato: "NomeExame__Subcampo")
@@ -1278,12 +1372,26 @@ export default function ExamesLaboratoriais() {
                         }
                       } else {
                         // Exame simples (sem subcampos)
+                        // Normalizar o valor para o formato esperado pelo dropdown
+                        const { valorNormalizado, camposExtras } = normalizarValorExame(nomeExameBase, valor);
+                        console.log(`[DEBUG FRONTEND] Valor normalizado: ${valor} -> ${valorNormalizado}`);
+                        
                         const existente = resultados[nomeExameBase];
                         resultadosFormatados[nomeExameBase] = {
                           ...(typeof existente === 'object' && existente !== null ? existente as Record<string, string> : {}),
-                          [trimestreNum]: valor,
+                          [trimestreNum]: valorNormalizado,
                           ...(dataExame ? { [`data${trimestreNum}`]: dataExame } : {}),
                         };
+                        
+                        // Adicionar campos extras (observação para EAS, agente para Urocultura)
+                        if (camposExtras) {
+                          if (camposExtras.observacao) {
+                            (resultadosFormatados[nomeExameBase] as Record<string, string>)[`obs_${trimestreNum}`] = camposExtras.observacao;
+                          }
+                          if (camposExtras.agente) {
+                            (resultadosFormatados[nomeExameBase] as Record<string, string>)[`agente_${trimestreNum}`] = camposExtras.agente;
+                          }
+                        }
                       }
                     }
                     

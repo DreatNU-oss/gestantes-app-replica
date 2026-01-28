@@ -24,6 +24,10 @@ export async function interpretarExamesComIA(
   trimestre?: "primeiro" | "segundo" | "terceiro", // Agora opcional
   dumGestante?: string // Data da última menstruação para calcular trimestre
 ): Promise<{ resultados: Record<string, string>; dataColeta?: string; trimestreExtraido?: number }> {
+  console.log("[DEBUG] interpretarExamesComIA chamado com:");
+  console.log("[DEBUG] - trimestre:", trimestre);
+  console.log("[DEBUG] - dumGestante:", dumGestante);
+  
   // 1. Upload do arquivo para S3
   const fileKey = `exames-temp/${Date.now()}-${Math.random().toString(36).substring(7)}.${mimeType.split('/')[1]}`;
   const { url: fileUrl } = await storagePut(fileKey, fileBuffer, mimeType);
@@ -34,126 +38,153 @@ export async function interpretarExamesComIA(
     : getAllExames();
 
   // 3. Chamar LLM com visão para interpretar o documento
-  const prompt = `Você é um assistente médico especializado em interpretar resultados de exames laboratoriais de pré-natal.
+  const prompt = `Você é um assistente médico ALTAMENTE ESPECIALIZADO em interpretar resultados de exames laboratoriais de pré-natal.
 
-Analise TODAS as páginas do documento fornecido (PDF ou imagem) e extraia APENAS os valores dos exames listados abaixo.
+**SUA MISSÃO:** Analisar TODAS as páginas do documento (PDF ou imagens) e extrair TODOS os valores dos exames listados abaixo. Você DEVE ser EXTREMAMENTE MINUCIOSO e NÃO PODE DEIXAR NENHUM EXAME DE FORA.
 
-**IMPORTANTE:** Você receberá múltiplas imagens representando diferentes páginas do mesmo documento. Analise TODAS as imagens antes de responder.
+**REGRAS CRÍTICAS - LEIA COM ATENÇÃO:**
 
-**REGRAS IMPORTANTES:**
-1. Retorne APENAS os exames que estão presentes no documento
-2. NÃO invente ou estime valores
-3. Para cada exame encontrado, extraia o valor exato como está escrito
-4. **IDENTIFICAÇÃO E CATEGORIZAÇÃO DE EXAMES** - Use as seguintes categorias para identificar corretamente cada exame:
+1. **ANALISE TODAS AS PÁGINAS** - Cada página pode conter exames diferentes. NÃO pare após encontrar alguns exames.
 
-   **HEMOGRAMA (Exames de Sangue):**
-   * "Hemoglobina", "Hb", "Hemograma" = "Hemoglobina/Hematócrito"
-   * "Plaquetas", "Contagem de Plaquetas" = "Plaquetas"
-   * "Leucócitos", "Glóbulos Brancos" = "Leucócitos"
-
-   **SOROLOGIAS (Infecções):**
-   * "Anti-HIV", "HIV 1 e 2", "HIV", "Sorologia para HIV" = "HIV"
-   * "HBsAg", "Antígeno de Superfície Hepatite B" = "Hepatite B (HBsAg)"
-   * "Anti-HCV", "Hepatite C" = "Hepatite C (Anti-HCV)"
-   * "VDRL", "Sífilis", "RPR", "FTA-ABS" = "VDRL"
-   * "Toxo IgG", "Toxoplasmose IgG", "Anti-Toxoplasma IgG" = "Toxoplasmose IgG"
-   * "Toxo IgM", "Toxoplasmose IgM", "Anti-Toxoplasma IgM" = "Toxoplasmose IgM"
-   * "Rubéola IgG", "Anti-Rubéola IgG" = "Rubéola IgG"
-   * "Rubéola IgM", "Anti-Rubéola IgM" = "Rubéola IgM"
-   * "CMV IgG", "Citomegalovírus IgG", "Anti-CMV IgG" = "Citomegalovírus IgG"
-   * "CMV IgM", "Citomegalovírus IgM", "Anti-CMV IgM" = "Citomegalovírus IgM"
-
-   **BIOQUÍMICA (Metabólicos):**
-   * "Glicose", "Glicemia", "Glicemia de Jejum" = "Glicemia de jejum"
-   * "TSH", "Hormônio Tireoestimulante" = "TSH"
-   * "T4 Livre", "Tiroxina Livre" = "T4 Livre"
-   * "Ferritina", "Ferritina Sérica" = "Ferritina"
-   * "Vitamina D", "25-OH Vitamina D" = "Vitamina D (25-OH)"
-   * "Vitamina B12", "Cobalamina" = "Vitamina B12"
-
-   **URINA E FEZES:**
-   * "EAS", "Urina I", "Urina tipo 1", "Sumário de Urina", "Urinálise" = "EAS (Urina tipo 1)"
-   * "Urocultura", "Cultura de Urina" = "Urocultura"
-   * "EPF", "Parasitológico", "Parasitológico de Fezes", "Protoparasitológico" = "EPF (Parasitológico de Fezes)"
-   * "Proteinúria 24h", "Proteínas na Urina 24 horas" = "Proteinúria de 24 horas"
+2. **MAPEAMENTO DE NOMES DE EXAMES** - Os exames no documento podem ter nomes diferentes. Use este mapeamento:
 
    **TIPAGEM SANGUÍNEA:**
-   * "Tipo Sanguíneo", "Tipagem ABO", "Grupo Sanguíneo" = "Tipo Sanguíneo e Fator Rh"
-   * "Coombs Indireto", "Teste de Coombs Indireto" = "Coombs Indireto"
+   - "Tipo Sanguíneo", "Tipagem ABO", "Grupo Sanguíneo", "ABO/Rh", "Tipagem Sanguínea" → "Tipagem sanguínea ABO/Rh"
+   - "Coombs Indireto", "Teste de Coombs Indireto", "TAI" → "Coombs indireto"
+
+   **HEMOGRAMA:**
+   - "Hemoglobina", "Hb", "HGB" → "Hemoglobina/Hematócrito" (inclua também o Hematócrito se disponível)
+   - "Hematócrito", "Ht", "HCT" → incluir junto com Hemoglobina
+   - "Plaquetas", "Contagem de Plaquetas", "PLT" → "Plaquetas"
+
+   **GLICEMIA:**
+   - "Glicose", "Glicemia", "Glicemia de Jejum", "Glicose em Jejum" → "Glicemia de jejum"
+
+   **SÍFILIS:**
+   - "VDRL", "RPR", "Sífilis" → "VDRL"
+   - "FTA-ABS", "FTA-ABS IgG" → "FTA-ABS IgG"
+   - "FTA-ABS IgM" → "FTA-ABS IgM"
+
+   **HIV:**
+   - "Anti-HIV", "HIV 1 e 2", "HIV", "Sorologia para HIV", "HIV 1/2" → "HIV"
+
+   **HEPATITES:**
+   - "HBsAg", "Antígeno de Superfície Hepatite B", "Hepatite B", "AgHBs" → "Hepatite B (HBsAg)"
+   - "Anti-HBs", "Anticorpo Anti-HBs" → "Anti-HBs"
+   - "Anti-HCV", "Hepatite C", "HCV" → "Hepatite C (Anti-HCV)"
+
+   **TOXOPLASMOSE:**
+   - "Toxo IgG", "Toxoplasmose IgG", "Anti-Toxoplasma IgG", "IgG Toxoplasmose" → "Toxoplasmose IgG"
+   - "Toxo IgM", "Toxoplasmose IgM", "Anti-Toxoplasma IgM", "IgM Toxoplasmose" → "Toxoplasmose IgM"
+
+   **RUBÉOLA:**
+   - "Rubéola IgG", "Anti-Rubéola IgG", "IgG Rubéola" → "Rubéola IgG"
+   - "Rubéola IgM", "Anti-Rubéola IgM", "IgM Rubéola" → "Rubéola IgM"
+
+   **CITOMEGALOVÍRUS:**
+   - "CMV IgG", "Citomegalovírus IgG", "Anti-CMV IgG", "IgG CMV" → "Citomegalovírus IgG"
+   - "CMV IgM", "Citomegalovírus IgM", "Anti-CMV IgM", "IgM CMV" → "Citomegalovírus IgM"
+
+   **TIREOIDE:**
+   - "TSH", "Hormônio Tireoestimulante", "TSH Ultrassensível" → "TSH"
+   - "T4 Livre", "Tiroxina Livre", "T4L" → "T4 Livre"
+
+   **VITAMINAS E MINERAIS:**
+   - "Ferritina", "Ferritina Sérica" → "Ferritina"
+   - "Vitamina D", "25-OH Vitamina D", "25-Hidroxi Vitamina D", "Vitamina D - 25 Hidroxi" → "Vitamina D (25-OH)"
+   - "Vitamina B12", "Cobalamina", "Cianocobalamina" → "Vitamina B12"
+
+   **ELETROFORESE:**
+   - "Eletroforese de Hemoglobina", "Eletroforese Hb" → "Eletroforese de Hemoglobina"
+
+   **URINA:**
+   - "EAS", "Urina I", "Urina tipo 1", "Sumário de Urina", "Urinálise", "Urina Rotina", "Exame de Urina", "Urina Rotina Quantitativa" → "EAS (Urina tipo 1)"
+   - "Urocultura", "Cultura de Urina", "Urinocultura" → "Urocultura"
+   - "Proteinúria 24h", "Proteínas na Urina 24 horas", "Proteinúria de 24 horas" → "Proteinúria de 24 horas"
+
+   **FEZES:**
+   - "EPF", "Parasitológico", "Parasitológico de Fezes", "Protoparasitológico", "PPF" → "EPF (Parasitológico de Fezes)"
 
    **CURVA GLICÊMICA:**
-   * "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica" = "TTGO 75g (Curva Glicêmica)"
+   - "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica" → "TTGO 75g (Curva Glicêmica)"
 
    **ESTREPTOCOCO:**
-   * "Swab Vaginal", "Swab Retal", "Swab Vaginal/Retal", "EGB", "Estreptococo Grupo B" = "Swab vaginal/retal EGB"
+   - "Swab Vaginal", "Swab Retal", "Swab Vaginal/Retal", "EGB", "Estreptococo Grupo B", "Streptococcus agalactiae" → "Swab vaginal/retal EGB"
 
-5. Para exames com subcampos (como TTGO), retorne cada subcampo separadamente
-6. **PROCURE TODOS OS EXAMES** - Não pare após encontrar alguns, continue procurando em todas as páginas
-7. **USE O NOME PADRONIZADO** - Sempre retorne o nome do exame conforme a lista acima (após o sinal de =), não o nome que aparece no documento
+3. **EXTRAÇÃO DE VALORES - PRIORIZE VALORES NUMÉRICOS:**
+   - **SEMPRE extraia o valor numérico quando disponível**, mesmo que haja interpretação qualitativa
+   - Para sorologias: se houver "Leitura: 0.35" ou "Índice: 0.15", extraia esse valor
+   - Para exames de contagem: extraia o valor com unidade (ex: "12.5 g/dL", "191.000 /mm³")
+   - Para resultados qualitativos: use "Reagente", "Não Reagente", "Positivo", "Negativo"
 
-**EXTRAÇÃO DE VALORES NUMÉRICOS:**
-- **SEMPRE extraia valores numéricos quando disponíveis**, mesmo que haja interpretação qualitativa
-- Para exames sorológicos (HIV, Hepatites, Sífilis, Toxoplasmose, Rubéola, etc.):
-  * Se houver valor numérico (ex: "0.15", "1.2 UI/mL", "< 0.5"), extraia o valor numérico
-  * Se houver apenas resultado qualitativo ("Reagente", "Não Reagente", "Positivo", "Negativo"), extraia esse resultado
-  * Preferência: VALOR NUMÉRICO > Resultado qualitativo
-- Para exames de contagem (Hemoglobina, Plaquetas, etc.), SEMPRE extraia o valor numérico com unidade
-- Para exames de glicose, TSH, etc., SEMPRE extraia o valor numérico com unidade
+4. **UROCULTURA - ATENÇÃO ESPECIAL:**
+   - Se encontrar "Urocultura" ou "Cultura de Urina":
+     * Se houver crescimento bacteriano (>100.000 UFC/mL ou similar): "Positiva - [nome da bactéria]"
+     * Se houver crescimento <100.000 UFC/mL: "Negativa (crescimento não significativo)"
+     * Se não houver crescimento: "Negativa"
+   - **IMPORTANTE:** Se o documento mencionar "E. coli", "Escherichia coli", "Klebsiella", etc., a urocultura é POSITIVA
 
-**ATENÇÃO ESPECIAL PARA TOTG/TTGO (Curva Glicêmica):**
-- Pode aparecer como: "TOTG", "TTGO", "Curva de Tolerância à Glicose", "Teste Oral de Tolerância à Glicose", "Curva Glicêmica"
-- SEMPRE tem 3 valores obrigatórios: Jejum, 1 hora (ou 1h, 1ª Hora), 2 horas (ou 2h, 2ª Hora)
-- **REGRA CRÍTICA**: Se você encontrar o título "CURVA DE TOLERÂNCIA À GLICOSE" ou "CURVA GLICÊMICA" no documento, você DEVE extrair os 3 valores (Jejum, 1ª Hora, 2ª Hora) como subcampos do exame "TTGO 75g (Curva Glicêmica)"
-- Ignore qualquer resultado de "GLICOSE" isolado se houver "CURVA DE TOLERÂNCIA" no mesmo documento
-- Os 3 valores podem estar na mesma página ou em páginas diferentes - procure em todo o documento
-- Extraia TODOS os 3 valores como subcampos separados do exame "TTGO 75g (Curva Glicêmica)"
+5. **EAS/URINA TIPO 1 - ATENÇÃO ESPECIAL:**
+   - Se encontrar "Flora Bacteriana Aumentada" ou valor alto de Flora Bacteriana: "Alterada - Flora bacteriana aumentada"
+   - Se encontrar Leucócitos elevados (>10/campo): "Alterada - Leucocitúria"
+   - Se encontrar Proteínas elevadas: "Alterada - Proteinúria"
+   - Se todos os valores estiverem normais: "Normal"
 
-**EXAMES ESPERADOS PARA ESTE TRIMESTRE:**
+6. **TTGO/CURVA GLICÊMICA:**
+   - SEMPRE extraia os 3 valores: Jejum, 1 hora, 2 horas
+   - Retorne como subcampos separados
+
+7. **DATA DA COLETA - OBRIGATÓRIO:**
+   - Procure "Data da Coleta", "Data/Hora Coleta", "Colhido em", "Data" no cabeçalho
+   - Formato: YYYY-MM-DD
+
+**EXAMES ESPERADOS:**
 ${examesEsperados.map(e => `- ${e}`).join('\n')}
 
-**IMPORTANTE:** Os nomes acima são referência. No documento, os exames podem ter nomes ligeiramente diferentes. Use seu conhecimento médico para identificar qual exame da lista corresponde ao que está no documento.
-
 **FORMATO DE RESPOSTA (JSON OBRIGATÓRIO):**
-Você DEVE retornar um objeto JSON com a chave exames contendo um array.
-
-Exemplo de resposta correta (COM DATA):
 {
   "exames": [
-    { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.5 g/dL / 37%", "dataColeta": "2025-11-11" },
-    { "nomeExame": "Glicemia de jejum", "valor": "85 mg/dL", "dataColeta": "2025-11-11" },
-    { "nomeExame": "HIV", "valor": "0.15", "dataColeta": "2025-11-11" },
-    { "nomeExame": "Toxoplasmose IgG", "valor": "125.5 UI/mL", "dataColeta": "2025-11-11" },
-    { "nomeExame": "VDRL", "valor": "Não Reagente", "dataColeta": "2025-11-11" }
+    { "nomeExame": "Tipagem sanguínea ABO/Rh", "valor": "A Positivo", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Hemoglobina/Hematócrito", "valor": "12.4 g/dL / 39.3%", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Plaquetas", "valor": "191.000 /mm³", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Glicemia de jejum", "valor": "71 mg/dL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "VDRL", "valor": "Não Reagente", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Coombs indireto", "valor": "Não Reagente", "dataColeta": "2026-01-15" },
+    { "nomeExame": "HIV", "valor": "Não Reagente", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Hepatite B (HBsAg)", "valor": "Não Reagente", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Anti-HBs", "valor": "Reagente (144.85 mUI/mL)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Hepatite C (Anti-HCV)", "valor": "Não Reagente", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Toxoplasmose IgG", "valor": "< 0.20 UI/mL (Não Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Toxoplasmose IgM", "valor": "0.05 (Não Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Rubéola IgG", "valor": "216.9 UI/mL (Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Rubéola IgM", "valor": "0.10 (Não Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Citomegalovírus IgG", "valor": "147.20 UA/mL (Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Citomegalovírus IgM", "valor": "0.19 (Não Reagente)", "dataColeta": "2026-01-15" },
+    { "nomeExame": "TSH", "valor": "0.74 µUI/mL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "T4 Livre", "valor": "1.04 ng/dL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Ferritina", "valor": "17.4 ng/mL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Vitamina D (25-OH)", "valor": "33.2 ng/mL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "Vitamina B12", "valor": "343 pg/mL", "dataColeta": "2026-01-15" },
+    { "nomeExame": "EAS (Urina tipo 1)", "valor": "Alterada - Flora bacteriana aumentada", "dataColeta": "2026-01-22" },
+    { "nomeExame": "Urocultura", "valor": "Positiva - E. coli (>100.000 UFC/mL)", "dataColeta": "2026-01-22" },
+    { "nomeExame": "EPF (Parasitológico de Fezes)", "valor": "Negativo", "dataColeta": "2026-01-15" },
+    { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "71 mg/dL", "subcampo": "Jejum", "dataColeta": "2026-01-15" },
+    { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "156 mg/dL", "subcampo": "1 hora", "dataColeta": "2026-01-15" },
+    { "nomeExame": "TTGO 75g (Curva Glicêmica)", "valor": "109 mg/dL", "subcampo": "2 horas", "dataColeta": "2026-01-15" }
   ]
 }
 
-**EXEMPLO DE TOTG/TTGO NO DOCUMENTO:**
-Se você encontrar:
-- "GLICOSE: 71 mg/dL" (página 1)
-- "CURVA DE TOLERÂNCIA À GLICOSE" com "Jejum: 71 mg/dL", "1ª Hora: 156 mg/dL", "2ª Hora: 109 mg/dL" (página 2)
+**CHECKLIST FINAL - VERIFIQUE ANTES DE RESPONDER:**
+□ Analisei TODAS as páginas do documento?
+□ Extraí TODOS os exames de sangue (hemograma, sorologias, bioquímica)?
+□ Extraí TODOS os exames de urina (EAS e Urocultura)?
+□ Extraí os exames de fezes (EPF)?
+□ Extraí os exames de tireoide (TSH, T4 Livre)?
+□ Extraí as vitaminas (D, B12, Ferritina)?
+□ Extraí a tipagem sanguínea e Coombs?
+□ Incluí a data de coleta em todos os exames?
 
-Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme exemplo acima.
-
-**EXTRAÇÃO DA DATA DE COLETA - OBRIGATÓRIO:**
-1. **SEMPRE procure e extraia a data da coleta dos exames** - ela geralmente aparece no cabeçalho, rodapé ou próximo aos resultados
-2. A data pode aparecer como: "Data da Coleta", "Data", "Colhido em", "Recebido em", ou similar
-3. Formato da data: YYYY-MM-DD (ex: 2025-11-11)
-4. Se todos os exames tiverem a mesma data, inclua a mesma data para todos
-5. Se não encontrar a data em lugar nenhum, deixe o campo dataColeta vazio
-6. **IMPORTANTE:** Se houver exames de datas diferentes no mesmo documento, extraia a data correta de cada exame
-
-**EXTRAÇÃO DO TRIMESTRE - AUTOMÁTICO:**
-1. Para cada exame, calcule o trimestre baseado na data de coleta${dumGestante ? ` e na DUM da gestante: ${dumGestante}` : ''}
-2. Cálculo: semanas = (dataColeta - DUM) / 7
-   - Até 13 semanas = 1º trimestre
-   - 14 a 27 semanas = 2º trimestre  
-   - 28 a 40 semanas = 3º trimestre
-3. Inclua o campo "trimestre" (1, 2 ou 3) em cada exame
-4. Se não conseguir calcular (sem DUM ou data), deixe o campo trimestre vazio
-
-**IMPORTANTE:** 
-1. Se nenhum exame for encontrado retorne: { "exames": [] }
-2. SEMPRE retorne um objeto JSON com a chave exames`;
+**IMPORTANTE:** Se nenhum exame for encontrado, retorne: { "exames": [] }`;
 
   // Usar OpenAI GPT-4o para extração
   if (!OPENAI_API_KEY) {
@@ -188,10 +219,10 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
       
       console.log('[Exames] Convertendo PDF para PNG...');
       
-      // Converter PDF para PNG (máximo 10 páginas)
+      // Converter PDF para PNG (aumentado para 25 páginas para cobrir documentos maiores)
       const pngPages = await pdfToPng(tempPdfPath, {
         outputFolder: tempDir,
-        pagesToProcess: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        pagesToProcess: Array.from({ length: 25 }, (_, i) => i + 1) // Páginas 1-25
       });
       
       console.log(`[Exames] PDF convertido: ${pngPages.length} página(s)`);
@@ -241,11 +272,11 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
     },
     body: JSON.stringify({
       model: 'gpt-4o',
-      max_tokens: 4096, // Aumentar limite para permitir extração de muitos exames
+      max_tokens: 8192, // Aumentado para permitir extração de muitos exames
       messages: [
         {
           role: 'system',
-          content: 'Você é um assistente médico especializado em análise de exames laboratoriais de pré-natal. Sempre responda em JSON válido.'
+          content: 'Você é um assistente médico ALTAMENTE ESPECIALIZADO em análise de exames laboratoriais de pré-natal. Você é EXTREMAMENTE MINUCIOSO e NUNCA deixa exames de fora. Sempre responda em JSON válido com TODOS os exames encontrados no documento.'
         },
         {
           role: 'user',
@@ -295,6 +326,32 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
   
   console.log("[DEBUG] Parsed exames:", JSON.stringify(parsed.exames, null, 2));
   
+  // Função auxiliar para calcular trimestre baseado na DUM e data de coleta
+  const calcularTrimestreAutomatico = (dataColetaExame: string | undefined, dum: string | undefined): number | undefined => {
+    if (!dataColetaExame || !dum) return undefined;
+    
+    try {
+      const dataColeta = new Date(dataColetaExame);
+      const dataDum = new Date(dum);
+      
+      if (isNaN(dataColeta.getTime()) || isNaN(dataDum.getTime())) return undefined;
+      
+      const diffMs = dataColeta.getTime() - dataDum.getTime();
+      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const semanas = Math.floor(diffDias / 7);
+      
+      console.log(`[DEBUG] Cálculo trimestre: DUM=${dum}, DataColeta=${dataColetaExame}, Semanas=${semanas}`);
+      
+      if (semanas <= 13) return 1;
+      if (semanas <= 27) return 2;
+      if (semanas <= 42) return 3;
+      return undefined;
+    } catch (e) {
+      console.error('[DEBUG] Erro ao calcular trimestre:', e);
+      return undefined;
+    }
+  };
+  
   for (const exame of parsed.exames) {
     // Capturar data da coleta (assumindo que todos os exames do mesmo laudo têm a mesma data)
     if (exame.dataColeta && !dataColeta) {
@@ -307,9 +364,21 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
     }
     
     // Determinar o trimestre para este exame
-    const trimestreExame = exame.trimestre || trimestreExtraido || (trimestre === "primeiro" ? 1 : trimestre === "segundo" ? 2 : trimestre === "terceiro" ? 3 : undefined);
+    // Prioridade: 1) trimestre do exame, 2) calculado automaticamente pela DUM, 3) trimestre extraído, 4) trimestre manual
+    let trimestreExame = exame.trimestre;
     
-    // Incluir trimestre e data na chave se extraído automaticamente
+    if (!trimestreExame && dumGestante && exame.dataColeta) {
+      // Calcular trimestre automaticamente baseado na DUM e data de coleta
+      trimestreExame = calcularTrimestreAutomatico(exame.dataColeta, dumGestante);
+      console.log(`[DEBUG] Trimestre calculado automaticamente para ${exame.nomeExame}: ${trimestreExame}`);
+    }
+    
+    if (!trimestreExame) {
+      trimestreExame = trimestreExtraido || (trimestre === "primeiro" ? 1 : trimestre === "segundo" ? 2 : trimestre === "terceiro" ? 3 : undefined);
+    }
+    
+    // IMPORTANTE: Sempre incluir trimestre e data na chave para modo automático
+    // Formato: NomeExame::trimestre::data
     const trimestreSuffix = trimestreExame ? `::${trimestreExame}` : '';
     const dataSuffix = exame.dataColeta ? `::${exame.dataColeta}` : '';
     
@@ -320,6 +389,7 @@ Retorne os 3 valores como subcampos do "TTGO 75g (Curva Glicêmica)" conforme ex
       resultados[chave] = exame.valor;
     } else {
       const chave = `${exame.nomeExame}${trimestreSuffix}${dataSuffix}`;
+      console.log(`[DEBUG] Exame: ${chave} = ${exame.valor}`);
       resultados[chave] = exame.valor;
     }
   }

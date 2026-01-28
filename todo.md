@@ -453,3 +453,10 @@
 - [x] Corrigir inserção automática do fator de risco 'Idade Avançada' ao preencher data de nascimento
 - [x] Implementar remoção automática do fator de risco 'Idade Avançada' quando idade < 35 anos
 - [x] Implementar detecção automática de obesidade (IMC >= 30) como fator de risco
+
+## Melhorar Análise de Exames por IA (28/01/2026)
+- [ ] Investigar código atual de interpretação de exames laboratoriais por IA
+- [ ] Melhorar prompt para extrair TODOS os 25+ exames corretamente
+- [ ] Corrigir extração de urocultura (positiva/negativa com bactéria identificada)
+- [ ] Garantir extração correta de todos os exames sorológicos
+- [ ] Testar com PDF fornecido e validar resultados

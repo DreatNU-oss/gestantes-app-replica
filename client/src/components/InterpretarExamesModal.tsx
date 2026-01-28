@@ -203,7 +203,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             fileBase64: base64Data,
             mimeType: fileToProcess.type,
             trimestre: modoAutomatico ? undefined : trimestre, // Só envia trimestre se modo manual
-            dumGestante: modoAutomatico && dumGestante ? dumGestante.toISOString().split('T')[0] : undefined, // Envia DUM se modo automático
+            dumGestante: modoAutomatico && dumGestante && !isNaN(dumGestante.getTime()) ? dumGestante.toISOString().split('T')[0] : undefined, // Envia DUM se modo automático
           });
 
           // Atualizar status do arquivo
