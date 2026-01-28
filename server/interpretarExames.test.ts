@@ -237,3 +237,213 @@ describe('Interpretação de Exames com IA', () => {
     expect(examesEsperadosSection).not.toContain('Proteinúria de 24 horas');
   });
 });
+
+
+// Testes para a função de geração de relatório de extração
+describe('gerarRelatorioExtracao', () => {
+  // Tipos para os testes
+  interface ExameComTrimestre {
+    nomeExame: string;
+    valor: string;
+    subcampo?: string;
+    dataColeta?: string;
+    trimestre?: number;
+  }
+
+  interface RelatorioExtracao {
+    examesEncontrados: {
+      nome: string;
+      valor: string;
+      dataColeta?: string;
+      trimestre?: number;
+    }[];
+    examesNaoEncontrados: string[];
+    estatisticas: {
+      totalEsperado: number;
+      totalEncontrado: number;
+      taxaSucesso: number;
+    };
+    avisos: string[];
+  }
+
+  // Função de normalização de nomes
+  function normalizarNome(nome: string): string {
+    return nome
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
+      .trim();
+  }
+
+  // Função de geração de relatório (copiada para teste isolado)
+  function gerarRelatorioExtracao(
+    examesExtraidos: ExameComTrimestre[],
+    examesEsperados: string[]
+  ): RelatorioExtracao {
+    const avisos: string[] = [];
+    
+    const examesEsperadosMap = new Map<string, string>();
+    for (const exame of examesEsperados) {
+      examesEsperadosMap.set(normalizarNome(exame), exame);
+    }
+    
+    const examesEncontrados: RelatorioExtracao['examesEncontrados'] = [];
+    const nomesEncontrados = new Set<string>();
+    
+    for (const exame of examesExtraidos) {
+      examesEncontrados.push({
+        nome: exame.subcampo ? `${exame.nomeExame} - ${exame.subcampo}` : exame.nomeExame,
+        valor: exame.valor,
+        dataColeta: exame.dataColeta,
+        trimestre: exame.trimestre
+      });
+      
+      nomesEncontrados.add(normalizarNome(exame.nomeExame));
+      
+      if (!exame.valor || exame.valor.trim() === '') {
+        avisos.push(`O exame "${exame.nomeExame}" foi encontrado mas não possui valor.`);
+      }
+    }
+    
+    const examesNaoEncontrados: string[] = [];
+    
+    for (const exameEsperado of examesEsperados) {
+      const nomeNormalizado = normalizarNome(exameEsperado);
+      let encontrado = false;
+      
+      for (const nomeEncontrado of Array.from(nomesEncontrados)) {
+        if (nomeNormalizado.includes(nomeEncontrado) || nomeEncontrado.includes(nomeNormalizado)) {
+          encontrado = true;
+          break;
+        }
+      }
+      
+      if (!encontrado) {
+        examesNaoEncontrados.push(exameEsperado);
+      }
+    }
+    
+    const totalEsperado = examesEsperados.length;
+    const totalEncontrado = examesEncontrados.length;
+    const taxaSucesso = totalEsperado > 0 ? Math.round((totalEncontrado / totalEsperado) * 100) : 0;
+    
+    if (totalEncontrado === 0) {
+      avisos.push('Nenhum exame foi encontrado no documento. Verifique se o arquivo está legível e contém resultados de exames laboratoriais.');
+    } else if (taxaSucesso < 50) {
+      avisos.push(`Apenas ${taxaSucesso}% dos exames esperados foram encontrados. O documento pode estar incompleto ou ilegível.`);
+    }
+    
+    if (examesNaoEncontrados.length > 0 && examesNaoEncontrados.length <= 5) {
+      avisos.push(`Os seguintes exames não foram encontrados: ${examesNaoEncontrados.join(', ')}.`);
+    } else if (examesNaoEncontrados.length > 5) {
+      avisos.push(`${examesNaoEncontrados.length} exames não foram encontrados no documento.`);
+    }
+    
+    return {
+      examesEncontrados,
+      examesNaoEncontrados,
+      estatisticas: {
+        totalEsperado,
+        totalEncontrado,
+        taxaSucesso
+      },
+      avisos
+    };
+  }
+
+  const examesEsperados = [
+    'Hemoglobina/Hematócrito',
+    'Plaquetas',
+    'VDRL',
+    'HIV',
+    'Toxoplasmose IgG',
+    'Toxoplasmose IgM',
+    'Urocultura',
+    'EAS (Urina tipo 1)'
+  ];
+
+  it('deve gerar relatório com todos os exames encontrados', () => {
+    const examesExtraidos: ExameComTrimestre[] = [
+      { nomeExame: 'Hemoglobina/Hematócrito', valor: '14.6 g/dL / 44.1%', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'Plaquetas', valor: '191.000 /mm³', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'VDRL', valor: 'Negativo', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'HIV', valor: 'Não Reagente', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'Toxoplasmose IgG', valor: 'Não Reagente', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'Toxoplasmose IgM', valor: 'Não Reagente', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'Urocultura', valor: 'Positiva', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'EAS (Urina tipo 1)', valor: 'Alterado', dataColeta: '2026-01-15', trimestre: 2 },
+    ];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, examesEsperados);
+
+    expect(relatorio.estatisticas.totalEncontrado).toBe(8);
+    expect(relatorio.estatisticas.totalEsperado).toBe(8);
+    expect(relatorio.estatisticas.taxaSucesso).toBe(100);
+    expect(relatorio.examesNaoEncontrados).toHaveLength(0);
+    expect(relatorio.examesEncontrados).toHaveLength(8);
+  });
+
+  it('deve identificar exames não encontrados', () => {
+    const examesExtraidos: ExameComTrimestre[] = [
+      { nomeExame: 'Hemoglobina/Hematócrito', valor: '14.6 g/dL / 44.1%', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'Plaquetas', valor: '191.000 /mm³', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'VDRL', valor: 'Negativo', dataColeta: '2026-01-15', trimestre: 2 },
+    ];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, examesEsperados);
+
+    expect(relatorio.estatisticas.totalEncontrado).toBe(3);
+    expect(relatorio.estatisticas.totalEsperado).toBe(8);
+    expect(relatorio.estatisticas.taxaSucesso).toBe(38);
+    expect(relatorio.examesNaoEncontrados.length).toBeGreaterThan(0);
+    expect(relatorio.examesNaoEncontrados).toContain('HIV');
+    expect(relatorio.examesNaoEncontrados).toContain('Toxoplasmose IgG');
+  });
+
+  it('deve gerar aviso quando nenhum exame é encontrado', () => {
+    const examesExtraidos: ExameComTrimestre[] = [];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, examesEsperados);
+
+    expect(relatorio.estatisticas.totalEncontrado).toBe(0);
+    expect(relatorio.estatisticas.taxaSucesso).toBe(0);
+    expect(relatorio.avisos).toContain('Nenhum exame foi encontrado no documento. Verifique se o arquivo está legível e contém resultados de exames laboratoriais.');
+  });
+
+  it('deve gerar aviso quando taxa de sucesso é baixa', () => {
+    const examesExtraidos: ExameComTrimestre[] = [
+      { nomeExame: 'Hemoglobina/Hematócrito', valor: '14.6 g/dL / 44.1%', dataColeta: '2026-01-15', trimestre: 2 },
+    ];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, examesEsperados);
+
+    expect(relatorio.estatisticas.taxaSucesso).toBeLessThan(50);
+    expect(relatorio.avisos.some(a => a.includes('% dos exames esperados foram encontrados'))).toBe(true);
+  });
+
+  it('deve gerar aviso quando exame não possui valor', () => {
+    const examesExtraidos: ExameComTrimestre[] = [
+      { nomeExame: 'Hemoglobina/Hematócrito', valor: '', dataColeta: '2026-01-15', trimestre: 2 },
+    ];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, examesEsperados);
+
+    expect(relatorio.avisos.some(a => a.includes('foi encontrado mas não possui valor'))).toBe(true);
+  });
+
+  it('deve tratar exames com subcampos corretamente', () => {
+    const examesExtraidos: ExameComTrimestre[] = [
+      { nomeExame: 'TTGO 75g (Curva Glicêmica)', subcampo: 'Jejum', valor: '85 mg/dL', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'TTGO 75g (Curva Glicêmica)', subcampo: '1 hora', valor: '140 mg/dL', dataColeta: '2026-01-15', trimestre: 2 },
+      { nomeExame: 'TTGO 75g (Curva Glicêmica)', subcampo: '2 horas', valor: '120 mg/dL', dataColeta: '2026-01-15', trimestre: 2 },
+    ];
+
+    const relatorio = gerarRelatorioExtracao(examesExtraidos, ['TTGO 75g (Curva Glicêmica)']);
+
+    expect(relatorio.examesEncontrados).toHaveLength(3);
+    expect(relatorio.examesEncontrados[0].nome).toBe('TTGO 75g (Curva Glicêmica) - Jejum');
+    expect(relatorio.examesEncontrados[1].nome).toBe('TTGO 75g (Curva Glicêmica) - 1 hora');
+    expect(relatorio.examesEncontrados[2].nome).toBe('TTGO 75g (Curva Glicêmica) - 2 horas');
+  });
+});

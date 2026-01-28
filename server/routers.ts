@@ -1271,14 +1271,14 @@ export const appRouter = router({
           const fileBuffer = Buffer.from(input.fileBase64, 'base64');
           
           // Chamar função de interpretação
-          const { resultados, dataColeta, trimestreExtraido } = await interpretarExamesComIA(
+          const { resultados, dataColeta, trimestreExtraido, relatorio } = await interpretarExamesComIA(
             fileBuffer,
             input.mimeType,
             input.trimestre,
             input.dumGestante
           );
           
-          return { success: true, resultados, dataColeta, trimestreExtraido };
+          return { success: true, resultados, dataColeta, trimestreExtraido, relatorio };
         } catch (error) {
           console.error('Erro ao interpretar exames:', error);
           throw new TRPCError({ 

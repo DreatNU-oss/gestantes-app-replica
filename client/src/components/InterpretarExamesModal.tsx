@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2 } from "lucide-react";
+import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { compressImage, formatFileSize, calculateReduction } from "@/lib/imageCompression";
@@ -43,6 +43,13 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const [alertaCoerencia, setAlertaCoerencia] = useState<string | null>(null);
   const [confirmarContinuar, setConfirmarContinuar] = useState(false);
   const [modoAutomatico, setModoAutomatico] = useState(true); // Novo: modo automático por padrão
+  const [relatorioExtracao, setRelatorioExtracao] = useState<{
+    examesEncontrados: { nome: string; valor: string; dataColeta?: string; trimestre?: number }[];
+    examesNaoEncontrados: string[];
+    estatisticas: { totalEsperado: number; totalEncontrado: number; taxaSucesso: number };
+    avisos: string[];
+  } | null>(null);
+  const [mostrarDetalhesRelatorio, setMostrarDetalhesRelatorio] = useState(false);
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
 
@@ -160,7 +167,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<Record<string, string>> => {
+  const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<{ resultados: Record<string, string>; relatorio?: typeof relatorioExtracao }> => {
     let fileToProcess = fileWithStatus.file;
     
     // 1. Comprimir imagem se necessário
@@ -228,7 +235,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             setLastDataColeta(result.dataColeta);
           }
 
-          resolve(result.resultados);
+          resolve({ resultados: result.resultados, relatorio: result.relatorio });
         } catch (error: any) {
           setFiles(prev => prev.map((f, i) => 
             i === index ? { ...f, status: 'error', error: error.message } : f
@@ -292,9 +299,13 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       ));
 
       try {
-        const resultados = await processFile(files[i], i);
+        const { resultados, relatorio } = await processFile(files[i], i);
         // Mesclar resultados (valores posteriores sobrescrevem anteriores)
         combinedResultados = { ...combinedResultados, ...resultados };
+        // Guardar o último relatório de extração
+        if (relatorio) {
+          setRelatorioExtracao(relatorio);
+        }
         successCount++;
       } catch (error) {
         errorCount++;
@@ -320,10 +331,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       const dataFinal = modoAutomatico ? lastDataColeta : dataColeta;
       onResultados(combinedResultados, trimestre, dataFinal, successCount, modoAutomatico);
       
-      // Aguardar um pouco para mostrar os status antes de fechar
-      setTimeout(() => {
-        handleClose();
-      }, 1500);
+      // Não fechar automaticamente - deixar o usuário ver o relatório de extração
+      // O usuário pode fechar manualmente clicando em "Fechar" ou "X"
     } else {
       toast.error('Nenhum arquivo foi processado com sucesso');
     }
@@ -346,6 +355,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setAlertaCoerencia(null);
     setConfirmarContinuar(false);
     setModoAutomatico(true); // Reset para modo automático
+    setRelatorioExtracao(null); // Reset do relatório
+    setMostrarDetalhesRelatorio(false); // Reset dos detalhes
     onOpenChange(false);
   };
 
@@ -595,7 +606,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           )}
 
           {/* Aviso */}
-          {!isProcessing && (
+          {!isProcessing && !relatorioExtracao && (
             <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-2">
               <p className="text-xs text-blue-900 dark:text-blue-100">
                 <strong>Nota:</strong> A IA irá preencher automaticamente todos os campos de exames, 
@@ -604,29 +615,154 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               </p>
             </div>
           )}
+
+          {/* Relatório de Extração */}
+          {relatorioExtracao && !isProcessing && (
+            <div className="space-y-3">
+              {/* Estatísticas */}
+              <div className={`rounded-md p-3 border ${
+                relatorioExtracao.estatisticas.taxaSucesso >= 80 
+                  ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
+                  : relatorioExtracao.estatisticas.taxaSucesso >= 50 
+                    ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'
+                    : 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {relatorioExtracao.estatisticas.taxaSucesso >= 80 ? (
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    ) : relatorioExtracao.estatisticas.taxaSucesso >= 50 ? (
+                      <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                    ) : (
+                      <AlertTriangle className="h-5 w-5 text-red-600" />
+                    )}
+                    <span className="font-semibold text-sm">
+                      {relatorioExtracao.estatisticas.totalEncontrado} exames extraídos
+                    </span>
+                  </div>
+                  <span className={`text-sm font-medium px-2 py-1 rounded ${
+                    relatorioExtracao.estatisticas.taxaSucesso >= 80 
+                      ? 'bg-green-100 text-green-800' 
+                      : relatorioExtracao.estatisticas.taxaSucesso >= 50 
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
+                  }`}>
+                    {relatorioExtracao.estatisticas.taxaSucesso}% de sucesso
+                  </span>
+                </div>
+              </div>
+
+              {/* Avisos */}
+              {relatorioExtracao.avisos.length > 0 && (
+                <div className="bg-amber-50 border border-amber-200 dark:bg-amber-950 dark:border-amber-800 rounded-md p-3">
+                  <div className="flex items-start gap-2">
+                    <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <div className="space-y-1">
+                      {relatorioExtracao.avisos.map((aviso, index) => (
+                        <p key={index} className="text-xs text-amber-800 dark:text-amber-200">
+                          {aviso}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Botão para expandir/colapsar detalhes */}
+              {(relatorioExtracao.examesEncontrados.length > 0 || relatorioExtracao.examesNaoEncontrados.length > 0) && (
+                <button
+                  type="button"
+                  onClick={() => setMostrarDetalhesRelatorio(!mostrarDetalhesRelatorio)}
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {mostrarDetalhesRelatorio ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                  {mostrarDetalhesRelatorio ? 'Ocultar detalhes' : 'Ver detalhes da extração'}
+                </button>
+              )}
+
+              {/* Detalhes expandidos */}
+              {mostrarDetalhesRelatorio && (
+                <div className="space-y-3 border rounded-md p-3 bg-muted/30">
+                  {/* Exames encontrados */}
+                  {relatorioExtracao.examesEncontrados.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-green-700 mb-2 flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3" />
+                        Exames extraídos ({relatorioExtracao.examesEncontrados.length})
+                      </h4>
+                      <div className="max-h-32 overflow-y-auto space-y-1">
+                        {relatorioExtracao.examesEncontrados.map((exame, index) => (
+                          <div key={index} className="text-xs flex justify-between items-center py-1 border-b border-muted last:border-0">
+                            <span className="text-muted-foreground">{exame.nome}</span>
+                            <span className="font-medium text-foreground truncate max-w-[150px]" title={exame.valor}>
+                              {exame.valor}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Exames não encontrados */}
+                  {relatorioExtracao.examesNaoEncontrados.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-amber-700 mb-2 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" />
+                        Exames não encontrados ({relatorioExtracao.examesNaoEncontrados.length})
+                      </h4>
+                      <div className="max-h-32 overflow-y-auto">
+                        <div className="flex flex-wrap gap-1">
+                          {relatorioExtracao.examesNaoEncontrados.map((exame, index) => (
+                            <span key={index} className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
+                              {exame}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <DialogFooter className="flex-shrink-0 pt-2 border-t">
-          <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
-            Cancelar
-          </Button>
-          <Button 
-            type="button" 
-            onClick={handleInterpretarTodos}
-            disabled={files.length === 0 || isProcessing}
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processando...
-              </>
-            ) : (
-              <>
-                <Upload className="mr-2 h-4 w-4" />
-                Interpretar {files.length > 0 ? `${files.length} Arquivo${files.length > 1 ? 's' : ''}` : 'Exames'}
-              </>
-            )}
-          </Button>
+          {relatorioExtracao ? (
+            // Após processamento, mostrar apenas botão de fechar
+            <Button onClick={handleClose}>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Fechar
+            </Button>
+          ) : (
+            // Durante seleção de arquivos
+            <>
+              <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
+                Cancelar
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleInterpretarTodos}
+                disabled={files.length === 0 || isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processando...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Interpretar {files.length > 0 ? `${files.length} Arquivo${files.length > 1 ? 's' : ''}` : 'Exames'}
+                  </>
+                )}
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

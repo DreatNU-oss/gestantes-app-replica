@@ -18,12 +18,29 @@ interface ExameComTrimestre {
   trimestre?: number; // 1, 2 ou 3
 }
 
+// Interface para relatório detalhado de extração
+export interface RelatorioExtracao {
+  examesEncontrados: {
+    nome: string;
+    valor: string;
+    dataColeta?: string;
+    trimestre?: number;
+  }[];
+  examesNaoEncontrados: string[];
+  estatisticas: {
+    totalEsperado: number;
+    totalEncontrado: number;
+    taxaSucesso: number; // Percentual de 0 a 100
+  };
+  avisos: string[]; // Mensagens de aviso ou problemas encontrados
+}
+
 export async function interpretarExamesComIA(
   fileBuffer: Buffer,
   mimeType: string,
   trimestre?: "primeiro" | "segundo" | "terceiro", // Agora opcional
   dumGestante?: string // Data da última menstruação para calcular trimestre
-): Promise<{ resultados: Record<string, string>; dataColeta?: string; trimestreExtraido?: number }> {
+): Promise<{ resultados: Record<string, string>; dataColeta?: string; trimestreExtraido?: number; relatorio: RelatorioExtracao }> {
   console.log("[DEBUG] interpretarExamesComIA chamado com:");
   console.log("[DEBUG] - trimestre:", trimestre);
   console.log("[DEBUG] - dumGestante:", dumGestante);
@@ -398,7 +415,12 @@ ${examesEsperados.map(e => `- ${e}`).join('\n')}
   console.log("[DEBUG] Data coleta:", dataColeta);
   console.log("[DEBUG] Trimestre extraído:", trimestreExtraido);
 
-  return { resultados, dataColeta, trimestreExtraido };
+  // 5. Gerar relatório detalhado de extração
+  const relatorio = gerarRelatorioExtracao(parsed.exames, examesEsperados);
+  
+  console.log("[DEBUG] Relatório de extração:", JSON.stringify(relatorio, null, 2));
+
+  return { resultados, dataColeta, trimestreExtraido, relatorio };
 }
 
 function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "terceiro"): string[] {
@@ -497,4 +519,110 @@ function getAllExames(): string[] {
   ];
 
   return todosExames;
+}
+
+
+// Função para gerar relatório detalhado de extração
+function gerarRelatorioExtracao(
+  examesExtraidos: ExameComTrimestre[],
+  examesEsperados: string[]
+): RelatorioExtracao {
+  const avisos: string[] = [];
+  
+  // Normalizar nomes de exames para comparação
+  const normalizarNome = (nome: string): string => {
+    return nome
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+      .replace(/[^a-z0-9]/g, '') // Remove caracteres especiais
+      .trim();
+  };
+  
+  // Criar mapa de exames esperados normalizados
+  const examesEsperadosMap = new Map<string, string>();
+  for (const exame of examesEsperados) {
+    examesEsperadosMap.set(normalizarNome(exame), exame);
+  }
+  
+  // Processar exames extraídos
+  const examesEncontrados: RelatorioExtracao['examesEncontrados'] = [];
+  const nomesEncontrados = new Set<string>();
+  
+  for (const exame of examesExtraidos) {
+    const nomeNormalizado = normalizarNome(exame.nomeExame);
+    
+    // Verificar se é um exame esperado
+    let nomeOriginal = exame.nomeExame;
+    for (const [normalizado, original] of Array.from(examesEsperadosMap.entries())) {
+      if (nomeNormalizado.includes(normalizado) || normalizado.includes(nomeNormalizado)) {
+        nomeOriginal = original;
+        break;
+      }
+    }
+    
+    // Adicionar à lista de encontrados
+    examesEncontrados.push({
+      nome: exame.subcampo ? `${exame.nomeExame} - ${exame.subcampo}` : exame.nomeExame,
+      valor: exame.valor,
+      dataColeta: exame.dataColeta,
+      trimestre: exame.trimestre
+    });
+    
+    // Marcar como encontrado
+    nomesEncontrados.add(normalizarNome(exame.nomeExame));
+    
+    // Verificar se o valor está vazio ou suspeito
+    if (!exame.valor || exame.valor.trim() === '') {
+      avisos.push(`O exame "${exame.nomeExame}" foi encontrado mas não possui valor.`);
+    }
+  }
+  
+  // Identificar exames não encontrados
+  const examesNaoEncontrados: string[] = [];
+  
+  for (const exameEsperado of examesEsperados) {
+    const nomeNormalizado = normalizarNome(exameEsperado);
+    let encontrado = false;
+    
+    for (const nomeEncontrado of Array.from(nomesEncontrados)) {
+      if (nomeNormalizado.includes(nomeEncontrado) || nomeEncontrado.includes(nomeNormalizado)) {
+        encontrado = true;
+        break;
+      }
+    }
+    
+    if (!encontrado) {
+      examesNaoEncontrados.push(exameEsperado);
+    }
+  }
+  
+  // Calcular estatísticas
+  const totalEsperado = examesEsperados.length;
+  const totalEncontrado = examesEncontrados.length;
+  const taxaSucesso = totalEsperado > 0 ? Math.round((totalEncontrado / totalEsperado) * 100) : 0;
+  
+  // Adicionar avisos baseados nas estatísticas
+  if (totalEncontrado === 0) {
+    avisos.push('Nenhum exame foi encontrado no documento. Verifique se o arquivo está legível e contém resultados de exames laboratoriais.');
+  } else if (taxaSucesso < 50) {
+    avisos.push(`Apenas ${taxaSucesso}% dos exames esperados foram encontrados. O documento pode estar incompleto ou ilegível.`);
+  }
+  
+  if (examesNaoEncontrados.length > 0 && examesNaoEncontrados.length <= 5) {
+    avisos.push(`Os seguintes exames não foram encontrados: ${examesNaoEncontrados.join(', ')}.`);
+  } else if (examesNaoEncontrados.length > 5) {
+    avisos.push(`${examesNaoEncontrados.length} exames não foram encontrados no documento.`);
+  }
+  
+  return {
+    examesEncontrados,
+    examesNaoEncontrados,
+    estatisticas: {
+      totalEsperado,
+      totalEncontrado,
+      taxaSucesso
+    },
+    avisos
+  };
 }

@@ -514,3 +514,14 @@
 - [x] Calcular DUM estimada a partir da DPP (DUM = DPP - 280 dias)
 - [x] Atualizar ExamesLaboratoriais para passar dppUltrassom ao modal
 - [x] Atualizar cálculo de trimestre no onResultados para usar DUM ou DPP
+
+## Mensagens de Erro Detalhadas na Interpretação de Exames (28/01/2026)
+- [x] Analisar fluxo atual de interpretação e identificar onde adicionar feedback
+- [x] Implementar relatório de exames encontrados vs não encontrados no backend
+- [x] Criar interface para exibir feedback detalhado ao usuário
+- [x] Mostrar lista de exames extraídos com sucesso
+- [x] Mostrar lista de exames esperados que não foram encontrados
+- [x] Testar com diferentes PDFs
+- [x] Modal permanece aberto após processamento para usuário ver relatório
+- [x] Botão "Ver detalhes da extração" para expandir/colapsar lista
+- [x] Barra de progresso mostrando taxa de sucesso (%)
