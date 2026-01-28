@@ -1265,7 +1265,8 @@ export default function ExamesLaboratoriais() {
                 <InterpretarExamesModal
                   open={modalAberto}
                   onOpenChange={setModalAberto}
-                  dumGestante={gestante?.dum ? new Date(gestante.dum) : null}
+                  dumGestante={gestante?.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US" ? new Date(gestante.dum) : null}
+                  dppUltrassom={gestante?.calculado?.dppUS ? new Date(gestante.calculado.dppUS) : null}
                   onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados, modoAutomatico) => {
                     console.log('[DEBUG FRONTEND] onResultados chamado');
                     console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
@@ -1294,7 +1295,12 @@ export default function ExamesLaboratoriais() {
                       }
                     };
                     
-                    const dumGestanteDate = gestante?.dum ? new Date(gestante.dum) : null;
+                    // Usar DUM se disponível, senão calcular DUM estimada a partir da DPP pelo Ultrassom
+                    const dumGestanteDate = gestante?.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US" 
+                      ? new Date(gestante.dum) 
+                      : gestante?.calculado?.dppUS 
+                        ? new Date(new Date(gestante.calculado.dppUS).getTime() - 280 * 24 * 60 * 60 * 1000) // DUM estimada = DPP - 280 dias
+                        : null;
                     
                     // Função para normalizar valores de exames para o formato esperado pelos dropdowns
                     const normalizarValorExame = (nomeExame: string, valor: string): { valorNormalizado: string; camposExtras?: Record<string, string> } => {

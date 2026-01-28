@@ -14,6 +14,7 @@ interface InterpretarExamesModalProps {
   onOpenChange: (open: boolean) => void;
   onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string, arquivosProcessados?: number, modoAutomatico?: boolean) => void;
   dumGestante?: Date | null;
+  dppUltrassom?: Date | null; // DPP pelo Ultrassom como alternativa quando DUM não está disponível
 }
 
 interface FileWithStatus {
@@ -27,7 +28,10 @@ interface FileWithStatus {
   previewUrl?: string; // URL para preview de imagens
 }
 
-export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGestante }: InterpretarExamesModalProps) {
+export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGestante, dppUltrassom }: InterpretarExamesModalProps) {
+  // Calcular DUM estimada a partir da DPP pelo Ultrassom se DUM não estiver disponível
+  // DUM estimada = DPP - 280 dias
+  const dumEfetiva = dumGestante || (dppUltrassom ? new Date(dppUltrassom.getTime() - 280 * 24 * 60 * 60 * 1000) : null);
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [trimestre, setTrimestre] = useState<"primeiro" | "segundo" | "terceiro">("primeiro");
   const [dataColeta, setDataColeta] = useState<string>("");
@@ -64,8 +68,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
 
   // Validar coerência quando data ou trimestre mudam
   useEffect(() => {
-    if (dataColeta && dumGestante) {
-      const trimestreEsperado = calcularTrimestreEsperado(dataColeta, dumGestante);
+    if (dataColeta && dumEfetiva) {
+      const trimestreEsperado = calcularTrimestreEsperado(dataColeta, dumEfetiva);
       const trimestreNum = trimestre === "primeiro" ? 1 : trimestre === "segundo" ? 2 : 3;
       
       if (trimestreEsperado && trimestreEsperado !== trimestreNum) {
@@ -81,7 +85,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       setAlertaCoerencia(null);
       setConfirmarContinuar(false);
     }
-  }, [dataColeta, trimestre, dumGestante]);
+  }, [dataColeta, trimestre, dumEfetiva]);
 
   const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
@@ -211,7 +215,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             fileBase64: base64Data,
             mimeType: fileToProcess.type,
             trimestre: modoAutomatico ? undefined : trimestre, // Só envia trimestre se modo manual
-            dumGestante: modoAutomatico && dumGestante && !isNaN(dumGestante.getTime()) ? dumGestante.toISOString().split('T')[0] : undefined, // Envia DUM se modo automático
+            dumGestante: modoAutomatico && dumEfetiva && !isNaN(dumEfetiva.getTime()) ? dumEfetiva.toISOString().split('T')[0] : undefined, // Envia DUM (ou DUM estimada pela DPP) se modo automático
           });
 
           // Atualizar status do arquivo

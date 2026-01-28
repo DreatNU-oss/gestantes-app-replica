@@ -506,3 +506,11 @@
 - [x] Reduzir altura máxima do modal para 80vh
 - [x] Adicionar scroll interno ao conteúdo do modal
 - [x] Reduzir espaçamentos internos para melhor aproveitamento do espaço
+
+## Correção do Cálculo de Trimestre Automático (28/01/2026)
+- [x] Identificar problema: trimestre calculado incorretamente quando DUM não está disponível
+- [x] Implementar fallback usando DPP pelo Ultrassom quando DUM não está disponível
+- [x] Modificar InterpretarExamesModal para aceitar dppUltrassom como prop
+- [x] Calcular DUM estimada a partir da DPP (DUM = DPP - 280 dias)
+- [x] Atualizar ExamesLaboratoriais para passar dppUltrassom ao modal
+- [x] Atualizar cálculo de trimestre no onResultados para usar DUM ou DPP
