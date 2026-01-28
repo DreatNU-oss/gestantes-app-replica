@@ -16,7 +16,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -1504,11 +1504,27 @@ export default function CartaoPrenatal() {
 
         {/* Dados do Bebê */}
         {gestanteSelecionada && gestante && (
-          <Card>
+          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Baby className="h-5 w-5" />
-                Dados do Bebê
+                {gestante.sexoBebe === "masculino" ? (
+                  <Baby className="h-5 w-5 text-blue-500" />
+                ) : gestante.sexoBebe === "feminino" ? (
+                  <Baby className="h-5 w-5 text-pink-500" />
+                ) : (
+                  <Baby className="h-5 w-5" />
+                )}
+                <span>Dados do Bebê</span>
+                {gestante.sexoBebe === "masculino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                    ♂ Menino
+                  </span>
+                )}
+                {gestante.sexoBebe === "feminino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
+                    ♀ Menina
+                  </span>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1531,8 +1547,11 @@ export default function CartaoPrenatal() {
                     />
                   </div>
                   {gestante.nomeBebe && (
-                    <p className="text-sm text-muted-foreground">
-                      Nome escolhido: <span className="font-medium text-foreground">{gestante.nomeBebe}</span>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      Nome escolhido: 
+                      <span className={`font-medium ${gestante.sexoBebe === "masculino" ? "text-blue-600" : gestante.sexoBebe === "feminino" ? "text-pink-600" : "text-foreground"}`}>
+                        {gestante.nomeBebe}
+                      </span>
                     </p>
                   )}
                 </div>
@@ -1547,18 +1566,29 @@ export default function CartaoPrenatal() {
                       });
                     }}
                   >
-                    <SelectTrigger id="sexoBebe" className="max-w-xs">
+                    <SelectTrigger id="sexoBebe" className={`max-w-xs ${gestante.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : gestante.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
                       <SelectValue placeholder="Selecione o sexo" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="nao_informado">Não Informado</SelectItem>
-                      <SelectItem value="masculino">Masculino</SelectItem>
-                      <SelectItem value="feminino">Feminino</SelectItem>
+                      <SelectItem value="masculino">
+                        <span className="flex items-center gap-2">
+                          <span className="text-blue-500">♂</span> Masculino
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="feminino">
+                        <span className="flex items-center gap-2">
+                          <span className="text-pink-500">♀</span> Feminino
+                        </span>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   {gestante.sexoBebe && gestante.sexoBebe !== "nao_informado" && (
-                    <p className="text-sm text-muted-foreground">
-                      Sexo: <span className="font-medium text-foreground">{gestante.sexoBebe === "masculino" ? "Masculino" : "Feminino"}</span>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      Sexo: 
+                      <span className={`font-medium flex items-center gap-1 ${gestante.sexoBebe === "masculino" ? "text-blue-600" : "text-pink-600"}`}>
+                        {gestante.sexoBebe === "masculino" ? "♂ Masculino" : "♀ Feminino"}
+                      </span>
                     </p>
                   )}
                 </div>

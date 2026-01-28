@@ -13,6 +13,8 @@ interface Gestante {
   igUltrassomDias?: number | null;
   dataPartoProgramado?: string | Date | null;
   medicoId?: number | null;
+  nomeBebe?: string | null;
+  sexoBebe?: "masculino" | "feminino" | "nao_informado" | null;
 }
 
 interface Medico {
@@ -234,12 +236,34 @@ export function AlertasPartosProximos({
           {alertas.map((alerta) => (
             <div 
               key={alerta.gestante.id} 
-              className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes, alerta.posDataismo)}`}
+              className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${getCorFundoCard(alerta.diasRestantes, alerta.posDataismo)} ${
+                alerta.gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : 
+                alerta.gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""
+              }`}
             >
             <div className="flex-1">
-              <div className="font-semibold text-gray-900 mb-1">
+              <div className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
                 {alerta.gestante.nome}
+                {alerta.gestante.sexoBebe === "masculino" && (
+                  <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                    ♂
+                  </span>
+                )}
+                {alerta.gestante.sexoBebe === "feminino" && (
+                  <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
+                    ♀
+                  </span>
+                )}
               </div>
+              {alerta.gestante.nomeBebe && (
+                <div className={`text-xs mb-1 flex items-center gap-1 ${
+                  alerta.gestante.sexoBebe === "masculino" ? "text-blue-600" : 
+                  alerta.gestante.sexoBebe === "feminino" ? "text-pink-600" : "text-gray-600"
+                }`}>
+                  <Baby className="h-3 w-3" />
+                  Bebê: {alerta.gestante.nomeBebe}
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />

@@ -971,9 +971,28 @@ export default function FormularioGestante({
           />
         )}
 
-        <Card>
+        <Card className={formData.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : formData.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
           <CardHeader>
-            <CardTitle>Dados do Bebê</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              {formData.sexoBebe === "masculino" ? (
+                <Baby className="h-5 w-5 text-blue-500" />
+              ) : formData.sexoBebe === "feminino" ? (
+                <Baby className="h-5 w-5 text-pink-500" />
+              ) : (
+                <Baby className="h-5 w-5" />
+              )}
+              <span>Dados do Bebê</span>
+              {formData.sexoBebe === "masculino" && (
+                <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                  ♂ Menino
+                </span>
+              )}
+              {formData.sexoBebe === "feminino" && (
+                <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
+                  ♀ Menina
+                </span>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -984,7 +1003,13 @@ export default function FormularioGestante({
                   placeholder="Ex: Maria, João, etc."
                   value={formData.nomeBebe}
                   onChange={(e) => setFormData({ ...formData, nomeBebe: e.target.value })}
+                  className={formData.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : formData.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}
                 />
+                {formData.nomeBebe && (
+                  <p className={`text-sm ${formData.sexoBebe === "masculino" ? "text-blue-600" : formData.sexoBebe === "feminino" ? "text-pink-600" : "text-muted-foreground"}`}>
+                    Nome escolhido: <span className="font-medium">{formData.nomeBebe}</span>
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="sexoBebe">Sexo do bebê</Label>
@@ -992,13 +1017,21 @@ export default function FormularioGestante({
                   value={formData.sexoBebe}
                   onValueChange={(value) => setFormData({ ...formData, sexoBebe: value })}
                 >
-                  <SelectTrigger id="sexoBebe">
+                  <SelectTrigger id="sexoBebe" className={formData.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : formData.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}>
                     <SelectValue placeholder="Selecione o sexo" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="nao_informado">Não Informado</SelectItem>
-                    <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="feminino">Feminino</SelectItem>
+                    <SelectItem value="masculino">
+                      <span className="flex items-center gap-2">
+                        <span className="text-blue-500">♂</span> Masculino
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="feminino">
+                      <span className="flex items-center gap-2">
+                        <span className="text-pink-500">♀</span> Feminino
+                      </span>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

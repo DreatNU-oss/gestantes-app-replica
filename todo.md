@@ -485,3 +485,10 @@
 - [x] Adicionar campo no formulário de cadastro/edição de gestante
 - [x] Exibir sexo do bebê no Cartão de Pré-Natal
 - [x] Incluir sexo do bebê no PDF gerado
+
+
+## Ícones e Cores para Sexo do Bebê (28/01/2026)
+- [x] Adicionar ícones diferenciados por sexo (masculino/feminino) na seção Dados do Bebê
+- [x] Usar cores azul para masculino e rosa para feminino
+- [x] Exibir ícone/cor nos alertas de partos próximos
+- [x] Aplicar estilo visual no formulário de cadastro
