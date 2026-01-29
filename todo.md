@@ -525,3 +525,12 @@
 - [x] Modal permanece aberto após processamento para usuário ver relatório
 - [x] Botão "Ver detalhes da extração" para expandir/colapsar lista
 - [x] Barra de progresso mostrando taxa de sucesso (%)
+
+## Bug: Checkbox de Confirmação não Clicável (29/01/2026)
+- [ ] Checkbox "Confirmo que desejo continuar mesmo assim" não responde ao clique
+- [ ] Investigar e corrigir o problema de interação do checkbox
+
+## Simplificação do Alerta de Coerência de Trimestre (29/01/2026)
+- [x] Remover checkbox de confirmação do alerta de coerência
+- [x] Manter apenas o aviso informativo
+- [x] Permitir upload de arquivo sem necessidade de confirmar

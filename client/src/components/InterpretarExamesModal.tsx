@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { compressImage, formatFileSize, calculateReduction } from "@/lib/imageCompression";
@@ -32,6 +33,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   // Calcular DUM estimada a partir da DPP pelo Ultrassom se DUM não estiver disponível
   // DUM estimada = DPP - 280 dias
   const dumEfetiva = dumGestante || (dppUltrassom ? new Date(dppUltrassom.getTime() - 280 * 24 * 60 * 60 * 1000) : null);
+  
+  // Debug: verificar valores recebidos
+  useEffect(() => {
+    console.log('[DEBUG InterpretarExamesModal] Props recebidas:');
+    console.log('  dumGestante:', dumGestante);
+    console.log('  dppUltrassom:', dppUltrassom);
+    console.log('  dumEfetiva calculada:', dumEfetiva);
+  }, [dumGestante, dppUltrassom, dumEfetiva]);
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [trimestre, setTrimestre] = useState<"primeiro" | "segundo" | "terceiro">("primeiro");
   const [dataColeta, setDataColeta] = useState<string>("");
@@ -41,7 +50,6 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const [lastDataColeta, setLastDataColeta] = useState<string | undefined>();
   const [isDragging, setIsDragging] = useState(false);
   const [alertaCoerencia, setAlertaCoerencia] = useState<string | null>(null);
-  const [confirmarContinuar, setConfirmarContinuar] = useState(false);
   const [modoAutomatico, setModoAutomatico] = useState(true); // Novo: modo automático por padrão
   const [relatorioExtracao, setRelatorioExtracao] = useState<{
     examesEncontrados: { nome: string; valor: string; dataColeta?: string; trimestre?: number }[];
@@ -83,14 +91,11 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
         setAlertaCoerencia(
           `Atenção: Baseado na DUM da gestante, a data ${dataColeta} corresponde ao ${trimestreEsperado}º trimestre, mas você selecionou ${trimestreNum}º trimestre.`
         );
-        setConfirmarContinuar(false);
       } else {
         setAlertaCoerencia(null);
-        setConfirmarContinuar(false);
       }
     } else {
       setAlertaCoerencia(null);
-      setConfirmarContinuar(false);
     }
   }, [dataColeta, trimestre, dumEfetiva]);
 
@@ -260,7 +265,6 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     console.log('[DEBUG] dataColeta:', dataColeta);
     console.log('[DEBUG] trimestre:', trimestre);
     console.log('[DEBUG] alertaCoerencia:', alertaCoerencia);
-    console.log('[DEBUG] confirmarContinuar:', confirmarContinuar);
     
     if (files.length === 0) {
       toast.error('Nenhum arquivo selecionado');
@@ -272,13 +276,6 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       toast.error('Por favor, informe a data de coleta dos exames');
       return;
     }
-
-    // Validar confirmação se houver alerta de coerência (apenas modo manual)
-    // TEMPORARIAMENTE DESABILITADO PARA DEBUG
-    // if (!modoAutomatico && alertaCoerencia && !confirmarContinuar) {
-    //   toast.error('Por favor, confirme que deseja continuar mesmo com o alerta de coerência');
-    //   return;
-    // }
 
     setIsProcessing(true);
     setCurrentFileIndex(0);
@@ -353,7 +350,6 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setAllResultados({});
     setLastDataColeta(undefined);
     setAlertaCoerencia(null);
-    setConfirmarContinuar(false);
     setModoAutomatico(true); // Reset para modo automático
     setRelatorioExtracao(null); // Reset do relatório
     setMostrarDetalhesRelatorio(false); // Reset dos detalhes
@@ -434,28 +430,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             </div>
           )}
 
-          {/* Alerta de Coerência - apenas modo manual */}
+          {/* Alerta de Coerência - apenas modo manual (apenas informativo) */}
           {!modoAutomatico && alertaCoerencia && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 space-y-3">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <div className="flex items-start gap-2">
-                <svg className="w-5 h-5 text-yellow-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">{alertaCoerencia}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="confirmar-continuar"
-                  checked={confirmarContinuar}
-                  onChange={(e) => setConfirmarContinuar(e.target.checked)}
-                  className="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
-                />
-                <Label htmlFor="confirmar-continuar" className="text-sm text-yellow-800 cursor-pointer">
-                  Confirmo que desejo continuar mesmo assim
-                </Label>
+                <p className="text-sm text-yellow-800">{alertaCoerencia}</p>
               </div>
             </div>
           )}

@@ -551,15 +551,9 @@ export default function CartaoPrenatalImpressao() {
               const dppValue = gestante.calculado?.dppUS || gestante.calculado?.dpp;
               if (!dppValue) return null;
               
-              // Converter para Date - pode ser string ou objeto Date
-              let dpp: Date;
-              if (dppValue instanceof Date) {
-                dpp = dppValue;
-              } else {
-                // Converter string para Date
-                const dppStr = String(dppValue);
-                dpp = new Date(dppStr.includes('T') ? dppStr : dppStr + 'T12:00:00');
-              }
+              // Converter para Date - agora sempre é string
+              const dppStr = String(dppValue);
+              const dpp = new Date(dppStr.includes('T') ? dppStr : dppStr + 'T12:00:00');
               
               // Verificar se a data é válida
               if (isNaN(dpp.getTime())) return null;

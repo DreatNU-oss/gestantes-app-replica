@@ -125,8 +125,8 @@ export type GestanteComCalculos = Gestante & {
   calculado?: {
     igDUM: { semanas: number; dias: number; totalDias: number } | null;
     igUS: { semanas: number; dias: number; totalDias: number } | null;
-    dpp: Date | null;
-    dppUS: Date | null;
+    dpp: string | null;  // ISO date string (YYYY-MM-DD)
+    dppUS: string | null;  // ISO date string (YYYY-MM-DD)
     idade: number | null;
   };
 };

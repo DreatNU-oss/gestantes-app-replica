@@ -248,11 +248,13 @@ export const appRouter = router({
           dpp = calcularDPP(dumDate);
         }
         
-        if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
+        if (g.igUltrassomSemanas !== null && g.igUltrassomSemanas !== undefined && g.dataUltrassom) {
+          // igUltrassomDias pode ser 0 ou null/undefined, tratar como 0 se não definido
+          const igDias = g.igUltrassomDias ?? 0;
           // Parsear YYYY-MM-DD como data local
           const [year, month, day] = g.dataUltrassom.split('-').map(Number);
           const dataUS = new Date(year, month - 1, day);
-          const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
+          const igUltrassomDias = (g.igUltrassomSemanas * 7) + igDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
@@ -267,8 +269,8 @@ export const appRouter = router({
           calculado: {
             igDUM,
             igUS,
-            dpp,
-            dppUS,
+            dpp: dpp ? dpp.toISOString().split('T')[0] : null,
+            dppUS: dppUS ? dppUS.toISOString().split('T')[0] : null,
             idade
           }
         };
@@ -315,11 +317,13 @@ export const appRouter = router({
           dpp = calcularDPP(dumDate);
         }
         
-        if (g.igUltrassomSemanas !== null && g.igUltrassomDias !== null && g.dataUltrassom) {
+        if (g.igUltrassomSemanas !== null && g.igUltrassomSemanas !== undefined && g.dataUltrassom) {
+          // igUltrassomDias pode ser 0 ou null/undefined, tratar como 0 se não definido
+          const igDias = g.igUltrassomDias ?? 0;
           // Parsear YYYY-MM-DD como data local
           const [year, month, day] = g.dataUltrassom.split('-').map(Number);
           const dataUS = new Date(year, month - 1, day);
-          const igUltrassomDias = (g.igUltrassomSemanas * 7) + g.igUltrassomDias;
+          const igUltrassomDias = (g.igUltrassomSemanas * 7) + igDias;
           igUS = calcularIdadeGestacionalPorUS(igUltrassomDias, dataUS);
           dppUS = calcularDppUS(igUltrassomDias, dataUS);
         }
@@ -334,8 +338,8 @@ export const appRouter = router({
           calculado: {
             igDUM,
             igUS,
-            dpp,
-            dppUS,
+            dpp: dpp ? dpp.toISOString().split('T')[0] : null,
+            dppUS: dppUS ? dppUS.toISOString().split('T')[0] : null,
             idade
           }
         };

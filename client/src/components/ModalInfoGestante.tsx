@@ -144,7 +144,7 @@ export default function ModalInfoGestante({
   // Data do parto: preferência para data programada, senão usa DPP calculada
   const dataPartoProgramado = gestante?.dataPartoProgramado;
   const dppCalculada = gestante?.calculado?.dppUS || gestante?.calculado?.dpp;
-  const dataParto = dataPartoProgramado || (dppCalculada ? formatDateObjBR(dppCalculada) : null);
+  const dataParto = dataPartoProgramado || (dppCalculada ? formatDateObjBR(new Date(dppCalculada)) : null);
   const isDataProgramada = !!dataPartoProgramado;
   const temDataParto = !!dataParto;
 

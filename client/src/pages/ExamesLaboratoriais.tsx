@@ -121,6 +121,16 @@ export default function ExamesLaboratoriais() {
 
   const gestante = gestantes?.find((g) => g.id === gestanteSelecionada);
 
+  // Debug: verificar dados da gestante
+  React.useEffect(() => {
+    if (gestante) {
+      console.log('[DEBUG ExamesLaboratoriais] Gestante carregada:', gestante.nome);
+      console.log('[DEBUG ExamesLaboratoriais] DUM:', gestante.dum);
+      console.log('[DEBUG ExamesLaboratoriais] calculado:', gestante.calculado);
+      console.log('[DEBUG ExamesLaboratoriais] dppUS:', gestante.calculado?.dppUS);
+    }
+  }, [gestante]);
+
   // Query para buscar resultados salvos
   const { data: resultadosSalvos, isLoading: loadingResultados } = trpc.examesLab.buscar.useQuery(
     { gestanteId: gestanteSelecionada! },
