@@ -72,6 +72,7 @@ const EXAMES_SOROLOGICOS = [
   "Hepatite C (Anti-HCV)",
   "Hepatite B (HBsAg)",
   "Anti-HBs",
+  "Coombs indireto", // Não Reagente = normal (verde), Reagente = crítico (vermelho)
 ];
 
 export default function ExamesLaboratoriais() {

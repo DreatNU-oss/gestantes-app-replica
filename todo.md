@@ -549,3 +549,8 @@
 - [x] Aplicar a data selecionada a todos os exames preenchidos no lote
 - [x] Data inicializada com a data atual ao abrir o modal
 - [x] Mensagem de sucesso mostra a data aplicada
+
+## Correção de Cor do Coombs Indireto (30/01/2026)
+- [x] Coombs indireto "Não Reagente" deve aparecer em verde (resultado normal)
+- [x] Adicionado Coombs indireto à lista EXAMES_SOROLOGICOS para usar dropdown com cores corretas
+- [x] Não Reagente = verde (normal), Reagente = vermelho (crítico)
