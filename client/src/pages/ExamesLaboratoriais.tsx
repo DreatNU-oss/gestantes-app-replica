@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
-import { Sparkles, ArrowLeft, Loader2, Check } from "lucide-react";
+import { Sparkles, ArrowLeft, Loader2, Check, Calendar } from "lucide-react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
@@ -116,6 +116,8 @@ export default function ExamesLaboratoriais() {
   const [selecaoExamesLote, setSelecaoExamesLote] = useState<Record<string, "normal" | "alterado">>({});
   // Set de exames selecionados para incluir no lote
   const [examesSelecionadosLote, setExamesSelecionadosLote] = useState<Set<string>>(new Set());
+  // Data para o preenchimento em lote
+  const [dataPreenchimentoLote, setDataPreenchimentoLote] = useState<string>('');
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
 
@@ -358,6 +360,8 @@ export default function ExamesLaboratoriais() {
     setSelecaoExamesLote(selecaoInicial);
     setExamesSelecionadosLote(examesSelecionadosInicial);
     setTrimestrePreenchimentoLote(trimestre);
+    // Inicializar data com a data atual no formato YYYY-MM-DD
+    setDataPreenchimentoLote(new Date().toISOString().split('T')[0]);
     setModalPreenchimentoLoteAberto(true);
   };
 
@@ -367,6 +371,7 @@ export default function ExamesLaboratoriais() {
     let contadorPreenchidos = 0;
     const examesQualitativos = obterExamesQualitativos(trimestrePreenchimentoLote);
     const chave = trimestrePreenchimentoLote.toString();
+    const chaveData = `data${trimestrePreenchimentoLote}`;
     
     for (const exame of examesQualitativos) {
       // Só preencher exames que estão selecionados (checkbox marcado)
@@ -383,6 +388,12 @@ export default function ExamesLaboratoriais() {
       }
       
       (novosResultados[exame.nome] as Record<string, string>)[chave] = valor;
+      
+      // Adicionar a data se foi informada
+      if (dataPreenchimentoLote) {
+        (novosResultados[exame.nome] as Record<string, string>)[chaveData] = dataPreenchimentoLote;
+      }
+      
       contadorPreenchidos++;
     }
     
@@ -390,7 +401,11 @@ export default function ExamesLaboratoriais() {
     setModalPreenchimentoLoteAberto(false);
     
     if (contadorPreenchidos > 0) {
-      toast.success(`${contadorPreenchidos} exames preenchidos no ${trimestrePreenchimentoLote}º trimestre`);
+      const dataFormatada = dataPreenchimentoLote 
+        ? new Date(dataPreenchimentoLote + 'T12:00:00').toLocaleDateString('pt-BR')
+        : '';
+      const msgData = dataFormatada ? ` com data ${dataFormatada}` : '';
+      toast.success(`${contadorPreenchidos} exames preenchidos no ${trimestrePreenchimentoLote}º trimestre${msgData}`);
     } else {
       toast.info('Nenhum exame selecionado para preencher');
     }
@@ -1690,6 +1705,26 @@ export default function ExamesLaboratoriais() {
                 Marque os exames que deseja incluir e escolha o resultado para cada um.
               </DialogDescription>
             </DialogHeader>
+            
+            {/* Campo de Data do Lote */}
+            <div className="flex items-center gap-4 py-3 px-4 bg-rose-50 rounded-lg border border-rose-200">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-rose-600" />
+                <label htmlFor="dataLote" className="text-sm font-medium text-gray-700">
+                  Data de Coleta do Lote:
+                </label>
+              </div>
+              <input
+                id="dataLote"
+                type="date"
+                value={dataPreenchimentoLote}
+                onChange={(e) => setDataPreenchimentoLote(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-rose-500 focus:border-rose-500 text-sm"
+              />
+              <span className="text-xs text-gray-500">
+                Esta data será aplicada a todos os exames preenchidos
+              </span>
+            </div>
             
             {/* Botões de Ação em Lote */}
             <div className="flex flex-wrap gap-3 py-3 border-b">

@@ -542,3 +542,10 @@
 - [x] Corrigir inserção dos exames no estado da página
 - [x] Problema: Frontend só processava chaves com :: no modo automático, mas backend sempre retorna nesse formato
 - [x] Solução: Modificado para sempre processar chaves com :: independentemente do modo
+
+## Adicionar Data no Modal de Exames Qualitativos em Lote (30/01/2026)
+- [x] Adicionar campo de data no topo do modal "Preencher Exames Qualitativos em Lote"
+- [x] Permitir definir data específica para todos os exames do lote
+- [x] Aplicar a data selecionada a todos os exames preenchidos no lote
+- [x] Data inicializada com a data atual ao abrir o modal
+- [x] Mensagem de sucesso mostra a data aplicada
