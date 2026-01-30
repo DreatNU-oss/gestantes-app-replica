@@ -527,10 +527,18 @@
 - [x] Barra de progresso mostrando taxa de sucesso (%)
 
 ## Bug: Checkbox de Confirmação não Clicável (29/01/2026)
-- [ ] Checkbox "Confirmo que desejo continuar mesmo assim" não responde ao clique
-- [ ] Investigar e corrigir o problema de interação do checkbox
+- [x] Checkbox "Confirmo que desejo continuar mesmo assim" não responde ao clique
+- [x] Resolvido removendo o checkbox e simplificando o alerta para apenas informativo
 
 ## Simplificação do Alerta de Coerência de Trimestre (29/01/2026)
 - [x] Remover checkbox de confirmação do alerta de coerência
 - [x] Manter apenas o aviso informativo
 - [x] Permitir upload de arquivo sem necessidade de confirmar
+
+## BUG: Exames Extraídos pela IA não Inseridos nos Campos (30/01/2026)
+- [x] Investigar por que os exames extraídos pela IA não aparecem nos campos da tabela
+- [x] Mensagem de êxito aparece (24 exames) mas campos ficam vazios
+- [x] Verificar fluxo de dados entre InterpretarExamesModal e ExamesLaboratoriais
+- [x] Corrigir inserção dos exames no estado da página
+- [x] Problema: Frontend só processava chaves com :: no modo automático, mas backend sempre retorna nesse formato
+- [x] Solução: Modificado para sempre processar chaves com :: independentemente do modo

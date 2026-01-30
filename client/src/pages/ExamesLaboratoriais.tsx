@@ -1377,28 +1377,36 @@ export default function ExamesLaboratoriais() {
                     for (const [chave, valor] of Object.entries(novosResultados)) {
                       console.log(`[DEBUG FRONTEND] Processando: ${chave} = ${valor}`);
                       
-                      // No modo automático, a chave pode conter:
-                      // Formato antigo: "NomeExame::trimestre::data" 
-                      // Formato novo: "NomeExame::data" (trimestre será calculado automaticamente)
+                      // A chave pode conter sufixos com trimestre e data:
+                      // Formato: "NomeExame::trimestre::data" ou "NomeExame::data"
+                      // Isso acontece tanto no modo automático quanto no modo manual
                       let nomeExameBase = chave;
                       let subcampo: string | undefined;
                       let trimestreNum = trimestreNumPadrao;
                       let dataExame = dataColeta;
                       
-                      if (modoAutomatico && chave.includes('::')) {
+                      // SEMPRE processar chaves com :: (tanto modo automático quanto manual)
+                      if (chave.includes('::')) {
                         const partes = chave.split('::');
                         nomeExameBase = partes[0];
                         
                         // Verificar se partes[1] é uma data (YYYY-MM-DD) ou um número de trimestre
                         if (partes[1]) {
                           if (/^\d{4}-\d{2}-\d{2}$/.test(partes[1])) {
-                            // É uma data - calcular trimestre automaticamente
+                            // É uma data - calcular trimestre automaticamente se modo automático
+                            // ou usar trimestre padrão se modo manual
                             dataExame = partes[1];
-                            trimestreNum = calcularTrimestreAutomatico(dataExame, dumGestanteDate);
-                            console.log(`[DEBUG FRONTEND] Data detectada: ${dataExame}, trimestre calculado: ${trimestreNum}`);
-                          } else {
-                            // É um número de trimestre
-                            trimestreNum = partes[1];
+                            if (modoAutomatico) {
+                              trimestreNum = calcularTrimestreAutomatico(dataExame, dumGestanteDate);
+                            }
+                            console.log(`[DEBUG FRONTEND] Data detectada: ${dataExame}, trimestre: ${trimestreNum}`);
+                          } else if (/^[123]$/.test(partes[1])) {
+                            // É um número de trimestre (1, 2 ou 3)
+                            // No modo manual, usar o trimestre selecionado pelo usuário
+                            // No modo automático, usar o trimestre extraído
+                            if (modoAutomatico) {
+                              trimestreNum = partes[1];
+                            }
                             if (partes[2]) dataExame = partes[2];
                           }
                         }
