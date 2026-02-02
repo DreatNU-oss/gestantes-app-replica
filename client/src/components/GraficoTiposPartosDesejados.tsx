@@ -20,7 +20,7 @@ export function GraficoTiposPartosDesejados() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Tipo de Parto Desejado</CardTitle>
+          <CardTitle>Tipo de Parto Desejado/Indicado</CardTitle>
           <CardDescription>Distribuição das preferências de parto das gestantes</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
@@ -34,7 +34,7 @@ export function GraficoTiposPartosDesejados() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Tipo de Parto Desejado</CardTitle>
+          <CardTitle>Tipo de Parto Desejado/Indicado</CardTitle>
           <CardDescription>Distribuição das preferências de parto das gestantes</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
@@ -120,7 +120,7 @@ export function GraficoTiposPartosDesejados() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tipo de Parto Desejado</CardTitle>
+        <CardTitle>Tipo de Parto Desejado/Indicado</CardTitle>
         <CardDescription>
           Distribuição das preferências de parto das {total} gestantes cadastradas
         </CardDescription>

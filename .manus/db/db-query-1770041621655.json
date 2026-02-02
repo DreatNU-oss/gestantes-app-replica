@@ -1,0 +1,42 @@
+{
+  "query": "SELECT * FROM gestantes WHERE nome LIKE '%Amanda%Cristina%Souza%Oliveira%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM gestantes WHERE nome LIKE '%Amanda%Cristina%Souza%Oliveira%';",
+  "rows": [
+    {
+      "id": "330014",
+      "userId": "1",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "telefone": "NULL",
+      "email": "amandaccristina44@gmail.com",
+      "dataNascimento": "2002-02-10",
+      "planoSaudeId": "5",
+      "carteirinhaUnimed": "NULL",
+      "medicoId": "1",
+      "tipoPartoDesejado": "cesariana",
+      "gesta": "2",
+      "para": "1",
+      "partosNormais": "1",
+      "cesareas": "0",
+      "abortos": "0",
+      "dum": "Incompatível com US",
+      "igUltrassomSemanas": "8",
+      "igUltrassomDias": "5",
+      "dataUltrassom": "2025-07-08",
+      "cartaoPrenatalUrl": "NULL",
+      "guiaExameUrl": "NULL",
+      "documentosUrls": "NULL",
+      "createdAt": "2025-11-28 16:33:02",
+      "updatedAt": "2026-01-14 20:21:34",
+      "dataPartoProgramado": "2025-02-05",
+      "observacoes": "NULL",
+      "altura": "156",
+      "pesoInicial": "57700",
+      "nomeBebe": "NULL",
+      "sexoBebe": "nao_informado"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tnome\ttelefone\temail\tdataNascimento\tplanoSaudeId\tcarteirinhaUnimed\tmedicoId\ttipoPartoDesejado\tgesta\tpara\tpartosNormais\tcesareas\tabortos\tdum\tigUltrassomSemanas\tigUltrassomDias\tdataUltrassom\tcartaoPrenatalUrl\tguiaExameUrl\tdocumentosUrls\tcreatedAt\tupdatedAt\tdataPartoProgramado\tobservacoes\taltura\tpesoInicial\tnomeBebe\tsexoBebe\n330014\t1\tAmanda Cristina Souza Oliveira\tNULL\tamandaccristina44@gmail.com\t2002-02-10\t5\tNULL\t1\tcesariana\t2\t1\t1\t0\t0\tIncompatível com US\t8\t5\t2025-07-08\tNULL\tNULL\tNULL\t2025-11-28 16:33:02\t2026-01-14 20:21:34\t2025-02-05\tNULL\t156\t57700\tNULL\tnao_informado\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

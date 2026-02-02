@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, nome, dataNascimento, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom, dataPartoProgramado, tipoPartoDesejado, medicoId FROM gestantes WHERE nome LIKE '%Amanda%' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataNascimento, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom, dataPartoProgramado, tipoPartoDesejado, medicoId FROM gestantes WHERE nome LIKE '%Amanda%' ORDER BY id;",
+  "rows": [
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "dataNascimento": "2002-02-10",
+      "dum": "Incompatível com US",
+      "igUltrassomSemanas": "8",
+      "igUltrassomDias": "5",
+      "dataUltrassom": "2025-07-08",
+      "dataPartoProgramado": "2025-02-05",
+      "tipoPartoDesejado": "cesariana",
+      "medicoId": "1"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "dataNascimento": "1994-09-30",
+      "dum": "2025-06-07",
+      "igUltrassomSemanas": "8",
+      "igUltrassomDias": "6",
+      "dataUltrassom": "2025-08-07",
+      "dataPartoProgramado": "2026-03-07",
+      "tipoPartoDesejado": "cesariana",
+      "medicoId": "1"
+    },
+    {
+      "id": "330016",
+      "nome": "Amanda Paula da Costa Silva",
+      "dataNascimento": "1998-01-18",
+      "dum": "2025-08-06",
+      "igUltrassomSemanas": "8",
+      "igUltrassomDias": "6",
+      "dataUltrassom": "2025-10-06",
+      "dataPartoProgramado": "NULL",
+      "tipoPartoDesejado": "normal",
+      "medicoId": "1"
+    },
+    {
+      "id": "330017",
+      "nome": "Amanda Tavares Amado",
+      "dataNascimento": "2002-08-10",
+      "dum": "2025-09-13",
+      "igUltrassomSemanas": "9",
+      "igUltrassomDias": "4",
+      "dataUltrassom": "2025-11-18",
+      "dataPartoProgramado": "NULL",
+      "tipoPartoDesejado": "a_definir",
+      "medicoId": "1"
+    },
+    {
+      "id": "1500002",
+      "nome": "Amanda Ribeiro Freitas",
+      "dataNascimento": "1999-10-18",
+      "dum": "Incompatível com US",
+      "igUltrassomSemanas": "5",
+      "igUltrassomDias": "6",
+      "dataUltrassom": "2025-12-08",
+      "dataPartoProgramado": "NULL",
+      "tipoPartoDesejado": "a_definir",
+      "medicoId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataNascimento\tdum\tigUltrassomSemanas\tigUltrassomDias\tdataUltrassom\tdataPartoProgramado\ttipoPartoDesejado\tmedicoId\n330014\tAmanda Cristina Souza Oliveira\t2002-02-10\tIncompatível com US\t8\t5\t2025-07-08\t2025-02-05\tcesariana\t1\n330015\tAmanda Junqueira Vilela\t1994-09-30\t2025-06-07\t8\t6\t2025-08-07\t2026-03-07\tcesariana\t1\n330016\tAmanda Paula da Costa Silva\t1998-01-18\t2025-08-06\t8\t6\t2025-10-06\tNULL\tnormal\t1\n330017\tAmanda Tavares Amado\t2002-08-10\t2025-09-13\t9\t4\t2025-11-18\tNULL\ta_definir\t1\n1500002\tAmanda Ribeiro Freitas\t1999-10-18\tIncompatível com US\t5\t6\t2025-12-08\tNULL\ta_definir\t1\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

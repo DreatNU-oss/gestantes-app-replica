@@ -175,7 +175,7 @@ export default function ModalInfoGestante({
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Tipo de Parto Desejado e Data do Parto */}
+            {/* Tipo de Parto Desejado Indicado e Data do Parto */}
             {(temTipoParto || temDataParto) && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export default function ModalInfoGestante({
                   <div className="grid grid-cols-2 gap-4">
                     {temTipoParto && (
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">Tipo de Parto Desejado</p>
+                        <p className="text-xs text-muted-foreground mb-1">Tipo de Parto Desejado/Indicado</p>
                         <Badge 
                           variant="outline" 
                           className="bg-primary/10 text-primary border-primary/30"

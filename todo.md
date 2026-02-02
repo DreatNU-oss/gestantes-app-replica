@@ -554,3 +554,20 @@
 - [x] Coombs indireto "Não Reagente" deve aparecer em verde (resultado normal)
 - [x] Adicionado Coombs indireto à lista EXAMES_SOROLOGICOS para usar dropdown com cores corretas
 - [x] Não Reagente = verde (normal), Reagente = vermelho (crítico)
+
+## Investigar Amanda Cristina Souza Oliveira não aparece em Alertas de Partos Próximos (02/02/2026)
+- [x] Verificar dados da gestante Amanda Cristina Souza Oliveira no banco de dados
+- [x] Analisar lógica de filtro dos alertas de partos próximos
+- [x] Identificar por que ela não está sendo incluída na lista
+- [x] Corrigir o problema
+- [x] Problema: Data programada estava como 05/02/2025 (ano errado)
+- [x] Solução: Corrigida para 05/02/2026 no banco de dados
+- [x] Amanda agora aparece nos alertas (3 dias para o parto)
+
+## Alterações nos Campos de Parto (02/02/2026)
+- [x] Renomear "Data Planejada para o Parto" para "Data Planejada para a Cesárea"
+- [x] Adicionar automação: ao cadastrar data de cesárea, mudar automaticamente "Tipo de Parto Desejado" para "Cesárea"
+- [x] Renomear "Tipo de Parto Desejado" para "Tipo de Parto Desejado/Indicado"
+- [x] Atualizar todos os componentes que exibem esses campos
+- [x] Testar a automação
+- [x] Arquivos modificados: FormularioGestante.tsx, CartaoPrenatal.tsx, GraficoTiposPartosDesejados.tsx, ModalInfoGestante.tsx, CartaoPrenatalImpressao.tsx

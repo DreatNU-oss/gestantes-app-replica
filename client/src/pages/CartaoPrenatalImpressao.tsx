@@ -178,7 +178,7 @@ export default function CartaoPrenatalImpressao() {
             </div>
           </div>
           <div>
-            <span className="font-semibold">Tipo de Parto Desejado:</span>
+            <span className="font-semibold">Tipo de Parto Desejado/Indicado:</span>
             <div>{gestante.tipoPartoDesejado || "-"}</div>
           </div>
           <div>

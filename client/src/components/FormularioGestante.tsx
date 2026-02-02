@@ -634,7 +634,7 @@ export default function FormularioGestante({
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="tipoPartoDesejado">Tipo de Parto Desejado</Label>
+                <Label htmlFor="tipoPartoDesejado">Tipo de Parto Desejado/Indicado</Label>
                 <Select
                   value={formData.tipoPartoDesejado}
                   onValueChange={(v: any) => setFormData({ ...formData, tipoPartoDesejado: v })}
@@ -942,12 +942,20 @@ export default function FormularioGestante({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="dataPartoProgramado">Data Planejada para o Parto</Label>
+              <Label htmlFor="dataPartoProgramado">Data Planejada para a Cesárea</Label>
               <Input
                 id="dataPartoProgramado"
                 type="date"
                 value={formData.dataPartoProgramado}
-                onChange={(e) => setFormData({ ...formData, dataPartoProgramado: e.target.value })}
+                onChange={(e) => {
+                  const novaData = e.target.value;
+                  setFormData({ 
+                    ...formData, 
+                    dataPartoProgramado: novaData,
+                    // Automaticamente mudar para cesárea quando data for cadastrada
+                    tipoPartoDesejado: novaData ? "cesariana" : formData.tipoPartoDesejado
+                  });
+                }}
               />
               <p className="text-sm text-muted-foreground">Para cesáreas eletivas ou partos programados</p>
             </div>

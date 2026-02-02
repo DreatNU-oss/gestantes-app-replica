@@ -1465,13 +1465,13 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
-        {/* Data Planejada para o Parto */}
+        {/* Data Planejada para a Cesárea */}
         {gestanteSelecionada && gestante && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Data Planejada para o Parto
+                Data Planejada para a Cesárea
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1487,6 +1487,8 @@ export default function CartaoPrenatal() {
                       updateGestanteMutation.mutate({
                         id: gestanteSelecionada!,
                         dataPartoProgramado: novaData,
+                        // Automaticamente mudar para cesárea quando data for cadastrada
+                        tipoPartoDesejado: novaData ? "cesariana" : (gestante.tipoPartoDesejado || undefined),
                       });
                     }}
                     className="max-w-xs"
