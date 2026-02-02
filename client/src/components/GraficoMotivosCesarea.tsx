@@ -63,7 +63,7 @@ export function GraficoMotivosCesarea() {
   const labels = motivosOrdenados.map(([motivo]) => motivo);
   const valores = motivosOrdenados.map(([, count]) => count);
 
-  // Cores variadas para o gráfico
+  // Cores variadas para o gráfico (14 cores para incluir "Desejo materno")
   const cores = [
     "#ef4444", // vermelho
     "#f59e0b", // laranja
@@ -78,6 +78,7 @@ export function GraficoMotivosCesarea() {
     "#a855f7", // roxo claro
     "#f43f5e", // vermelho rosado
     "#6366f1", // indigo
+    "#fbbf24", // amarelo
   ];
 
   const data = {

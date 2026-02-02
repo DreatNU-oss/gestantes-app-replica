@@ -52,6 +52,9 @@ export default function FormularioGestante({
     igNaData: { semanas: number; dias: number } | null;
   }>({ show: false, tipo: null, igNaData: null });
   
+  // Estado local para motivo de cesárea "Outro" (evitar auto-save)
+  const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
+  
   // Estado para alerta de diferença entre IG DUM e IG US
   const [alertaDiferencaIG, setAlertaDiferencaIG] = useState<{
     show: boolean;
@@ -411,6 +414,9 @@ export default function FormularioGestante({
         altura: gestante.altura?.toString() || "",
         pesoInicial: gestante.pesoInicial ? (gestante.pesoInicial / 1000).toFixed(1) : "", // converter gramas para kg
       });
+      
+      // Inicializar estado local para motivo de cesárea "Outro"
+      setMotivoCesareaOutroLocal(gestante.motivoCesareaOutro || "");
     }
   }, [gestante]);
 
@@ -1092,18 +1098,19 @@ export default function FormularioGestante({
                     <SelectValue placeholder="Selecione o motivo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
                     <SelectItem value="Apresentacao pelvica">Apresentação pélvica</SelectItem>
-                    <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
-                    <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
-                    <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
-                    <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                    <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
+                    <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
                     <SelectItem value="Descolamento prematuro placenta">Descolamento prematuro de placenta</SelectItem>
+                    <SelectItem value="Desejo materno">Desejo materno</SelectItem>
+                    <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                    <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
+                    <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
                     <SelectItem value="Herpes genital ativo">Herpes genital ativo</SelectItem>
                     <SelectItem value="HIV positivo">HIV positivo (carga viral elevada)</SelectItem>
-                    <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
-                    <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
-                    <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                    <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                    <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
+                    <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
                     <SelectItem value="Outro">Outro motivo</SelectItem>
                   </SelectContent>
                 </Select>
@@ -1111,13 +1118,28 @@ export default function FormularioGestante({
                 
                 {formData.motivoCesarea === "Outro" && (
                   <div className="mt-4 space-y-2">
-                    <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setFormData({ ...formData, motivoCesareaOutro: motivoCesareaOutroLocal });
+                          toast.success("Motivo salvo com sucesso!");
+                        }}
+                        className="h-8"
+                      >
+                        <Check className="h-4 w-4 mr-1" />
+                        Salvar
+                      </Button>
+                    </div>
                     <Input
                       id="motivoCesareaOutro"
                       type="text"
                       placeholder="Descreva a indicação médica"
-                      value={formData.motivoCesareaOutro}
-                      onChange={(e) => setFormData({ ...formData, motivoCesareaOutro: e.target.value })}
+                      value={motivoCesareaOutroLocal}
+                      onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
                     />
                   </div>
                 )}

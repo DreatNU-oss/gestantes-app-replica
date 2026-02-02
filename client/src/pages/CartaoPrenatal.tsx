@@ -16,7 +16,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -95,6 +95,9 @@ export default function CartaoPrenatal() {
     tipo: 'pre-termo' | 'pos-termo' | null;
     igNaData: { semanas: number; dias: number } | null;
   }>({ show: false, tipo: null, igNaData: null });
+  
+  // Estado local para motivo de cesárea "Outro" (evitar auto-save)
+  const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
 
   // Lista de opções de conduta predefinidas
   const OPCOES_CONDUTA = [
@@ -208,6 +211,9 @@ export default function CartaoPrenatal() {
         nomeBebe: gestante.nomeBebe || "",
         sexoBebe: gestante.sexoBebe || "nao_informado"
       });
+      
+      // Inicializar estado local para motivo de cesárea "Outro"
+      setMotivoCesareaOutroLocal(gestante.motivoCesareaOutro || "");
     }
   }, [gestante]);
   const { data: consultas, refetch: refetchConsultas } = trpc.consultasPrenatal.list.useQuery(
@@ -1645,18 +1651,19 @@ export default function CartaoPrenatal() {
                       <SelectValue placeholder="Selecione o motivo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
                       <SelectItem value="Apresentacao pelvica">Apresentação pélvica</SelectItem>
-                      <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
-                      <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
-                      <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
-                      <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                      <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
+                      <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
                       <SelectItem value="Descolamento prematuro placenta">Descolamento prematuro de placenta</SelectItem>
+                      <SelectItem value="Desejo materno">Desejo materno</SelectItem>
+                      <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                      <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
+                      <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
                       <SelectItem value="Herpes genital ativo">Herpes genital ativo</SelectItem>
                       <SelectItem value="HIV positivo">HIV positivo (carga viral elevada)</SelectItem>
-                      <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
-                      <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
-                      <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                      <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                      <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
+                      <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
                       <SelectItem value="Outro">Outro motivo</SelectItem>
                     </SelectContent>
                   </Select>
@@ -1664,18 +1671,30 @@ export default function CartaoPrenatal() {
                   
                   {gestante.motivoCesarea === "Outro" && (
                     <div className="mt-4 space-y-2">
-                      <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            updateGestanteMutation.mutate({
+                              id: gestanteSelecionada!,
+                              motivoCesareaOutro: motivoCesareaOutroLocal,
+                            });
+                          }}
+                          className="h-8"
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Salvar
+                        </Button>
+                      </div>
                       <Input
                         id="motivoCesareaOutro"
                         type="text"
                         placeholder="Descreva a indicação médica"
-                        value={gestante.motivoCesareaOutro || ""}
-                        onChange={(e) => {
-                          updateGestanteMutation.mutate({
-                            id: gestanteSelecionada!,
-                            motivoCesareaOutro: e.target.value,
-                          });
-                        }}
+                        value={motivoCesareaOutroLocal}
+                        onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
                       />
                     </div>
                   )}
