@@ -54,6 +54,10 @@ export default function CartaoPrenatal() {
   };
 
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(gestanteAtiva?.id || null);
+  const [dadosBebe, setDadosBebe] = useState({
+    nomeBebe: "",
+    sexoBebe: "nao_informado" as "masculino" | "feminino" | "nao_informado"
+  });
   
   // Atualizar gestante selecionada quando gestante ativa mudar
   useEffect(() => {
@@ -152,6 +156,16 @@ export default function CartaoPrenatal() {
     { id: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  
+  // Sincronizar dadosBebe com gestante quando gestante mudar
+  useEffect(() => {
+    if (gestante) {
+      setDadosBebe({
+        nomeBebe: gestante.nomeBebe || "",
+        sexoBebe: gestante.sexoBebe || "nao_informado"
+      });
+    }
+  }, [gestante]);
   const { data: consultas, refetch: refetchConsultas } = trpc.consultasPrenatal.list.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
@@ -1583,69 +1597,60 @@ export default function CartaoPrenatal() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
-                  <div className="flex gap-2 items-center">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
                     <Input
                       id="nomeBebe"
                       placeholder="Ex: Maria, João, etc."
-                      value={gestante.nomeBebe || ""}
-                      onChange={(e) => {
-                        const novoNome = e.target.value;
-                        updateGestanteMutation.mutate({
-                          id: gestanteSelecionada!,
-                          nomeBebe: novoNome,
-                        });
-                      }}
+                      value={dadosBebe.nomeBebe}
+                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
                       className="max-w-xs"
                     />
                   </div>
-                  {gestante.nomeBebe && (
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      Nome escolhido: 
-                      <span className={`font-medium ${gestante.sexoBebe === "masculino" ? "text-blue-600" : gestante.sexoBebe === "feminino" ? "text-pink-600" : "text-foreground"}`}>
-                        {gestante.nomeBebe}
-                      </span>
-                    </p>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="sexoBebe">Sexo do bebê</Label>
+                    <Select
+                      value={dadosBebe.sexoBebe}
+                      onValueChange={(value) => setDadosBebe(prev => ({ ...prev, sexoBebe: value as "masculino" | "feminino" | "nao_informado" }))}
+                    >
+                      <SelectTrigger id="sexoBebe" className={`max-w-xs ${dadosBebe.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : dadosBebe.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
+                        <SelectValue placeholder="Selecione o sexo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nao_informado">Não Informado</SelectItem>
+                        <SelectItem value="masculino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-blue-500">♂</span> Masculino
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="feminino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-pink-500">♀</span> Feminino
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sexoBebe">Sexo do bebê</Label>
-                  <Select
-                    value={gestante.sexoBebe || "nao_informado"}
-                    onValueChange={(value) => {
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => {
                       updateGestanteMutation.mutate({
                         id: gestanteSelecionada!,
-                        sexoBebe: value as "masculino" | "feminino" | "nao_informado",
+                        nomeBebe: dadosBebe.nomeBebe,
+                        sexoBebe: dadosBebe.sexoBebe,
+                      }, {
+                        onSuccess: () => {
+                          toast.success("Dados do bebê atualizados com sucesso!");
+                        }
                       });
                     }}
+                    disabled={updateGestanteMutation.isPending}
                   >
-                    <SelectTrigger id="sexoBebe" className={`max-w-xs ${gestante.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : gestante.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
-                      <SelectValue placeholder="Selecione o sexo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="nao_informado">Não Informado</SelectItem>
-                      <SelectItem value="masculino">
-                        <span className="flex items-center gap-2">
-                          <span className="text-blue-500">♂</span> Masculino
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="feminino">
-                        <span className="flex items-center gap-2">
-                          <span className="text-pink-500">♀</span> Feminino
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {gestante.sexoBebe && gestante.sexoBebe !== "nao_informado" && (
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      Sexo: 
-                      <span className={`font-medium flex items-center gap-1 ${gestante.sexoBebe === "masculino" ? "text-blue-600" : "text-pink-600"}`}>
-                        {gestante.sexoBebe === "masculino" ? "♂ Masculino" : "♀ Feminino"}
-                      </span>
-                    </p>
-                  )}
+                    {updateGestanteMutation.isPending ? "Salvando..." : "Salvar"}
+                  </Button>
                 </div>
               </div>
             </CardContent>

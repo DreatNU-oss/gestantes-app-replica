@@ -604,3 +604,15 @@
 - [x] Label: "Especifique o motivo"
 - [x] Placeholder: "Descreva a indicação médica"
 - [x] Testado com sucesso na gestante Cinthia
+
+## Corrigir Salvamento Automático de Nome e Sexo do Bebê (02/02/2026)
+- [x] Investigar onde está o salvamento automático dos campos nomeBebe e sexoBebe
+- [x] Remover salvamento automático que exibe mensagem incorreta "Data Planejada atualizada"
+- [x] Adicionar botão "Salvar" no canto inferior direito da seção "Dados do Bebê"
+- [x] Testar edição dos campos sem salvamento automático
+- [x] Testar salvamento manual com o novo botão
+- [x] Problema: Campos tinham onChange que chamava updateGestanteMutation diretamente
+- [x] Solução: Criado estado local dadosBebe, removido onChange automático, adicionado botão Salvar
+- [x] Testado com sucesso: digitei "Maria Clara" e selecionei "Feminino" sem mensagens incorretas
+- [x] Botão Salvar funciona corretamente e mostra mensagem "Dados do bebê atualizados com sucesso!"
+- [x] Card "Dados do Bebê" agora mostra "♀ Menina" no título após salvar
