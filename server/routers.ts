@@ -3,6 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
+import { checkPdfProtection, unlockPdf } from "./pdfUtils";
 import { gestanteRouter } from "./gestante-router";
 import { z } from "zod";
 import type { GestanteComCalculos } from "../drizzle/schema";
@@ -1265,6 +1266,61 @@ export const appRouter = router({
         }
         
         return { success: true, count: resultadosParaInserir.length };
+      }),
+
+    // Verificar se PDF está protegido por senha
+    verificarPdfProtegido: protectedProcedure
+      .input(z.object({
+        fileBase64: z.string(),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          // Só verificar se for PDF
+          if (input.mimeType !== 'application/pdf') {
+            return { needsPassword: false, isProtected: false };
+          }
+          
+          const fileBuffer = Buffer.from(input.fileBase64, 'base64');
+          const result = await checkPdfProtection(fileBuffer);
+          
+          return { 
+            needsPassword: result.needsPassword, 
+            isProtected: result.isProtected,
+            error: result.error 
+          };
+        } catch (error) {
+          console.error('Erro ao verificar PDF:', error);
+          return { needsPassword: false, isProtected: false, error: 'Erro ao verificar PDF' };
+        }
+      }),
+
+    // Desbloquear PDF protegido por senha
+    desbloquearPdf: protectedProcedure
+      .input(z.object({
+        fileBase64: z.string(),
+        password: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          const fileBuffer = Buffer.from(input.fileBase64, 'base64');
+          const result = await unlockPdf(fileBuffer, input.password);
+          
+          if (result.success && result.unlockedBuffer) {
+            return { 
+              success: true, 
+              unlockedBase64: result.unlockedBuffer.toString('base64') 
+            };
+          }
+          
+          return { success: false, error: result.error };
+        } catch (error) {
+          console.error('Erro ao desbloquear PDF:', error);
+          return { 
+            success: false, 
+            error: error instanceof Error ? error.message : 'Erro ao desbloquear PDF' 
+          };
+        }
       }),
 
     interpretarComIA: protectedProcedure

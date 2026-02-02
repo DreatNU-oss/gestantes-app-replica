@@ -665,3 +665,11 @@
 - [x] Remover linha "Copiar Data para Múltiplos exames" em Exames Laboratoriais
 - [x] Simplificar modo manual da IA: apenas escolha de trimestre (data extraída automaticamente pela IA)
 - [ ] Resolver problema de múltiplos exames do mesmo tipo no mesmo trimestre (permitir 2+ hemogramas no 3º trimestre sem apagar dados)
+
+## Detecção de PDF Protegido por Senha (02/02/2026)
+- [x] Implementar verificação de PDF protegido por senha no backend (pdfUtils.ts)
+- [x] Criar endpoint verificarPdfProtegido no router examesLab
+- [x] Criar endpoint desbloquearPdf no router examesLab
+- [x] Implementar UI para solicitar senha quando PDF protegido
+- [x] Implementar desbloqueio de PDF com senha fornecida
+- [x] Criar testes unitários para pdfUtils

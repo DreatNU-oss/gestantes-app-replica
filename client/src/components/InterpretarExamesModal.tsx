@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -58,8 +59,18 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     avisos: string[];
   } | null>(null);
   const [mostrarDetalhesRelatorio, setMostrarDetalhesRelatorio] = useState(false);
+  
+  // Estados para PDF protegido por senha
+  const [pdfProtegido, setPdfProtegido] = useState(false);
+  const [senhaPdf, setSenhaPdf] = useState("");
+  const [verificandoPdf, setVerificandoPdf] = useState(false);
+  const [desbloqueandoPdf, setDesbloqueandoPdf] = useState(false);
+  const [erroSenha, setErroSenha] = useState<string | null>(null);
+  const [pdfDesbloqueado, setPdfDesbloqueado] = useState<{ base64: string; index: number } | null>(null);
 
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
+  const verificarPdfMutation = trpc.examesLab.verificarPdfProtegido.useMutation();
+  const desbloquearPdfMutation = trpc.examesLab.desbloquearPdf.useMutation();
 
   // Garantir que o trimestre seja definido quando o modo manual é ativado
   useEffect(() => {
@@ -101,8 +112,14 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
 
   const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-  const validateAndAddFiles = (selectedFiles: File[]) => {
+  const validateAndAddFiles = async (selectedFiles: File[]) => {
     const validFiles: FileWithStatus[] = [];
+    
+    // Resetar estados de PDF protegido
+    setPdfProtegido(false);
+    setSenhaPdf("");
+    setErroSenha(null);
+    setPdfDesbloqueado(null);
     
     for (const file of selectedFiles) {
       // Validar tipo de arquivo
@@ -115,6 +132,42 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       if (file.size > 10 * 1024 * 1024) {
         toast.error(`${file.name}: Arquivo muito grande. Máximo: 10MB`);
         continue;
+      }
+      
+      // Verificar se PDF está protegido por senha
+      if (file.type === 'application/pdf') {
+        setVerificandoPdf(true);
+        try {
+          const reader = new FileReader();
+          const base64 = await new Promise<string>((resolve, reject) => {
+            reader.onload = (e) => resolve((e.target?.result as string).split(',')[1]);
+            reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+            reader.readAsDataURL(file);
+          });
+          
+          const checkResult = await verificarPdfMutation.mutateAsync({
+            fileBase64: base64,
+            mimeType: file.type,
+          });
+          
+          if (checkResult.needsPassword) {
+            setPdfProtegido(true);
+            // Adicionar arquivo como pending mas marcar que precisa de senha
+            validFiles.push({ file, status: 'pending', previewUrl: undefined });
+            toast.info(`${file.name}: PDF protegido por senha. Digite a senha para continuar.`);
+            setVerificandoPdf(false);
+            // Adicionar arquivos válidos até agora e parar
+            if (validFiles.length > 0) {
+              setFiles(prev => [...prev, ...validFiles]);
+            }
+            return; // Parar aqui e aguardar senha
+          }
+        } catch (error) {
+          console.error('Erro ao verificar PDF:', error);
+          // Continuar mesmo com erro na verificação
+        } finally {
+          setVerificandoPdf(false);
+        }
       }
       
       // Gerar preview URL para imagens
@@ -174,6 +227,12 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
 
   const processFile = async (fileWithStatus: FileWithStatus, index: number): Promise<{ resultados: Record<string, string>; relatorio?: typeof relatorioExtracao }> => {
     let fileToProcess = fileWithStatus.file;
+    let base64ToUse: string | null = null;
+    
+    // Verificar se temos um PDF desbloqueado para este índice
+    if (pdfDesbloqueado && pdfDesbloqueado.index === index) {
+      base64ToUse = pdfDesbloqueado.base64;
+    }
     
     // 1. Comprimir imagem se necessário
     if (fileWithStatus.file.type.startsWith('image/')) {
@@ -215,6 +274,33 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setFiles(prev => prev.map((f, i) => 
       i === index ? { ...f, status: 'processing' } : f
     ));
+    
+    // Se já temos o base64 do PDF desbloqueado, usar diretamente
+    if (base64ToUse) {
+      try {
+        const result = await interpretarMutation.mutateAsync({
+          fileBase64: base64ToUse,
+          mimeType: 'application/pdf',
+          trimestre: modoAutomatico ? undefined : trimestre,
+          dumGestante: modoAutomatico && dumEfetiva && !isNaN(dumEfetiva.getTime()) ? dumEfetiva.toISOString().split('T')[0] : undefined,
+        });
+
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? { ...f, status: 'success' } : f
+        ));
+
+        if (result.dataColeta) {
+          setLastDataColeta(result.dataColeta);
+        }
+
+        return { resultados: result.resultados, relatorio: result.relatorio };
+      } catch (error: any) {
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? { ...f, status: 'error', error: error.message } : f
+        ));
+        throw error;
+      }
+    }
     
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -346,6 +432,11 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     setModoAutomatico(true); // Reset para modo automático
     setRelatorioExtracao(null); // Reset do relatório
     setMostrarDetalhesRelatorio(false); // Reset dos detalhes
+    // Reset estados de PDF protegido
+    setPdfProtegido(false);
+    setSenhaPdf("");
+    setErroSenha(null);
+    setPdfDesbloqueado(null);
     onOpenChange(false);
   };
 
@@ -452,6 +543,105 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               className="hidden"
               multiple
             />
+            
+            {/* Aviso de verificação de PDF */}
+            {verificandoPdf && (
+              <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                <span className="text-sm text-blue-700">Verificando PDF...</span>
+              </div>
+            )}
+            
+            {/* Campo de senha para PDF protegido */}
+            {pdfProtegido && files.length > 0 && (
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-3">
+                <div className="flex items-center gap-2">
+                  <Lock className="h-5 w-5 text-amber-600" />
+                  <span className="font-medium text-amber-800">PDF Protegido por Senha</span>
+                </div>
+                <p className="text-sm text-amber-700">
+                  Este PDF está protegido. Digite a senha para desbloqueá-lo e continuar.
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    type="password"
+                    placeholder="Digite a senha do PDF"
+                    value={senhaPdf}
+                    onChange={(e) => {
+                      setSenhaPdf(e.target.value);
+                      setErroSenha(null);
+                    }}
+                    className="flex-1"
+                    disabled={desbloqueandoPdf}
+                  />
+                  <Button
+                    onClick={async () => {
+                      if (!senhaPdf.trim()) {
+                        setErroSenha('Digite a senha');
+                        return;
+                      }
+                      
+                      setDesbloqueandoPdf(true);
+                      setErroSenha(null);
+                      
+                      try {
+                        // Ler o arquivo PDF
+                        const pdfFile = files.find(f => f.file.type === 'application/pdf');
+                        if (!pdfFile) return;
+                        
+                        const reader = new FileReader();
+                        const base64 = await new Promise<string>((resolve, reject) => {
+                          reader.onload = (e) => resolve((e.target?.result as string).split(',')[1]);
+                          reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+                          reader.readAsDataURL(pdfFile.file);
+                        });
+                        
+                        const result = await desbloquearPdfMutation.mutateAsync({
+                          fileBase64: base64,
+                          password: senhaPdf,
+                        });
+                        
+                        if (result.success && result.unlockedBase64) {
+                          // Guardar o PDF desbloqueado
+                          const pdfIndex = files.findIndex(f => f.file.type === 'application/pdf');
+                          setPdfDesbloqueado({ base64: result.unlockedBase64, index: pdfIndex });
+                          setPdfProtegido(false);
+                          toast.success('PDF desbloqueado com sucesso!');
+                        } else {
+                          setErroSenha(result.error || 'Senha incorreta');
+                        }
+                      } catch (error: any) {
+                        setErroSenha(error.message || 'Erro ao desbloquear PDF');
+                      } finally {
+                        setDesbloqueandoPdf(false);
+                      }
+                    }}
+                    disabled={desbloqueandoPdf || !senhaPdf.trim()}
+                    size="sm"
+                  >
+                    {desbloqueandoPdf ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <><Unlock className="h-4 w-4 mr-1" /> Desbloquear</>
+                    )}
+                  </Button>
+                </div>
+                {erroSenha && (
+                  <p className="text-sm text-red-600 flex items-center gap-1">
+                    <AlertTriangle className="h-4 w-4" />
+                    {erroSenha}
+                  </p>
+                )}
+              </div>
+            )}
+            
+            {/* Indicador de PDF desbloqueado */}
+            {pdfDesbloqueado && (
+              <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <Unlock className="h-4 w-4 text-green-600" />
+                <span className="text-sm text-green-700">PDF desbloqueado e pronto para interpretação</span>
+              </div>
+            )}
             
             {/* Lista de arquivos selecionados */}
             {files.length > 0 && (
@@ -696,7 +886,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               <Button 
                 type="button" 
                 onClick={handleInterpretarTodos}
-                disabled={files.length === 0 || isProcessing}
+                disabled={files.length === 0 || isProcessing || pdfProtegido || verificandoPdf}
               >
                 {isProcessing ? (
                   <>
