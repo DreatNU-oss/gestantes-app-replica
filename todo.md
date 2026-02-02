@@ -660,3 +660,8 @@
 - [x] Testado com 25/03/2026 (45s0d) - Alerta vermelho exibido corretamente
 - [x] Testado com 11/02/2026 (38s4d) - Sem alerta (dentro do período recomendado)
 - [x] Mensagens claras e informativas com IG estimada e recomendações médicas
+
+## Melhorias em Exames Laboratoriais (02/02/2026)
+- [x] Remover linha "Copiar Data para Múltiplos exames" em Exames Laboratoriais
+- [x] Simplificar modo manual da IA: apenas escolha de trimestre (data extraída automaticamente pela IA)
+- [ ] Resolver problema de múltiplos exames do mesmo tipo no mesmo trimestre (permitir 2+ hemogramas no 3º trimestre sem apagar dados)

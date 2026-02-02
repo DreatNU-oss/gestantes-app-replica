@@ -100,11 +100,7 @@ export default function ExamesLaboratoriais() {
   const [trimestreEdicao, setTrimestreEdicao] = useState<number | null>(null);
   const [novaDataTrimestre, setNovaDataTrimestre] = useState<string>("");
   
-  // Estados para o modal de copiar data
-  const [modalCopiarDataAberto, setModalCopiarDataAberto] = useState(false);
-  const [trimestreCopiarData, setTrimestreCopiarData] = useState<1 | 2 | 3>(1);
-  const [examesSelecionados, setExamesSelecionados] = useState<string[]>([]);
-  const [dataParaCopiar, setDataParaCopiar] = useState<string>("");
+
   
   // Estados para o modal de exclusão de trimestre
   const [modalExcluirTrimestreAberto, setModalExcluirTrimestreAberto] = useState(false);
@@ -472,85 +468,6 @@ export default function ExamesLaboratoriais() {
     }
     console.log('[DEBUG] Nenhuma data encontrada');
     return null;
-  };
-
-  // Função para obter lista de exames sem data em um trimestre
-  const obterExamesSemData = (numeroTrimestre: 1 | 2 | 3): ExameConfig[] => {
-    const campoData = `data${numeroTrimestre}`;
-    const examesSemData: ExameConfig[] = [];
-    
-    for (const exame of [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames]) {
-      // Verificar se o exame tem esse trimestre
-      const temTrimestre = numeroTrimestre === 1 ? exame.trimestres.primeiro :
-                          numeroTrimestre === 2 ? exame.trimestres.segundo :
-                          exame.trimestres.terceiro;
-      
-      if (!temTrimestre) continue;
-      
-      const resultadoExame = resultados[exame.nome];
-      const temData = typeof resultadoExame === 'object' && 
-                     resultadoExame !== null && 
-                     resultadoExame[campoData] && 
-                     resultadoExame[campoData].trim() !== '';
-      
-      if (!temData) {
-        examesSemData.push(exame);
-      }
-    }
-    
-    return examesSemData;
-  };
-  
-  // Função para aplicar data aos exames selecionados
-  const aplicarDataAosExames = () => {
-    // Validar se há uma data válida
-    if (!dataParaCopiar || dataParaCopiar.trim() === '') {
-      toast.error('Por favor, insira uma data válida');
-      return;
-    }
-    
-    // Validar se há exames selecionados
-    if (examesSelecionados.length === 0) {
-      toast.error('Selecione pelo menos um exame');
-      return;
-    }
-    
-    // Aplicar data a todos os exames selecionados
-    examesSelecionados.forEach(nomeExame => {
-      handleResultadoChange(nomeExame, `data${trimestreCopiarData}`, dataParaCopiar);
-    });
-    
-    toast.success(`Data copiada para ${examesSelecionados.length} exame(s)!`);
-    
-    // Fechar modal, limpar seleção e limpar data
-    setModalCopiarDataAberto(false);
-    setExamesSelecionados([]);
-    setDataParaCopiar("");
-  };
-  
-  // Função para abrir modal de copiar data
-  const abrirModalCopiarData = (trimestre: 1 | 2 | 3) => {
-    console.log('[DEBUG] abrirModalCopiarData chamada. Trimestre:', trimestre);
-    console.log('[DEBUG] Resultados atuais:', resultados);
-    const primeiraData = obterPrimeiraDataTrimestre(trimestre);
-    console.log('[DEBUG] primeiraData:', primeiraData);
-    
-    // Pré-preencher o campo de data com a primeira data encontrada (se houver)
-    if (primeiraData) {
-      setDataParaCopiar(primeiraData);
-    } else {
-      setDataParaCopiar("");
-    }
-    
-    const examesSemData = obterExamesSemData(trimestre);
-    
-    if (examesSemData.length === 0) {
-      toast.info('Todos os exames deste trimestre já têm data preenchida');
-      return;
-    }
-    
-    setTrimestreCopiarData(trimestre);
-    setModalCopiarDataAberto(true);
   };
 
   // Componente helper para renderizar campo de resultado (Select ou Input)
@@ -1155,37 +1072,6 @@ export default function ExamesLaboratoriais() {
                     </Button>
                   </div>
                   
-                  {/* Botões de Copiar Data */}
-                  <div className="flex flex-wrap gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-700">Copiar data para múltiplos exames:</span>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white hover:bg-blue-100"
-                      onClick={() => abrirModalCopiarData(1)}
-                    >
-                      1º Trimestre
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white hover:bg-blue-100"
-                      onClick={() => abrirModalCopiarData(2)}
-                    >
-                      2º Trimestre
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white hover:bg-blue-100"
-                      onClick={() => abrirModalCopiarData(3)}
-                    >
-                      3º Trimestre
-                    </Button>
-                  </div>
-                  
                   {/* Botões de Preenchimento em Lote */}
                   <div className="flex flex-wrap gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
                     <div className="flex items-center gap-2">
@@ -1606,93 +1492,6 @@ export default function ExamesLaboratoriais() {
               >
                 Atualizar
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        
-        {/* Modal de Copiar Data para Múltiplos Exames */}
-        <Dialog open={modalCopiarDataAberto} onOpenChange={setModalCopiarDataAberto}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Copiar Data para Múltiplos Exames</DialogTitle>
-              <DialogDescription>
-                Insira a data que deseja copiar para os exames selecionados:
-              </DialogDescription>
-            </DialogHeader>
-            
-            {/* Campo de Data */}
-            <div className="py-4 border-b">
-              <label htmlFor="data-copiar" className="block text-sm font-medium text-gray-700 mb-2">
-                Data do Exame
-              </label>
-              <input
-                id="data-copiar"
-                type="date"
-                value={dataParaCopiar}
-                onChange={(e) => setDataParaCopiar(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Selecione a data"
-              />
-            </div>
-            
-            <div className="space-y-3 py-4">
-              {obterExamesSemData(trimestreCopiarData).map((exame) => (
-                <div key={exame.nome} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded">
-                  <Checkbox
-                    id={`exame-${exame.nome}`}
-                    checked={examesSelecionados.includes(exame.nome)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setExamesSelecionados([...examesSelecionados, exame.nome]);
-                      } else {
-                        setExamesSelecionados(examesSelecionados.filter(e => e !== exame.nome));
-                      }
-                    }}
-                  />
-                  <label
-                    htmlFor={`exame-${exame.nome}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
-                  >
-                    {exame.nome}
-                  </label>
-                </div>
-              ))}
-            </div>
-            
-            <DialogFooter className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  const examesSemData = obterExamesSemData(trimestreCopiarData);
-                  if (examesSelecionados.length === examesSemData.length) {
-                    // Se todos estão selecionados, desmarcar todos
-                    setExamesSelecionados([]);
-                  } else {
-                    // Caso contrário, selecionar todos
-                    setExamesSelecionados(examesSemData.map(e => e.nome));
-                  }
-                }}
-              >
-                {examesSelecionados.length === obterExamesSemData(trimestreCopiarData).length ? 'Desmarcar Todos' : 'Selecionar Todos'}
-              </Button>
-              
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setModalCopiarDataAberto(false);
-                    setExamesSelecionados([]);
-                  }}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  onClick={aplicarDataAosExames}
-                  disabled={examesSelecionados.length === 0}
-                >
-                  Aplicar ({examesSelecionados.length} selecionado{examesSelecionados.length !== 1 ? 's' : ''})
-                </Button>
-              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
