@@ -1396,6 +1396,86 @@ export const appRouter = router({
         
         return resultadosEstruturados;
       }),
+
+    // Buscar exames com histórico de múltiplas datas
+    buscarComHistorico: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { exames: {}, historico: {} };
+        
+        const resultados = await db.select()
+          .from(resultadosExames)
+          .where(eq(resultadosExames.gestanteId, input.gestanteId))
+          .orderBy(resultadosExames.dataExame);
+        
+        // Objeto estruturado com o resultado mais recente de cada exame/trimestre
+        const examesEstruturados: Record<string, Record<string, string> | string> = {};
+        
+        // Histórico agrupado por exame::trimestre
+        const historico: Record<string, Array<{
+          id: number;
+          resultado: string;
+          dataExame: string | null;
+          criadoEm: Date | null;
+        }>> = {};
+        
+        for (const resultado of resultados) {
+          const chaveHistorico = `${resultado.nomeExame}::${resultado.trimestre}`;
+          
+          // Formatar data
+          let dataFormatada: string | null = null;
+          if (resultado.dataExame) {
+            const data = new Date(resultado.dataExame);
+            const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+            const ano = dataLocal.getFullYear();
+            const mes = String(dataLocal.getMonth() + 1).padStart(2, '0');
+            const dia = String(dataLocal.getDate()).padStart(2, '0');
+            dataFormatada = `${ano}-${mes}-${dia}`;
+          }
+          
+          // Adicionar ao histórico
+          if (!historico[chaveHistorico]) {
+            historico[chaveHistorico] = [];
+          }
+          historico[chaveHistorico].push({
+            id: resultado.id,
+            resultado: resultado.resultado || '',
+            dataExame: dataFormatada,
+            criadoEm: resultado.createdAt,
+          });
+          
+          // Estruturar exames (manter o mais recente)
+          if (resultado.nomeExame === 'outros_observacoes') {
+            examesEstruturados[resultado.nomeExame] = resultado.resultado || '';
+          } else {
+            if (!examesEstruturados[resultado.nomeExame]) {
+              examesEstruturados[resultado.nomeExame] = {};
+            }
+            (examesEstruturados[resultado.nomeExame] as Record<string, string>)[resultado.trimestre.toString()] = resultado.resultado || '';
+            if (dataFormatada) {
+              (examesEstruturados[resultado.nomeExame] as Record<string, string>)[`data${resultado.trimestre}`] = dataFormatada;
+            }
+          }
+        }
+        
+        return { exames: examesEstruturados, historico };
+      }),
+
+    // Excluir resultado específico do histórico
+    excluirResultado: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        await db.delete(resultadosExames).where(eq(resultadosExames.id, input.id));
+        return { success: true };
+      }),
   }),
 
   ultrassons: router({

@@ -673,3 +673,11 @@
 - [x] Implementar UI para solicitar senha quando PDF protegido
 - [x] Implementar desbloqueio de PDF com senha fornecida
 - [x] Criar testes unitários para pdfUtils
+
+## Melhorias em Exames Laboratoriais - Sistema de Múltiplas Datas (02/02/2026)
+- [x] Implementar sistema de múltiplas datas por exame (histórico)
+- [x] Criar endpoint buscarComHistorico no backend
+- [x] Criar endpoint excluirResultado no backend
+- [x] Criar componente HistoricoExamePopover
+- [x] Implementar indicador visual de PDF desbloqueado na lista de arquivos
+- [x] Implementar cache de PDFs desbloqueados (sessionStorage)

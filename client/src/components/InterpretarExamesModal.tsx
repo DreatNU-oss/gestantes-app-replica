@@ -72,6 +72,27 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const verificarPdfMutation = trpc.examesLab.verificarPdfProtegido.useMutation();
   const desbloquearPdfMutation = trpc.examesLab.desbloquearPdf.useMutation();
 
+  // Funções de cache para PDFs desbloqueados
+  const getPdfCacheKey = (file: File) => `pdf_unlocked_${file.name}_${file.size}`;
+  
+  const getCachedPdf = (file: File): string | null => {
+    try {
+      const key = getPdfCacheKey(file);
+      return sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+  
+  const setCachedPdf = (file: File, base64: string) => {
+    try {
+      const key = getPdfCacheKey(file);
+      sessionStorage.setItem(key, base64);
+    } catch (e) {
+      console.warn('Erro ao salvar PDF no cache:', e);
+    }
+  };
+
   // Garantir que o trimestre seja definido quando o modo manual é ativado
   useEffect(() => {
     if (!modoAutomatico && trimestre !== "primeiro" && trimestre !== "segundo" && trimestre !== "terceiro") {
@@ -136,6 +157,17 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
       
       // Verificar se PDF está protegido por senha
       if (file.type === 'application/pdf') {
+        // Verificar cache primeiro
+        const cachedBase64 = getCachedPdf(file);
+        if (cachedBase64) {
+          // PDF já foi desbloqueado anteriormente
+          const pdfIndex = validFiles.length;
+          setPdfDesbloqueado({ base64: cachedBase64, index: pdfIndex });
+          toast.success(`${file.name}: PDF carregado do cache (já desbloqueado)`);
+          validFiles.push({ file, status: 'pending', previewUrl: undefined });
+          continue;
+        }
+        
         setVerificandoPdf(true);
         try {
           const reader = new FileReader();
@@ -606,6 +638,12 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                           const pdfIndex = files.findIndex(f => f.file.type === 'application/pdf');
                           setPdfDesbloqueado({ base64: result.unlockedBase64, index: pdfIndex });
                           setPdfProtegido(false);
+                          
+                          // Salvar no cache para não pedir senha novamente
+                          if (pdfFile) {
+                            setCachedPdf(pdfFile.file, result.unlockedBase64);
+                          }
+                          
                           toast.success('PDF desbloqueado com sucesso!');
                         } else {
                           setErroSenha(result.error || 'Senha incorreta');
@@ -649,13 +687,19 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                 {files.map((fileWithStatus, index) => (
                   <div 
                     key={index} 
-                    className={`flex items-center gap-3 p-3 rounded-md ${
+                    className={`relative flex items-center gap-3 p-3 rounded-md ${
                       fileWithStatus.status === 'success' ? 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800' :
                       fileWithStatus.status === 'error' ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800' :
                       (fileWithStatus.status === 'processing' || fileWithStatus.status === 'compressing') ? 'bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800' :
                       'bg-muted'
                     }`}
                   >
+                    {/* Indicador de PDF desbloqueado */}
+                    {fileWithStatus.file.type === 'application/pdf' && pdfDesbloqueado && pdfDesbloqueado.index === index && (
+                      <div className="absolute -top-1 -left-1 bg-green-500 rounded-full p-0.5 z-10" title="PDF desbloqueado">
+                        <Unlock className="h-3 w-3 text-white" />
+                      </div>
+                    )}
                     {/* Preview de imagem ou ícone */}
                     {fileWithStatus.previewUrl ? (
                       <div className="relative flex-shrink-0">
