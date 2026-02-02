@@ -647,3 +647,16 @@
 - [x] Exibe "Motivo da Indicação da Cesárea: [motivo]"
 - [x] Quando motivo é "Outro motivo", exibe também o campo motivoCesareaOutro
 - [x] Testado com sucesso: Cinthia mostrando "Cesárea iterativa"
+
+## Alerta de Data de Cesárea Fora do Período Recomendado (02/02/2026)
+- [x] Implementar validação de data de cesárea no FormularioGestante.tsx
+- [x] Implementar validação de data de cesárea no CartaoPrenatal.tsx
+- [x] Calcular IG na data programada da cesárea baseado na DUM ou ultrassom
+- [x] Exibir alerta visual laranja quando data for antes de 37 semanas (pré-termo)
+- [x] Exibir alerta visual vermelho quando data for após 41 semanas (pós-termo)
+- [x] Testar com diferentes cenários (antes de 37s, entre 37-41s, após 41s)
+- [x] useEffect monitora formData.dataPartoProgramado, formData.dum, formData.dataUltrassom para validação em tempo real
+- [x] Testado com 20/01/2026 (35s6d) - Alerta laranja exibido corretamente
+- [x] Testado com 25/03/2026 (45s0d) - Alerta vermelho exibido corretamente
+- [x] Testado com 11/02/2026 (38s4d) - Sem alerta (dentro do período recomendado)
+- [x] Mensagens claras e informativas com IG estimada e recomendações médicas

@@ -45,6 +45,13 @@ export default function FormularioGestante({
     dppUS: string | null;
   }>({ igDUM: null, dppDUM: null, igUS: null, dppUS: null });
   
+  // Estado para alerta de data de cesárea fora do período recomendado
+  const [alertaDataCesarea, setAlertaDataCesarea] = useState<{
+    show: boolean;
+    tipo: 'pre-termo' | 'pos-termo' | null;
+    igNaData: { semanas: number; dias: number } | null;
+  }>({ show: false, tipo: null, igNaData: null });
+  
   // Estado para alerta de diferença entre IG DUM e IG US
   const [alertaDiferencaIG, setAlertaDiferencaIG] = useState<{
     show: boolean;
@@ -243,6 +250,44 @@ export default function FormularioGestante({
       setAlertaDiferencaIG({ show: false, diferencaDias: 0 });
     }
   }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
+  
+  // Validar data de cesárea
+  useEffect(() => {
+    if (formData.dataPartoProgramado && formData.dum && tipoDUM === "data") {
+      try {
+        const dumDate = parseLocalDate(formData.dum);
+        const dataCesarea = parseLocalDate(formData.dataPartoProgramado);
+        
+        // Calcular IG na data da cesárea
+        const diffMs = dataCesarea.getTime() - dumDate.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const semanas = Math.floor(diffDays / 7);
+        const dias = diffDays % 7;
+        
+        // Validar se está fora do período recomendado (37-41 semanas)
+        if (semanas < 37) {
+          setAlertaDataCesarea({
+            show: true,
+            tipo: 'pre-termo',
+            igNaData: { semanas, dias }
+          });
+        } else if (semanas > 41) {
+          setAlertaDataCesarea({
+            show: true,
+            tipo: 'pos-termo',
+            igNaData: { semanas, dias }
+          });
+        } else {
+          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+        }
+      } catch (error) {
+        console.error('Erro ao validar data de cesárea:', error);
+        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+      }
+    } else {
+      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+    }
+  }, [formData.dataPartoProgramado, formData.dum, tipoDUM]);
   
   // Validar altura e peso
   useEffect(() => {
@@ -961,9 +1006,79 @@ export default function FormularioGestante({
                     // Automaticamente mudar para cesárea quando data for cadastrada
                     tipoPartoDesejado: novaData ? "cesariana" : formData.tipoPartoDesejado
                   });
+                  
+                  // Validar data da cesárea
+                  if (novaData) {
+                    let dataReferencia: Date | null = null;
+                    let igReferenciaDias: number = 0;
+                    
+                    // Priorizar ultrassom se disponível
+                    if (formData.dataUltrassom && formData.igUltrassomSemanas) {
+                      dataReferencia = parseLocalDate(formData.dataUltrassom);
+                      igReferenciaDias = parseInt(formData.igUltrassomSemanas) * 7 + (formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : 0);
+                    } else if (formData.dum && tipoDUM === "data") {
+                      dataReferencia = parseLocalDate(formData.dum);
+                      igReferenciaDias = 0; // IG na DUM é 0
+                    }
+                    
+                    if (dataReferencia) {
+                      const dataCesarea = parseLocalDate(novaData);
+                      const diffMs = dataCesarea.getTime() - dataReferencia.getTime();
+                      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                      const igNaDataDias = igReferenciaDias + diffDias;
+                      const igNaDataSemanas = Math.floor(igNaDataDias / 7);
+                      const igNaDataDiasRestantes = igNaDataDias % 7;
+                      
+                      // Verificar se está antes de 37 semanas (259 dias) ou após 41 semanas (287 dias)
+                      if (igNaDataDias < 259) {
+                        setAlertaDataCesarea({
+                          show: true,
+                          tipo: 'pre-termo',
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                        });
+                      } else if (igNaDataDias > 287) {
+                        setAlertaDataCesarea({
+                          show: true,
+                          tipo: 'pos-termo',
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                        });
+                      } else {
+                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                      }
+                    }
+                  } else {
+                    setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                  }
                 }}
               />
               <p className="text-sm text-muted-foreground">Para cesáreas eletivas ou partos programados</p>
+              
+              {alertaDataCesarea.show && alertaDataCesarea.igNaData && (
+                <div className={`mt-2 p-3 rounded-lg border ${
+                  alertaDataCesarea.tipo === 'pre-termo' 
+                    ? 'bg-orange-50 border-orange-300 text-orange-900' 
+                    : 'bg-red-50 border-red-300 text-red-900'
+                }`}>
+                  <div className="flex items-start gap-2">
+                    <span className="text-lg">⚠️</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-sm">
+                        {alertaDataCesarea.tipo === 'pre-termo' 
+                          ? 'Cesárea agendada antes de 37 semanas (pré-termo)' 
+                          : 'Cesárea agendada após 41 semanas (pós-termo)'}
+                      </p>
+                      <p className="text-xs mt-1">
+                        IG estimada na data: {alertaDataCesarea.igNaData.semanas}s{alertaDataCesarea.igNaData.dias}d
+                      </p>
+                      <p className="text-xs mt-1">
+                        {alertaDataCesarea.tipo === 'pre-termo' 
+                          ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
+                          : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             
             {formData.dataPartoProgramado && (
