@@ -681,3 +681,16 @@
 - [x] Criar componente HistoricoExamePopover
 - [x] Implementar indicador visual de PDF desbloqueado na lista de arquivos
 - [x] Implementar cache de PDFs desbloqueados (sessionStorage)
+
+## Salvamento de Arquivos de Exames (02/02/2026)
+- [ ] Criar tabela no banco de dados para armazenar arquivos de exames
+- [ ] Implementar endpoints de upload e listagem de arquivos
+- [ ] Modificar modal de interpretação para salvar arquivo após processar
+- [ ] Criar seção de arquivos na página de Exames Laboratoriais
+
+## Salvamento de Arquivos de Exames (02/02/2026)
+- [x] Criar tabela arquivosExames no banco de dados
+- [x] Implementar endpoints de upload, listagem e exclusão de arquivos
+- [x] Modificar modal de interpretação para salvar arquivo após processar
+- [x] Criar seção "Arquivos de Exames" na página de Exames Laboratoriais
+- [x] Salvar senha de PDFs protegidos para abertura automática futura

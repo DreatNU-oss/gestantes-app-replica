@@ -17,6 +17,7 @@ interface InterpretarExamesModalProps {
   onResultados: (resultados: Record<string, string>, trimestre: string, dataColeta?: string, arquivosProcessados?: number, modoAutomatico?: boolean) => void;
   dumGestante?: Date | null;
   dppUltrassom?: Date | null; // DPP pelo Ultrassom como alternativa quando DUM não está disponível
+  gestanteId?: number; // ID da gestante para salvar arquivos
 }
 
 interface FileWithStatus {
@@ -30,7 +31,7 @@ interface FileWithStatus {
   previewUrl?: string; // URL para preview de imagens
 }
 
-export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGestante, dppUltrassom }: InterpretarExamesModalProps) {
+export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGestante, dppUltrassom, gestanteId }: InterpretarExamesModalProps) {
   // Calcular DUM estimada a partir da DPP pelo Ultrassom se DUM não estiver disponível
   // DUM estimada = DPP - 280 dias
   const dumEfetiva = dumGestante || (dppUltrassom ? new Date(dppUltrassom.getTime() - 280 * 24 * 60 * 60 * 1000) : null);
@@ -71,6 +72,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const interpretarMutation = trpc.examesLab.interpretarComIA.useMutation();
   const verificarPdfMutation = trpc.examesLab.verificarPdfProtegido.useMutation();
   const desbloquearPdfMutation = trpc.examesLab.desbloquearPdf.useMutation();
+  const uploadArquivoMutation = trpc.examesLab.uploadArquivo.useMutation();
 
   // Funções de cache para PDFs desbloqueados
   const getPdfCacheKey = (file: File) => `pdf_unlocked_${file.name}_${file.size}`;
@@ -434,6 +436,46 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
         toast.warning(`${mensagem} (${errorCount} arquivo(s) com erro)`);
       } else {
         toast.success(mensagem);
+      }
+      
+      // Salvar arquivos processados no S3 (se gestanteId fornecido)
+      if (gestanteId) {
+        for (let i = 0; i < files.length; i++) {
+          const fileWithStatus = files[i];
+          if (fileWithStatus.status === 'success') {
+            try {
+              // Ler arquivo como base64
+              const reader = new FileReader();
+              const fileBase64 = await new Promise<string>((resolve, reject) => {
+                reader.onload = (e) => resolve((e.target?.result as string).split(',')[1]);
+                reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+                reader.readAsDataURL(fileWithStatus.file);
+              });
+              
+              // Determinar trimestre numérico
+              const trimestreNum = trimestre === 'primeiro' ? 1 : trimestre === 'segundo' ? 2 : 3;
+              
+              // Upload do arquivo
+              await uploadArquivoMutation.mutateAsync({
+                gestanteId,
+                nomeArquivo: fileWithStatus.file.name,
+                tipoArquivo: fileWithStatus.file.type,
+                tamanhoBytes: fileWithStatus.file.size,
+                fileBase64,
+                senhaPdf: senhaPdf || undefined, // Salvar senha se foi fornecida
+                protegidoPorSenha: pdfDesbloqueado !== null || senhaPdf.length > 0,
+                trimestre: trimestreNum,
+                dataColeta: lastDataColeta || undefined,
+              });
+              
+              console.log(`[DEBUG] Arquivo ${fileWithStatus.file.name} salvo com sucesso`);
+            } catch (uploadError) {
+              console.error(`Erro ao salvar arquivo ${fileWithStatus.file.name}:`, uploadError);
+              // Não interromper o fluxo por erro de upload
+            }
+          }
+        }
+        toast.info('Arquivos salvos para consulta futura');
       }
       
       // Sempre usar data extraída pela IA (tanto modo automático quanto manual)

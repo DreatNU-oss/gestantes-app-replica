@@ -14,6 +14,7 @@ import { isExameSorologico } from "@/data/valoresReferencia";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
+import { ArquivosExamesSection } from "@/components/ArquivosExamesSection";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
 import { Sparkles, ArrowLeft, Loader2, Check, Calendar } from "lucide-react";
@@ -1177,6 +1178,7 @@ export default function ExamesLaboratoriais() {
                 <InterpretarExamesModal
                   open={modalAberto}
                   onOpenChange={setModalAberto}
+                  gestanteId={gestanteSelecionada}
                   dumGestante={gestante?.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US" ? new Date(gestante.dum) : null}
                   dppUltrassom={gestante?.calculado?.dppUS ? new Date(gestante.calculado.dppUS) : null}
                   onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados, modoAutomatico) => {
@@ -1435,6 +1437,11 @@ export default function ExamesLaboratoriais() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Seção de Arquivos de Exames */}
+        {gestanteSelecionada && (
+          <ArquivosExamesSection gestanteId={gestanteSelecionada} />
         )}
 
         {/* Modal de Edição Rápida de Data */}

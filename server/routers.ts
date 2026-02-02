@@ -77,7 +77,8 @@ import {
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
 import { processarLembretes } from './lembretes';
-import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, gestantes, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao } from '../drizzle/schema';
+import { configuracoesEmail, logsEmails, resultadosExames, historicoInterpretacoes, feedbackInterpretacoes, gestantes, arquivosExames, type InsertResultadoExame, type InsertHistoricoInterpretacao, type InsertFeedbackInterpretacao, type InsertArquivoExame } from '../drizzle/schema';
+import { storagePut } from './storage';
 import { eq, desc, and, sql, isNotNull } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto } from './partosRealizados';
@@ -1474,6 +1475,140 @@ export const appRouter = router({
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
         
         await db.delete(resultadosExames).where(eq(resultadosExames.id, input.id));
+        return { success: true };
+      }),
+
+    // Upload de arquivo de exame (PDF ou imagem)
+    uploadArquivo: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        nomeArquivo: z.string(),
+        tipoArquivo: z.string(),
+        tamanhoBytes: z.number(),
+        fileBase64: z.string(),
+        senhaPdf: z.string().optional(), // Senha do PDF se protegido
+        protegidoPorSenha: z.boolean().optional(),
+        trimestre: z.number().optional(),
+        dataColeta: z.string().optional(),
+        observacoes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        try {
+          // Converter base64 para Buffer
+          const fileBuffer = Buffer.from(input.fileBase64, 'base64');
+          
+          // Gerar nome único para o arquivo
+          const timestamp = Date.now();
+          const randomSuffix = Math.random().toString(36).substring(2, 8);
+          const extensao = input.nomeArquivo.split('.').pop() || 'pdf';
+          const s3Key = `exames/${input.gestanteId}/${timestamp}-${randomSuffix}.${extensao}`;
+          
+          // Upload para S3
+          const { url: s3Url } = await storagePut(s3Key, fileBuffer, input.tipoArquivo);
+          
+          // Salvar no banco de dados
+          const arquivoData: InsertArquivoExame = {
+            gestanteId: input.gestanteId,
+            nomeArquivo: input.nomeArquivo,
+            tipoArquivo: input.tipoArquivo,
+            tamanhoBytes: input.tamanhoBytes,
+            s3Url,
+            s3Key,
+            senhaPdf: input.senhaPdf || null,
+            protegidoPorSenha: input.protegidoPorSenha ? 1 : 0,
+            trimestre: input.trimestre || null,
+            dataColeta: input.dataColeta ? new Date(`${input.dataColeta}T12:00:00`) : null,
+            observacoes: input.observacoes || null,
+          };
+          
+          const [result] = await db.insert(arquivosExames).values(arquivoData);
+          
+          return { 
+            success: true, 
+            id: result.insertId,
+            s3Url,
+            s3Key
+          };
+        } catch (error) {
+          console.error('Erro ao fazer upload do arquivo:', error);
+          throw new TRPCError({ 
+            code: 'INTERNAL_SERVER_ERROR', 
+            message: error instanceof Error ? error.message : 'Erro ao fazer upload do arquivo' 
+          });
+        }
+      }),
+
+    // Listar arquivos de exames de uma gestante
+    listarArquivos: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const arquivos = await db.select({
+          id: arquivosExames.id,
+          nomeArquivo: arquivosExames.nomeArquivo,
+          tipoArquivo: arquivosExames.tipoArquivo,
+          tamanhoBytes: arquivosExames.tamanhoBytes,
+          s3Url: arquivosExames.s3Url,
+          protegidoPorSenha: arquivosExames.protegidoPorSenha,
+          trimestre: arquivosExames.trimestre,
+          dataColeta: arquivosExames.dataColeta,
+          observacoes: arquivosExames.observacoes,
+          createdAt: arquivosExames.createdAt,
+        })
+          .from(arquivosExames)
+          .where(eq(arquivosExames.gestanteId, input.gestanteId))
+          .orderBy(desc(arquivosExames.createdAt));
+        
+        return arquivos;
+      }),
+
+    // Obter arquivo com senha (para abrir PDF protegido)
+    obterArquivoComSenha: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        const [arquivo] = await db.select()
+          .from(arquivosExames)
+          .where(eq(arquivosExames.id, input.id));
+        
+        if (!arquivo) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Arquivo não encontrado' });
+        }
+        
+        return {
+          id: arquivo.id,
+          nomeArquivo: arquivo.nomeArquivo,
+          tipoArquivo: arquivo.tipoArquivo,
+          s3Url: arquivo.s3Url,
+          senhaPdf: arquivo.senhaPdf, // Retornar senha para desbloquear
+          protegidoPorSenha: arquivo.protegidoPorSenha === 1,
+        };
+      }),
+
+    // Excluir arquivo de exame
+    excluirArquivo: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        // Nota: Não estamos deletando do S3 para manter histórico
+        // Se quiser deletar do S3 também, usar storageDelete
+        await db.delete(arquivosExames).where(eq(arquivosExames.id, input.id));
+        
         return { success: true };
       }),
   }),

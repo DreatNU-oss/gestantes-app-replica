@@ -612,3 +612,28 @@ export const opcoesMedicamentos = mysqlTable("opcoesMedicamentos", {
 
 export type OpcaoMedicamento = typeof opcoesMedicamentos.$inferSelect;
 export type InsertOpcaoMedicamento = typeof opcoesMedicamentos.$inferInsert;
+
+
+/**
+ * Tabela de arquivos de exames laboratoriais
+ * Armazena PDFs e imagens enviados para interpretação pela IA
+ */
+export const arquivosExames = mysqlTable("arquivosExames", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  nomeArquivo: varchar("nomeArquivo", { length: 255 }).notNull(), // Nome original do arquivo
+  tipoArquivo: varchar("tipoArquivo", { length: 50 }).notNull(), // MIME type (application/pdf, image/jpeg, etc)
+  tamanhoBytes: int("tamanhoBytes").notNull(), // Tamanho em bytes
+  s3Url: text("s3Url").notNull(), // URL do arquivo no S3
+  s3Key: text("s3Key").notNull(), // Key do arquivo no S3
+  senhaPdf: text("senhaPdf"), // Senha do PDF (se protegido) - criptografada
+  protegidoPorSenha: int("protegidoPorSenha").default(0).notNull(), // 1 = protegido, 0 = não protegido
+  trimestre: int("trimestre"), // 1, 2 ou 3 (opcional)
+  dataColeta: date("dataColeta"), // Data de coleta dos exames (opcional)
+  observacoes: text("observacoes"), // Observações opcionais
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ArquivoExame = typeof arquivosExames.$inferSelect;
+export type InsertArquivoExame = typeof arquivosExames.$inferInsert;
