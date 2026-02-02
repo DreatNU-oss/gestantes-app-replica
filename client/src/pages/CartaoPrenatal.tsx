@@ -1500,6 +1500,26 @@ export default function CartaoPrenatal() {
                   </p>
                 )}
               </div>
+              
+              {gestante.dataPartoProgramado && (
+                <div className="space-y-2 mt-4">
+                  <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
+                  <Input
+                    id="motivoCesarea"
+                    type="text"
+                    value={gestante.motivoCesarea || ""}
+                    onChange={(e) => {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        motivoCesarea: e.target.value,
+                      });
+                    }}
+                    placeholder="Ex: Cesárea iterativa, Apresentação pélvica, etc."
+                    className="max-w-md"
+                  />
+                  <p className="text-sm text-muted-foreground">Registre a indicação médica para a cesárea</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

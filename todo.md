@@ -571,3 +571,14 @@
 - [x] Atualizar todos os componentes que exibem esses campos
 - [x] Testar a automação
 - [x] Arquivos modificados: FormularioGestante.tsx, CartaoPrenatal.tsx, GraficoTiposPartosDesejados.tsx, ModalInfoGestante.tsx, CartaoPrenatalImpressao.tsx
+
+## Adicionar Campo de Motivo da Indicação da Cesárea (02/02/2026)
+- [x] Adicionar coluna 'motivoCesarea' na tabela gestantes do banco de dados
+- [x] Atualizar schema no drizzle/schema.ts
+- [x] Executar migração do banco de dados (pnpm db:push) - migração 0041_melted_chronomancer.sql
+- [x] Adicionar campo no FormularioGestante.tsx
+- [x] Atualizar componentes que exibem dados: CartaoPrenatal.tsx
+- [x] Atualizar schemas de create e update em routers.ts
+- [x] Testar cadastro e edição com o novo campo
+- [x] Campo aparece condicionalmente apenas quando há data de cesárea programada
+- [x] Testado com sucesso na gestante Cinthia (motivo: "Cesárea iterativa")

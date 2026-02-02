@@ -98,6 +98,7 @@ export default function FormularioGestante({
     igUltrassomDias: "",
     dataUltrassom: "",
     dataPartoProgramado: "",
+    motivoCesarea: "",
     nomeBebe: "",
     sexoBebe: "nao_informado",
     observacoes: "",
@@ -356,6 +357,7 @@ export default function FormularioGestante({
         igUltrassomDias: gestante.igUltrassomDias?.toString() || "",
         dataUltrassom: gestante.dataUltrassom ? (typeof gestante.dataUltrassom === 'string' ? gestante.dataUltrassom : (gestante.dataUltrassom as Date).toISOString().split('T')[0]) : "",
         dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "",
+        motivoCesarea: gestante.motivoCesarea || "",
         nomeBebe: gestante.nomeBebe || "",
         sexoBebe: gestante.sexoBebe || "nao_informado",
         observacoes: gestante.observacoes || "",
@@ -467,6 +469,7 @@ export default function FormularioGestante({
       igUltrassomDias: formData.igUltrassomSemanas && formData.igUltrassomDias === '' ? 0 : (formData.igUltrassomDias !== '' ? parseInt(formData.igUltrassomDias) : undefined),
       dataUltrassom: formData.dataUltrassom || undefined,
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
+      motivoCesarea: formData.motivoCesarea || undefined,
       nomeBebe: formData.nomeBebe || undefined,
       sexoBebe: formData.sexoBebe as "masculino" | "feminino" | "nao_informado" || undefined,
       observacoes: formData.observacoes || undefined,
@@ -959,6 +962,20 @@ export default function FormularioGestante({
               />
               <p className="text-sm text-muted-foreground">Para cesáreas eletivas ou partos programados</p>
             </div>
+            
+            {formData.dataPartoProgramado && (
+              <div className="space-y-2">
+                <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
+                <Input
+                  id="motivoCesarea"
+                  type="text"
+                  value={formData.motivoCesarea}
+                  onChange={(e) => setFormData({ ...formData, motivoCesarea: e.target.value })}
+                  placeholder="Ex: Cesárea iterativa, Apresentação pélvica, etc."
+                />
+                <p className="text-sm text-muted-foreground">Registre a indicação médica para a cesárea</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
