@@ -1533,6 +1533,24 @@ export default function CartaoPrenatal() {
                     </SelectContent>
                   </Select>
                   <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cesárea</p>
+                  
+                  {gestante.motivoCesarea === "Outro" && (
+                    <div className="mt-4 space-y-2">
+                      <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                      <Input
+                        id="motivoCesareaOutro"
+                        type="text"
+                        placeholder="Descreva a indicação médica"
+                        value={gestante.motivoCesareaOutro || ""}
+                        onChange={(e) => {
+                          updateGestanteMutation.mutate({
+                            id: gestanteSelecionada!,
+                            motivoCesareaOutro: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

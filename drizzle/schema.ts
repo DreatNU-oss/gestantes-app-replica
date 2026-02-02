@@ -95,6 +95,7 @@ export const gestantes = mysqlTable("gestantes", {
   dataUltrassom: varchar("dataUltrassom", { length: 10 }), // YYYY-MM-DD
   dataPartoProgramado: varchar("dataPartoProgramado", { length: 10 }), // YYYY-MM-DD
   motivoCesarea: text("motivoCesarea"), // Motivo da indicação da cesárea
+  motivoCesareaOutro: text("motivoCesareaOutro"), // Descrição quando "Outro motivo" é selecionado
   
   // Dados antropométricos
   altura: int("altura"), // altura em cm

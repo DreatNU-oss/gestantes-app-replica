@@ -591,3 +591,16 @@
 - [x] Implementar no CartaoPrenatal.tsx
 - [x] Testar seleção e salvamento
 - [x] 13 opções disponíveis: Cesárea iterativa, Apresentação pélvica, Gestação gemelar, Placenta prévia, Sofrimento fetal, Macrossomia fetal, Descolamento prematuro de placenta, Herpes genital ativo, HIV positivo, Cirurgia uterina prévia, Falha na indução do parto, Desproporção cefalopélvica, Outro motivo
+
+## Adicionar Campo de Texto para "Outro Motivo" de Cesárea (02/02/2026)
+- [x] Adicionar coluna 'motivoCesareaOutro' na tabela gestantes do banco de dados
+- [x] Atualizar schema no drizzle/schema.ts
+- [x] Executar migração do banco de dados (pnpm db:push)
+- [x] Implementar campo condicional no FormularioGestante.tsx que aparece quando "Outro motivo" é selecionado
+- [x] Implementar campo condicional no CartaoPrenatal.tsx
+- [x] Atualizar schemas de create e update em routers.ts
+- [x] Testar seleção de "Outro motivo" e preenchimento do campo de texto
+- [x] Campo aparece automaticamente ao selecionar "Outro motivo"
+- [x] Label: "Especifique o motivo"
+- [x] Placeholder: "Descreva a indicação médica"
+- [x] Testado com sucesso na gestante Cinthia
