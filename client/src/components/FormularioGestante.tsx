@@ -966,14 +966,30 @@ export default function FormularioGestante({
             {formData.dataPartoProgramado && (
               <div className="space-y-2">
                 <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
-                <Input
-                  id="motivoCesarea"
-                  type="text"
+                <Select
                   value={formData.motivoCesarea}
-                  onChange={(e) => setFormData({ ...formData, motivoCesarea: e.target.value })}
-                  placeholder="Ex: Cesárea iterativa, Apresentação pélvica, etc."
-                />
-                <p className="text-sm text-muted-foreground">Registre a indicação médica para a cesárea</p>
+                  onValueChange={(value) => setFormData({ ...formData, motivoCesarea: value })}
+                >
+                  <SelectTrigger id="motivoCesarea">
+                    <SelectValue placeholder="Selecione o motivo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
+                    <SelectItem value="Apresentacao pelvica">Apresentação pélvica</SelectItem>
+                    <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
+                    <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
+                    <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
+                    <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                    <SelectItem value="Descolamento prematuro placenta">Descolamento prematuro de placenta</SelectItem>
+                    <SelectItem value="Herpes genital ativo">Herpes genital ativo</SelectItem>
+                    <SelectItem value="HIV positivo">HIV positivo (carga viral elevada)</SelectItem>
+                    <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
+                    <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
+                    <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                    <SelectItem value="Outro">Outro motivo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cesárea</p>
               </div>
             )}
           </CardContent>

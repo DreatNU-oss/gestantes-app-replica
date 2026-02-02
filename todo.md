@@ -582,3 +582,12 @@
 - [x] Testar cadastro e edição com o novo campo
 - [x] Campo aparece condicionalmente apenas quando há data de cesárea programada
 - [x] Testado com sucesso na gestante Cinthia (motivo: "Cesárea iterativa")
+
+## Criar Lista de Seleção para Motivos de Cesárea (02/02/2026)
+- [x] Definir lista de motivos mais comuns para indicação de cesárea
+- [x] Substituir campo de texto livre por Select com opções pré-definidas
+- [x] Adicionar opção "Outro motivo" na lista
+- [x] Implementar no FormularioGestante.tsx
+- [x] Implementar no CartaoPrenatal.tsx
+- [x] Testar seleção e salvamento
+- [x] 13 opções disponíveis: Cesárea iterativa, Apresentação pélvica, Gestação gemelar, Placenta prévia, Sofrimento fetal, Macrossomia fetal, Descolamento prematuro de placenta, Herpes genital ativo, HIV positivo, Cirurgia uterina prévia, Falha na indução do parto, Desproporção cefalopélvica, Outro motivo
