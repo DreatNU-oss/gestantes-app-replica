@@ -631,3 +631,19 @@
 - [x] Testado com sucesso: Cinthia com "Cesárea iterativa" (100% em vermelho)
 - [x] Legenda clara mostrando o motivo e a cor correspondente
 - [x] Descrição dinâmica: "Distribuição dos motivos de cesárea programada entre X gestante(s)"
+
+## Exibir Motivo da Cesárea no Modal de Informações (02/02/2026)
+- [ ] Localizar o componente ModalInfoGestante.tsx
+- [ ] Adicionar exibição de motivoCesarea quando presente
+- [ ] Adicionar exibição de motivoCesareaOutro quando motivoCesarea for "Outro motivo"
+- [ ] Testar visualização no modal
+
+## Exibir Motivo da Cesárea no Modal de Informações Rápidas (02/02/2026)
+- [x] Localizar o componente ModalInfoGestante.tsx
+- [x] Adicionar exibição do campo motivoCesarea no modal
+- [x] Adicionar exibição do campo motivoCesareaOutro quando aplicável
+- [x] Testar visualização com gestante que tem cesárea programada
+- [x] Campo aparece na seção "Informações do Parto" do modal
+- [x] Exibe "Motivo da Indicação da Cesárea: [motivo]"
+- [x] Quando motivo é "Outro motivo", exibe também o campo motivoCesareaOutro
+- [x] Testado com sucesso: Cinthia mostrando "Cesárea iterativa"

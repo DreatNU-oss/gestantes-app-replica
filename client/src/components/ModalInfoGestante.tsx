@@ -209,6 +209,17 @@ export default function ModalInfoGestante({
                       </div>
                     )}
                   </div>
+                  {gestante?.motivoCesarea && gestante.motivoCesarea !== "" && (
+                    <div className="mt-3 pt-3 border-t border-primary/20">
+                      <p className="text-xs text-muted-foreground mb-1">Motivo da Indicação da Cesárea</p>
+                      <p className="text-sm font-medium text-primary">
+                        {gestante.motivoCesarea}
+                        {gestante.motivoCesarea === "Outro motivo" && gestante.motivoCesareaOutro && (
+                          <span className="text-muted-foreground"> - {gestante.motivoCesareaOutro}</span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
