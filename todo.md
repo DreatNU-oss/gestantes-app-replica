@@ -616,3 +616,18 @@
 - [x] Testado com sucesso: digitei "Maria Clara" e selecionei "Feminino" sem mensagens incorretas
 - [x] Botão Salvar funciona corretamente e mostra mensagem "Dados do bebê atualizados com sucesso!"
 - [x] Card "Dados do Bebê" agora mostra "♀ Menina" no título após salvar
+
+## Criar Gráfico de Pizza de Motivos de Cesárea (02/02/2026)
+- [x] Analisar estrutura da página de Estatísticas
+- [x] Criar componente GraficoMotivosCesarea.tsx baseado em GraficoTiposPartosDesejados.tsx
+- [x] Buscar dados de gestantes com cesárea programada e seus motivos
+- [x] Agrupar dados por motivo e contar ocorrências
+- [x] Implementar gráfico de pizza com Chart.js
+- [x] Adicionar valores nas fatias do gráfico (porcentagens)
+- [x] Integrar gráfico na página de Estatísticas
+- [x] Testar com dados reais
+- [x] Gráfico de pizza criado com 13 cores variadas para os diferentes motivos
+- [x] Exibe mensagem "Nenhuma cesárea programada com motivo registrado" quando não há dados
+- [x] Testado com sucesso: Cinthia com "Cesárea iterativa" (100% em vermelho)
+- [x] Legenda clara mostrando o motivo e a cor correspondente
+- [x] Descrição dinâmica: "Distribuição dos motivos de cesárea programada entre X gestante(s)"

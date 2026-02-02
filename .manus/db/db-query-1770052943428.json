@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, nome, dataPartoProgramado, motivoCesarea, motivoCesareaOutro FROM gestantes WHERE nome LIKE '%Cinthia%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataPartoProgramado, motivoCesarea, motivoCesareaOutro FROM gestantes WHERE nome LIKE '%Cinthia%';",
+  "rows": [
+    {
+      "id": "330032",
+      "nome": "Cinthia dos Anjos Antonietto Drumond",
+      "dataPartoProgramado": "2026-02-11",
+      "motivoCesarea": "NULL",
+      "motivoCesareaOutro": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataPartoProgramado\tmotivoCesarea\tmotivoCesareaOutro\n330032\tCinthia dos Anjos Antonietto Drumond\t2026-02-11\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 83
+}
