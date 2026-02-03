@@ -765,3 +765,12 @@
 - [x] Criar página/componente de alteração de senha
 - [x] Adicionar link no menu de configurações
 - [x] Testar funcionalidade completa
+
+
+## Segurança Avançada de Autenticação (03/02/2026)
+
+- [x] Adicionar colunas no banco para tentativas de login e bloqueio
+- [x] Implementar bloqueio após 5 tentativas de senha incorreta
+- [x] Adicionar coluna passwordChangedAt para invalidar sessões
+- [x] Invalidar todas as sessões ao alterar senha
+- [x] Atualizar frontend para mostrar mensagens de bloqueio

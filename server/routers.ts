@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
-import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword } from "./passwordAuth";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount } from "./passwordAuth";
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
@@ -188,7 +188,13 @@ export const appRouter = router({
       .mutation(async ({ input, ctx }) => {
         const result = await loginWithPassword(input.email, input.senha);
         if (!result.success || !result.user) {
-          return { success: false, error: result.error };
+          return { 
+            success: false, 
+            error: result.error,
+            locked: result.locked,
+            minutesRemaining: result.minutesRemaining,
+            attemptsRemaining: result.attemptsRemaining
+          };
         }
         // Criar sessão usando oauthService
         const token = await sdk.signSession({ openId: result.user.openId, appId: process.env.VITE_APP_ID || '', name: result.user.name || '' });
@@ -286,7 +292,7 @@ export const appRouter = router({
         return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
       }),
     
-    // Alterar senha de usuário logado
+    // Alterar senha de usuário logado (invalida todas as sessões)
     alterarSenha: protectedProcedure
       .input(z.object({ 
         senhaAtual: z.string().min(1),
@@ -294,7 +300,24 @@ export const appRouter = router({
       }))
       .mutation(async ({ input, ctx }) => {
         const result = await changePassword(ctx.user.id, input.senhaAtual, input.novaSenha);
+        if (result.success && result.sessionsInvalidated) {
+          // Limpar cookie da sessão atual para forçar novo login
+          const cookieOptions = getSessionCookieOptions(ctx.req);
+          ctx.res.clearCookie(COOKIE_NAME, cookieOptions);
+        }
         return result;
+      }),
+    
+    // Desbloquear conta (apenas admin)
+    desbloquearConta: protectedProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input, ctx }) => {
+        // Verificar se é admin
+        if (ctx.user.role !== 'admin') {
+          return { success: false, error: 'Apenas administradores podem desbloquear contas.' };
+        }
+        const success = await unlockAccount(input.email);
+        return { success, message: success ? 'Conta desbloqueada com sucesso.' : 'Erro ao desbloquear conta.' };
       }),
   }),
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Mail, Lock, AlertCircle, User, CheckCircle2 } from "lucide-react";
+import { Loader2, Mail, Lock, AlertCircle, User, CheckCircle2, ShieldAlert, Clock } from "lucide-react";
 
 type LoginStep = 'email' | 'login' | 'primeiro-acesso';
 
@@ -19,6 +19,9 @@ export default function Login() {
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
+  const [bloqueado, setBloqueado] = useState(false);
+  const [minutosRestantes, setMinutosRestantes] = useState(0);
+  const [tentativasRestantes, setTentativasRestantes] = useState<number | null>(null);
 
   // Query para verificar status do email
   const statusQuery = trpc.auth.verificarStatusEmail.useQuery(
@@ -35,6 +38,15 @@ export default function Login() {
         window.location.href = "/dashboard";
       } else {
         setErro(data.error || "Erro ao fazer login");
+        // Verificar se conta foi bloqueada
+        if (data.locked) {
+          setBloqueado(true);
+          setMinutosRestantes(data.minutesRemaining || 15);
+        }
+        // Mostrar tentativas restantes
+        if (data.attemptsRemaining !== undefined) {
+          setTentativasRestantes(data.attemptsRemaining);
+        }
       }
     },
     onError: (error) => {
@@ -80,6 +92,14 @@ export default function Login() {
       
       if (!result.data?.isAuthorized) {
         setErro("Este email não está autorizado a acessar o sistema. Solicite permissão ao administrador.");
+        return;
+      }
+
+      // Verificar se conta está bloqueada
+      if (result.data.locked) {
+        setBloqueado(true);
+        setMinutosRestantes(result.data.minutesRemaining || 15);
+        setErro(`Conta bloqueada temporariamente. Tente novamente em ${result.data.minutesRemaining} minuto(s).`);
         return;
       }
 
@@ -138,6 +158,9 @@ export default function Login() {
     setConfirmarSenha("");
     setErro("");
     setSucesso("");
+    setBloqueado(false);
+    setMinutosRestantes(0);
+    setTentativasRestantes(null);
   };
 
   const isLoading = statusQuery.isFetching || loginMutation.isPending || criarUsuarioMutation.isPending;
@@ -164,11 +187,31 @@ export default function Login() {
         </CardHeader>
         
         <CardContent className="pt-4">
+          {/* Mensagem de conta bloqueada */}
+          {bloqueado && (
+            <Alert variant="destructive" className="bg-orange-50 border-orange-300 mb-4">
+              <ShieldAlert className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-700">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>Conta bloqueada por {minutosRestantes} minuto(s) após múltiplas tentativas incorretas.</span>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Mensagens de erro e sucesso */}
-          {erro && (
+          {erro && !bloqueado && (
             <Alert variant="destructive" className="bg-red-50 border-red-200 mb-4">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{erro}</AlertDescription>
+              <AlertDescription>
+                {erro}
+                {tentativasRestantes !== null && tentativasRestantes > 0 && (
+                  <span className="block mt-1 text-xs">
+                    Atenção: {tentativasRestantes} tentativa(s) restante(s) antes do bloqueio.
+                  </span>
+                )}
+              </AlertDescription>
             </Alert>
           )}
           

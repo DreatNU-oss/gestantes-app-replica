@@ -14,6 +14,11 @@ export const users = mysqlTable("users", {
   passwordHash: text("passwordHash"),
   passwordResetToken: varchar("passwordResetToken", { length: 128 }),
   passwordResetExpires: timestamp("passwordResetExpires"),
+  // Campos para bloqueio de conta após tentativas falhas
+  failedLoginAttempts: int("failedLoginAttempts").default(0).notNull(),
+  lockedUntil: timestamp("lockedUntil"),
+  // Campo para invalidar sessões ao alterar senha
+  passwordChangedAt: timestamp("passwordChangedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Lock, Eye, EyeOff, ArrowLeft, Check } from "lucide-react";
+import { Lock, Eye, EyeOff, ArrowLeft, Check, LogOut, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AlterarSenha() {
   const [, setLocation] = useLocation();
@@ -21,16 +22,16 @@ export default function AlterarSenha() {
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
   const alterarSenhaMutation = trpc.auth.alterarSenha.useMutation({
-    onSuccess: (data: { success: boolean; error?: string }) => {
+    onSuccess: (data: { success: boolean; error?: string; sessionsInvalidated?: boolean }) => {
       if (data.success) {
-        toast.success("Senha alterada com sucesso!");
+        toast.success("Senha alterada com sucesso! Você será desconectado de todos os dispositivos.");
         setSenhaAtual("");
         setNovaSenha("");
         setConfirmarSenha("");
-        // Redirecionar para o dashboard após alguns segundos
+        // Redirecionar para login após alguns segundos (sessões foram invalidadas)
         setTimeout(() => {
-          setLocation("/dashboard");
-        }, 2000);
+          window.location.href = "/login";
+        }, 2500);
       } else {
         toast.error(data.error || "Erro ao alterar senha");
       }
@@ -185,6 +186,17 @@ export default function AlterarSenha() {
                   </p>
                 )}
               </div>
+
+              {/* Aviso sobre logout */}
+              <Alert className="bg-amber-50 border-amber-200">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-700">
+                  <div className="flex items-center gap-2">
+                    <LogOut className="h-4 w-4" />
+                    <span>Ao alterar sua senha, você será desconectado de <strong>todos os dispositivos</strong> e precisará fazer login novamente.</span>
+                  </div>
+                </AlertDescription>
+              </Alert>
 
               {/* Dicas de Segurança */}
               <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
