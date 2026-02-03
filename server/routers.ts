@@ -1596,6 +1596,70 @@ export const appRouter = router({
         };
       }),
 
+    // Desbloquear PDF protegido usando senha salva e retornar URL do arquivo desbloqueado
+    desbloquearPdfSalvo: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        const [arquivo] = await db.select()
+          .from(arquivosExames)
+          .where(eq(arquivosExames.id, input.id));
+        
+        if (!arquivo) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Arquivo não encontrado' });
+        }
+        
+        // Se não está protegido ou não tem senha salva, retornar URL original
+        if (arquivo.protegidoPorSenha !== 1 || !arquivo.senhaPdf) {
+          return {
+            success: true,
+            url: arquivo.s3Url,
+            wasUnlocked: false,
+          };
+        }
+        
+        try {
+          // Baixar o PDF do S3
+          const response = await fetch(arquivo.s3Url);
+          if (!response.ok) {
+            throw new Error('Falha ao baixar arquivo do S3');
+          }
+          const pdfBuffer = Buffer.from(await response.arrayBuffer());
+          
+          // Desbloquear o PDF
+          const { unlockPdf } = await import('./pdfUtils');
+          const result = await unlockPdf(pdfBuffer, arquivo.senhaPdf);
+          
+          if (!result.success || !result.unlockedBuffer) {
+            throw new Error(result.error || 'Falha ao desbloquear PDF');
+          }
+          
+          // Fazer upload do PDF desbloqueado para o S3
+          const { storagePut } = await import('./storage');
+          const unlockedKey = `exames/${arquivo.gestanteId}/unlocked-${Date.now()}-${arquivo.nomeArquivo}`;
+          const { url: unlockedUrl } = await storagePut(unlockedKey, result.unlockedBuffer, 'application/pdf');
+          
+          return {
+            success: true,
+            url: unlockedUrl,
+            wasUnlocked: true,
+          };
+        } catch (error: any) {
+          console.error('[desbloquearPdfSalvo] Erro:', error);
+          // Em caso de erro, retornar URL original (usuário terá que digitar a senha)
+          return {
+            success: false,
+            url: arquivo.s3Url,
+            wasUnlocked: false,
+            error: error.message,
+          };
+        }
+      }),
+
     // Excluir arquivo de exame
     excluirArquivo: protectedProcedure
       .input(z.object({

@@ -694,3 +694,7 @@
 - [x] Modificar modal de interpretação para salvar arquivo após processar
 - [x] Criar seção "Arquivos de Exames" na página de Exames Laboratoriais
 - [x] Salvar senha de PDFs protegidos para abertura automática futura
+
+## Melhorias em Arquivos de Exames (02/02/2026)
+- [x] Implementar desbloqueio automático de PDFs protegidos usando senha salva
+- [x] Adicionar filtro por trimestre na lista de arquivos

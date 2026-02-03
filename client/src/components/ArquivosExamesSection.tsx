@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { FileText, Image, Download, Eye, Trash2, Lock, Calendar, Loader2 } from "lucide-react";
+import { FileText, Image, Download, Eye, Trash2, Lock, LockOpen, Calendar, Loader2, Filter } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -14,6 +14,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ArquivosExamesSectionProps {
   gestanteId: number;
@@ -22,6 +29,7 @@ interface ArquivosExamesSectionProps {
 export function ArquivosExamesSection({ gestanteId }: ArquivosExamesSectionProps) {
   const [arquivoParaExcluir, setArquivoParaExcluir] = useState<number | null>(null);
   const [carregandoVisualizacao, setCarregandoVisualizacao] = useState<number | null>(null);
+  const [filtroTrimestre, setFiltroTrimestre] = useState<string>("todos");
   
   const utils = trpc.useUtils();
   
@@ -30,7 +38,7 @@ export function ArquivosExamesSection({ gestanteId }: ArquivosExamesSectionProps
     { enabled: !!gestanteId }
   );
   
-  const obterArquivoComSenha = trpc.examesLab.obterArquivoComSenha.useQuery;
+  const desbloquearPdfMutation = trpc.examesLab.desbloquearPdfSalvo.useMutation();
   
   const excluirMutation = trpc.examesLab.excluirArquivo.useMutation({
     onSuccess: () => {
@@ -66,32 +74,80 @@ export function ArquivosExamesSection({ gestanteId }: ArquivosExamesSectionProps
     
     try {
       if (arquivo.protegidoPorSenha === 1 && arquivo.tipoArquivo === "application/pdf") {
-        // Para PDFs protegidos, precisamos desbloquear antes de abrir
-        // Por enquanto, apenas abrimos a URL direta (o usuário terá que digitar a senha no visualizador)
-        // TODO: Implementar desbloqueio automático usando a senha salva
-        window.open(arquivo.s3Url, "_blank");
-        toast.info("Este PDF é protegido por senha. Use a senha salva para abrir.");
+        // Para PDFs protegidos, usar o endpoint de desbloqueio automático
+        toast.info("Desbloqueando PDF...", { duration: 2000 });
+        
+        const result = await desbloquearPdfMutation.mutateAsync({ id: arquivo.id });
+        
+        if (result.success && result.wasUnlocked) {
+          toast.success("PDF desbloqueado automaticamente!");
+          window.open(result.url, "_blank");
+        } else if (result.success) {
+          // Não estava protegido ou não tinha senha salva
+          window.open(result.url, "_blank");
+        } else {
+          // Falha no desbloqueio - abrir URL original
+          toast.warning("Não foi possível desbloquear automaticamente. O PDF abrirá protegido.");
+          window.open(arquivo.s3Url, "_blank");
+        }
       } else {
         // Arquivo não protegido - abrir diretamente
         window.open(arquivo.s3Url, "_blank");
       }
-    } catch (error) {
-      toast.error("Erro ao visualizar arquivo");
+    } catch (error: any) {
+      console.error("Erro ao visualizar arquivo:", error);
+      toast.error("Erro ao visualizar arquivo. Tentando abrir diretamente...");
+      window.open(arquivo.s3Url, "_blank");
     } finally {
       setCarregandoVisualizacao(null);
     }
   };
   
-  const handleDownload = (arquivo: { s3Url: string; nomeArquivo: string }) => {
-    // Criar link de download
-    const link = document.createElement("a");
-    link.href = arquivo.s3Url;
-    link.download = arquivo.nomeArquivo;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (arquivo: { id: number; s3Url: string; nomeArquivo: string; protegidoPorSenha: number; tipoArquivo: string }) => {
+    try {
+      let urlParaDownload = arquivo.s3Url;
+      
+      // Se for PDF protegido, tentar desbloquear antes de baixar
+      if (arquivo.protegidoPorSenha === 1 && arquivo.tipoArquivo === "application/pdf") {
+        toast.info("Desbloqueando PDF para download...", { duration: 2000 });
+        
+        const result = await desbloquearPdfMutation.mutateAsync({ id: arquivo.id });
+        
+        if (result.success && result.wasUnlocked) {
+          urlParaDownload = result.url;
+          toast.success("PDF desbloqueado!");
+        }
+      }
+      
+      // Criar link de download
+      const link = document.createElement("a");
+      link.href = urlParaDownload;
+      link.download = arquivo.nomeArquivo;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      // Em caso de erro, baixar o arquivo original
+      const link = document.createElement("a");
+      link.href = arquivo.s3Url;
+      link.download = arquivo.nomeArquivo;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
+  
+  // Filtrar arquivos por trimestre
+  const arquivosFiltrados = arquivos?.filter(arquivo => {
+    if (filtroTrimestre === "todos") return true;
+    if (filtroTrimestre === "sem_trimestre") return !arquivo.trimestre;
+    return arquivo.trimestre?.toString() === filtroTrimestre;
+  }) || [];
+  
+  // Obter trimestres únicos para o filtro
+  const trimestresDisponiveis = Array.from(new Set(arquivos?.map(a => a.trimestre).filter(Boolean))).sort();
   
   if (isLoading) {
     return (
@@ -119,88 +175,118 @@ export function ArquivosExamesSection({ gestanteId }: ArquivosExamesSectionProps
     <>
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Arquivos de Exames ({arquivos.length})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Arquivos de Exames ({arquivosFiltrados.length}{filtroTrimestre !== "todos" ? ` de ${arquivos.length}` : ""})
+            </CardTitle>
+            
+            {/* Filtro por Trimestre */}
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-500" />
+              <Select value={filtroTrimestre} onValueChange={setFiltroTrimestre}>
+                <SelectTrigger className="w-[180px] h-9">
+                  <SelectValue placeholder="Filtrar por trimestre" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os arquivos</SelectItem>
+                  {trimestresDisponiveis.map(tri => (
+                    <SelectItem key={tri} value={tri!.toString()}>
+                      {tri}º Trimestre
+                    </SelectItem>
+                  ))}
+                  {arquivos.some(a => !a.trimestre) && (
+                    <SelectItem value="sem_trimestre">Sem trimestre</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {arquivos.map((arquivo) => (
-              <div
-                key={arquivo.id}
-                className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors"
-              >
-                {/* Ícone do arquivo */}
-                <div className="flex-shrink-0">
-                  {obterIconeArquivo(arquivo.tipoArquivo)}
-                </div>
-                
-                {/* Informações do arquivo */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-800 truncate">
-                      {arquivo.nomeArquivo}
-                    </span>
-                    {arquivo.protegidoPorSenha === 1 && (
-                      <span title="PDF protegido por senha">
-                        <Lock className="h-4 w-4 text-amber-500" />
-                      </span>
-                    )}
+          {arquivosFiltrados.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              Nenhum arquivo encontrado para o filtro selecionado.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {arquivosFiltrados.map((arquivo) => (
+                <div
+                  key={arquivo.id}
+                  className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors"
+                >
+                  {/* Ícone do arquivo */}
+                  <div className="flex-shrink-0">
+                    {obterIconeArquivo(arquivo.tipoArquivo)}
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
-                    <span>{formatarTamanho(arquivo.tamanhoBytes)}</span>
-                    {arquivo.trimestre && (
-                      <span className="px-2 py-0.5 bg-rose-100 text-rose-700 rounded">
-                        {arquivo.trimestre}º Tri
+                  
+                  {/* Informações do arquivo */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-800 truncate">
+                        {arquivo.nomeArquivo}
                       </span>
-                    )}
-                    {arquivo.dataColeta && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {formatarData(arquivo.dataColeta)}
-                      </span>
-                    )}
-                    <span>Enviado em {formatarData(arquivo.createdAt)}</span>
+                      {arquivo.protegidoPorSenha === 1 && (
+                        <span title="PDF protegido por senha (será desbloqueado automaticamente)" className="flex items-center gap-1">
+                          <Lock className="h-4 w-4 text-amber-500" />
+                          <LockOpen className="h-3 w-3 text-green-500" />
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
+                      <span>{formatarTamanho(arquivo.tamanhoBytes)}</span>
+                      {arquivo.trimestre && (
+                        <span className="px-2 py-0.5 bg-rose-100 text-rose-700 rounded">
+                          {arquivo.trimestre}º Tri
+                        </span>
+                      )}
+                      {arquivo.dataColeta && (
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {formatarData(arquivo.dataColeta)}
+                        </span>
+                      )}
+                      <span>Enviado em {formatarData(arquivo.createdAt)}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Ações */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleVisualizar(arquivo)}
+                      disabled={carregandoVisualizacao === arquivo.id}
+                      title={arquivo.protegidoPorSenha === 1 ? "Visualizar (desbloqueio automático)" : "Visualizar"}
+                    >
+                      {carregandoVisualizacao === arquivo.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDownload(arquivo)}
+                      title={arquivo.protegidoPorSenha === 1 ? "Baixar (desbloqueio automático)" : "Baixar"}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setArquivoParaExcluir(arquivo.id)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      title="Excluir"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-                
-                {/* Ações */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleVisualizar(arquivo)}
-                    disabled={carregandoVisualizacao === arquivo.id}
-                    title="Visualizar"
-                  >
-                    {carregandoVisualizacao === arquivo.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDownload(arquivo)}
-                    title="Baixar"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setArquivoParaExcluir(arquivo.id)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                    title="Excluir"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
       
