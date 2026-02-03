@@ -720,3 +720,6 @@
 ## Interatividade em Gráficos Adicionais (03/02/2026)
 - [x] Adicionar clique para ver pacientes no gráfico Partos por Médico
 - [x] Adicionar clique para ver pacientes no gráfico Partos por Convênio
+
+## Alertas de Consultas Pré-natal - Limites Dinâmicos (03/02/2026)
+- [ ] Modificar limites de alerta: até 34 sem (35 dias), 34-36 sem (18 dias), após 36 sem (10 dias)

@@ -197,6 +197,15 @@ export function AlertasPartosProximos({
     return null;
   }
 
+  // Função para formatar IG atual em semanas e dias
+  const formatarIGAtual = (gestante: Gestante): string | null => {
+    const igDias = calcularIdadeGestacional(gestante);
+    if (igDias === null) return null;
+    const semanas = Math.floor(igDias / 7);
+    const dias = igDias % 7;
+    return `${semanas}s${dias}d`;
+  };
+
   const getTipoTexto = (tipo: "programado" | "usg" | "dum") => {
     switch (tipo) {
       case "programado":
@@ -274,6 +283,11 @@ export function AlertasPartosProximos({
                 )}
                 <span>Tipo: {getTipoPartoTexto(alerta.gestante.tipoPartoDesejado)}</span>
               </div>
+              {formatarIGAtual(alerta.gestante) && (
+                <div className="text-xs font-medium text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full mt-1 inline-block">
+                  IG: {formatarIGAtual(alerta.gestante)}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <Badge className={`${getCorDias(alerta.diasRestantes, alerta.posDataismo)} font-semibold px-2 py-1 whitespace-nowrap`}>
