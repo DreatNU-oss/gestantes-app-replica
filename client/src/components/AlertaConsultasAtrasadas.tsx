@@ -224,7 +224,7 @@ export function AlertaConsultasAtrasadas() {
             </Badge>
           </CardTitle>
           <p className="text-sm text-orange-700 mt-1">
-            Limite dinâmico: até 34 sem (32 dias) | 34-36 sem (15 dias) | após 36 sem (8 dias)
+            Limite dinâmico: até 34 sem (40 dias) | 34-36 sem (18 dias) | após 36 sem (10 dias)
           </p>
         </CardHeader>
         <CardContent>
@@ -234,7 +234,7 @@ export function AlertaConsultasAtrasadas() {
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-red-800 flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
-                  Após 36 semanas - URGENTE (limite: 8 dias)
+                  Após 36 semanas - URGENTE (limite: 10 dias)
                 </h4>
                 {gestantesPorFaixa['Após 36 semanas'].map((item: GestanteAlerta) => 
                   renderGestanteCard(
@@ -252,7 +252,7 @@ export function AlertaConsultasAtrasadas() {
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-orange-800 flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
-                  34-36 semanas - ATENÇÃO (limite: 15 dias)
+                  34-36 semanas - ATENÇÃO (limite: 18 dias)
                 </h4>
                 {gestantesPorFaixa['34-36 semanas'].map((item: GestanteAlerta) => 
                   renderGestanteCard(
@@ -270,7 +270,7 @@ export function AlertaConsultasAtrasadas() {
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-yellow-800 flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
-                  Até 34 semanas (limite: 32 dias)
+                  Até 34 semanas (limite: 40 dias)
                 </h4>
                 {gestantesPorFaixa['Até 34 semanas'].map((item: GestanteAlerta) => 
                   renderGestanteCard(
