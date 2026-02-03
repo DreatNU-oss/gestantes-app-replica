@@ -1,0 +1,34 @@
+{
+  "query": "SHOW COLUMNS FROM users WHERE Field IN ('passwordResetToken', 'passwordResetExpires', 'passwordHash');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW COLUMNS FROM users WHERE Field IN ('passwordResetToken', 'passwordResetExpires', 'passwordHash');",
+  "rows": [
+    {
+      "Field": "passwordHash",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "passwordResetToken",
+      "Type": "varchar(64)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "passwordResetExpires",
+      "Type": "timestamp",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\npasswordHash\ttext\tYES\t\tNULL\t\npasswordResetToken\tvarchar(64)\tYES\t\tNULL\t\npasswordResetExpires\ttimestamp\tYES\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

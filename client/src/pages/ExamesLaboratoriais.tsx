@@ -1102,10 +1102,7 @@ export default function ExamesLaboratoriais() {
               <CardTitle>Exames de {gestante.nome}</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Histórico de Interpretações */}
-              <HistoricoInterpretacoes gestanteId={gestanteSelecionada!} tipo="exames_laboratoriais" />
-              
-              <div className="space-y-8 mt-6">
+              <div className="space-y-8">
                 {/* Barras de Ação em Lote - Aparecem apenas uma vez */}
                 <div className="space-y-3">
                   {/* Botão Interpretar com IA */}
@@ -1777,10 +1774,17 @@ export default function ExamesLaboratoriais() {
           </DialogContent>
         </Dialog>
 
-        {/* Seção de Arquivos de Exames - Histórico de Interpretações */}
+        {/* Seção de Arquivos de Exames */}
         {gestanteSelecionada && (
           <div className="mt-8">
             <ArquivosExamesSection gestanteId={gestanteSelecionada} />
+          </div>
+        )}
+
+        {/* Histórico de Interpretações - Movido para o final da página */}
+        {gestanteSelecionada && (
+          <div className="mt-8">
+            <HistoricoInterpretacoes gestanteId={gestanteSelecionada} tipo="exames_laboratoriais" />
           </div>
         )}
       </div>

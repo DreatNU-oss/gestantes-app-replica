@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
-import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized } from "./passwordAuth";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword } from "./passwordAuth";
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
@@ -258,6 +258,32 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         await removeAuthorizedEmail(input.email);
         return { success: true };
+      }),
+    
+    // Verificar status do email (para primeiro acesso)
+    verificarStatusEmail: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        return checkEmailStatus(input.email);
+      }),
+    
+    // Criar usuário e definir senha no primeiro acesso
+    criarUsuarioComSenha: publicProcedure
+      .input(z.object({ 
+        email: z.string().email(), 
+        senha: z.string().min(6),
+        nome: z.string().optional()
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const result = await createUserWithPassword(input.email, input.senha, input.nome);
+        if (!result.success || !result.user) {
+          return { success: false, error: result.error };
+        }
+        // Criar sessão automaticamente após criar usuário
+        const token = await sdk.signSession({ openId: result.user.openId, appId: process.env.VITE_APP_ID || '', name: result.user.name || '' });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, token, cookieOptions);
+        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
       }),
   }),
 

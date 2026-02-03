@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, email, passwordResetToken, passwordResetExpires FROM users WHERE email LIKE '%reat%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, email, passwordResetToken, passwordResetExpires FROM users WHERE email LIKE '%reat%';",
+  "rows": [
+    {
+      "id": "1",
+      "email": "DreatNU@yahoo.com",
+      "passwordResetToken": "79b3a28dfcac4dd3db00dd6153310ba77f7e4e74077d7104409273d41d9fc7c8",
+      "passwordResetExpires": "2026-02-04 12:47:55"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tpasswordResetToken\tpasswordResetExpires\n1\tDreatNU@yahoo.com\t79b3a28dfcac4dd3db00dd6153310ba77f7e4e74077d7104409273d41d9fc7c8\t2026-02-04 12:47:55\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

@@ -142,3 +142,79 @@ export async function removeAuthorizedEmail(email: string): Promise<boolean> {
   await db.update(emailsAutorizados).set({ ativo: 0 }).where(eq(emailsAutorizados.email, email.toLowerCase()));
   return true;
 }
+
+// Verificar status do email para primeiro acesso
+export async function checkEmailStatus(email: string): Promise<{ 
+  isAuthorized: boolean; 
+  hasPassword: boolean; 
+  userExists: boolean;
+  userName?: string;
+}> {
+  const isAuthorized = await isEmailAuthorized(email);
+  if (!isAuthorized) {
+    return { isAuthorized: false, hasPassword: false, userExists: false };
+  }
+  
+  const user = await getUserByEmail(email);
+  if (!user) {
+    return { isAuthorized: true, hasPassword: false, userExists: false };
+  }
+  
+  return { 
+    isAuthorized: true, 
+    hasPassword: !!user.passwordHash, 
+    userExists: true,
+    userName: user.name || undefined
+  };
+}
+
+// Criar usuário e definir senha no primeiro acesso
+export async function createUserWithPassword(email: string, password: string, name?: string): Promise<{ success: boolean; user?: any; error?: string }> {
+  const isAuthorized = await isEmailAuthorized(email);
+  if (!isAuthorized) {
+    return { success: false, error: 'Este email não está autorizado a acessar o sistema.' };
+  }
+  
+  const db = await getDb();
+  if (!db) {
+    return { success: false, error: 'Erro de conexão com o banco de dados.' };
+  }
+  
+  // Verificar se usuário já existe
+  let user = await getUserByEmail(email);
+  
+  if (user) {
+    // Usuário existe mas não tem senha - definir senha
+    if (!user.passwordHash) {
+      const hash = await hashPassword(password);
+      await db.update(users).set({ 
+        passwordHash: hash,
+        name: name || user.name,
+        lastSignedIn: new Date()
+      }).where(eq(users.id, user.id));
+      
+      // Buscar usuário atualizado
+      user = await getUserByEmail(email);
+      return { success: true, user };
+    } else {
+      return { success: false, error: 'Este email já possui uma senha cadastrada. Use o login normal.' };
+    }
+  }
+  
+  // Criar novo usuário
+  const hash = await hashPassword(password);
+  const openId = `local_${crypto.randomBytes(16).toString('hex')}`;
+  
+  await db.insert(users).values({
+    openId,
+    email: email.toLowerCase(),
+    name: name || email.split('@')[0],
+    loginMethod: 'password',
+    passwordHash: hash,
+    role: 'user',
+    lastSignedIn: new Date()
+  });
+  
+  user = await getUserByEmail(email);
+  return { success: true, user };
+}

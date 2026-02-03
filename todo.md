@@ -743,3 +743,17 @@
 - [x] Backend: endpoints de recuperação de senha
 - [x] Backend: endpoints de gerenciamento de emails autorizados
 - [x] Migrar emails dos usuários existentes para tabela emailsAutorizados
+
+
+## Reorganização da Página de Exames Laboratoriais (03/02/2026)
+
+- [x] Mover histórico de interpretações para a parte inferior da página
+
+
+## Sistema de Login Simplificado - Primeiro Acesso (03/02/2026)
+
+- [x] Criar endpoint para verificar se email é autorizado e se já tem senha
+- [x] Criar endpoint para definir senha no primeiro acesso (sem email)
+- [x] Modificar página de Login para detectar primeiro acesso
+- [x] Permitir criação de senha diretamente na tela de login
+- [x] Remover necessidade de envio de emails para primeiro acesso

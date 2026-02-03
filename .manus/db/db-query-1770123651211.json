@@ -1,0 +1,34 @@
+{
+  "query": "SELECT ea.email, u.passwordHash FROM emailsAutorizados ea LEFT JOIN users u ON ea.email = u.email WHERE ea.ativo = 1 LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT ea.email, u.passwordHash FROM emailsAutorizados ea LEFT JOIN users u ON ea.email = u.email WHERE ea.ativo = 1 LIMIT 10;",
+  "rows": [
+    {
+      "email": "DreatNU@yahoo.com",
+      "passwordHash": "$2b$10$Di0Z5xudEgwNF0yYMAknLO.DzhI.oHNuWSknsdvswMqOs/vpw0rUa"
+    },
+    {
+      "email": "crislaineluciano256@gmail.com",
+      "passwordHash": "NULL"
+    },
+    {
+      "email": "allinemiguelreis@hotmail.com",
+      "passwordHash": "NULL"
+    },
+    {
+      "email": "jenifertc@hotmail.com",
+      "passwordHash": "NULL"
+    },
+    {
+      "email": "Brunna.avellino@gmail.com",
+      "passwordHash": "NULL"
+    },
+    {
+      "email": "brunna.avellino@icloud.com",
+      "passwordHash": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "email\tpasswordHash\nDreatNU@yahoo.com\t$2b$10$Di0Z5xudEgwNF0yYMAknLO.DzhI.oHNuWSknsdvswMqOs/vpw0rUa\ncrislaineluciano256@gmail.com\tNULL\nallinemiguelreis@hotmail.com\tNULL\njenifertc@hotmail.com\tNULL\nBrunna.avellino@gmail.com\tNULL\nbrunna.avellino@icloud.com\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 109
+}

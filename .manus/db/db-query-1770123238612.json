@@ -1,0 +1,65 @@
+{
+  "query": "SELECT hi.*, g.nome as gestante_nome FROM historicoInterpretacoes hi JOIN gestantes g ON hi.gestanteId = g.id LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT hi.*, g.nome as gestante_nome FROM historicoInterpretacoes hi JOIN gestantes g ON hi.gestanteId = g.id LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "gestanteId": "330079",
+      "tipoInterpretacao": "ultrassom",
+      "tipoExame": "ecocardiograma",
+      "arquivosProcessados": "1",
+      "resultadoJson": "{\"conclusao\": \"ANATOMICAMENTE NORMAL PARA A IDADE GESTACIONAL\", \"dataExame\": \"01/12/2025\", \"idadeGestacional\": \"27 s\"}",
+      "dataInterpretacao": "2025-12-16 12:55:09",
+      "createdAt": "2025-12-16 12:55:09",
+      "gestante_nome": "Naiane Kelly de Oliveira Vale"
+    },
+    {
+      "id": "180001",
+      "gestanteId": "330054",
+      "tipoInterpretacao": "exames_laboratoriais",
+      "tipoExame": "segundo",
+      "arquivosProcessados": "1",
+      "resultadoJson": "{\"EAS (Urina tipo 1)\": \"Normal\", \"Ferritina\": \"54.4 ng/mL\", \"Hemoglobina/Hematócrito\": \"12.5 g/dL / 37.4%\", \"Plaquetas\": \"227.000 mm³\", \"TTGO 75g (Curva Glicêmica) - 1 hora\": \"150 mg/dL\", \"TTGO 75g (Curva Glicêmica) - 2 horas\": \"126 mg/dL\", \"TTGO 75g (Curva Glicêmica) - Jejum\": \"71 mg/dL\", \"Toxoplasmose IgM\": \"0.07\", \"Urocultura\": \"Não houve desenvolvimento de micro-organismos\", \"VDRL\": \"Não Reagente\", \"Vitamina B12\": \"244.0 pg/mL\", \"Vitamina D (25-OH)\": \"25.3 ng/mL\"}",
+      "dataInterpretacao": "2025-12-17 14:56:44",
+      "createdAt": "2025-12-17 14:56:44",
+      "gestante_nome": "Iara Silva Miguel"
+    },
+    {
+      "id": "240001",
+      "gestanteId": "330020",
+      "tipoInterpretacao": "ultrassom",
+      "tipoExame": "ecocardiograma",
+      "arquivosProcessados": "1",
+      "resultadoJson": "{\"conclusao\": \"COMUNICAÇÃO INTERVENTRICULAR MUSCULAR PEQUENA\", \"dataExame\": \"25/11/2025\", \"idadeGestacional\": \"25 semanas\"}",
+      "dataInterpretacao": "2025-12-17 17:29:26",
+      "createdAt": "2025-12-17 17:29:26",
+      "gestante_nome": "Anna Clara Sousa Borges"
+    },
+    {
+      "id": "270001",
+      "gestanteId": "330014",
+      "tipoInterpretacao": "ultrassom",
+      "tipoExame": "ecocardiograma",
+      "arquivosProcessados": "1",
+      "resultadoJson": "{\"conclusao\": \"Arco aórtico à direita com divertículo de Kommerell.\", \"dataExame\": \"08/12/2025\", \"idadeGestacional\": \"30 semanas\"}",
+      "dataInterpretacao": "2025-12-22 18:31:20",
+      "createdAt": "2025-12-22 18:31:20",
+      "gestante_nome": "Amanda Cristina Souza Oliveira"
+    },
+    {
+      "id": "300001",
+      "gestanteId": "330068",
+      "tipoInterpretacao": "ultrassom",
+      "tipoExame": "primeiro_ultrassom",
+      "arquivosProcessados": "1",
+      "resultadoJson": "{\"bcf\": \"168 batimentos por minuto\", \"ccn\": \"2,9 cm\", \"corpoLuteo\": \"à esquerdo\", \"dataExame\": \"19/06/2025\", \"dpp\": \"17/01/2026\", \"idadeGestacional\": \"9 semanas e 5 dias\", \"sacoVitelino\": \"3,8 mm\"}",
+      "dataInterpretacao": "2025-12-24 10:56:22",
+      "createdAt": "2025-12-24 10:56:22",
+      "gestante_nome": "Letícia Campos Calderaro Dias"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoInterpretacao\ttipoExame\tarquivosProcessados\tresultadoJson\tdataInterpretacao\tcreatedAt\tgestante_nome\n1\t330079\tultrassom\tecocardiograma\t1\t{\"conclusao\": \"ANATOMICAMENTE NORMAL PARA A IDADE GESTACIONAL\", \"dataExame\": \"01/12/2025\", \"idadeGestacional\": \"27 s\"}\t2025-12-16 12:55:09\t2025-12-16 12:55:09\tNaiane Kelly de Oliveira Vale\n180001\t330054\texames_laboratoriais\tsegundo\t1\t{\"EAS (Urina tipo 1)\": \"Normal\", \"Ferritina\": \"54.4 ng/mL\", \"Hemoglobina/Hematócrito\": \"12.5 g/dL / 37.4%\", \"Plaquetas\": \"227.000 mm³\", \"TTGO 75g (Curva Glicêmica) - 1 hora\": \"150 mg/dL\", \"TTGO 75g (Curva Glicêmica) - 2 horas\": \"126 mg/dL\", \"TTGO 75g (Curva Glicêmica) - Jejum\": \"71 mg/dL\", \"Toxoplasmose IgM\": \"0.07\", \"Urocultura\": \"Não houve desenvolvimento de micro-organismos\", \"VDRL\": \"Não Reagente\", \"Vitamina B12\": \"244.0 pg/mL\", \"Vitamina D (25-OH)\": \"25.3 ng/mL\"}\t2025-12-17 14:56:44\t2025-12-17 14:56:44\tIara Silva Miguel\n240001\t330020\tultrassom\tecocardiograma\t1\t{\"conclusao\": \"COMUNICAÇÃO INTERVENTRICULAR MUSCULAR PEQUENA\", \"dataExame\": \"25/11/2025\", \"idadeGestacional\": \"25 semanas\"}\t2025-12-17 17:29:26\t2025-12-17 17:29:26\tAnna Clara Sousa Borges\n270001\t330014\tultrassom\tecocardiograma\t1\t{\"conclusao\": \"Arco aórtico à direita com divertículo de Kommerell.\", \"dataExame\": \"08/12/2025\", \"idadeGestacional\": \"30 semanas\"}\t2025-12-22 18:31:20\t2025-12-22 18:31:20\tAmanda Cristina Souza Oliveira\n300001\t330068\tultrassom\tprimeiro_ultrassom\t1\t{\"bcf\": \"168 batimentos por minuto\", \"ccn\": \"2,9 cm\", \"corpoLuteo\": \"à esquerdo\", \"dataExame\": \"19/06/2025\", \"dpp\": \"17/01/2026\", \"idadeGestacional\": \"9 semanas e 5 dias\", \"sacoVitelino\": \"3,8 mm\"}\t2025-12-24 10:56:22\t2025-12-24 10:56:22\tLetícia Campos Calderaro Dias\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}
