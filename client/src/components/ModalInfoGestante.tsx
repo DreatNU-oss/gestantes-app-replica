@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, Pill, FileText, Loader2, ShieldAlert, Baby, Calendar } from "lucide-react";
+import { AlertTriangle, Pill, FileText, Loader2, ShieldAlert, Baby, Calendar, Clock, Heart } from "lucide-react";
 
 // Mapeamento de tipos de fatores de risco para labels legíveis
 const fatoresRiscoLabels: Record<string, string> = {
@@ -141,6 +141,58 @@ export default function ModalInfoGestante({
   const tipoParto = gestante?.tipoPartoDesejado;
   const temTipoParto = tipoParto && tipoParto !== "a_definir";
   
+  // Calcular Idade Gestacional
+  const calcularIdadeGestacional = (dum: string | null | undefined, dataUltrassom: string | null | undefined, igUsSemanas: number | null | undefined, igUsDias: number | null | undefined) => {
+    const hoje = new Date();
+    let igDum: { semanas: number; dias: number } | null = null;
+    let igUs: { semanas: number; dias: number } | null = null;
+    
+    // Calcular IG pela DUM
+    if (dum) {
+      const dumDate = new Date(dum);
+      const diffMs = hoje.getTime() - dumDate.getTime();
+      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDias >= 0) {
+        igDum = {
+          semanas: Math.floor(diffDias / 7),
+          dias: diffDias % 7
+        };
+      }
+    }
+    
+    // Calcular IG pelo Ultrassom
+    if (dataUltrassom && igUsSemanas !== null && igUsSemanas !== undefined) {
+      const usDate = new Date(dataUltrassom);
+      const diffMs = hoje.getTime() - usDate.getTime();
+      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diasTotaisNoUs = (igUsSemanas * 7) + (igUsDias || 0);
+      const diasAtuais = diasTotaisNoUs + diffDias;
+      if (diasAtuais >= 0) {
+        igUs = {
+          semanas: Math.floor(diasAtuais / 7),
+          dias: diasAtuais % 7
+        };
+      }
+    }
+    
+    return { igDum, igUs };
+  };
+  
+  const { igDum, igUs } = calcularIdadeGestacional(
+    gestante?.dum,
+    gestante?.dataUltrassom,
+    gestante?.igUltrassomSemanas,
+    gestante?.igUltrassomDias
+  );
+  
+  // História Obstétrica
+  const gesta = gestante?.gesta;
+  const para = gestante?.para;
+  const partosNormais = gestante?.partosNormais;
+  const cesareas = gestante?.cesareas;
+  const abortos = gestante?.abortos;
+  const temHistoriaObstetrica = gesta !== undefined && gesta !== null;
+  
   // Data do parto: preferência para data programada, senão usa DPP calculada
   const dataPartoProgramado = gestante?.dataPartoProgramado;
   const dppCalculada = gestante?.calculado?.dppUS || gestante?.calculado?.dpp;
@@ -150,14 +202,14 @@ export default function ModalInfoGestante({
 
   // Se não houver nenhuma informação, fechar o modal automaticamente
   useEffect(() => {
-    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto) {
+    if (!isLoading && open && !temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto && !temHistoriaObstetrica && !igDum && !igUs) {
       // Fechar após um pequeno delay para não parecer um bug
       const timer = setTimeout(() => {
         onOpenChange(false);
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [isLoading, open, temFatoresRisco, temMedicamentos, temAlergias, temObservacoes, temTipoParto, temDataParto, onOpenChange]);
+  }, [isLoading, open, temFatoresRisco, temMedicamentos, temAlergias, temObservacoes, temTipoParto, temDataParto, temHistoriaObstetrica, igDum, igUs, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -175,6 +227,52 @@ export default function ModalInfoGestante({
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Idade Gestacional */}
+            {(igDum || igUs) && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-emerald-600" />
+                  <h3 className="font-semibold text-emerald-700">Idade Gestacional</h3>
+                </div>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">IG pela DUM</p>
+                      <span className="font-semibold text-emerald-700 text-lg">
+                        {igDum ? `${igDum.semanas}s ${igDum.dias}d` : "Não informada"}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">IG pelo Ultrassom</p>
+                      <span className="font-semibold text-emerald-700 text-lg">
+                        {igUs ? `${igUs.semanas}s ${igUs.dias}d` : "Não informada"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* História Obstétrica */}
+            {temHistoriaObstetrica && (
+              <>
+                {(igDum || igUs) && <Separator />}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-pink-500" />
+                    <h3 className="font-semibold text-pink-700">História Obstétrica</h3>
+                  </div>
+                  <div className="bg-pink-50 border border-pink-200 rounded-lg p-4">
+                    <div className="flex items-center justify-center">
+                      <span className="font-bold text-pink-800 text-xl">
+                        G{gesta || 0}P{para || 0}(PN{partosNormais || 0}PC{cesareas || 0})A{abortos || 0}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             {/* Tipo de Parto Desejado Indicado e Data do Parto */}
             {(temTipoParto || temDataParto) && (
               <div className="space-y-3">
@@ -227,7 +325,7 @@ export default function ModalInfoGestante({
             {/* Fatores de Risco */}
             {temFatoresRisco && (
               <>
-                {(temTipoParto || temDataParto) && <Separator />}
+                {(temTipoParto || temDataParto || temHistoriaObstetrica || igDum || igUs) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-amber-500" />
@@ -257,7 +355,7 @@ export default function ModalInfoGestante({
             {/* Medicamentos em Uso */}
             {temMedicamentos && (
               <>
-                {(temFatoresRisco || temTipoParto || temDataParto) && <Separator />}
+                {(temFatoresRisco || temTipoParto || temDataParto || temHistoriaObstetrica || igDum || igUs) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Pill className="h-5 w-5 text-blue-500" />
@@ -287,7 +385,7 @@ export default function ModalInfoGestante({
             {/* Alergias */}
             {temAlergias && (
               <>
-                {(temFatoresRisco || temMedicamentos || temTipoParto || temDataParto) && <Separator />}
+                {(temFatoresRisco || temMedicamentos || temTipoParto || temDataParto || temHistoriaObstetrica || igDum || igUs) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="h-5 w-5 text-red-500" />
@@ -317,7 +415,7 @@ export default function ModalInfoGestante({
             {/* Observações */}
             {temObservacoes && (
               <>
-                {(temFatoresRisco || temMedicamentos || temAlergias || temTipoParto || temDataParto) && <Separator />}
+                {(temFatoresRisco || temMedicamentos || temAlergias || temTipoParto || temDataParto || temHistoriaObstetrica || igDum || igUs) && <Separator />}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-gray-500" />
@@ -333,7 +431,7 @@ export default function ModalInfoGestante({
             )}
 
             {/* Mensagem se não houver informações */}
-            {!temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto && (
+            {!temFatoresRisco && !temMedicamentos && !temAlergias && !temObservacoes && !temTipoParto && !temDataParto && !temHistoriaObstetrica && !igDum && !igUs && (
               <div className="text-center py-8 text-muted-foreground">
                 <p>Nenhuma informação adicional registrada para esta gestante.</p>
               </div>

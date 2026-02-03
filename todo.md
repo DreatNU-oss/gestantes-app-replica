@@ -791,3 +791,9 @@
 - [x] Corrigir exibição de dados no modal de iniciar consulta (dados não aparecem)
 
 - [x] Atualizar endpoint create para retornar todos os dados necessários para o modal (IG, DPP, História Obstétrica)
+
+
+## Modal de Informações da Gestante - IG e História Obstétrica (03/02/2026)
+
+- [x] Adicionar Idade Gestacional (IG pela DUM e pelo US) no modal que aparece ao iniciar consulta
+- [x] Adicionar História Obstétrica (G, P, PN, PC, A) no modal que aparece ao iniciar consulta
