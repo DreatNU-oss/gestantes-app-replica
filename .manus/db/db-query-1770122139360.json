@@ -1,0 +1,64 @@
+{
+  "query": "SELECT * FROM emailsAutorizados;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM emailsAutorizados;",
+  "rows": [
+    {
+      "id": "1",
+      "email": "brunna.avellino@icloud.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    },
+    {
+      "id": "2",
+      "email": "allinemiguelreis@hotmail.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    },
+    {
+      "id": "3",
+      "email": "Brunna.avellino@gmail.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    },
+    {
+      "id": "4",
+      "email": "DreatNU@yahoo.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    },
+    {
+      "id": "5",
+      "email": "jenifertc@hotmail.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    },
+    {
+      "id": "6",
+      "email": "crislaineluciano256@gmail.com",
+      "nome": "NULL",
+      "ativo": "1",
+      "adicionadoPor": "NULL",
+      "createdAt": "2026-02-03 12:35:33",
+      "updatedAt": "2026-02-03 12:35:33"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tnome\tativo\tadicionadoPor\tcreatedAt\tupdatedAt\n1\tbrunna.avellino@icloud.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n2\tallinemiguelreis@hotmail.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n3\tBrunna.avellino@gmail.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n4\tDreatNU@yahoo.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n5\tjenifertc@hotmail.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n6\tcrislaineluciano256@gmail.com\tNULL\t1\tNULL\t2026-02-03 12:35:33\t2026-02-03 12:35:33\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

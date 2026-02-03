@@ -10,6 +10,10 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  // Campos para autenticação por senha
+  passwordHash: text("passwordHash"),
+  passwordResetToken: varchar("passwordResetToken", { length: 128 }),
+  passwordResetExpires: timestamp("passwordResetExpires"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -637,3 +641,20 @@ export const arquivosExames = mysqlTable("arquivosExames", {
 
 export type ArquivoExame = typeof arquivosExames.$inferSelect;
 export type InsertArquivoExame = typeof arquivosExames.$inferInsert;
+
+
+/**
+ * Tabela de emails autorizados a acessar o sistema
+ * Apenas emails nesta lista podem fazer login
+ */
+export const emailsAutorizados = mysqlTable("emailsAutorizados", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  adicionadoPor: int("adicionadoPor"), // ID do usuário que adicionou (null se foi o sistema)
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailAutorizado = typeof emailsAutorizados.$inferSelect;
+export type InsertEmailAutorizado = typeof emailsAutorizados.$inferInsert;

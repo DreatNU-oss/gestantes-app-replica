@@ -1,0 +1,58 @@
+{
+  "query": "SELECT id, openId, name, email, role, passwordHash IS NOT NULL as hasPassword FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, openId, name, email, role, passwordHash IS NOT NULL as hasPassword FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "moPqAXbkbFcXAzv6e3vipU",
+      "name": "Andre Schlemper",
+      "email": "DreatNU@yahoo.com",
+      "role": "admin",
+      "hasPassword": "0"
+    },
+    {
+      "id": "930027",
+      "openId": "RjCeSaRf3oATjQXqZUjvw5",
+      "name": "Crislaine Borges",
+      "email": "crislaineluciano256@gmail.com",
+      "role": "user",
+      "hasPassword": "0"
+    },
+    {
+      "id": "2160015",
+      "openId": "BRJ6HD8Yqoksfx5rwnBg6A",
+      "name": "allinemiguelreis",
+      "email": "allinemiguelreis@hotmail.com",
+      "role": "user",
+      "hasPassword": "0"
+    },
+    {
+      "id": "2790001",
+      "openId": "dwVxzWjmr6gYvGkETx3GaL",
+      "name": "jenifertc",
+      "email": "jenifertc@hotmail.com",
+      "role": "user",
+      "hasPassword": "0"
+    },
+    {
+      "id": "10650236",
+      "openId": "nrHPsE9N6YFkpdMGdEFMEf",
+      "name": "Brunna.avellino",
+      "email": "Brunna.avellino@gmail.com",
+      "role": "user",
+      "hasPassword": "0"
+    },
+    {
+      "id": "12600357",
+      "openId": "QRjA3ZrwzdJ5GhtwrRedGe",
+      "name": "brunna.avellino",
+      "email": "brunna.avellino@icloud.com",
+      "role": "user",
+      "hasPassword": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\trole\thasPassword\n1\tmoPqAXbkbFcXAzv6e3vipU\tAndre Schlemper\tDreatNU@yahoo.com\tadmin\t0\n930027\tRjCeSaRf3oATjQXqZUjvw5\tCrislaine Borges\tcrislaineluciano256@gmail.com\tuser\t0\n2160015\tBRJ6HD8Yqoksfx5rwnBg6A\tallinemiguelreis\tallinemiguelreis@hotmail.com\tuser\t0\n2790001\tdwVxzWjmr6gYvGkETx3GaL\tjenifertc\tjenifertc@hotmail.com\tuser\t0\n10650236\tnrHPsE9N6YFkpdMGdEFMEf\tBrunna.avellino\tBrunna.avellino@gmail.com\tuser\t0\n12600357\tQRjA3ZrwzdJ5GhtwrRedGe\tbrunna.avellino\tbrunna.avellino@icloud.com\tuser\t0\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

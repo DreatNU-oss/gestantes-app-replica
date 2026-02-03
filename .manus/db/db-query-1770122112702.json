@@ -1,0 +1,13 @@
+{
+  "query": "SHOW TABLES LIKE 'emailsAutorizados';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW TABLES LIKE 'emailsAutorizados';",
+  "rows": [
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (emailsAutorizados)": "emailsAutorizados"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_bSA4q7aMJsJeSmafooCq7A (emailsAutorizados)\nemailsAutorizados\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

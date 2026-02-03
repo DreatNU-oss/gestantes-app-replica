@@ -726,3 +726,20 @@
 
 ## Layout de Exames Laboratoriais (03/02/2026)
 - [x] Mover seção de histórico de interpretações para parte inferior da página
+
+
+## Sistema de Autenticação Customizado (03/02/2026)
+
+- [x] Criar página de Login com email/senha
+- [x] Usar logo vertical da Clínica Mais Mulher
+- [x] Manter cores da marca (bordô #722F37 e rosa)
+- [x] Criar página de Esqueci Senha
+- [x] Criar página de Redefinir Senha
+- [x] Criar página de gerenciamento de Emails Autorizados
+- [x] Adicionar link para Emails Autorizados no menu Configurações
+- [x] Atualizar rotas no App.tsx
+- [x] Atualizar Home.tsx para redirecionar para /login
+- [x] Backend: endpoints de login com senha
+- [x] Backend: endpoints de recuperação de senha
+- [x] Backend: endpoints de gerenciamento de emails autorizados
+- [x] Migrar emails dos usuários existentes para tabela emailsAutorizados

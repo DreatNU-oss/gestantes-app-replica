@@ -4,6 +4,9 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized } from "./passwordAuth";
+import { sendPasswordResetEmail } from "./email-service";
+import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
 import { z } from "zod";
 import type { GestanteComCalculos } from "../drizzle/schema";
@@ -176,10 +179,86 @@ export const appRouter = router({
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return {
-        success: true,
-      } as const;
+      return { success: true } as const;
     }),
+    
+    // Login com email e senha
+    loginComSenha: publicProcedure
+      .input(z.object({ email: z.string().email(), senha: z.string().min(6) }))
+      .mutation(async ({ input, ctx }) => {
+        const result = await loginWithPassword(input.email, input.senha);
+        if (!result.success || !result.user) {
+          return { success: false, error: result.error };
+        }
+        // Criar sessão usando oauthService
+        const token = await sdk.signSession({ openId: result.user.openId, appId: process.env.VITE_APP_ID || '', name: result.user.name || '' });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, token, cookieOptions);
+        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
+      }),
+    
+    // Solicitar recuperação de senha
+    solicitarRecuperacaoSenha: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        // Verificar se email está autorizado
+        const autorizado = await isEmailAuthorized(input.email);
+        if (!autorizado) {
+          return { success: false, error: 'Este email não está autorizado a acessar o sistema.' };
+        }
+        const token = await createPasswordResetToken(input.email);
+        if (!token) {
+          // Não revelar se email existe ou não
+          return { success: true, message: 'Se o email estiver cadastrado, você receberá um link para redefinir sua senha.' };
+        }
+        // Enviar email
+        await sendPasswordResetEmail({ to: input.email, token });
+        return { success: true, message: 'Se o email estiver cadastrado, você receberá um link para redefinir sua senha.' };
+      }),
+    
+    // Validar token de recuperação
+    validarTokenRecuperacao: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .query(async ({ input }) => {
+        const user = await validateResetToken(input.token);
+        if (!user) {
+          return { valido: false, error: 'Token inválido ou expirado.' };
+        }
+        return { valido: true, email: user.email };
+      }),
+    
+    // Redefinir senha
+    redefinirSenha: publicProcedure
+      .input(z.object({ token: z.string(), novaSenha: z.string().min(6) }))
+      .mutation(async ({ input }) => {
+        const user = await validateResetToken(input.token);
+        if (!user) {
+          return { success: false, error: 'Token inválido ou expirado.' };
+        }
+        await setPassword(user.id, input.novaSenha);
+        return { success: true, message: 'Senha redefinida com sucesso!' };
+      }),
+    
+    // Listar emails autorizados (admin)
+    listarEmailsAutorizados: protectedProcedure.query(async () => {
+      return listAuthorizedEmails();
+    }),
+    
+    // Adicionar email autorizado (admin)
+    adicionarEmailAutorizado: protectedProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input, ctx }) => {
+        await addAuthorizedEmail(input.email, ctx.user?.id);
+        return { success: true };
+      }),
+    
+    // Remover email autorizado (admin)
+    removerEmailAutorizado: protectedProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        await removeAuthorizedEmail(input.email);
+        return { success: true };
+      }),
   }),
 
   planosSaude: router({

@@ -25,6 +25,10 @@ import MonitoramentoEmails from "./pages/MonitoramentoEmails";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import GerenciarFatoresRisco from "./pages/GerenciarFatoresRisco";
 import GerenciarMedicamentosConfig from "./pages/GerenciarMedicamentos";
+import Login from "./pages/Login";
+import EsqueciSenha from "./pages/EsqueciSenha";
+import RedefinirSenha from "./pages/RedefinirSenha";
+import EmailsAutorizados from "./pages/EmailsAutorizados";
 
 function Router() {
   return (
@@ -49,6 +53,10 @@ function Router() {
       <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
       <Route path={"/gerenciar-fatores-risco"} component={GerenciarFatoresRisco} />
       <Route path={"/gerenciar-medicamentos"} component={GerenciarMedicamentosConfig} />
+      <Route path={"/login"} component={Login} />
+      <Route path={"/esqueci-senha"} component={EsqueciSenha} />
+      <Route path={"/redefinir-senha"} component={RedefinirSenha} />
+      <Route path={"/emails-autorizados"} component={EmailsAutorizados} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

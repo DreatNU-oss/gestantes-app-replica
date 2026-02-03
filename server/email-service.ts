@@ -82,3 +82,92 @@ export async function sendVerificationCode({
     return { success: false, error: String(err) };
   }
 }
+
+
+interface SendPasswordResetParams {
+  to: string;
+  token: string;
+  userName?: string;
+}
+
+export async function sendPasswordResetEmail({
+  to,
+  token,
+  userName,
+}: SendPasswordResetParams): Promise<{ success: boolean; error?: string }> {
+  const greeting = userName ? `Olá ${userName}` : "Olá";
+  
+  // Construir URL de redefinição
+  const baseUrl = process.env.VITE_APP_URL || process.env.RAILWAY_PUBLIC_DOMAIN 
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+    : 'http://localhost:3000';
+  const resetUrl = `${baseUrl}/redefinir-senha?token=${token}`;
+
+  try {
+    const gmailUser = await getConfig('gmail_user');
+    const gmailPass = await getConfig('gmail_app_password');
+    
+    if (!gmailUser || !gmailPass) {
+      console.warn("[Email] Gmail não configurado - credenciais não definidas");
+      return { success: false, error: "Email service not configured" };
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailPass,
+      },
+    });
+
+    const result = await transporter.sendMail({
+      from: `"Clínica Mais Mulher" <${gmailUser}>`,
+      to: to,
+      subject: `Redefinição de Senha | Mais Mulher`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #722F37; margin: 0;">Mais Mulher</h1>
+            <p style="color: #C4A4A4; margin: 5px 0;">Clínica de Saúde Feminina</p>
+          </div>
+          
+          <p style="color: #333; font-size: 16px;">${greeting},</p>
+          
+          <p style="color: #333; font-size: 16px;">
+            Recebemos uma solicitação para redefinir sua senha no sistema de Gestão de Pré-Natal.
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+              Redefinir Minha Senha
+            </a>
+          </div>
+          
+          <p style="color: #666; font-size: 14px;">
+            Se o botão não funcionar, copie e cole o link abaixo no seu navegador:
+          </p>
+          <p style="color: #722F37; font-size: 12px; word-break: break-all;">
+            ${resetUrl}
+          </p>
+          
+          <p style="color: #666; font-size: 14px;">
+            Este link expira em 24 horas. Se você não solicitou esta redefinição, ignore este email.
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            Mais Mulher - Clínica de Saúde Feminina<br>
+            Sistema de Gestão de Pré-Natal
+          </p>
+        </div>
+      `,
+    });
+
+    console.log("[Email] Password reset email sent successfully:", result.messageId);
+    return { success: true };
+  } catch (err) {
+    console.error("[Email] Exception sending password reset email:", err);
+    return { success: false, error: String(err) };
+  }
+}

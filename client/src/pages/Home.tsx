@@ -1,18 +1,19 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getLoginUrl } from "@/const";
 import { Baby, Calendar, Calculator } from "lucide-react";
 import { useEffect } from "react";
+import { useLocation } from "wouter";
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const { user, loading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      window.location.href = "/dashboard";
+      setLocation("/dashboard");
     }
-  }, [loading, isAuthenticated]);
+  }, [loading, isAuthenticated, setLocation]);
 
   if (loading) {
     return (
@@ -84,10 +85,8 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <Button size="lg" asChild>
-              <a href={getLoginUrl()}>
-                Entrar no Sistema
-              </a>
+            <Button size="lg" onClick={() => setLocation("/login")}>
+              Entrar no Sistema
             </Button>
             <p className="mt-4 text-sm text-muted-foreground">
               Faça login para começar a usar o sistema

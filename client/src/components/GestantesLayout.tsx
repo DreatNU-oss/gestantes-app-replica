@@ -65,6 +65,7 @@ const configMenuItems = [
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
   { label: "Fatores de Risco", path: "/gerenciar-fatores-risco" },
   { label: "Medicamentos", path: "/gerenciar-medicamentos" },
+  { label: "Emails Autorizados", path: "/emails-autorizados" },
   { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
 ];
 
