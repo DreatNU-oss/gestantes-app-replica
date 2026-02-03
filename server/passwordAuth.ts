@@ -207,7 +207,42 @@ export async function loginWithPassword(email: string, password: string): Promis
 export async function listAuthorizedEmails() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(emailsAutorizados).orderBy(emailsAutorizados.email);
+  
+  // Buscar emails autorizados
+  const emails = await db.select().from(emailsAutorizados).orderBy(emailsAutorizados.email);
+  
+  // Para cada email, verificar se o usuário existe e se está bloqueado
+  const emailsComStatus = await Promise.all(
+    emails.map(async (emailAuth) => {
+      const user = await getUserByEmail(emailAuth.email);
+      let isLocked = false;
+      let lockedUntil: Date | null = null;
+      let failedAttempts = 0;
+      
+      if (user) {
+        failedAttempts = user.failedLoginAttempts || 0;
+        if (user.lockedUntil) {
+          const now = new Date();
+          const lockTime = new Date(user.lockedUntil);
+          if (now < lockTime) {
+            isLocked = true;
+            lockedUntil = lockTime;
+          }
+        }
+      }
+      
+      return {
+        ...emailAuth,
+        userExists: !!user,
+        userName: user?.name || null,
+        isLocked,
+        lockedUntil,
+        failedAttempts
+      };
+    })
+  );
+  
+  return emailsComStatus;
 }
 
 export async function addAuthorizedEmail(email: string, addedBy?: number): Promise<boolean> {

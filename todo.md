@@ -774,3 +774,10 @@
 - [x] Adicionar coluna passwordChangedAt para invalidar sessões
 - [x] Invalidar todas as sessões ao alterar senha
 - [x] Atualizar frontend para mostrar mensagens de bloqueio
+
+
+## Desbloquear Contas Bloqueadas (03/02/2026)
+
+- [x] Atualizar backend para listar status de bloqueio dos usuários
+- [x] Adicionar botão de desbloquear na página de Emails Autorizados
+- [x] Mostrar indicador visual de contas bloqueadas
