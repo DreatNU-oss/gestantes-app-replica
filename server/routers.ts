@@ -578,11 +578,21 @@ export const appRouter = router({
           // Não falhar a criação da gestante se o medicamento não puder ser adicionado
         }
         
-        // Retornar dados da gestante para permitir seleção automática
+        // Retornar dados da gestante para permitir seleção automática e exibir no modal
         return { 
           success: true,
           id: novaGestante.id,
-          nome: novaGestante.nome
+          nome: novaGestante.nome,
+          dum: input.dum || null,
+          tipoDum: input.dum === "Incerta" ? "incerta" : input.dum === "Incompatível com US" ? "incompativel" : "conhecida",
+          dataUltrassom: input.dataUltrassom || null,
+          igUltrassomSemanas: input.igUltrassomSemanas || null,
+          igUltrassomDias: input.igUltrassomDias || null,
+          gesta: input.gesta || null,
+          para: input.para || null,
+          partosNormais: input.partosNormais || null,
+          cesareas: input.cesareas || null,
+          abortos: input.abortos || null,
         };
       }),
     

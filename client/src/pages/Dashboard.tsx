@@ -93,7 +93,20 @@ export default function Dashboard() {
   
   // Estados para diálogo de confirmação de consulta
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
-  const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{id: number, nome: string} | null>(null);
+  const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{
+    id: number;
+    nome: string;
+    dum?: string;
+    tipoDum?: string;
+    dataUltrassom?: string;
+    igUltrassomSemanas?: number;
+    igUltrassomDias?: number;
+    gesta?: number;
+    para?: number;
+    partosNormais?: number;
+    cesareas?: number;
+    abortos?: number;
+  } | null>(null);
   
   // Estados para modal de informações da gestante
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -196,7 +209,20 @@ export default function Dashboard() {
       
       // Se foi criação (não edição), mostrar diálogo de confirmação de consulta
       if (!editingId) {
-        setGestanteParaConsulta({ id: data.id, nome: data.nome });
+        setGestanteParaConsulta({
+          id: data.id,
+          nome: data.nome,
+          dum: data.dum,
+          tipoDum: data.tipoDum,
+          dataUltrassom: data.dataUltrassom,
+          igUltrassomSemanas: data.igUltrassomSemanas,
+          igUltrassomDias: data.igUltrassomDias,
+          gesta: data.gesta,
+          para: data.para,
+          partosNormais: data.partosNormais,
+          cesareas: data.cesareas,
+          abortos: data.abortos,
+        });
         setShowConsultaDialog(true);
       }
     }
@@ -509,13 +535,111 @@ export default function Dashboard() {
 
       {/* Diálogo de Confirmação de Consulta */}
       <Dialog open={showConsultaDialog} onOpenChange={setShowConsultaDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>🎉 Gestante cadastrada com sucesso!</DialogTitle>
-            <DialogDescription>
-              Deseja registrar uma consulta para <strong>{gestanteParaConsulta?.nome}</strong> agora?
-            </DialogDescription>
+            <DialogTitle className="flex items-center gap-2">
+              <Baby className="h-5 w-5 text-[#722F37]" />
+              Gestante cadastrada com sucesso!
+            </DialogTitle>
           </DialogHeader>
+          
+          {/* Informações da Gestante */}
+          {gestanteParaConsulta && (
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <div className="font-semibold text-lg">{gestanteParaConsulta.nome}</div>
+              
+              {/* Idade Gestacional */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">IG (DUM):</span>
+                  <span className="ml-2 font-medium">
+                    {(() => {
+                      if (gestanteParaConsulta.tipoDum === "incerta") return "DUM Incerta";
+                      if (gestanteParaConsulta.tipoDum === "incompativel") return "DUM Incompatível";
+                      if (!gestanteParaConsulta.dum) return "Não informada";
+                      const hoje = new Date();
+                      const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
+                      const diffMs = hoje.getTime() - dumDate.getTime();
+                      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                      const semanas = Math.floor(diffDays / 7);
+                      const dias = diffDays % 7;
+                      return `${semanas}s ${dias}d`;
+                    })()}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">IG (US):</span>
+                  <span className="ml-2 font-medium">
+                    {(() => {
+                      if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "Não informada";
+                      const hoje = new Date();
+                      const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
+                      const diffMs = hoje.getTime() - dataUS.getTime();
+                      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                      const igTotalDias = (gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0) + diffDays;
+                      const semanas = Math.floor(igTotalDias / 7);
+                      const dias = igTotalDias % 7;
+                      return `${semanas}s ${dias}d`;
+                    })()}
+                  </span>
+                </div>
+              </div>
+              
+              {/* DPP */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">DPP (DUM):</span>
+                  <span className="ml-2 font-medium">
+                    {(() => {
+                      if (!gestanteParaConsulta.dum || gestanteParaConsulta.tipoDum !== "data") return "-";
+                      const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
+                      const dppDate = new Date(dumDate);
+                      dppDate.setDate(dppDate.getDate() + 280);
+                      return dppDate.toLocaleDateString('pt-BR');
+                    })()}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">DPP (US):</span>
+                  <span className="ml-2 font-medium">
+                    {(() => {
+                      if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "-";
+                      const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
+                      const diasRestantes = (40 * 7) - ((gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0));
+                      const dppDate = new Date(dataUS);
+                      dppDate.setDate(dppDate.getDate() + diasRestantes);
+                      return dppDate.toLocaleDateString('pt-BR');
+                    })()}
+                  </span>
+                </div>
+              </div>
+              
+              {/* História Obstétrica */}
+              <div className="border-t pt-3 mt-3">
+                <span className="text-muted-foreground text-sm">História Obstétrica:</span>
+                <div className="flex flex-wrap gap-3 mt-2">
+                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
+                    G{gestanteParaConsulta.gesta || 0}
+                  </span>
+                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
+                    P{gestanteParaConsulta.para || 0}
+                  </span>
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
+                    PN: {gestanteParaConsulta.partosNormais || 0}
+                  </span>
+                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">
+                    PC: {gestanteParaConsulta.cesareas || 0}
+                  </span>
+                  <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
+                    A: {gestanteParaConsulta.abortos || 0}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <p className="text-muted-foreground text-sm">Deseja registrar uma consulta agora?</p>
+          
           <DialogFooter>
             <Button
               variant="outline"

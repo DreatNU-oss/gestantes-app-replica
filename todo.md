@@ -787,3 +787,7 @@
 
 - [x] Adicionar Idade Gestacional no modal de iniciar consulta
 - [x] Adicionar História Obstétrica no modal de iniciar consulta
+
+- [x] Corrigir exibição de dados no modal de iniciar consulta (dados não aparecem)
+
+- [x] Atualizar endpoint create para retornar todos os dados necessários para o modal (IG, DPP, História Obstétrica)
