@@ -757,3 +757,11 @@
 - [x] Modificar página de Login para detectar primeiro acesso
 - [x] Permitir criação de senha diretamente na tela de login
 - [x] Remover necessidade de envio de emails para primeiro acesso
+
+
+## Alterar Senha para Usuários Logados (03/02/2026)
+
+- [x] Criar endpoint de backend para alterar senha (verificar senha atual)
+- [x] Criar página/componente de alteração de senha
+- [x] Adicionar link no menu de configurações
+- [x] Testar funcionalidade completa

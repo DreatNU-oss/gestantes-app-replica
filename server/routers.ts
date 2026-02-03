@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
-import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword } from "./passwordAuth";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword } from "./passwordAuth";
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
@@ -284,6 +284,17 @@ export const appRouter = router({
         const cookieOptions = getSessionCookieOptions(ctx.req);
         ctx.res.cookie(COOKIE_NAME, token, cookieOptions);
         return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
+      }),
+    
+    // Alterar senha de usuário logado
+    alterarSenha: protectedProcedure
+      .input(z.object({ 
+        senhaAtual: z.string().min(1),
+        novaSenha: z.string().min(6)
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const result = await changePassword(ctx.user.id, input.senhaAtual, input.novaSenha);
+        return result;
       }),
   }),
 

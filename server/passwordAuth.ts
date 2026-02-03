@@ -218,3 +218,44 @@ export async function createUserWithPassword(email: string, password: string, na
   user = await getUserByEmail(email);
   return { success: true, user };
 }
+
+
+// Alterar senha de usuário logado
+export async function changePassword(userId: number, currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const db = await getDb();
+  if (!db) {
+    return { success: false, error: 'Erro de conexão com o banco de dados.' };
+  }
+  
+  // Buscar usuário
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  
+  const user = result[0];
+  if (!user) {
+    return { success: false, error: 'Usuário não encontrado.' };
+  }
+  
+  // Verificar se o usuário tem senha (pode ter entrado via OAuth)
+  if (!user.passwordHash) {
+    // Usuário não tem senha ainda, apenas definir a nova
+    const hash = await hashPassword(newPassword);
+    await db.update(users).set({ passwordHash: hash }).where(eq(users.id, userId));
+    return { success: true };
+  }
+  
+  // Verificar senha atual
+  const isValid = await verifyPassword(currentPassword, user.passwordHash);
+  if (!isValid) {
+    return { success: false, error: 'Senha atual incorreta.' };
+  }
+  
+  // Definir nova senha
+  const hash = await hashPassword(newPassword);
+  await db.update(users).set({ passwordHash: hash }).where(eq(users.id, userId));
+  
+  return { success: true };
+}

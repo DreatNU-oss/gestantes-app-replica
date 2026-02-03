@@ -29,6 +29,7 @@ import Login from "./pages/Login";
 import EsqueciSenha from "./pages/EsqueciSenha";
 import RedefinirSenha from "./pages/RedefinirSenha";
 import EmailsAutorizados from "./pages/EmailsAutorizados";
+import AlterarSenha from "./pages/AlterarSenha";
 
 function Router() {
   return (
@@ -57,6 +58,7 @@ function Router() {
       <Route path={"/esqueci-senha"} component={EsqueciSenha} />
       <Route path={"/redefinir-senha"} component={RedefinirSenha} />
       <Route path={"/emails-autorizados"} component={EmailsAutorizados} />
+      <Route path={"/alterar-senha"} component={AlterarSenha} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
