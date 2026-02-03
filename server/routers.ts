@@ -1198,13 +1198,16 @@ export const appRouter = router({
         gestanteId: z.number(),
         resultados: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])),
         datas: z.record(z.string(), z.union([z.record(z.string(), z.string()), z.string()])).optional(), // Datas por trimestre ou data única
+        modoAdicionar: z.boolean().optional(), // Se true, adiciona novos resultados sem deletar existentes
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
         
-        // Primeiro, deletar todos os resultados existentes desta gestante
-        await db.delete(resultadosExames).where(eq(resultadosExames.gestanteId, input.gestanteId));
+        // Se não for modo adicionar, deletar todos os resultados existentes
+        if (!input.modoAdicionar) {
+          await db.delete(resultadosExames).where(eq(resultadosExames.gestanteId, input.gestanteId));
+        }
         
         // Preparar array de resultados para inserir
         const resultadosParaInserir: InsertResultadoExame[] = [];
@@ -1217,6 +1220,23 @@ export const appRouter = router({
             if (typeof valor === 'string' && valor.trim()) {
               // Adicionar T12:00:00 para evitar problema de timezone
               const dataExame = typeof datasExame === 'string' ? new Date(`${datasExame}T12:00:00`) : null;
+              
+              // Em modo adicionar, verificar se já existe e atualizar
+              if (input.modoAdicionar) {
+                const existente = await db.select().from(resultadosExames)
+                  .where(and(
+                    eq(resultadosExames.gestanteId, input.gestanteId),
+                    eq(resultadosExames.nomeExame, nomeExame),
+                    eq(resultadosExames.trimestre, 0)
+                  ));
+                if (existente.length > 0) {
+                  await db.update(resultadosExames)
+                    .set({ resultado: valor, dataExame })
+                    .where(eq(resultadosExames.id, existente[0].id));
+                  continue;
+                }
+              }
+              
               resultadosParaInserir.push({
                 gestanteId: input.gestanteId,
                 nomeExame,

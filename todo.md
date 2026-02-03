@@ -698,3 +698,16 @@
 ## Melhorias em Arquivos de Exames (02/02/2026)
 - [x] Implementar desbloqueio automático de PDFs protegidos usando senha salva
 - [x] Adicionar filtro por trimestre na lista de arquivos
+
+## Sistema de Múltiplas Datas por Exame (02/02/2026)
+- [ ] Criar endpoint para buscar histórico de exames por tipo/trimestre
+- [ ] Modificar lógica de salvamento para preservar dados existentes
+- [ ] Criar componente HistoricoExamePopover
+- [ ] Integrar histórico na tabela de exames
+
+## Sistema de Múltiplas Datas por Exame - CONCLUÍDO (03/02/2026)
+- [x] Criar endpoint buscarComHistorico para buscar exames com histórico
+- [x] Modificar endpoint salvar para usar modoAdicionar e preservar dados existentes
+- [x] Integrar HistoricoExamePopover na tabela de exames
+- [x] Adicionar mutation excluirResultado para remover itens do histórico
+- [x] Permitir selecionar valor do histórico como ativo

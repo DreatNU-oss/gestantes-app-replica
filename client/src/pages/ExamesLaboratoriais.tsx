@@ -17,7 +17,8 @@ import { InterpretarExamesModal } from "@/components/InterpretarExamesModal";
 import { ArquivosExamesSection } from "@/components/ArquivosExamesSection";
 import { toast } from "sonner";
 import { HistoricoInterpretacoes } from "@/components/HistoricoInterpretacoes";
-import { Sparkles, ArrowLeft, Loader2, Check, Calendar } from "lucide-react";
+import { HistoricoExamePopover } from "@/components/HistoricoExamePopover";
+import { Sparkles, ArrowLeft, Loader2, Check, Calendar, History } from "lucide-react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
@@ -131,11 +132,15 @@ export default function ExamesLaboratoriais() {
     }
   }, [gestante]);
 
-  // Query para buscar resultados salvos
-  const { data: resultadosSalvos, isLoading: loadingResultados } = trpc.examesLab.buscar.useQuery(
+  // Query para buscar resultados salvos com histórico
+  const { data: dadosExames, isLoading: loadingResultados } = trpc.examesLab.buscarComHistorico.useQuery(
     { gestanteId: gestanteSelecionada! },
     { enabled: !!gestanteSelecionada }
   );
+  
+  // Extrair exames e histórico
+  const resultadosSalvos = dadosExames?.exames;
+  const historicoExames = dadosExames?.historico || {};
 
   // Mutation para salvar resultados
   const salvarMutation = trpc.examesLab.salvar.useMutation({
@@ -156,6 +161,20 @@ export default function ExamesLaboratoriais() {
   
   // Mutation para salvar histórico de interpretações
   const salvarHistoricoMutation = trpc.historicoInterpretacoes.salvar.useMutation();
+  
+  // Utils para invalidar queries
+  const utils = trpc.useUtils();
+  
+  // Mutation para excluir resultado do histórico
+  const excluirResultadoMutation = trpc.examesLab.excluirResultado.useMutation({
+    onSuccess: () => {
+      toast.success('Registro excluído do histórico');
+      utils.examesLab.buscarComHistorico.invalidate({ gestanteId: gestanteSelecionada! });
+    },
+    onError: (error) => {
+      toast.error('Erro ao excluir registro: ' + error.message);
+    },
+  });
 
   // Carregar resultados quando gestante é selecionada
   useEffect(() => {
@@ -282,6 +301,7 @@ export default function ExamesLaboratoriais() {
       gestanteId: gestanteSelecionada,
       resultados: resultadosLimpos,
       datas: Object.keys(datas).length > 0 ? datas : undefined,
+      modoAdicionar: true, // Preservar histórico de exames anteriores
     });
   };
 
@@ -471,9 +491,27 @@ export default function ExamesLaboratoriais() {
     return null;
   };
 
-  // Componente helper para renderizar campo de resultado (Select ou Input)
+  // Componente helper para renderizar campo de resultado (Select ou Input) com histórico
   const renderCampoResultado = (nomeExame: string, trimestre: 1 | 2 | 3, valor: string, subcampo?: string) => {
     const chave = subcampo ? `${subcampo}_${trimestre}` : trimestre.toString();
+    
+    // Obter histórico do exame para este trimestre
+    const chaveHistorico = `${nomeExame}::${trimestre}`;
+    const historicoDoExame = historicoExames[chaveHistorico] || [];
+    
+    // Obter data atual do exame
+    const dataAtual = (typeof resultados[nomeExame] === 'object' && resultados[nomeExame] !== null 
+      ? (resultados[nomeExame] as Record<string, string>)[`data${trimestre}`] 
+      : "") || "";
+    
+    // Função para selecionar um item do histórico como ativo
+    const handleSelecionarHistorico = (item: { id: number; resultado: string; dataExame: string | null }) => {
+      // Atualizar o resultado e a data com os valores do histórico selecionado
+      handleResultadoChange(nomeExame, chave, item.resultado);
+      if (item.dataExame) {
+        handleResultadoChange(nomeExame, `data${trimestre}`, item.dataExame);
+      }
+    };
     
     // Verificar se é um exame sorológico
     const ehSorologico = EXAMES_SOROLOGICOS.includes(nomeExame);
@@ -734,23 +772,36 @@ export default function ExamesLaboratoriais() {
       );
     }
     
-    // Renderizar Input para exames não-sorológicos
+    // Renderizar Input para exames não-sorológicos com botão de histórico
     return (
-      <InputExameValidado
-        nomeExame={obterIdValidacao(nomeExame) || nomeExame}
-        trimestre={trimestre}
-        value={valor}
-        onChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
-        onKeyDown={(e) => {
-          if (e.key === 'Tab' && !e.shiftKey) {
-            const navegou = navegarParaProximoResultado(trimestre);
-            if (navegou) {
-              e.preventDefault();
+      <div className="flex items-center gap-1">
+        <InputExameValidado
+          nomeExame={obterIdValidacao(nomeExame) || nomeExame}
+          trimestre={trimestre}
+          value={valor}
+          onChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+          onKeyDown={(e) => {
+            if (e.key === 'Tab' && !e.shiftKey) {
+              const navegou = navegarParaProximoResultado(trimestre);
+              if (navegou) {
+                e.preventDefault();
+              }
             }
-          }
-        }}
-        className="w-full"
-      />
+          }}
+          className="flex-1"
+        />
+        {historicoDoExame.length > 1 && (
+          <HistoricoExamePopover
+            nomeExame={nomeExame}
+            trimestre={trimestre}
+            historico={historicoDoExame}
+            valorAtual={valor}
+            dataAtual={dataAtual}
+            onExcluir={(id) => excluirResultadoMutation.mutate({ id })}
+            onSelecionarAtivo={handleSelecionarHistorico}
+          />
+        )}
+      </div>
     );
   };
 
