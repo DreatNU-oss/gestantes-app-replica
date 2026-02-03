@@ -1490,11 +1490,6 @@ export default function ExamesLaboratoriais() {
           </Card>
         )}
 
-        {/* Seção de Arquivos de Exames */}
-        {gestanteSelecionada && (
-          <ArquivosExamesSection gestanteId={gestanteSelecionada} />
-        )}
-
         {/* Modal de Edição Rápida de Data */}
         <Dialog open={trimestreEdicao !== null} onOpenChange={(open) => !open && setTrimestreEdicao(null)}>
           <DialogContent>
@@ -1781,6 +1776,13 @@ export default function ExamesLaboratoriais() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Seção de Arquivos de Exames - Histórico de Interpretações */}
+        {gestanteSelecionada && (
+          <div className="mt-8">
+            <ArquivosExamesSection gestanteId={gestanteSelecionada} />
+          </div>
+        )}
       </div>
     </GestantesLayout>
   );
