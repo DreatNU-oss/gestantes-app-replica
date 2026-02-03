@@ -716,3 +716,7 @@
 - [x] Mudar gráfico de pizza para gráfico de barras
 - [x] Adicionar interatividade para ver nomes das pacientes em cada barra
 - [x] Manter valores numéricos visíveis nas barras
+
+## Interatividade em Gráficos Adicionais (03/02/2026)
+- [x] Adicionar clique para ver pacientes no gráfico Partos por Médico
+- [x] Adicionar clique para ver pacientes no gráfico Partos por Convênio

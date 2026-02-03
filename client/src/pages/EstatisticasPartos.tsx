@@ -16,6 +16,14 @@ export default function EstatisticasPartos() {
   // Estado para modal de pacientes
   const [modalAberto, setModalAberto] = useState(false);
   const [tipoSelecionado, setTipoSelecionado] = useState<'Normal' | 'Cesárea' | null>(null);
+  
+  // Estado para modal de médico
+  const [modalMedicoAberto, setModalMedicoAberto] = useState(false);
+  const [medicoSelecionado, setMedicoSelecionado] = useState<string | null>(null);
+  
+  // Estado para modal de convênio
+  const [modalConvenioAberto, setModalConvenioAberto] = useState(false);
+  const [convenioSelecionado, setConvenioSelecionado] = useState<string | null>(null);
 
   // Calcular estatísticas
   const totalPartos = partos?.length || 0;
@@ -69,13 +77,41 @@ export default function EstatisticasPartos() {
     return tipo === 'Normal' ? pacientesNormal : pacientesCesarea;
   };
   
-  // Handler para clique na barra
+  // Handler para clique na barra de tipo de parto
   const handleBarClick = (data: any) => {
     if (data && data.activePayload && data.activePayload[0]) {
       const tipo = data.activePayload[0].payload.name as 'Normal' | 'Cesárea';
       setTipoSelecionado(tipo);
       setModalAberto(true);
     }
+  };
+  
+  // Handler para clique na barra de médico
+  const handleMedicoClick = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const medico = data.activePayload[0].payload.medico as string;
+      setMedicoSelecionado(medico);
+      setModalMedicoAberto(true);
+    }
+  };
+  
+  // Handler para clique na barra de convênio
+  const handleConvenioClick = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const convenio = data.activePayload[0].payload.convenio as string;
+      setConvenioSelecionado(convenio);
+      setModalConvenioAberto(true);
+    }
+  };
+  
+  // Função para obter pacientes por médico
+  const getPacientesPorMedico = (medico: string) => {
+    return partos?.filter((p: any) => (p.medicoNome || 'Não informado') === medico) || [];
+  };
+  
+  // Função para obter pacientes por convênio
+  const getPacientesPorConvenio = (convenio: string) => {
+    return partos?.filter((p: any) => (p.planoSaudeNome || 'Particular') === convenio) || [];
   };
 
   // Dados para gráfico de partos por médico
@@ -260,18 +296,32 @@ export default function EstatisticasPartos() {
           <Card>
             <CardHeader>
               <CardTitle>Partos por Médico</CardTitle>
-              <CardDescription>Distribuição de partos por profissional responsável</CardDescription>
+              <CardDescription>Clique em uma barra para ver os nomes das pacientes</CardDescription>
             </CardHeader>
             <CardContent>
               {partosPorMedico.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={partosPorMedico} layout="vertical">
+                  <BarChart 
+                    data={partosPorMedico} 
+                    layout="vertical"
+                    onClick={handleMedicoClick}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
                     <YAxis dataKey="medico" type="category" width={150} />
-                    <Tooltip />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} partos`, 'Total']}
+                      cursor={{ fill: 'rgba(0,0,0,0.1)' }}
+                    />
                     <Legend />
-                    <Bar dataKey="total" fill="#722F37" name="Partos" />
+                    <Bar dataKey="total" fill="#722F37" name="Partos" radius={[0, 4, 4, 0]}>
+                      <LabelList 
+                        dataKey="total" 
+                        position="right" 
+                        style={{ fontWeight: 'bold', fill: '#333' }}
+                      />
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -286,18 +336,32 @@ export default function EstatisticasPartos() {
           <Card>
             <CardHeader>
               <CardTitle>Partos por Convênio</CardTitle>
-              <CardDescription>Distribuição de partos por plano de saúde</CardDescription>
+              <CardDescription>Clique em uma barra para ver os nomes das pacientes</CardDescription>
             </CardHeader>
             <CardContent>
               {partosPorConvenio.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={partosPorConvenio} layout="vertical">
+                  <BarChart 
+                    data={partosPorConvenio} 
+                    layout="vertical"
+                    onClick={handleConvenioClick}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
                     <YAxis dataKey="convenio" type="category" width={150} />
-                    <Tooltip />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} partos`, 'Total']}
+                      cursor={{ fill: 'rgba(0,0,0,0.1)' }}
+                    />
                     <Legend />
-                    <Bar dataKey="total" fill="#722F37" name="Partos" />
+                    <Bar dataKey="total" fill="#722F37" name="Partos" radius={[0, 4, 4, 0]}>
+                      <LabelList 
+                        dataKey="total" 
+                        position="right" 
+                        style={{ fontWeight: 'bold', fill: '#333' }}
+                      />
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -329,6 +393,73 @@ export default function EstatisticasPartos() {
                     <p className="font-medium">{parto.gestanteNome || 'Nome não informado'}</p>
                     <p className="text-sm text-muted-foreground">
                       {parto.dataParto ? new Date(parto.dataParto).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      {parto.medicoNome && ` • Dr(a). ${parto.medicoNome}`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nenhuma paciente encontrada
+              </p>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Modal de Pacientes por Médico */}
+      <Dialog open={modalMedicoAberto} onOpenChange={setModalMedicoAberto}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Pacientes - Dr(a). {medicoSelecionado}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[400px] pr-4">
+            {medicoSelecionado && getPacientesPorMedico(medicoSelecionado).length > 0 ? (
+              <div className="space-y-2">
+                {getPacientesPorMedico(medicoSelecionado).map((parto: any, index: number) => (
+                  <div 
+                    key={parto.id || index} 
+                    className="p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                  >
+                    <p className="font-medium">{parto.gestanteNome || 'Nome não informado'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {parto.dataParto ? new Date(parto.dataParto).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      {parto.tipoParto && ` • ${parto.tipoParto}`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nenhuma paciente encontrada
+              </p>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Modal de Pacientes por Convênio */}
+      <Dialog open={modalConvenioAberto} onOpenChange={setModalConvenioAberto}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Pacientes - {convenioSelecionado}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[400px] pr-4">
+            {convenioSelecionado && getPacientesPorConvenio(convenioSelecionado).length > 0 ? (
+              <div className="space-y-2">
+                {getPacientesPorConvenio(convenioSelecionado).map((parto: any, index: number) => (
+                  <div 
+                    key={parto.id || index} 
+                    className="p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                  >
+                    <p className="font-medium">{parto.gestanteNome || 'Nome não informado'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {parto.dataParto ? new Date(parto.dataParto).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      {parto.tipoParto && ` • ${parto.tipoParto}`}
                       {parto.medicoNome && ` • Dr(a). ${parto.medicoNome}`}
                     </p>
                   </div>
