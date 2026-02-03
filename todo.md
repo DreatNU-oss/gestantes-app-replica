@@ -711,3 +711,8 @@
 - [x] Integrar HistoricoExamePopover na tabela de exames
 - [x] Adicionar mutation excluirResultado para remover itens do histórico
 - [x] Permitir selecionar valor do histórico como ativo
+
+## Gráfico Tipo de Parto - Melhorias (03/02/2026)
+- [x] Mudar gráfico de pizza para gráfico de barras
+- [x] Adicionar interatividade para ver nomes das pacientes em cada barra
+- [x] Manter valores numéricos visíveis nas barras

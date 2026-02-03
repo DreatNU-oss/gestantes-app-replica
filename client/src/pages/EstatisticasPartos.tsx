@@ -4,12 +4,18 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Baby, Calendar, Users, TrendingUp } from "lucide-react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import GestantesLayout from "@/components/GestantesLayout";
 
 export default function EstatisticasPartos() {
   const [, setLocation] = useLocation();
   const { data: partos, isLoading } = trpc.partos.listar.useQuery();
+  
+  // Estado para modal de pacientes
+  const [modalAberto, setModalAberto] = useState(false);
+  const [tipoSelecionado, setTipoSelecionado] = useState<'Normal' | 'Cesárea' | null>(null);
 
   // Calcular estatísticas
   const totalPartos = partos?.length || 0;
@@ -48,11 +54,29 @@ export default function EstatisticasPartos() {
     return dataA.getTime() - dataB.getTime();
   });
 
-  // Dados para gráfico de pizza (tipo de parto)
+  // Listas de pacientes por tipo de parto
+  const pacientesNormal = partos?.filter((p: any) => p.tipoParto?.toLowerCase() === "normal") || [];
+  const pacientesCesarea = partos?.filter((p: any) => p.tipoParto?.toLowerCase() === "cesárea" || p.tipoParto?.toLowerCase() === "cesarea") || [];
+  
+  // Dados para gráfico de barras (tipo de parto)
   const dadosTipoParto = [
     { name: 'Normal', value: partosNormais, color: '#10b981' },
     { name: 'Cesárea', value: partosCesarea, color: '#f59e0b' }
   ];
+  
+  // Função para obter pacientes do tipo selecionado
+  const getPacientesPorTipo = (tipo: 'Normal' | 'Cesárea') => {
+    return tipo === 'Normal' ? pacientesNormal : pacientesCesarea;
+  };
+  
+  // Handler para clique na barra
+  const handleBarClick = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const tipo = data.activePayload[0].payload.name as 'Normal' | 'Cesárea';
+      setTipoSelecionado(tipo);
+      setModalAberto(true);
+    }
+  };
 
   // Dados para gráfico de partos por médico
   const partosPorMedico = partos?.reduce((acc: { medico: string; total: number }[], parto: any) => {
@@ -185,33 +209,44 @@ export default function EstatisticasPartos() {
             </CardContent>
           </Card>
 
-          {/* Gráfico de Pizza - Tipo de Parto */}
+          {/* Gráfico de Barras - Tipo de Parto */}
           <Card>
             <CardHeader>
-              <CardTitle>Distribuição por Tipo</CardTitle>
-              <CardDescription>Proporção entre partos normais e cesáreas</CardDescription>
+              <CardTitle>Distribuição por Tipo de Parto</CardTitle>
+              <CardDescription>Clique em uma barra para ver os nomes das pacientes</CardDescription>
             </CardHeader>
             <CardContent>
               {totalPartos > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={dadosTipoParto}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
+                  <BarChart 
+                    data={dadosTipoParto} 
+                    layout="vertical"
+                    onClick={handleBarClick}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" width={80} />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} partos`, 'Total']}
+                      cursor={{ fill: 'rgba(0,0,0,0.1)' }}
+                    />
+                    <Legend />
+                    <Bar 
+                      dataKey="value" 
+                      name="Partos" 
+                      radius={[0, 4, 4, 0]}
                     >
                       {dadosTipoParto.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
+                      <LabelList 
+                        dataKey="value" 
+                        position="right" 
+                        style={{ fontWeight: 'bold', fill: '#333' }}
+                      />
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="flex items-center justify-center h-[300px] text-muted-foreground">
@@ -274,6 +309,39 @@ export default function EstatisticasPartos() {
           </Card>
         </div>
       </div>
+      
+      {/* Modal de Pacientes por Tipo de Parto */}
+      <Dialog open={modalAberto} onOpenChange={setModalAberto}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Pacientes - Parto {tipoSelecionado}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[400px] pr-4">
+            {tipoSelecionado && getPacientesPorTipo(tipoSelecionado).length > 0 ? (
+              <div className="space-y-2">
+                {getPacientesPorTipo(tipoSelecionado).map((parto: any, index: number) => (
+                  <div 
+                    key={parto.id || index} 
+                    className="p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                  >
+                    <p className="font-medium">{parto.gestanteNome || 'Nome não informado'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {parto.dataParto ? new Date(parto.dataParto).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      {parto.medicoNome && ` • Dr(a). ${parto.medicoNome}`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nenhuma paciente encontrada
+              </p>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </GestantesLayout>
   );
 }
