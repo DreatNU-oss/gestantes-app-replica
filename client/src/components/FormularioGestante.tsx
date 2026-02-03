@@ -1306,11 +1306,79 @@ export default function FormularioGestante({
       {/* Modal de iniciar consulta */}
       {showStartConsultaModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-background border rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-2">Iniciar consulta?</h3>
-            <p className="text-muted-foreground mb-6">
-              Deseja iniciar uma consulta para <span className="font-semibold">{createdGestanteName}</span>?
+          <div className="bg-background border rounded-lg shadow-lg p-6 max-w-lg w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Iniciar consulta?</h3>
+            
+            {/* Informações da Gestante */}
+            <div className="bg-muted/50 rounded-lg p-4 mb-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Baby className="h-5 w-5 text-[#722F37]" />
+                <span className="font-semibold text-lg">{createdGestanteName}</span>
+              </div>
+              
+              {/* Idade Gestacional */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">IG (DUM):</span>
+                  <span className="ml-2 font-medium">
+                    {calculosEmTempoReal.igDUM 
+                      ? `${calculosEmTempoReal.igDUM.semanas}s ${calculosEmTempoReal.igDUM.dias}d`
+                      : tipoDUM === "incerta" ? "DUM Incerta" : tipoDUM === "incompativel" ? "DUM Incompatível" : "Não informada"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">IG (US):</span>
+                  <span className="ml-2 font-medium">
+                    {calculosEmTempoReal.igUS 
+                      ? `${calculosEmTempoReal.igUS.semanas}s ${calculosEmTempoReal.igUS.dias}d`
+                      : "Não informada"}
+                  </span>
+                </div>
+              </div>
+              
+              {/* DPP */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">DPP (DUM):</span>
+                  <span className="ml-2 font-medium">
+                    {calculosEmTempoReal.dppDUM || "-"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">DPP (US):</span>
+                  <span className="ml-2 font-medium">
+                    {calculosEmTempoReal.dppUS || "-"}
+                  </span>
+                </div>
+              </div>
+              
+              {/* História Obstétrica */}
+              <div className="border-t pt-3 mt-3">
+                <span className="text-muted-foreground text-sm">História Obstétrica:</span>
+                <div className="flex flex-wrap gap-3 mt-2">
+                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
+                    G{formData.gesta || "0"}
+                  </span>
+                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
+                    P{formData.para || "0"}
+                  </span>
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
+                    PN: {formData.partosNormais || "0"}
+                  </span>
+                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">
+                    PC: {formData.cesareas || "0"}
+                  </span>
+                  <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
+                    A: {formData.abortos || "0"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-muted-foreground mb-4 text-sm">
+              Deseja iniciar uma consulta agora?
             </p>
+            
             <div className="flex gap-3 justify-end">
               <Button
                 variant="outline"

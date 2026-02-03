@@ -781,3 +781,9 @@
 - [x] Atualizar backend para listar status de bloqueio dos usuários
 - [x] Adicionar botão de desbloquear na página de Emails Autorizados
 - [x] Mostrar indicador visual de contas bloqueadas
+
+
+## Modal de Iniciar Consulta (03/02/2026)
+
+- [x] Adicionar Idade Gestacional no modal de iniciar consulta
+- [x] Adicionar História Obstétrica no modal de iniciar consulta
