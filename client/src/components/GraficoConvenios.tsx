@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Pie } from "react-chartjs-2";
@@ -9,12 +10,32 @@ import {
   ChartOptions,
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Registrar componentes do Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export function GraficoConvenios() {
   const { data: estatisticas, isLoading } = trpc.estatisticas.convenios.useQuery();
+  const { data: gestantes } = trpc.gestantes.list.useQuery();
+  const { data: planos } = trpc.planosSaude.listarTodos.useQuery();
+  const [modalAberto, setModalAberto] = useState(false);
+  const [convenioSelecionado, setConvenioSelecionado] = useState("");
+  const [gestantesSelecionadas, setGestantesSelecionadas] = useState<Array<{ nome: string; plano: string }>>([]);
 
   if (isLoading) {
     return (
@@ -30,7 +51,7 @@ export function GraficoConvenios() {
     );
   }
 
-  if (!estatisticas || estatisticas.length === 0) {
+  if (!estatisticas || Object.keys(estatisticas).length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -92,9 +113,44 @@ export function GraficoConvenios() {
     ],
   };
 
+  const handleClick = (_event: any, elements: any[]) => {
+    if (elements.length > 0) {
+      const index = elements[0].index;
+      const convenio = labels[index];
+      
+      // Filtrar gestantes por convênio
+      const gestantesDoConvenio = (gestantes || [])
+        .filter(g => {
+          if (g.planoSaudeId) {
+            const plano = (planos || []).find((p: any) => p.id === g.planoSaudeId);
+            return plano?.nome === convenio;
+          } else {
+            return convenio === "Sem plano";
+          }
+        })
+        .map(g => {
+          let nomePlano = "Sem plano";
+          if (g.planoSaudeId) {
+            const plano = (planos || []).find((p: any) => p.id === g.planoSaudeId);
+            nomePlano = plano?.nome || "Sem plano";
+          }
+          return {
+            nome: g.nome,
+            plano: nomePlano,
+          };
+        })
+        .sort((a, b) => a.nome.localeCompare(b.nome));
+      
+      setConvenioSelecionado(convenio);
+      setGestantesSelecionadas(gestantesDoConvenio);
+      setModalAberto(true);
+    }
+  };
+
   const options: ChartOptions<"pie"> = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: handleClick,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -156,18 +212,47 @@ export function GraficoConvenios() {
   const total = valores.reduce((acc, val) => acc + val, 0);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Distribuição por Convênio</CardTitle>
-        <CardDescription>
-          Planos de saúde das {total} gestantes cadastradas
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[350px] flex items-center justify-center">
-          <Pie data={data} options={options} />
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <Card style={{ cursor: 'pointer' }}>
+        <CardHeader>
+          <CardTitle>Distribuição por Convênio</CardTitle>
+          <CardDescription>
+            Planos de saúde das {total} gestantes cadastradas (clique para ver detalhes)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[350px] flex items-center justify-center">
+            <Pie data={data} options={options} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={modalAberto} onOpenChange={setModalAberto}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Gestantes - {convenioSelecionado}</DialogTitle>
+            <DialogDescription>
+              {gestantesSelecionadas.length} gestante(s) com este convênio
+            </DialogDescription>
+          </DialogHeader>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Plano de Saúde</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {gestantesSelecionadas.map((gestante, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{gestante.nome}</TableCell>
+                  <TableCell>{gestante.plano}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

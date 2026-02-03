@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Pie } from "react-chartjs-2";
@@ -9,12 +10,30 @@ import {
   ChartOptions,
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Registrar componentes do Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export function GraficoMotivosCesarea() {
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();
+  const [modalAberto, setModalAberto] = useState(false);
+  const [motivoSelecionado, setMotivoSelecionado] = useState("");
+  const [gestantesSelecionadas, setGestantesSelecionadas] = useState<Array<{ nome: string; motivo: string }>>([]);
 
   if (isLoading) {
     return (
@@ -93,9 +112,30 @@ export function GraficoMotivosCesarea() {
     ],
   };
 
+  const handleClick = (_event: any, elements: any[]) => {
+    if (elements.length > 0) {
+      const index = elements[0].index;
+      const motivo = labels[index];
+      
+      // Filtrar gestantes por motivo de cesárea
+      const gestantesDoMotivo = gestantesComCesarea
+        .filter(g => (g.motivoCesarea || "Não especificado") === motivo)
+        .map(g => ({
+          nome: g.nome,
+          motivo: g.motivoCesarea || "Não especificado",
+        }))
+        .sort((a, b) => a.nome.localeCompare(b.nome));
+      
+      setMotivoSelecionado(motivo);
+      setGestantesSelecionadas(gestantesDoMotivo);
+      setModalAberto(true);
+    }
+  };
+
   const options: ChartOptions<"pie"> = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: handleClick,
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -126,8 +166,8 @@ export function GraficoMotivosCesarea() {
         formatter: (value: number, context: any) => {
           const total = context.dataset.data.reduce((acc: number, val: any) => acc + (val as number), 0);
           const percentage = ((value / total) * 100).toFixed(1);
-          // Só mostrar porcentagem se for >= 5% para evitar sobreposição
-          return percentage >= "5.0" ? `${percentage}%` : '';
+          // Mostrar porcentagem em todas as fatias
+          return `${percentage}%`;
         },
       },
     },
@@ -136,18 +176,47 @@ export function GraficoMotivosCesarea() {
   const total = valores.reduce((acc, val) => acc + val, 0);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Motivos de Indicação de Cesárea</CardTitle>
-        <CardDescription>
-          Distribuição dos motivos de cesárea programada entre {total} gestante{total !== 1 ? 's' : ''}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[400px] flex items-center justify-center">
-          <Pie data={data} options={options} />
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <Card style={{ cursor: 'pointer' }}>
+        <CardHeader>
+          <CardTitle>Motivos de Indicação de Cesárea</CardTitle>
+          <CardDescription>
+            Distribuição dos motivos de cesárea programada entre {total} gestante{total !== 1 ? 's' : ''} (clique para ver detalhes)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center">
+            <Pie data={data} options={options} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={modalAberto} onOpenChange={setModalAberto}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Gestantes - {motivoSelecionado}</DialogTitle>
+            <DialogDescription>
+              {gestantesSelecionadas.length} gestante(s) com este motivo de cesárea
+            </DialogDescription>
+          </DialogHeader>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Motivo de Cesárea</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {gestantesSelecionadas.map((gestante, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{gestante.nome}</TableCell>
+                  <TableCell>{gestante.motivo}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

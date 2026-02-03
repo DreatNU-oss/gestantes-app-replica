@@ -804,3 +804,18 @@
 - [x] Exibir card da gestante selecionada logo abaixo da caixa de pesquisa
 - [x] Incluir ícones de ação (Cartão, Consulta, Exames, Ultrassons) no card
 - [x] Facilitar acesso rápido às funcionalidades da gestante selecionada
+
+
+## Busca Rápida por Teclado (03/02/2026)
+
+- [x] Adicionar navegação por setas (cima/baixo) entre resultados da busca
+- [x] Selecionar gestante com Enter
+- [x] Destacar visualmente o item focado durante navegação
+
+
+## Melhorias nos Gráficos de Estatísticas (03/02/2026)
+
+- [x] Adicionar legenda com percentual em cada fatia do gráfico de pizza de indicação de cesáreana
+- [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de distribuição por convênio
+- [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de motivos de indicação de cesárea
+- [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de tipos de parto indicado
