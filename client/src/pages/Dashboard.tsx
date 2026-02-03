@@ -26,7 +26,13 @@ import {
   Trash2, 
   Eye,
   Filter,
-  Baby
+  Baby,
+  FileText,
+  Stethoscope,
+  TestTube,
+  MonitorDot,
+  X,
+  User
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -400,6 +406,119 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Card da Gestante Selecionada */}
+        {gestanteAtiva && (() => {
+          const gestanteSelecionada = gestantes?.find(g => g.id === gestanteAtiva.id);
+          if (!gestanteSelecionada) return null;
+          
+          // Calcular IG
+          const igUS = gestanteSelecionada.calculado?.igUS;
+          const igDUM = gestanteSelecionada.calculado?.igDUM;
+          const ig = igUS || igDUM;
+          const igTexto = ig ? `${ig.semanas}s ${ig.dias}d` : "-";
+          
+          // Formatar paridade
+          const gesta = gestanteSelecionada.gesta || 0;
+          const para = gestanteSelecionada.para || 0;
+          const pn = gestanteSelecionada.partosNormais || 0;
+          const pc = gestanteSelecionada.cesareas || 0;
+          const abortos = gestanteSelecionada.abortos || 0;
+          const paridade = `G${gesta}P${para}(PN${pn}PC${pc})A${abortos}`;
+          
+          return (
+            <Card className="border-2 border-primary bg-primary/5">
+              <CardContent className="p-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-primary/20 p-3 rounded-full">
+                      <User className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-primary">{gestanteSelecionada.nome}</h3>
+                        <AltoRiscoBadge gestanteId={gestanteSelecionada.id} />
+                      </div>
+                      <div className="flex flex-wrap gap-3 mt-1 text-sm text-muted-foreground">
+                        <span className="font-medium">IG: <span className="text-emerald-600 font-bold">{igTexto}</span></span>
+                        <span>|</span>
+                        <span className="font-medium">Paridade: <span className="text-pink-600 font-bold">{paridade}</span></span>
+                        {gestanteSelecionada.calculado?.dppUS && (
+                          <>
+                            <span>|</span>
+                            <span className="font-medium">DPP: <span className="text-blue-600 font-bold">{formatarDataSegura(gestanteSelecionada.calculado.dppUS)}</span></span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setLocation("/cartao-prenatal")}
+                      className="gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      Cartão
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => {
+                        setGestanteParaConsulta({
+                          id: gestanteSelecionada.id,
+                          nome: gestanteSelecionada.nome,
+                          dum: gestanteSelecionada.dum || undefined,
+                          dataUltrassom: gestanteSelecionada.dataUltrassom || undefined,
+                          igUltrassomSemanas: gestanteSelecionada.igUltrassomSemanas || undefined,
+                          igUltrassomDias: gestanteSelecionada.igUltrassomDias || undefined,
+                          gesta: gestanteSelecionada.gesta || undefined,
+                          para: gestanteSelecionada.para || undefined,
+                          partosNormais: gestanteSelecionada.partosNormais || undefined,
+                          cesareas: gestanteSelecionada.cesareas || undefined,
+                          abortos: gestanteSelecionada.abortos || undefined,
+                        });
+                        setShowConsultaDialog(true);
+                      }}
+                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      <Stethoscope className="h-4 w-4" />
+                      Consulta
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setLocation("/exames-laboratoriais")}
+                      className="gap-2 bg-amber-600 hover:bg-amber-700"
+                    >
+                      <TestTube className="h-4 w-4" />
+                      Exames
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setLocation("/ultrassons")}
+                      className="gap-2 bg-purple-600 hover:bg-purple-700"
+                    >
+                      <MonitorDot className="h-4 w-4" />
+                      Ultrassons
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setGestanteAtiva(null)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         {/* Alertas de Partos Próximos */}
         {gestantes && gestantes.length > 0 && (

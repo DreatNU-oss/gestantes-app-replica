@@ -797,3 +797,10 @@
 
 - [x] Adicionar Idade Gestacional (IG pela DUM e pelo US) no modal que aparece ao iniciar consulta
 - [x] Adicionar História Obstétrica (G, P, PN, PC, A) no modal que aparece ao iniciar consulta
+
+
+## Melhoria na Seleção de Gestante (03/02/2026)
+
+- [x] Exibir card da gestante selecionada logo abaixo da caixa de pesquisa
+- [x] Incluir ícones de ação (Cartão, Consulta, Exames, Ultrassons) no card
+- [x] Facilitar acesso rápido às funcionalidades da gestante selecionada
