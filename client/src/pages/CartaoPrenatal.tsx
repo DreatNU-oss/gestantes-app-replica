@@ -2135,11 +2135,15 @@ export default function CartaoPrenatal() {
         )}
 
         {/* Marcos Importantes da Gestação */}
-        {gestante && gestante.dataUltrassom && (
+        {gestante && (gestante.dataUltrassom || gestante.dum) && (
           <Card>
             <CardHeader>
               <CardTitle>Marcos Importantes da Gestação</CardTitle>
-              <CardDescription>Calculados pela data do Ultrassom</CardDescription>
+              <CardDescription>
+                {gestante.dataUltrassom 
+                  ? "Calculados pela data do Ultrassom" 
+                  : "Calculados pela Data da Última Menstruação (DUM)"}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

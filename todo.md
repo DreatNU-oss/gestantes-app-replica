@@ -855,3 +855,11 @@
 - [x] Atualizar frontend para aceitar "x" e "/" como separadores
 - [x] Atualizar exibição para mostrar no formato "sistolica/diastolica"
 - [x] Testar formatos "120x80" e "120/80" (servidor reiniciado e funcionando)
+
+## Marcos Gestacionais - Fallback para DUM (04/02/2026)
+
+- [x] Analisar código atual dos marcos gestacionais no Cartão de Pré-natal
+- [x] Implementar lógica de preferência: usar ultrassom primeiro, DUM como fallback
+- [x] Atualizar cálculo de IG para marcos quando não houver ultrassom (função calcularDataPorUS já tinha fallback)
+- [x] Testar com gestante TESTE TESTE (sem ultrassom, apenas DUM)
+- [x] Verificar exibição dos marcos no Cartão de Pré-natal (descrição dinâmica implementada)

@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, nome, dataUltrassom, igUltrassomSemanas, igUltrassomDias FROM gestantes WHERE nome = 'TESTE TESTE';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataUltrassom, igUltrassomSemanas, igUltrassomDias FROM gestantes WHERE nome = 'TESTE TESTE';",
+  "rows": [
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "dataUltrassom": "2025-07-01",
+      "igUltrassomSemanas": "7",
+      "igUltrassomDias": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataUltrassom\tigUltrassomSemanas\tigUltrassomDias\n1560002\tTESTE TESTE\t2025-07-01\t7\t0\n",
+  "stderr": "",
+  "execution_time_ms": 69
+}
