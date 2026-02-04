@@ -819,3 +819,9 @@
 - [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de distribuição por convênio
 - [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de motivos de indicação de cesárea
 - [x] Adicionar funcionalidade de clicar para ver lista de gestantes no gráfico de tipos de parto indicado
+
+
+## Ícone de Edição no Card de Gestante Selecionada (04/02/2026)
+
+- [x] Adicionar ícone de edição no card de gestante selecionada no Dashboard
+- [x] Ao clicar no ícone, abrir o formulário de edição da gestante

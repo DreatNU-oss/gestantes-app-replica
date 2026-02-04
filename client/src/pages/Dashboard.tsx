@@ -455,6 +455,19 @@ export default function Dashboard() {
                   
                   <div className="flex items-center gap-2 flex-wrap">
                     <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEditingId(gestanteSelecionada.id);
+                        setShowForm(true);
+                      }}
+                      className="gap-2"
+                      title="Editar cadastro da gestante"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Editar
+                    </Button>
+                    <Button
                       variant="default"
                       size="sm"
                       onClick={() => setLocation("/cartao-prenatal")}
