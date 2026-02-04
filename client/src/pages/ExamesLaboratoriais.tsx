@@ -147,6 +147,28 @@ export default function ExamesLaboratoriais() {
     onSuccess: (data) => {
       clearDraft(); // Limpar rascunho após salvar
       
+      // Se houver versões completas detectadas, mostrar alerta informativo
+      if (data.versoesCompletas && data.versoesCompletas.length > 0) {
+        const trimestreNomes: Record<number, string> = {
+          0: 'Geral',
+          1: '1º Trimestre',
+          2: '2º Trimestre',
+          3: '3º Trimestre',
+        };
+        
+        const versoesTexto = data.versoesCompletas
+          .map(v => {
+            const trimestre = trimestreNomes[v.trimestre];
+            return `• ${v.nomeExame} (${trimestre})\n  Anterior: "${v.resultadoAntigo}"\n  Novo: "${v.resultadoNovo}"`;
+          })
+          .join('\n\n');
+        
+        toast.info(`🔄 Exames atualizados com versões completas`, {
+          description: `${data.versoesCompletas.length} exame(s) foram atualizados de versão parcial para completa:\n\n${versoesTexto}`,
+          duration: 10000,
+        });
+      }
+      
       // Se houver duplicatas, mostrar alerta
       if (data.duplicatas && data.duplicatas.length > 0) {
         const trimestreNomes: Record<number, string> = {

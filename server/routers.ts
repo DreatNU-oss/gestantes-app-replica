@@ -1430,7 +1430,7 @@ export const appRouter = router({
           }
         }
         
-        // Verificar duplicatas antes de inserir
+        // Verificar duplicatas e versões completas antes de inserir
         const duplicatas: Array<{
           nomeExame: string;
           trimestre: number;
@@ -1438,7 +1438,44 @@ export const appRouter = router({
           dataExame: string | null;
         }> = [];
         
+        const versoesCompletas: Array<{
+          nomeExame: string;
+          trimestre: number;
+          resultadoAntigo: string;
+          resultadoNovo: string;
+          dataExame: string | null;
+          idExameAntigo: number;
+        }> = [];
+        
         const resultadosFiltrados: InsertResultadoExame[] = [];
+        
+        // Função auxiliar para verificar se um resultado é mais completo que outro
+        const isVersaoCompleta = (antigo: string, novo: string): boolean => {
+          // Remover espaços e converter para minúsculas para comparação
+          const antigoClean = antigo.trim().toLowerCase();
+          const novoClean = novo.trim().toLowerCase();
+          
+          // Se são idênticos, não é versão completa
+          if (antigoClean === novoClean) return false;
+          
+          // Se o novo contém o antigo e é maior, provavelmente é versão completa
+          if (novoClean.includes(antigoClean) && novoClean.length > antigoClean.length) return true;
+          
+          // Verificar se o antigo tem marcadores de resultado parcial
+          const marcadoresParciais = ['parcial', 'pendente', 'aguardando', 'em análise', '?', 'n/a', '-'];
+          const antigoEhParcial = marcadoresParciais.some(m => antigoClean.includes(m));
+          
+          // Se o antigo é parcial e o novo não é, provavelmente é versão completa
+          const novoEhParcial = marcadoresParciais.some(m => novoClean.includes(m));
+          if (antigoEhParcial && !novoEhParcial && novoClean.length > 0) return true;
+          
+          // Verificar se o novo tem mais conteúdo numérico (mais resultados)
+          const numerosAntigo = antigoClean.match(/\d+/g) || [];
+          const numerosNovo = novoClean.match(/\d+/g) || [];
+          if (numerosNovo.length > numerosAntigo.length && numerosNovo.length > 0) return true;
+          
+          return false;
+        };
         
         for (const novoResultado of resultadosParaInserir) {
           // Buscar resultados existentes com mesmo nome, trimestre e data
@@ -1450,17 +1487,37 @@ export const appRouter = router({
               novoResultado.dataExame ? eq(resultadosExames.dataExame, novoResultado.dataExame) : sql`${resultadosExames.dataExame} IS NULL`
             ));
           
-          // Se encontrou resultado existente com mesmo valor, é duplicata
-          const isDuplicata = existentes.some(e => e.resultado === novoResultado.resultado);
-          
-          if (isDuplicata) {
-            duplicatas.push({
-              nomeExame: novoResultado.nomeExame,
-              trimestre: novoResultado.trimestre,
-              resultado: novoResultado.resultado || '',
-              dataExame: novoResultado.dataExame ? novoResultado.dataExame.toISOString().split('T')[0] : null,
-            });
+          if (existentes.length > 0) {
+            const existente = existentes[0];
+            
+            // Se encontrou resultado existente com mesmo valor, é duplicata
+            if (existente.resultado === novoResultado.resultado) {
+              duplicatas.push({
+                nomeExame: novoResultado.nomeExame,
+                trimestre: novoResultado.trimestre,
+                resultado: novoResultado.resultado || '',
+                dataExame: novoResultado.dataExame ? novoResultado.dataExame.toISOString().split('T')[0] : null,
+              });
+            }
+            // Se o novo resultado é versão completa do antigo, marcar para substituição
+            else if (isVersaoCompleta(existente.resultado || '', novoResultado.resultado || '')) {
+              versoesCompletas.push({
+                nomeExame: novoResultado.nomeExame,
+                trimestre: novoResultado.trimestre,
+                resultadoAntigo: existente.resultado || '',
+                resultadoNovo: novoResultado.resultado || '',
+                dataExame: novoResultado.dataExame ? novoResultado.dataExame.toISOString().split('T')[0] : null,
+                idExameAntigo: existente.id,
+              });
+              // Adicionar para inserção (será substituído depois)
+              resultadosFiltrados.push(novoResultado);
+            }
+            // Se são diferentes mas nenhum é versão completa, adicionar normalmente
+            else {
+              resultadosFiltrados.push(novoResultado);
+            }
           } else {
+            // Não existe, adicionar normalmente
             resultadosFiltrados.push(novoResultado);
           }
         }
@@ -1474,6 +1531,7 @@ export const appRouter = router({
           success: true, 
           count: resultadosFiltrados.length,
           duplicatas: duplicatas.length > 0 ? duplicatas : undefined,
+          versoesCompletas: versoesCompletas.length > 0 ? versoesCompletas : undefined,
           totalProcessados: resultadosParaInserir.length
         };
       }),

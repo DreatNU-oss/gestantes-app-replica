@@ -834,3 +834,12 @@
 - [x] Criar endpoint para verificar duplicatas antes de adicionar
 - [x] Atualizar frontend para mostrar alerta quando detectar duplicata
 - [x] Sistema automaticamente não adiciona duplicatas e alerta o usuário
+
+
+## Comparação Inteligente de Exames (04/02/2026)
+
+- [x] Implementar lógica para detectar quando novo exame é versão completa de um parcial
+- [x] Sistema automaticamente adiciona versão completa quando detecta parcial
+- [x] Sistema mostra alerta informativo sobre atualizações automáticas
+- [x] Mostrar diferenças entre versão parcial e completa no alerta
+- [x] Testar fluxo completo de substituição
