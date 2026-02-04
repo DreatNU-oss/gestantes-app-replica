@@ -132,6 +132,7 @@ export default function CartaoPrenatal() {
     alturaUterina: "",
     bcf: "",
     mf: "",
+    edema: "",
     conduta: [] as string[],
     condutaComplementacao: "",
     observacoes: "",
@@ -1115,6 +1116,7 @@ export default function CartaoPrenatal() {
       alturaUterina: "",
       bcf: "",
       mf: "",
+      edema: "",
       conduta: [],
       condutaComplementacao: "",
       observacoes: "",
@@ -1223,29 +1225,57 @@ export default function CartaoPrenatal() {
       condutaTexto = formData.conduta.join(", ");
     }
     
-    // Montar texto no formato do PEP
+    // Formatar BCF
+    let bcfTexto = "-";
+    if (formData.bcf === "1") {
+      bcfTexto = "Positivo";
+    } else if (formData.bcf === "2") {
+      bcfTexto = "Não audível";
+    }
+    
+    // Formatar Apresentação Fetal (MF - Movimentação Fetal / Apresentação)
+    let apresentacaoTexto = "-";
+    if (formData.mf === "1") {
+      apresentacaoTexto = "Cefálica";
+    } else if (formData.mf === "2") {
+      apresentacaoTexto = "Pélvica";
+    } else if (formData.mf === "3") {
+      apresentacaoTexto = "Transversa";
+    }
+    
+    // Formatar Edema
+    let edemaTexto = "-";
+    if (formData.edema === "0") {
+      edemaTexto = "Ausente";
+    } else if (formData.edema === "1") {
+      edemaTexto = "+";
+    } else if (formData.edema === "2") {
+      edemaTexto = "++";
+    } else if (formData.edema === "3") {
+      edemaTexto = "+++";
+    } else if (formData.edema === "4") {
+      edemaTexto = "++++";
+    }
+    
+    // Montar texto no formato do PEP (com linhas em branco entre itens)
     const linhas = [
-      `Idade Gestacional:`,
-      igTexto,
-      `Queixa(s):`,
-      formData.queixas || "Sem queixas hoje.",
-      `Peso:`,
-      formData.peso ? `${formData.peso}kg` : "-",
-      `AUF:`,
-      aufTexto,
-      `Pressão Arterial:`,
-      formData.pressaoArterial || "-",
-      `Conduta:`,
-      condutaTexto,
+      `Idade Gestacional:\n${igTexto}`,
+      `Queixa(s):\n${formData.queixas || "Sem queixas hoje."}`,
+      `Peso:\n${formData.peso ? `${formData.peso}kg` : "-"}`,
+      `AUF:\n${aufTexto}`,
+      `BCF:\n${bcfTexto}`,
+      `Apresentação Fetal:\n${apresentacaoTexto}`,
+      `Edema:\n${edemaTexto}`,
+      `Pressão Arterial:\n${formData.pressaoArterial || "-"}`,
+      `Conduta:\n${condutaTexto}`,
     ];
     
     // Adicionar complementação se houver
     if (formData.condutaComplementacao) {
-      linhas.push(`Conduta (complementação):`);
-      linhas.push(formData.condutaComplementacao);
+      linhas.push(`Conduta (complementação):\n${formData.condutaComplementacao}`);
     }
     
-    return linhas.join("\n");
+    return linhas.join("\n\n");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -1310,6 +1340,7 @@ export default function CartaoPrenatal() {
       alturaUterina: consulta.alturaUterina === -1 ? "nao_palpavel" : (consulta.alturaUterina ? String(consulta.alturaUterina / 10) : ""),
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
+      edema: "",
       conduta: condutaArray,
       condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
@@ -2189,6 +2220,7 @@ export default function CartaoPrenatal() {
                           alturaUterina: "",
                           bcf: "",
                           mf: "",
+                          edema: "",
                           conduta: [],
                           condutaComplementacao: "",
                           observacoes: "",

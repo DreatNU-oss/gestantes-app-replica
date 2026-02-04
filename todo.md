@@ -876,3 +876,12 @@
 - [x] Implementar função para gerar texto formatado no padrão PEP
 - [x] Criar modal após salvar consulta com texto formatado e botão "Copiar para PEP"
 - [x] Testar funcionalidade com gestante TESTE TESTE
+
+## Campos Adicionais no Texto PEP (04/02/2026)
+
+- [x] Adicionar campo edema no estado do formulário
+- [x] Adicionar BCF no texto gerado para PEP
+- [x] Adicionar Apresentação Fetal no texto gerado para PEP
+- [x] Adicionar Edema no texto gerado para PEP
+- [x] Adicionar linhas em branco entre itens do texto PEP para melhor separação visual
+- [x] Testar texto completo com todos os campos
