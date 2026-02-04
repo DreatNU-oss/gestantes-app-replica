@@ -825,3 +825,12 @@
 
 - [x] Adicionar ícone de edição no card de gestante selecionada no Dashboard
 - [x] Ao clicar no ícone, abrir o formulário de edição da gestante
+
+
+## Detecção de Exames Laboratoriais Duplicados (04/02/2026)
+
+- [x] Identificar onde os exames são processados e adicionados no backend
+- [x] Implementar lógica de comparação de exames (mesma data e resultados idênticos)
+- [x] Criar endpoint para verificar duplicatas antes de adicionar
+- [x] Atualizar frontend para mostrar alerta quando detectar duplicata
+- [x] Sistema automaticamente não adiciona duplicatas e alerta o usuário

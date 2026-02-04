@@ -146,10 +146,38 @@ export default function ExamesLaboratoriais() {
   const salvarMutation = trpc.examesLab.salvar.useMutation({
     onSuccess: (data) => {
       clearDraft(); // Limpar rascunho após salvar
-      toast.success(`✅ Resultados salvos com sucesso!`, {
-        description: `${data.count} registro(s) de exames foram salvos para a gestante.`,
-        duration: 4000,
-      });
+      
+      // Se houver duplicatas, mostrar alerta
+      if (data.duplicatas && data.duplicatas.length > 0) {
+        const trimestreNomes: Record<number, string> = {
+          0: 'Geral',
+          1: '1º Trimestre',
+          2: '2º Trimestre',
+          3: '3º Trimestre',
+        };
+        
+        const duplicatasTexto = data.duplicatas
+          .map(d => `${d.nomeExame} (${trimestreNomes[d.trimestre]}) - Data: ${d.dataExame || 'N/A'}`)
+          .join('\n');
+        
+        toast.warning(`⚠️ Exames duplicados não foram adicionados`, {
+          description: `${data.duplicatas.length} exame(s) com mesma data e resultados já existem:\n${duplicatasTexto}`,
+          duration: 8000,
+        });
+      }
+      
+      // Mostrar mensagem de sucesso
+      if (data.count > 0) {
+        toast.success(`✅ Resultados salvos com sucesso!`, {
+          description: `${data.count} de ${data.totalProcessados} registro(s) foram salvos.`,
+          duration: 4000,
+        });
+      } else if (!data.duplicatas || data.duplicatas.length === 0) {
+        toast.info(`ℹ️ Nenhum resultado novo para salvar`, {
+          description: 'Todos os exames já estavam cadastrados.',
+          duration: 4000,
+        });
+      }
     },
     onError: (error) => {
       toast.error('Erro ao salvar resultados', {

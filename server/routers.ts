@@ -1430,12 +1430,52 @@ export const appRouter = router({
           }
         }
         
-        // Inserir todos os resultados de uma vez
-        if (resultadosParaInserir.length > 0) {
-          await db.insert(resultadosExames).values(resultadosParaInserir);
+        // Verificar duplicatas antes de inserir
+        const duplicatas: Array<{
+          nomeExame: string;
+          trimestre: number;
+          resultado: string;
+          dataExame: string | null;
+        }> = [];
+        
+        const resultadosFiltrados: InsertResultadoExame[] = [];
+        
+        for (const novoResultado of resultadosParaInserir) {
+          // Buscar resultados existentes com mesmo nome, trimestre e data
+          const existentes = await db.select().from(resultadosExames)
+            .where(and(
+              eq(resultadosExames.gestanteId, input.gestanteId),
+              eq(resultadosExames.nomeExame, novoResultado.nomeExame),
+              eq(resultadosExames.trimestre, novoResultado.trimestre),
+              novoResultado.dataExame ? eq(resultadosExames.dataExame, novoResultado.dataExame) : sql`${resultadosExames.dataExame} IS NULL`
+            ));
+          
+          // Se encontrou resultado existente com mesmo valor, é duplicata
+          const isDuplicata = existentes.some(e => e.resultado === novoResultado.resultado);
+          
+          if (isDuplicata) {
+            duplicatas.push({
+              nomeExame: novoResultado.nomeExame,
+              trimestre: novoResultado.trimestre,
+              resultado: novoResultado.resultado || '',
+              dataExame: novoResultado.dataExame ? novoResultado.dataExame.toISOString().split('T')[0] : null,
+            });
+          } else {
+            resultadosFiltrados.push(novoResultado);
+          }
         }
         
-        return { success: true, count: resultadosParaInserir.length };
+        // Inserir apenas os resultados não duplicados
+        if (resultadosFiltrados.length > 0) {
+          await db.insert(resultadosExames).values(resultadosFiltrados);
+        }
+        
+        return { 
+          success: true, 
+          count: resultadosFiltrados.length,
+          duplicatas: duplicatas.length > 0 ? duplicatas : undefined,
+          totalProcessados: resultadosParaInserir.length
+        };
       }),
 
     // Verificar se PDF está protegido por senha
