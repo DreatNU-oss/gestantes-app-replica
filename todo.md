@@ -843,3 +843,15 @@
 - [x] Sistema mostra alerta informativo sobre atualizações automáticas
 - [x] Mostrar diferenças entre versão parcial e completa no alerta
 - [x] Testar fluxo completo de substituição
+
+
+## Correção do Formato de Pressão Arterial (04/02/2026)
+
+- [x] Localizar formulário de cadastro de consultas onde pressão arterial é inserida
+- [x] Adicionar campos pressaoSistolica e pressaoDiastolica (INTEGER) no schema do banco
+- [x] Executar migração do banco de dados
+- [x] Criar script para migrar dados existentes de pressaoArterial para os novos campos (310 consultas migradas com sucesso)
+- [x] Atualizar backend (routers.ts) para processar ambos os formatos e salvar nos campos separados
+- [x] Atualizar frontend para aceitar "x" e "/" como separadores
+- [x] Atualizar exibição para mostrar no formato "sistolica/diastolica"
+- [x] Testar formatos "120x80" e "120/80" (servidor reiniciado e funcionando)

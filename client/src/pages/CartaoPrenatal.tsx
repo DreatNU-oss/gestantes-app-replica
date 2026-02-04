@@ -670,7 +670,9 @@ export default function CartaoPrenatal() {
           
           pdf.text(`Data: ${new Date(consulta.dataConsulta).toLocaleDateString('pt-BR')} | IG DUM: ${igDUMTexto} | IG US: ${igUSTexto}`, 20, y);
           y += 5;
-          const paFormatado = consulta.pressaoArterial || '-';
+          const paFormatado = consulta.pressaoSistolica && consulta.pressaoDiastolica 
+            ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
+            : consulta.pressaoArterial || '-';
           const auFormatado = consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)}cm` : '-';
           pdf.text(`Peso: ${pesoFormatado} | PA: ${paFormatado} | AU: ${auFormatado}`, 20, y);
           y += 5;
@@ -1237,7 +1239,9 @@ export default function CartaoPrenatal() {
     setFormData({
       dataConsulta: new Date(consulta.dataConsulta).toISOString().split('T')[0],
       peso: consulta.peso ? String(consulta.peso / 1000) : "",
-      pressaoArterial: consulta.pressaoArterial || "",
+      pressaoArterial: consulta.pressaoSistolica && consulta.pressaoDiastolica
+        ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
+        : consulta.pressaoArterial || "",
       alturaUterina: consulta.alturaUterina === -1 ? "nao_palpavel" : (consulta.alturaUterina ? String(consulta.alturaUterina / 10) : ""),
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
@@ -1914,7 +1918,7 @@ export default function CartaoPrenatal() {
                       type="text"
                       value={formData.pressaoArterial}
                       onChange={(e) => setFormData({ ...formData, pressaoArterial: e.target.value })}
-                      placeholder="Ex: 120/80"
+                      placeholder="Ex: 120/80 ou 120x80"
                     />
                   </div>
                   <div>
@@ -2238,8 +2242,12 @@ export default function CartaoPrenatal() {
                         <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            {consulta.pressaoArterial || "-"}
-                            {isBPAbnormal(consulta.pressaoArterial) && (
+                            {consulta.pressaoSistolica && consulta.pressaoDiastolica 
+                              ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
+                              : consulta.pressaoArterial || "-"}
+                            {((consulta.pressaoSistolica && consulta.pressaoSistolica >= 140) || 
+                              (consulta.pressaoDiastolica && consulta.pressaoDiastolica >= 90) ||
+                              isBPAbnormal(consulta.pressaoArterial)) && (
                               <span title="Pressão arterial ≥140/90 mmHg">
                                 <AlertTriangle className="h-4 w-4 text-red-600" />
                               </span>

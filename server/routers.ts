@@ -788,6 +788,8 @@ export const appRouter = router({
         igUltrassomDias: z.number().optional(),
         peso: z.number().optional(),
         pressaoArterial: z.string().optional(),
+        pressaoSistolica: z.number().optional(),
+        pressaoDiastolica: z.number().optional(),
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
         mf: z.number().optional(),
@@ -800,6 +802,16 @@ export const appRouter = router({
           ...input,
           dataConsulta: parseLocalDate(input.dataConsulta),
         };
+        
+        // Processar pressão arterial se fornecida como string
+        if (input.pressaoArterial && !input.pressaoSistolica && !input.pressaoDiastolica) {
+          const match = input.pressaoArterial.match(/(\d+)\s*[\/xX]\s*(\d+)/);
+          if (match) {
+            data.pressaoSistolica = parseInt(match[1]);
+            data.pressaoDiastolica = parseInt(match[2]);
+          }
+        }
+        
         return createConsultaPrenatal(data);
       }),
     
@@ -815,6 +827,8 @@ export const appRouter = router({
         igUltrassomDias: z.number().optional(),
         peso: z.number().optional(),
         pressaoArterial: z.string().optional(),
+        pressaoSistolica: z.number().optional(),
+        pressaoDiastolica: z.number().optional(),
         alturaUterina: z.number().optional(),
         bcf: z.number().optional(),
         mf: z.number().optional(),
@@ -826,6 +840,16 @@ export const appRouter = router({
         const { id, ...rest } = input;
         const data: any = { ...rest };
         if (data.dataConsulta) data.dataConsulta = parseLocalDate(data.dataConsulta);
+        
+        // Processar pressão arterial se fornecida como string
+        if (input.pressaoArterial && !input.pressaoSistolica && !input.pressaoDiastolica) {
+          const match = input.pressaoArterial.match(/(\d+)\s*[\/xX]\s*(\d+)/);
+          if (match) {
+            data.pressaoSistolica = parseInt(match[1]);
+            data.pressaoDiastolica = parseInt(match[2]);
+          }
+        }
+        
         return updateConsulta(id, data);
       }),
     

@@ -198,7 +198,9 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   igUltrassomSemanas: int("igUltrassomSemanas"),
   igUltrassomDias: int("igUltrassomDias"),
   peso: int("peso"), // em gramas
-  pressaoArterial: varchar("pressaoArterial", { length: 20 }),
+  pressaoArterial: varchar("pressaoArterial", { length: 20 }), // manter por compatibilidade
+  pressaoSistolica: int("pressaoSistolica"), // pressão sistólica em mmHg
+  pressaoDiastolica: int("pressaoDiastolica"), // pressão diastólica em mmHg
   alturaUterina: int("alturaUterina"), // em mm
   bcf: int("bcf"), // batimentos cardíacos fetais
   mf: int("mf"), // movimento fetal (1 = sim, 0 = não)
