@@ -863,3 +863,7 @@
 - [x] Atualizar cálculo de IG para marcos quando não houver ultrassom (função calcularDataPorUS já tinha fallback)
 - [x] Testar com gestante TESTE TESTE (sem ultrassom, apenas DUM)
 - [x] Verificar exibição dos marcos no Cartão de Pré-natal (descrição dinâmica implementada)
+
+## Melhorar texto explicativo DUM incompatível no Dashboard (04/02/2026)
+
+- [x] Alterar texto "DUM Incompatível" para "Não considerada (incompatível com US)" no Dashboard

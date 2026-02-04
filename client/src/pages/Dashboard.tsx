@@ -687,7 +687,7 @@ export default function Dashboard() {
                   <span className="ml-2 font-medium">
                     {(() => {
                       if (gestanteParaConsulta.tipoDum === "incerta") return "DUM Incerta";
-                      if (gestanteParaConsulta.tipoDum === "incompativel") return "DUM Incompatível";
+                      if (gestanteParaConsulta.tipoDum === "incompativel") return "Não considerada (incompatível com US)";
                       if (!gestanteParaConsulta.dum) return "Não informada";
                       const hoje = new Date();
                       const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
