@@ -207,6 +207,7 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   conduta: text("conduta"), // JSON array com condutas selecionadas
   condutaComplementacao: text("condutaComplementacao"), // texto livre para complementação
   observacoes: text("observacoes"),
+  queixas: text("queixas"), // queixas da gestante na consulta
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

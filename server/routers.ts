@@ -796,6 +796,7 @@ export const appRouter = router({
         conduta: z.string().optional(),
         condutaComplementacao: z.string().optional(),
         observacoes: z.string().optional(),
+        queixas: z.string().optional(),
       }))
       .mutation(({ input }) => {
         const data: any = {
@@ -835,6 +836,7 @@ export const appRouter = router({
         conduta: z.string().optional(),
         condutaComplementacao: z.string().optional(),
         observacoes: z.string().optional(),
+        queixas: z.string().optional(),
       }))
       .mutation(({ input }) => {
         const { id, ...rest } = input;

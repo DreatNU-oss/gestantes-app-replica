@@ -98,6 +98,10 @@ export default function CartaoPrenatal() {
   
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
+  
+  // Estado para modal de texto PEP
+  const [showPEPModal, setShowPEPModal] = useState(false);
+  const [textoPEP, setTextoPEP] = useState("");
 
   // Lista de opções de conduta predefinidas
   const OPCOES_CONDUTA = [
@@ -131,6 +135,7 @@ export default function CartaoPrenatal() {
     conduta: [] as string[],
     condutaComplementacao: "",
     observacoes: "",
+    queixas: "",
   });
 
   // Auto-save: salvar rascunho automaticamente (500ms padrão)
@@ -286,6 +291,8 @@ export default function CartaoPrenatal() {
     onSuccess: () => {
       toast.success("Consulta registrada com sucesso!");
       refetchConsultas();
+      // Mostrar modal PEP antes de resetar o formulário
+      setShowPEPModal(true);
       resetForm();
       // Invalidar cache de alertas de consultas atrasadas
       utils.gestantes.semConsultaRecente.invalidate();
@@ -1111,6 +1118,7 @@ export default function CartaoPrenatal() {
       conduta: [],
       condutaComplementacao: "",
       observacoes: "",
+      queixas: "",
     });
     clearDraft(); // Limpar rascunho ao resetar formulário
     setMostrarFormulario(false);
@@ -1188,6 +1196,58 @@ export default function CartaoPrenatal() {
     return marcos;
   };
 
+  // Função para gerar texto formatado para PEP
+  const gerarTextoPEP = () => {
+    // Calcular IG (prioridade: US > DUM)
+    const igUS = calcularIGPorUS(formData.dataConsulta);
+    const igDUM = calcularIG(formData.dataConsulta);
+    
+    let igTexto = "-";
+    if (igUS && !isNaN(igUS.semanas) && !isNaN(igUS.dias)) {
+      igTexto = `${igUS.semanas}+${igUS.dias}/7`;
+    } else if (igDUM && !isNaN(igDUM.semanas) && !isNaN(igDUM.dias)) {
+      igTexto = `${igDUM.semanas}+${igDUM.dias}/7`;
+    }
+    
+    // Formatar AUF
+    let aufTexto = "-";
+    if (formData.alturaUterina === "nao_palpavel") {
+      aufTexto = "Não palpável";
+    } else if (formData.alturaUterina) {
+      aufTexto = `${formData.alturaUterina}cm`;
+    }
+    
+    // Formatar conduta
+    let condutaTexto = "-";
+    if (formData.conduta.length > 0) {
+      condutaTexto = formData.conduta.join(", ");
+    }
+    
+    // Montar texto no formato do PEP
+    const linhas = [
+      `Idade Gestacional:`,
+      igTexto,
+      `Queixa(s):`,
+      formData.queixas || "Sem queixas hoje.",
+      `Peso:`,
+      formData.peso ? `${formData.peso}kg` : "-",
+      `AUF:`,
+      aufTexto,
+      `Pressão Arterial:`,
+      formData.pressaoArterial || "-",
+      `Conduta:`,
+      condutaTexto,
+    ];
+    
+    // Adicionar complementação se houver
+    if (formData.condutaComplementacao) {
+      linhas.push(`Conduta (complementação):`);
+      linhas.push(formData.condutaComplementacao);
+    }
+    
+    return linhas.join("\n");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -1195,6 +1255,10 @@ export default function CartaoPrenatal() {
       toast.error("Selecione uma gestante");
       return;
     }
+    
+    // Gerar texto PEP antes de salvar (enquanto formData ainda está disponível)
+    const textoGerado = gerarTextoPEP();
+    setTextoPEP(textoGerado);
 
     // Calcular IG pela DUM e pelo Ultrassom
     const igDUM = calcularIG(formData.dataConsulta);
@@ -1211,6 +1275,7 @@ export default function CartaoPrenatal() {
       conduta: formData.conduta.length > 0 ? JSON.stringify(formData.conduta) : undefined,
       condutaComplementacao: formData.condutaComplementacao || undefined,
       observacoes: formData.observacoes || undefined,
+      queixas: formData.queixas || undefined,
       // Salvar IG calculada pela DUM
       igDumSemanas: (igDUM && !isNaN(igDUM.semanas)) ? igDUM.semanas : undefined,
       igDumDias: (igDUM && !isNaN(igDUM.dias)) ? igDUM.dias : undefined,
@@ -1248,6 +1313,7 @@ export default function CartaoPrenatal() {
       conduta: condutaArray,
       condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
+      queixas: consulta.queixas || "",
     });
     setMostrarFormulario(true);
   };
@@ -1902,6 +1968,15 @@ export default function CartaoPrenatal() {
                       })()}
                     </div>
                   </div>
+                  <div className="col-span-2">
+                    <Label>Queixa(s)</Label>
+                    <Input
+                      type="text"
+                      value={formData.queixas}
+                      onChange={(e) => setFormData({ ...formData, queixas: e.target.value })}
+                      placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
+                    />
+                  </div>
                   <div>
                     <Label>Peso (kg)</Label>
                     <Input
@@ -2117,6 +2192,7 @@ export default function CartaoPrenatal() {
                           conduta: [],
                           condutaComplementacao: "",
                           observacoes: "",
+                          queixas: "",
                         });
                         toast.success('Rascunho limpo', {
                           description: 'Formulário resetado com sucesso.',
@@ -2459,6 +2535,49 @@ export default function CartaoPrenatal() {
           gestanteId={gestanteSelecionada}
           gestanteNome={gestante?.nome || ""}
         />
+
+        {/* Modal de Texto para PEP */}
+        {showPEPModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-lg mx-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Copiar para PEP
+                </CardTitle>
+                <CardDescription>
+                  Texto formatado para colar no Prontuário Eletrônico
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Textarea
+                  value={textoPEP}
+                  readOnly
+                  rows={12}
+                  className="font-mono text-sm bg-muted"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(textoPEP);
+                      toast.success("Texto copiado para a área de transferência!");
+                    }}
+                    className="flex-1"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copiar Texto
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowPEPModal(false)}
+                  >
+                    Fechar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </GestantesLayout>
   );

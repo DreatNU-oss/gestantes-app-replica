@@ -1,0 +1,1 @@
+ALTER TABLE `consultasPrenatal` ADD `queixas` text;

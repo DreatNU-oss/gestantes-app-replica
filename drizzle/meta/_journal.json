@@ -330,6 +330,13 @@
       "when": 1770221501480,
       "tag": "0046_green_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1770239682313,
+      "tag": "0047_gorgeous_machine_man",
+      "breakpoints": true
     }
   ]
 }

@@ -867,3 +867,12 @@
 ## Melhorar texto explicativo DUM incompatível no Dashboard (04/02/2026)
 
 - [x] Alterar texto "DUM Incompatível" para "Não considerada (incompatível com US)" no Dashboard
+
+## Campo Queixas e Texto para PEP (04/02/2026)
+
+- [x] Adicionar campo "queixas" no schema do banco de dados (consultasPrenatal)
+- [x] Atualizar routers/procedures para incluir campo queixas
+- [x] Adicionar campo Queixas no formulário de nova consulta
+- [x] Implementar função para gerar texto formatado no padrão PEP
+- [x] Criar modal após salvar consulta com texto formatado e botão "Copiar para PEP"
+- [x] Testar funcionalidade com gestante TESTE TESTE
