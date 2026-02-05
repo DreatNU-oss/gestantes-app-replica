@@ -1,22 +1,8 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const connection = await mysql.createConnection(process.env.DATABASE_URL);
-
-// Buscar gestante TESTE TESTE
 const [rows] = await connection.execute(
-  "SELECT id, nome, token FROM gestante WHERE nome LIKE '%TESTE%' LIMIT 1"
+  "SELECT g.id, g.nome, sg.token FROM sessoesGestante sg JOIN gestantes g ON sg.gestanteId = g.id WHERE g.nome LIKE '%TESTE%' ORDER BY sg.createdAt DESC LIMIT 1"
 );
-
-if (rows.length > 0) {
-  console.log('Gestante encontrada:');
-  console.log('ID:', rows[0].id);
-  console.log('Nome:', rows[0].nome);
-  console.log('Token:', rows[0].token);
-} else {
-  console.log('Nenhuma gestante de teste encontrada');
-}
-
+console.log(JSON.stringify(rows[0], null, 2));
 await connection.end();

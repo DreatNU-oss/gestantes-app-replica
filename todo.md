@@ -991,3 +991,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar botão de copiar (ícone Copy) na coluna de ações da tabela de histórico
 - [x] Criar modal "Texto PEP - Consulta Anterior" para visualizar e copiar o texto
 - [x] Testar funcionalidade - modal abre corretamente com texto formatado
+
+
+## Correção PDF Mobile - jsPDF (05/02/2026)
+- [x] Substituir Puppeteer por jsPDF (100% JavaScript, sem dependências de sistema)
+- [x] Implementar geração de PDF com jsPDF incluindo gráficos SVG
+- [x] Testar geração de PDF localmente - PDF de 3 páginas gerado com sucesso
+- [ ] Publicar e testar em produção

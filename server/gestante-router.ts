@@ -6,7 +6,7 @@ import { randomBytes, createHash } from "crypto";
 import { sendVerificationCode } from "./email-service";
 import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
 import { gerarHTMLCartaoCompleto, DadosPdfCompleto } from "./pdfTemplateCompleto";
-import { htmlToPdf } from "./htmlToPdf";
+import { gerarPdfComJsPDF } from "./htmlToPdf";
 import { gerarTodosGraficos, DadoConsulta } from "./chartGenerator";
 
 // Generate 6-digit verification code
@@ -802,9 +802,8 @@ export const gestanteRouter = router({
         fatoresRisco: fatoresRisco.map((f: any) => ({ tipo: f.tipo })),
         medicamentos: medicamentos.map((m: any) => ({ tipo: m.tipo, especificacao: m.especificacao })),
       };
-      // Gerar HTML e converter para PDF usando WeasyPrint
-      const html = gerarHTMLCartaoCompleto(dadosPdf);
-      const pdfBuffer = await htmlToPdf(html);
+      // Gerar PDF usando jsPDF (100% JavaScript, sem dependências externas)
+      const pdfBuffer = await gerarPdfComJsPDF(dadosPdf);
       const pdfBase64 = pdfBuffer.toString('base64');
       const nomeGestante = gestante.nome.replace(/\s+/g, '-').toLowerCase();
       const filename = `cartao-prenatal-${nomeGestante}.pdf`;

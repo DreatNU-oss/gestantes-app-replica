@@ -1,0 +1,15 @@
+{
+  "query": "SELECT g.id, g.nome, sg.token FROM sessoesGestante sg JOIN gestantes g ON sg.gestanteId = g.id WHERE g.nome LIKE '%TESTE%' ORDER BY sg.createdAt DESC LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, sg.token FROM sessoesGestante sg JOIN gestantes g ON sg.gestanteId = g.id WHERE g.nome LIKE '%TESTE%' ORDER BY sg.createdAt DESC LIMIT 1;",
+  "rows": [
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "token": "375af8535502e9b8e7bd260c073b4335355419e4a69d5311b6553e6cb8420af40daad15ff5531d96696462a5c86ddf5dd85bc721f3b7d31ce27e934e8f5bc80f"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttoken\n1560002\tTESTE TESTE\t375af8535502e9b8e7bd260c073b4335355419e4a69d5311b6553e6cb8420af40daad15ff5531d96696462a5c86ddf5dd85bc721f3b7d31ce27e934e8f5bc80f\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}
