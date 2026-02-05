@@ -965,5 +965,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Converter SVG para PNG usando sharp (biblioteca compatível com produção)
 - [x] Atualizar pdfCharts.ts para usar nova implementação
 - [x] Testar geração de PDF localmente - gráficos aparecem corretamente
+- [x] Corrigir comando WeasyPrint para detectar automaticamente o Python disponível
 - [ ] Publicar versão corrigida e testar em produção
 

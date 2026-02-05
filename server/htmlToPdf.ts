@@ -9,7 +9,7 @@ const execAsync = promisify(exec);
 /**
  * Converte HTML para PDF usando WeasyPrint
  * WeasyPrint é uma biblioteca Python que converte HTML/CSS para PDF
- * Já está instalado no ambiente do Manus
+ * Tenta diferentes métodos de execução para compatibilidade
  */
 export async function htmlToPdf(html: string): Promise<Buffer> {
   // Criar arquivos temporários
@@ -22,22 +22,49 @@ export async function htmlToPdf(html: string): Promise<Buffer> {
     // Escrever HTML no arquivo temporário
     await fs.promises.writeFile(htmlPath, html, 'utf-8');
 
-    // Executar WeasyPrint para converter HTML para PDF
-    // Limpar VIRTUAL_ENV e PYTHONPATH para evitar conflitos de versão
+    // Limpar variáveis de ambiente Python para evitar conflitos
     const cleanEnv = { ...process.env };
     delete cleanEnv.VIRTUAL_ENV;
     delete cleanEnv.PYTHONPATH;
     delete cleanEnv.PYTHONHOME;
-    
-    await execAsync(`/usr/bin/python3.11 -m weasyprint "${htmlPath}" "${pdfPath}"`, {
-      timeout: 60000, // 60 segundos de timeout (gráficos podem demorar)
-      env: cleanEnv,
-    });
 
-    // Ler o PDF gerado
-    const pdfBuffer = await fs.promises.readFile(pdfPath);
+    // Lista de comandos para tentar (em ordem de preferência)
+    const commands = [
+      `weasyprint "${htmlPath}" "${pdfPath}"`,                    // Comando direto (mais comum em produção)
+      `python3 -m weasyprint "${htmlPath}" "${pdfPath}"`,         // Via python3
+      `python -m weasyprint "${htmlPath}" "${pdfPath}"`,          // Via python
+      `/usr/bin/python3.11 -m weasyprint "${htmlPath}" "${pdfPath}"`, // Python 3.11 específico (sandbox)
+      `/usr/bin/python3 -m weasyprint "${htmlPath}" "${pdfPath}"`,    // Python 3 específico
+    ];
 
-    return pdfBuffer;
+    let lastError: Error | null = null;
+
+    for (const cmd of commands) {
+      try {
+        await execAsync(cmd, {
+          timeout: 60000, // 60 segundos de timeout
+          env: cleanEnv,
+        });
+
+        // Se chegou aqui, o comando funcionou
+        // Verificar se o PDF foi gerado
+        if (fs.existsSync(pdfPath)) {
+          const pdfBuffer = await fs.promises.readFile(pdfPath);
+          if (pdfBuffer.length > 0) {
+            console.log(`[htmlToPdf] PDF gerado com sucesso usando: ${cmd.split(' ')[0]}`);
+            return pdfBuffer;
+          }
+        }
+      } catch (error) {
+        lastError = error as Error;
+        // Continuar tentando outros comandos
+        continue;
+      }
+    }
+
+    // Se nenhum comando funcionou, lançar o último erro
+    throw lastError || new Error('Nenhum método de conversão PDF disponível');
+
   } finally {
     // Limpar arquivos temporários
     try {
