@@ -346,30 +346,41 @@ export default function CartaoPrenatal() {
     
     setIsGerandoPDF(true);
     try {
-      // Chamar backend para gerar PDF
-      const result = await gerarPDFMutation.mutateAsync({ gestanteId: gestante.id });
+      // Abrir página de impressão em nova janela
+      const url = `/cartao-prenatal-impressao/${gestante.id}`;
+      const janela = window.open(url, '_blank', 'width=900,height=1200');
       
-      // Converter base64 para blob
-      const pdfBlob = new Blob(
-        [Uint8Array.from(atob(result.pdf), c => c.charCodeAt(0))],
-        { type: 'application/pdf' }
-      );
+      if (!janela) {
+        toast.error('Popup bloqueado. Permita popups para este site.');
+        return;
+      }
       
-      // Criar link de download
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = result.filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      // Aguardar carregamento e chamar print automaticamente
+      const checkLoaded = setInterval(() => {
+        try {
+          if (janela.document && janela.document.body.getAttribute('data-content-loaded') === 'true') {
+            clearInterval(checkLoaded);
+            // Aguardar gráficos renderizarem
+            setTimeout(() => {
+              janela.print();
+              toast.success('Use "Salvar como PDF" no diálogo de impressão para baixar o PDF.');
+              setIsGerandoPDF(false);
+            }, 2000);
+          }
+        } catch (e) {
+          // Ignorar erros de cross-origin - a janela vai carregar normalmente
+        }
+      }, 500);
       
-      toast.success('PDF gerado com sucesso!');
+      // Timeout após 30 segundos
+      setTimeout(() => {
+        clearInterval(checkLoaded);
+        setIsGerandoPDF(false);
+      }, 30000);
+      
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
-      toast.error('Erro ao gerar PDF. Tente novamente.');
-    } finally {
+      toast.error('Erro ao abrir página de impressão.');
       setIsGerandoPDF(false);
     }
   };
@@ -2535,12 +2546,14 @@ export default function CartaoPrenatal() {
               {isGerandoPDF ? (
                 <>
                   <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  Gerando PDF...
+                  Abrindo...
                 </>
               ) : (
                 <>
-                  <Download className="h-5 w-5 mr-2" />
-                  Baixar PDF Profissional
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+                  </svg>
+                  Imprimir / Salvar PDF
                 </>
               )}
             </Button>

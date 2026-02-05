@@ -2048,7 +2048,7 @@ export const appRouter = router({
         gestanteId: z.number(),
       }))
       .mutation(async ({ input, ctx }) => {
-        const { gerarEUploadPdfCartao } = await import('./gerarPdfParaParto');
+        const { gerarPDFComPuppeteer } = await import('./pdfPuppeteer');
         const { getGestanteById } = await import('./db');
         
         // Buscar dados da gestante
@@ -2057,13 +2057,23 @@ export const appRouter = router({
           throw new Error('Gestante não encontrada');
         }
 
-        // Gerar PDF usando a mesma função dos partos realizados
-        const { pdfUrl, pdfKey } = await gerarEUploadPdfCartao(input.gestanteId);
-        
-        // Baixar o PDF do S3 para retornar como base64
-        const response = await fetch(pdfUrl);
-        const arrayBuffer = await response.arrayBuffer();
-        const pdfBuffer = Buffer.from(arrayBuffer);
+        // Determinar URL base do servidor
+        // Em produção, usar a URL pública; em dev, usar localhost
+        const baseUrl = process.env.NODE_ENV === 'production' 
+          ? (process.env.PUBLIC_URL || 'http://localhost:3000')
+          : 'http://localhost:3000';
+
+        // Extrair cookies de autenticação da requisição
+        const cookieHeader = ctx.req.headers.cookie || '';
+        const cookies = cookieHeader.split(';').map(c => {
+          const [name, ...valueParts] = c.trim().split('=');
+          return { name, value: valueParts.join('=') };
+        }).filter(c => c.name && c.value);
+
+        console.log('[PDF] Cookies extraídos:', cookies.map(c => c.name));
+
+        // Gerar PDF usando Puppeteer (renderiza a página HTML)
+        const pdfBuffer = await gerarPDFComPuppeteer(input.gestanteId, baseUrl, cookies);
         
         // Retornar PDF como base64
         return {

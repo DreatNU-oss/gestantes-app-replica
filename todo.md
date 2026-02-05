@@ -911,3 +911,14 @@
 - [x] Remover Telefone da gestante no PDF Profissional (pdf.ts e pdfTemplate.ts)
 - [x] Testar versão HTML de impressão
 - [x] Testar versão PDF profissional
+
+## Geração de PDF com Puppeteer (04/02/2026)
+
+- [x] Instalar Puppeteer no projeto (instalado, mas não funciona em produção)
+- [x] Instalar html2canvas e jsPDF como alternativa
+- [x] Testar várias abordagens (Puppeteer, iframe, html2canvas)
+- [x] Implementar solução final: abrir página de impressão + window.print()
+- [x] Renomear botão para "Imprimir / Salvar PDF"
+- [x] Usuário usa "Salvar como PDF" no diálogo de impressão do navegador
+
+Nota: A abordagem final é a mais confiável pois usa o motor de renderização nativo do navegador.
