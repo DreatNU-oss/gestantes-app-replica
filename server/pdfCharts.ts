@@ -1,5 +1,10 @@
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
+/**
+ * Gerador de gráficos SVG para o PDF do Cartão de Pré-natal
+ * Usa SVG puro convertido para PNG via sharp (sem dependências nativas como canvas)
+ */
+
 import { ConsultaPrenatal } from '../drizzle/schema';
+import sharp from 'sharp';
 
 // Dados de referência para Altura Uterina (Ministério da Saúde/FEBRASGO)
 const auReferenceData: Record<number, { min: number; max: number; median: number }> = {
@@ -43,82 +48,66 @@ interface ChartDataPoint {
 }
 
 /**
- * Gera gráfico de Altura Uterina como imagem PNG
+ * Converte SVG para Buffer PNG usando sharp
  */
-export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buffer> {
+async function svgToBuffer(svg: string): Promise<Buffer> {
+  try {
+    const pngBuffer = await sharp(Buffer.from(svg))
+      .png()
+      .toBuffer();
+    return pngBuffer;
+  } catch (error) {
+    console.error('[pdfCharts] Erro ao converter SVG para PNG:', error);
+    // Retornar um PNG vazio em caso de erro
+    return Buffer.from('');
+  }
+}
+
+/**
+ * Gera gráfico de Altura Uterina como SVG string
+ */
+function gerarSVGAU(consultas: ConsultaPrenatal[]): string {
   const width = 500;
   const height = 280;
   const padding = { top: 30, right: 30, bottom: 40, left: 50 };
   
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  
-  // Fundo branco
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, width, height);
-  
-  // Área do gráfico
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
   
-  // Escalas
   const xMin = 12, xMax = 42;
   const yMin = 0, yMax = 45;
   
   const scaleX = (x: number) => padding.left + ((x - xMin) / (xMax - xMin)) * chartWidth;
   const scaleY = (y: number) => padding.top + chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight;
   
-  // Desenhar área de referência (percentis 10-90)
-  ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-  ctx.beginPath();
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" style="background: white; font-family: Arial, sans-serif;">`;
+  
+  // Área de referência (percentis 10-90)
   const weeks = Object.keys(auReferenceData).map(Number).sort((a, b) => a - b);
-  
-  // Linha superior (percentil 90)
-  ctx.moveTo(scaleX(weeks[0]), scaleY(auReferenceData[weeks[0]].max));
+  let areaPath = `M ${scaleX(weeks[0])} ${scaleY(auReferenceData[weeks[0]].max)}`;
   weeks.forEach(week => {
-    ctx.lineTo(scaleX(week), scaleY(auReferenceData[week].max));
+    areaPath += ` L ${scaleX(week)} ${scaleY(auReferenceData[week].max)}`;
   });
-  
-  // Linha inferior (percentil 10) - reverso
   for (let i = weeks.length - 1; i >= 0; i--) {
-    ctx.lineTo(scaleX(weeks[i]), scaleY(auReferenceData[weeks[i]].min));
+    areaPath += ` L ${scaleX(weeks[i])} ${scaleY(auReferenceData[weeks[i]].min)}`;
   }
-  ctx.closePath();
-  ctx.fill();
+  areaPath += ' Z';
+  svg += `<path d="${areaPath}" fill="rgba(200, 200, 200, 0.3)"/>`;
   
-  // Desenhar linhas de referência
-  // Percentil 90 (linha tracejada)
-  ctx.strokeStyle = '#999999';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([5, 5]);
-  ctx.beginPath();
-  ctx.moveTo(scaleX(weeks[0]), scaleY(auReferenceData[weeks[0]].max));
+  // Linhas de referência tracejadas
+  let maxPath = `M ${scaleX(weeks[0])} ${scaleY(auReferenceData[weeks[0]].max)}`;
+  let minPath = `M ${scaleX(weeks[0])} ${scaleY(auReferenceData[weeks[0]].min)}`;
+  let medianPath = `M ${scaleX(weeks[0])} ${scaleY(auReferenceData[weeks[0]].median)}`;
   weeks.forEach(week => {
-    ctx.lineTo(scaleX(week), scaleY(auReferenceData[week].max));
+    maxPath += ` L ${scaleX(week)} ${scaleY(auReferenceData[week].max)}`;
+    minPath += ` L ${scaleX(week)} ${scaleY(auReferenceData[week].min)}`;
+    medianPath += ` L ${scaleX(week)} ${scaleY(auReferenceData[week].median)}`;
   });
-  ctx.stroke();
-  
-  // Percentil 10 (linha tracejada)
-  ctx.beginPath();
-  ctx.moveTo(scaleX(weeks[0]), scaleY(auReferenceData[weeks[0]].min));
-  weeks.forEach(week => {
-    ctx.lineTo(scaleX(week), scaleY(auReferenceData[week].min));
-  });
-  ctx.stroke();
-  
-  // Mediana (linha tracejada)
-  ctx.strokeStyle = '#666666';
-  ctx.setLineDash([3, 3]);
-  ctx.beginPath();
-  ctx.moveTo(scaleX(weeks[0]), scaleY(auReferenceData[weeks[0]].median));
-  weeks.forEach(week => {
-    ctx.lineTo(scaleX(week), scaleY(auReferenceData[week].median));
-  });
-  ctx.stroke();
-  ctx.setLineDash([]);
+  svg += `<path d="${maxPath}" fill="none" stroke="#999999" stroke-width="1" stroke-dasharray="5,5"/>`;
+  svg += `<path d="${minPath}" fill="none" stroke="#999999" stroke-width="1" stroke-dasharray="5,5"/>`;
+  svg += `<path d="${medianPath}" fill="none" stroke="#666666" stroke-width="1" stroke-dasharray="3,3"/>`;
   
   // Processar dados das consultas
-  
   const dataPoints: ChartDataPoint[] = consultas
     .filter(c => c.alturaUterina && c.alturaUterina > 0)
     .map(c => {
@@ -126,159 +115,76 @@ export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buf
       if (c.igUltrassomDias) igSemanas += c.igUltrassomDias / 7;
       else if (c.igDumDias) igSemanas += c.igDumDias / 7;
       
-      // Converter de mm para cm (valores no banco estão em mm)
       const auCm = (c.alturaUterina as number) / 10;
-      
-      return {
-        x: igSemanas,
-        y: auCm,
-        label: `${auCm}cm`
-      };
+      return { x: igSemanas, y: auCm };
     })
     .filter(p => p.x >= 12 && p.x <= 42)
     .sort((a, b) => a.x - b.x);
   
-  // Desenhar linha dos dados
+  // Linha dos dados
   if (dataPoints.length > 0) {
-    ctx.strokeStyle = '#8B4049';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(scaleX(dataPoints[0].x), scaleY(dataPoints[0].y));
+    let dataPath = `M ${scaleX(dataPoints[0].x)} ${scaleY(dataPoints[0].y)}`;
     dataPoints.forEach(p => {
-      ctx.lineTo(scaleX(p.x), scaleY(p.y));
+      dataPath += ` L ${scaleX(p.x)} ${scaleY(p.y)}`;
     });
-    ctx.stroke();
+    svg += `<path d="${dataPath}" fill="none" stroke="#8B4049" stroke-width="2"/>`;
     
-    // Desenhar pontos e labels
+    // Pontos e labels
     dataPoints.forEach(p => {
-      // Contorno branco do ponto (para destacar)
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 7, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Borda do ponto
-      ctx.strokeStyle = '#8B4049';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 6, 0, Math.PI * 2);
-      ctx.stroke();
-      
-      // Ponto preenchido
-      ctx.fillStyle = '#8B4049';
-      ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 5, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Label com fundo branco para melhor legibilidade
-      const labelText = `${p.y}`;
-      ctx.font = 'bold 10px Arial';
-      const textWidth = ctx.measureText(labelText).width;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.fillRect(scaleX(p.x) - textWidth/2 - 2, scaleY(p.y) - 20, textWidth + 4, 14);
-      ctx.fillStyle = '#8B4049';
-      ctx.textAlign = 'center';
-      ctx.fillText(labelText, scaleX(p.x), scaleY(p.y) - 9);
+      svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="5" fill="#8B4049"/>`;
+      svg += `<text x="${scaleX(p.x)}" y="${scaleY(p.y) - 8}" text-anchor="middle" font-size="9" fill="#8B4049" font-weight="bold">${p.y}</text>`;
     });
   }
   
-  // Eixo X
-  ctx.strokeStyle = '#333333';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top + chartHeight);
-  ctx.lineTo(width - padding.right, padding.top + chartHeight);
-  ctx.stroke();
+  // Eixos
+  svg += `<line x1="${padding.left}" y1="${padding.top + chartHeight}" x2="${width - padding.right}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
+  svg += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
   
-  // Labels do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '9px Arial';
-  ctx.textAlign = 'center';
-  for (let week = 12; week <= 42; week += 2) {
-    ctx.fillText(`${week}s`, scaleX(week), height - 10);
+  // Labels eixo X
+  for (let week = 12; week <= 42; week += 4) {
+    svg += `<text x="${scaleX(week)}" y="${height - 10}" text-anchor="middle" font-size="9" fill="#666666">${week}s</text>`;
   }
   
-  // Eixo Y
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top);
-  ctx.lineTo(padding.left, padding.top + chartHeight);
-  ctx.stroke();
-  
-  // Labels do eixo Y
-  ctx.textAlign = 'right';
-  for (let y = 0; y <= 45; y += 5) {
-    ctx.fillText(`${y}`, padding.left - 5, scaleY(y) + 3);
+  // Labels eixo Y
+  for (let y = 0; y <= 45; y += 10) {
+    svg += `<text x="${padding.left - 5}" y="${scaleY(y) + 3}" text-anchor="end" font-size="9" fill="#666666">${y}</text>`;
   }
   
   // Título
-  ctx.fillStyle = '#8B4049';
-  ctx.font = 'bold 12px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Evolução da Altura Uterina (AU)', width / 2, 15);
+  svg += `<text x="${width / 2}" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#8B4049">Evolução da Altura Uterina (AU)</text>`;
   
-  // Label do eixo Y
-  ctx.save();
-  ctx.translate(12, height / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('AU (cm)', 0, 0);
-  ctx.restore();
+  // Labels dos eixos
+  svg += `<text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="10" fill="#666666">Idade Gestacional (semanas)</text>`;
+  svg += `<text x="12" y="${height / 2}" text-anchor="middle" font-size="10" fill="#666666" transform="rotate(-90, 12, ${height / 2})">AU (cm)</text>`;
   
-  // Label do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Idade Gestacional (semanas)', width / 2, height - 2);
-  
-  return canvas.toBuffer('image/png');
+  svg += '</svg>';
+  return svg;
 }
 
 /**
- * Gera gráfico de Pressão Arterial como imagem PNG
+ * Gera gráfico de Pressão Arterial como SVG string
  */
-export async function gerarGraficoPA(consultas: ConsultaPrenatal[]): Promise<Buffer> {
+function gerarSVGPA(consultas: ConsultaPrenatal[]): string {
   const width = 500;
   const height = 280;
   const padding = { top: 30, right: 30, bottom: 40, left: 50 };
   
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  
-  // Fundo branco
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, width, height);
-  
-  // Área do gráfico
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
   
-  // Escalas
   const xMin = 4, xMax = 42;
   const yMin = 40, yMax = 160;
   
   const scaleX = (x: number) => padding.left + ((x - xMin) / (xMax - xMin)) * chartWidth;
   const scaleY = (y: number) => padding.top + chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight;
   
-  // Linha de limite de hipertensão sistólica (140 mmHg)
-  ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([5, 5]);
-  ctx.beginPath();
-  ctx.moveTo(padding.left, scaleY(140));
-  ctx.lineTo(width - padding.right, scaleY(140));
-  ctx.stroke();
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" style="background: white; font-family: Arial, sans-serif;">`;
   
-  // Linha de limite de hipertensão diastólica (90 mmHg)
-  ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
-  ctx.beginPath();
-  ctx.moveTo(padding.left, scaleY(90));
-  ctx.lineTo(width - padding.right, scaleY(90));
-  ctx.stroke();
-  ctx.setLineDash([]);
+  // Linhas de limite de hipertensão
+  svg += `<line x1="${padding.left}" y1="${scaleY(140)}" x2="${width - padding.right}" y2="${scaleY(140)}" stroke="rgba(255, 0, 0, 0.5)" stroke-width="1" stroke-dasharray="5,5"/>`;
+  svg += `<line x1="${padding.left}" y1="${scaleY(90)}" x2="${width - padding.right}" y2="${scaleY(90)}" stroke="rgba(0, 0, 255, 0.5)" stroke-width="1" stroke-dasharray="5,5"/>`;
   
-  // Processar dados das consultas
+  // Processar dados
   const sistolicaPoints: ChartDataPoint[] = [];
   const diastolicaPoints: ChartDataPoint[] = [];
   
@@ -296,130 +202,166 @@ export async function gerarGraficoPA(consultas: ConsultaPrenatal[]): Promise<Buf
     else if (c.igDumDias) igSemanas += c.igDumDias / 7;
     
     if (igSemanas >= 4 && igSemanas <= 42) {
-      sistolicaPoints.push({ x: igSemanas, y: sistolica, label: `${sistolica}` });
-      diastolicaPoints.push({ x: igSemanas, y: diastolica, label: `${diastolica}` });
+      sistolicaPoints.push({ x: igSemanas, y: sistolica });
+      diastolicaPoints.push({ x: igSemanas, y: diastolica });
     }
   });
   
   sistolicaPoints.sort((a, b) => a.x - b.x);
   diastolicaPoints.sort((a, b) => a.x - b.x);
   
-  // Desenhar linha sistólica
+  // Linha sistólica
   if (sistolicaPoints.length > 0) {
-    ctx.strokeStyle = '#DC2626';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(scaleX(sistolicaPoints[0].x), scaleY(sistolicaPoints[0].y));
+    let sisPath = `M ${scaleX(sistolicaPoints[0].x)} ${scaleY(sistolicaPoints[0].y)}`;
     sistolicaPoints.forEach(p => {
-      ctx.lineTo(scaleX(p.x), scaleY(p.y));
+      sisPath += ` L ${scaleX(p.x)} ${scaleY(p.y)}`;
     });
-    ctx.stroke();
+    svg += `<path d="${sisPath}" fill="none" stroke="#DC2626" stroke-width="2"/>`;
     
-    // Pontos sistólicos
     sistolicaPoints.forEach(p => {
-      const isHigh = p.y >= 140;
-      ctx.fillStyle = isHigh ? '#DC2626' : '#DC2626';
-      ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#333333';
-      ctx.font = '9px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(`${p.y}`, scaleX(p.x), scaleY(p.y) - 8);
+      svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="4" fill="#DC2626"/>`;
+      svg += `<text x="${scaleX(p.x)}" y="${scaleY(p.y) - 8}" text-anchor="middle" font-size="8" fill="#333333">${p.y}</text>`;
     });
   }
   
-  // Desenhar linha diastólica
+  // Linha diastólica
   if (diastolicaPoints.length > 0) {
-    ctx.strokeStyle = '#2563EB';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(scaleX(diastolicaPoints[0].x), scaleY(diastolicaPoints[0].y));
+    let diaPath = `M ${scaleX(diastolicaPoints[0].x)} ${scaleY(diastolicaPoints[0].y)}`;
     diastolicaPoints.forEach(p => {
-      ctx.lineTo(scaleX(p.x), scaleY(p.y));
+      diaPath += ` L ${scaleX(p.x)} ${scaleY(p.y)}`;
     });
-    ctx.stroke();
+    svg += `<path d="${diaPath}" fill="none" stroke="#2563EB" stroke-width="2"/>`;
     
-    // Pontos diastólicos
     diastolicaPoints.forEach(p => {
-      const isHigh = p.y >= 90;
-      ctx.fillStyle = isHigh ? '#2563EB' : '#2563EB';
-      ctx.beginPath();
-      ctx.arc(scaleX(p.x), scaleY(p.y), 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.fillStyle = '#333333';
-      ctx.font = '9px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(`${p.y}`, scaleX(p.x), scaleY(p.y) + 14);
+      svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="4" fill="#2563EB"/>`;
+      svg += `<text x="${scaleX(p.x)}" y="${scaleY(p.y) + 14}" text-anchor="middle" font-size="8" fill="#333333">${p.y}</text>`;
     });
   }
   
-  // Eixo X
-  ctx.strokeStyle = '#333333';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top + chartHeight);
-  ctx.lineTo(width - padding.right, padding.top + chartHeight);
-  ctx.stroke();
+  // Eixos
+  svg += `<line x1="${padding.left}" y1="${padding.top + chartHeight}" x2="${width - padding.right}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
+  svg += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
   
-  // Labels do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '9px Arial';
-  ctx.textAlign = 'center';
+  // Labels eixo X
   for (let week = 4; week <= 42; week += 4) {
-    ctx.fillText(`${week}s`, scaleX(week), height - 10);
+    svg += `<text x="${scaleX(week)}" y="${height - 10}" text-anchor="middle" font-size="9" fill="#666666">${week}s</text>`;
   }
   
-  // Eixo Y
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top);
-  ctx.lineTo(padding.left, padding.top + chartHeight);
-  ctx.stroke();
-  
-  // Labels do eixo Y
-  ctx.textAlign = 'right';
+  // Labels eixo Y
   for (let y = 40; y <= 160; y += 20) {
-    ctx.fillText(`${y}`, padding.left - 5, scaleY(y) + 3);
+    svg += `<text x="${padding.left - 5}" y="${scaleY(y) + 3}" text-anchor="end" font-size="9" fill="#666666">${y}</text>`;
   }
   
   // Título
-  ctx.fillStyle = '#8B4049';
-  ctx.font = 'bold 12px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Evolução da Pressão Arterial', width / 2, 15);
+  svg += `<text x="${width / 2}" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#8B4049">Evolução da Pressão Arterial</text>`;
   
   // Legenda
-  ctx.font = '9px Arial';
-  ctx.fillStyle = '#DC2626';
-  ctx.fillRect(width - 120, 8, 10, 10);
-  ctx.fillStyle = '#333333';
-  ctx.textAlign = 'left';
-  ctx.fillText('Sistólica', width - 105, 16);
+  svg += `<rect x="${width - 120}" y="8" width="10" height="10" fill="#DC2626"/>`;
+  svg += `<text x="${width - 105}" y="16" font-size="9" fill="#333333">Sistólica</text>`;
+  svg += `<rect x="${width - 60}" y="8" width="10" height="10" fill="#2563EB"/>`;
+  svg += `<text x="${width - 45}" y="16" font-size="9" fill="#333333">Diastólica</text>`;
   
-  ctx.fillStyle = '#2563EB';
-  ctx.fillRect(width - 60, 8, 10, 10);
-  ctx.fillStyle = '#333333';
-  ctx.fillText('Diastólica', width - 45, 16);
+  // Labels dos eixos
+  svg += `<text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="10" fill="#666666">Idade Gestacional (semanas)</text>`;
+  svg += `<text x="12" y="${height / 2}" text-anchor="middle" font-size="10" fill="#666666" transform="rotate(-90, 12, ${height / 2})">PA (mmHg)</text>`;
   
-  // Label do eixo Y
-  ctx.save();
-  ctx.translate(12, height / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('PA (mmHg)', 0, 0);
-  ctx.restore();
+  svg += '</svg>';
+  return svg;
+}
+
+/**
+ * Gera gráfico de Peso como SVG string
+ */
+function gerarSVGPeso(consultas: ConsultaPrenatal[]): string {
+  const width = 500;
+  const height = 280;
+  const padding = { top: 30, right: 30, bottom: 40, left: 50 };
   
-  // Label do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Idade Gestacional (semanas)', width / 2, height - 2);
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
   
-  return canvas.toBuffer('image/png');
+  // Processar dados
+  const dataPoints: ChartDataPoint[] = consultas
+    .filter(c => c.peso && c.peso > 0)
+    .map(c => {
+      let igSemanas = c.igUltrassomSemanas || c.igDumSemanas || 0;
+      if (c.igUltrassomDias) igSemanas += c.igUltrassomDias / 7;
+      else if (c.igDumDias) igSemanas += c.igDumDias / 7;
+      
+      return { x: igSemanas, y: c.peso as number };
+    })
+    .filter(p => p.x >= 0 && p.x <= 42)
+    .sort((a, b) => a.x - b.x);
+  
+  if (dataPoints.length === 0) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" style="background: white; font-family: Arial, sans-serif;">
+      <text x="${width / 2}" y="${height / 2}" text-anchor="middle" font-size="12" fill="#666666">Sem dados de peso disponíveis</text>
+    </svg>`;
+  }
+  
+  const xMin = 0, xMax = 42;
+  const yValues = dataPoints.map(p => p.y);
+  const yMin = Math.floor(Math.min(...yValues) - 5);
+  const yMax = Math.ceil(Math.max(...yValues) + 5);
+  
+  const scaleX = (x: number) => padding.left + ((x - xMin) / (xMax - xMin)) * chartWidth;
+  const scaleY = (y: number) => padding.top + chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight;
+  
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" style="background: white; font-family: Arial, sans-serif;">`;
+  
+  // Linha dos dados
+  let dataPath = `M ${scaleX(dataPoints[0].x)} ${scaleY(dataPoints[0].y)}`;
+  dataPoints.forEach(p => {
+    dataPath += ` L ${scaleX(p.x)} ${scaleY(p.y)}`;
+  });
+  svg += `<path d="${dataPath}" fill="none" stroke="#8B4049" stroke-width="2"/>`;
+  
+  // Pontos e labels
+  dataPoints.forEach(p => {
+    svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="4" fill="#8B4049"/>`;
+    svg += `<text x="${scaleX(p.x)}" y="${scaleY(p.y) - 8}" text-anchor="middle" font-size="9" fill="#333333">${p.y.toFixed(1)}</text>`;
+  });
+  
+  // Eixos
+  svg += `<line x1="${padding.left}" y1="${padding.top + chartHeight}" x2="${width - padding.right}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
+  svg += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + chartHeight}" stroke="#333333" stroke-width="1"/>`;
+  
+  // Labels eixo X
+  for (let week = 0; week <= 42; week += 4) {
+    svg += `<text x="${scaleX(week)}" y="${height - 10}" text-anchor="middle" font-size="9" fill="#666666">${week}s</text>`;
+  }
+  
+  // Labels eixo Y
+  const yStep = Math.ceil((yMax - yMin) / 5);
+  for (let y = yMin; y <= yMax; y += yStep) {
+    svg += `<text x="${padding.left - 5}" y="${scaleY(y) + 3}" text-anchor="end" font-size="9" fill="#666666">${y}</text>`;
+  }
+  
+  // Título
+  svg += `<text x="${width / 2}" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#8B4049">Evolução do Peso Gestacional</text>`;
+  
+  // Labels dos eixos
+  svg += `<text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="10" fill="#666666">Idade Gestacional (semanas)</text>`;
+  svg += `<text x="12" y="${height / 2}" text-anchor="middle" font-size="10" fill="#666666" transform="rotate(-90, 12, ${height / 2})">Peso (kg)</text>`;
+  
+  svg += '</svg>';
+  return svg;
+}
+
+/**
+ * Gera gráfico de Altura Uterina como imagem PNG
+ */
+export async function gerarGraficoAU(consultas: ConsultaPrenatal[]): Promise<Buffer> {
+  const svg = gerarSVGAU(consultas);
+  return svgToBuffer(svg);
+}
+
+/**
+ * Gera gráfico de Pressão Arterial como imagem PNG
+ */
+export async function gerarGraficoPA(consultas: ConsultaPrenatal[]): Promise<Buffer> {
+  const svg = gerarSVGPA(consultas);
+  return svgToBuffer(svg);
 }
 
 /**
@@ -430,131 +372,6 @@ export async function gerarGraficoPeso(
   pesoInicial: number | null,
   altura: number | null
 ): Promise<Buffer> {
-  const width = 500;
-  const height = 280;
-  const padding = { top: 30, right: 30, bottom: 40, left: 50 };
-  
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  
-  // Fundo branco
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, width, height);
-  
-  // Área do gráfico
-  const chartWidth = width - padding.left - padding.right;
-  const chartHeight = height - padding.top - padding.bottom;
-  
-  // Processar dados das consultas
-  const dataPoints: ChartDataPoint[] = consultas
-    .filter(c => c.peso && c.peso > 0)
-    .map(c => {
-      let igSemanas = c.igUltrassomSemanas || c.igDumSemanas || 0;
-      if (c.igUltrassomDias) igSemanas += c.igUltrassomDias / 7;
-      else if (c.igDumDias) igSemanas += c.igDumDias / 7;
-      
-      return {
-        x: igSemanas,
-        y: c.peso as number / 1000, // Converter para kg
-        label: `${(c.peso as number / 1000).toFixed(1)}kg`
-      };
-    })
-    .filter(p => p.x >= 0 && p.x <= 42)
-    .sort((a, b) => a.x - b.x);
-  
-  if (dataPoints.length === 0) {
-    // Retornar imagem vazia se não houver dados
-    ctx.fillStyle = '#666666';
-    ctx.font = '12px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Sem dados de peso disponíveis', width / 2, height / 2);
-    return canvas.toBuffer('image/png');
-  }
-  
-  // Escalas
-  const xMin = 0, xMax = 42;
-  const yValues = dataPoints.map(p => p.y);
-  const yMin = Math.floor(Math.min(...yValues) - 5);
-  const yMax = Math.ceil(Math.max(...yValues) + 5);
-  
-  const scaleX = (x: number) => padding.left + ((x - xMin) / (xMax - xMin)) * chartWidth;
-  const scaleY = (y: number) => padding.top + chartHeight - ((y - yMin) / (yMax - yMin)) * chartHeight;
-  
-  // Desenhar linha dos dados
-  ctx.strokeStyle = '#8B4049';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(scaleX(dataPoints[0].x), scaleY(dataPoints[0].y));
-  dataPoints.forEach(p => {
-    ctx.lineTo(scaleX(p.x), scaleY(p.y));
-  });
-  ctx.stroke();
-  
-  // Desenhar pontos e labels
-  dataPoints.forEach(p => {
-    // Ponto
-    ctx.fillStyle = '#8B4049';
-    ctx.beginPath();
-    ctx.arc(scaleX(p.x), scaleY(p.y), 4, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Label
-    ctx.fillStyle = '#333333';
-    ctx.font = '9px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${p.y.toFixed(1)}`, scaleX(p.x), scaleY(p.y) - 8);
-  });
-  
-  // Eixo X
-  ctx.strokeStyle = '#333333';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top + chartHeight);
-  ctx.lineTo(width - padding.right, padding.top + chartHeight);
-  ctx.stroke();
-  
-  // Labels do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '9px Arial';
-  ctx.textAlign = 'center';
-  for (let week = 0; week <= 42; week += 4) {
-    ctx.fillText(`${week}s`, scaleX(week), height - 10);
-  }
-  
-  // Eixo Y
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top);
-  ctx.lineTo(padding.left, padding.top + chartHeight);
-  ctx.stroke();
-  
-  // Labels do eixo Y
-  ctx.textAlign = 'right';
-  const yStep = Math.ceil((yMax - yMin) / 5);
-  for (let y = yMin; y <= yMax; y += yStep) {
-    ctx.fillText(`${y}`, padding.left - 5, scaleY(y) + 3);
-  }
-  
-  // Título
-  ctx.fillStyle = '#8B4049';
-  ctx.font = 'bold 12px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Evolução do Peso Gestacional', width / 2, 15);
-  
-  // Label do eixo Y
-  ctx.save();
-  ctx.translate(12, height / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Peso (kg)', 0, 0);
-  ctx.restore();
-  
-  // Label do eixo X
-  ctx.fillStyle = '#666666';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Idade Gestacional (semanas)', width / 2, height - 2);
-  
-  return canvas.toBuffer('image/png');
+  const svg = gerarSVGPeso(consultas);
+  return svgToBuffer(svg);
 }

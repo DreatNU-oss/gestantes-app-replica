@@ -957,3 +957,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Testar geração de PDF com gestante TESTE TESTE - gráficos aparecem corretamente
 - [x] PDF gerado pelo endpoint mobile (gestante.gerarPdfCartao) agora inclui gráficos idênticos à interface web
 
+
+
+## Correção Erro Deploy canvas.node (05/02/2026)
+- [x] Remover dependência chartjs-node-canvas que usa módulo nativo canvas
+- [x] Implementar gráficos usando SVG puro (sem dependências nativas)
+- [x] Converter SVG para PNG usando sharp (biblioteca compatível com produção)
+- [x] Atualizar pdfCharts.ts para usar nova implementação
+- [x] Testar geração de PDF localmente - gráficos aparecem corretamente
+- [ ] Publicar versão corrigida e testar em produção
+
