@@ -976,3 +976,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar área sombreada entre percentis 10-90 no gráfico de AU
 - [x] Adicionar linha de limite de hipertensão (140/90) no gráfico de PA
 - [x] Testar geração de PDF com curvas de referência
+
+## Botão Copiar Texto PEP de Consultas Anteriores (05/02/2026)
+- [ ] Analisar onde o texto PEP é armazenado nas consultas
+- [ ] Criar componente de visualização do texto PEP em modal/dialog
+- [ ] Adicionar botão de copiar na lista de consultas anteriores
+- [ ] Implementar função de copiar para área de transferência
+- [ ] Testar funcionalidade de visualização e cópia
+
+
+## Botão Copiar Texto PEP de Consultas Anteriores (05/02/2026)
+- [x] Analisar estrutura atual de consultas e texto PEP
+- [x] Criar função gerarTextoPEPConsultaAnterior para gerar texto PEP a partir de dados do banco
+- [x] Adicionar botão de copiar (ícone Copy) na coluna de ações da tabela de histórico
+- [x] Criar modal "Texto PEP - Consulta Anterior" para visualizar e copiar o texto
+- [x] Testar funcionalidade - modal abre corretamente com texto formatado

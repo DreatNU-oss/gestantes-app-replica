@@ -102,6 +102,10 @@ export default function CartaoPrenatal() {
   // Estado para modal de texto PEP
   const [showPEPModal, setShowPEPModal] = useState(false);
   const [textoPEP, setTextoPEP] = useState("");
+  
+  // Estado para modal de PEP de consulta anterior
+  const [showPEPConsultaAnterior, setShowPEPConsultaAnterior] = useState(false);
+  const [textoPEPConsultaAnterior, setTextoPEPConsultaAnterior] = useState("");
 
   // Lista de opções de conduta predefinidas
   const OPCOES_CONDUTA = [
@@ -1288,6 +1292,98 @@ export default function CartaoPrenatal() {
     
     return linhas.join("\n\n");
   };
+  
+  // Função para gerar texto PEP a partir de uma consulta anterior (dados do banco)
+  const gerarTextoPEPConsultaAnterior = (consulta: any) => {
+    // Calcular IG (prioridade: US > DUM)
+    const igUS = calcularIGPorUS(consulta.dataConsulta);
+    const igDUM = calcularIG(consulta.dataConsulta);
+    
+    let igTexto = "-";
+    if (igUS && !isNaN(igUS.semanas) && !isNaN(igUS.dias)) {
+      igTexto = `${igUS.semanas}+${igUS.dias}/7`;
+    } else if (igDUM && !isNaN(igDUM.semanas) && !isNaN(igDUM.dias)) {
+      igTexto = `${igDUM.semanas}+${igDUM.dias}/7`;
+    }
+    
+    // Formatar AUF
+    let aufTexto = "-";
+    if (consulta.alturaUterina === -1) {
+      aufTexto = "Não palpável";
+    } else if (consulta.alturaUterina) {
+      aufTexto = `${(consulta.alturaUterina / 10).toFixed(0)}cm`;
+    }
+    
+    // Formatar conduta
+    let condutaTexto = "-";
+    if (consulta.conduta) {
+      try {
+        const condutas = JSON.parse(consulta.conduta);
+        if (condutas.length > 0) {
+          condutaTexto = condutas.join(", ");
+        }
+      } catch {
+        condutaTexto = consulta.conduta;
+      }
+    }
+    
+    // Formatar BCF
+    let bcfTexto = "-";
+    if (consulta.bcf === 1) {
+      bcfTexto = "Positivo";
+    } else if (consulta.bcf === 0) {
+      bcfTexto = "Não audível";
+    }
+    
+    // Formatar Apresentação Fetal (MF)
+    let apresentacaoTexto = "-";
+    if (consulta.mf === 1) {
+      apresentacaoTexto = "Cefálica";
+    } else if (consulta.mf === 2) {
+      apresentacaoTexto = "Pélvica";
+    } else if (consulta.mf === 3) {
+      apresentacaoTexto = "Transversa";
+    }
+    
+    // Formatar Peso
+    let pesoTexto = "-";
+    if (consulta.peso) {
+      pesoTexto = `${(consulta.peso / 1000).toFixed(1)}kg`;
+    }
+    
+    // Formatar Pressão Arterial
+    let paTexto = "-";
+    if (consulta.pressaoSistolica && consulta.pressaoDiastolica) {
+      paTexto = `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`;
+    } else if (consulta.pressaoArterial) {
+      paTexto = consulta.pressaoArterial;
+    }
+    
+    // Montar texto no formato do PEP (com linhas em branco entre itens)
+    const linhas = [
+      `Idade Gestacional:\n${igTexto}`,
+      `Queixa(s):\n${consulta.queixas || "Sem queixas hoje."}`,
+      `Peso:\n${pesoTexto}`,
+      `AUF:\n${aufTexto}`,
+      `BCF:\n${bcfTexto}`,
+      `Apresentação Fetal:\n${apresentacaoTexto}`,
+      `Edema:\n-`, // Edema não é salvo no banco ainda
+      `Pressão Arterial:\n${paTexto}`,
+      `Conduta:\n${condutaTexto}`,
+    ];
+    
+    // Adicionar complementação se houver
+    if (consulta.condutaComplementacao) {
+      linhas.push(`Conduta (complementação):\n${consulta.condutaComplementacao}`);
+    }
+    
+    // Adicionar observações se houver
+    if (consulta.observacoes) {
+      linhas.push(`Observações:\n${consulta.observacoes}`);
+    }
+    
+    return linhas.join("\n\n");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -2434,6 +2530,19 @@ export default function CartaoPrenatal() {
                             <Button
                               size="icon"
                               variant="ghost"
+                              title="Copiar texto PEP"
+                              onClick={() => {
+                                const texto = gerarTextoPEPConsultaAnterior(consulta);
+                                setTextoPEPConsultaAnterior(texto);
+                                setShowPEPConsultaAnterior(true);
+                              }}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Editar consulta"
                               onClick={() => handleEdit(consulta)}
                             >
                               <Edit2 className="h-4 w-4" />
@@ -2441,6 +2550,7 @@ export default function CartaoPrenatal() {
                             <Button
                               size="icon"
                               variant="ghost"
+                              title="Excluir consulta"
                               onClick={() => handleDelete(consulta.id)}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -2570,7 +2680,7 @@ export default function CartaoPrenatal() {
           gestanteNome={gestante?.nome || ""}
         />
 
-        {/* Modal de Texto para PEP */}
+        {/* Modal de Texto para PEP (nova consulta) */}
         {showPEPModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <Card className="w-full max-w-lg mx-4">
@@ -2604,6 +2714,49 @@ export default function CartaoPrenatal() {
                   <Button
                     variant="outline"
                     onClick={() => setShowPEPModal(false)}
+                  >
+                    Fechar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        
+        {/* Modal de Texto PEP para consultas anteriores */}
+        {showPEPConsultaAnterior && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-lg mx-4">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Texto PEP - Consulta Anterior
+                </CardTitle>
+                <CardDescription>
+                  Texto formatado para colar no Prontuário Eletrônico
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Textarea
+                  value={textoPEPConsultaAnterior}
+                  readOnly
+                  rows={14}
+                  className="font-mono text-sm bg-muted"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(textoPEPConsultaAnterior);
+                      toast.success("Texto copiado para a área de transferência!");
+                    }}
+                    className="flex-1"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copiar Texto
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowPEPConsultaAnterior(false)}
                   >
                     Fechar
                   </Button>
