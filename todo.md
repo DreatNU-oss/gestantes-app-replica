@@ -885,3 +885,17 @@
 - [x] Adicionar Edema no texto gerado para PEP
 - [x] Adicionar linhas em branco entre itens do texto PEP para melhor separação visual
 - [x] Testar texto completo com todos os campos
+
+## Ajustes no PDF e Impressão (04/02/2026)
+
+- [x] Remover data do topo do PDF na versão HTML de impressão (requer desmarcar "Cabeçalhos e rodapés" no Chrome)
+- [x] Remover telefone da gestante no PDF - substituído por História Obstétrica (G/P/A)
+- [x] Testar impressão HTML sem data no topo
+- [x] Testar PDF baixável sem telefone da gestante
+
+## Ajustes no PDF e Impressão (04/02/2026)
+
+- [x] Remover data do topo do PDF na versão HTML de impressão (requer desmarcar "Cabeçalhos e rodapés" no Chrome)
+- [x] Remover telefone da gestante no PDF - substituído por História Obstétrica (G/P/A)
+- [x] Testar impressão HTML sem data no topo
+- [x] Testar PDF baixável sem telefone da gestante

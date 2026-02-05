@@ -96,7 +96,14 @@ export default function CartaoPrenatalImpressao() {
           body { margin: 0; padding: 0; }
           @page { 
             margin: 1cm;
+            margin-top: 0.5cm;
+            margin-bottom: 0.5cm;
             size: A4;
+          }
+          /* Remove cabeçalhos e rodapés automáticos do navegador */
+          html {
+            margin: 0 !important;
+            padding: 0 !important;
           }
           .no-print { display: none !important; }
         }
@@ -145,8 +152,8 @@ export default function CartaoPrenatalImpressao() {
             <div>-</div>
           </div>
           <div>
-            <span className="font-semibold">Telefone:</span>
-            <div>{gestante.telefone || "-"}</div>
+            <span className="font-semibold">História Obstétrica:</span>
+            <div>G{gestante.gesta || 0}P{gestante.para || 0}A{gestante.abortos || 0}</div>
           </div>
           <div>
             <span className="font-semibold">DUM:</span>
