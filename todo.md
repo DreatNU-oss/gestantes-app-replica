@@ -926,3 +926,34 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Remoção do Botão Visualizar para Impressão (05/02/2026)
 
 - [x] Remover botão "Visualizar para Impressão" do Cartão de Pré-natal
+
+## Unificar Geração de PDF - Web e App Mobile (05/02/2026)
+
+- [x] Analisar código de geração de PDF da interface web (CartaoPrenatalImpressao.tsx)
+- [x] Analisar código de geração de PDF do endpoint gestante.gerarPdfCartao (gerarPdfCartao.ts - usava pdfkit)
+- [x] Identificar diferenças entre os dois templates (pdfkit vs HTML)
+- [x] Criar novo template HTML completo (pdfTemplateCompleto.ts)
+- [x] Implementar conversão HTML para PDF com WeasyPrint (htmlToPdf.ts)
+- [x] Atualizar endpoint gestante.gerarPdfCartao para usar novo template
+- [x] Testar PDF gerado com WeasyPrint - resultado excelente, 1 página bem formatada
+
+## Adicionar Gráficos ao PDF do App Mobile (05/02/2026)
+
+- [ ] Instalar chartjs-node-canvas para gerar gráficos no servidor
+- [ ] Criar funções para gerar gráficos de Peso, AU e PA como imagens base64
+- [ ] Atualizar pdfTemplateCompleto.ts para incluir gráficos como imagens
+- [ ] Atualizar endpoint gestante.gerarPdfCartao para passar dados dos gráficos
+- [ ] Testar PDF com gráficos incluídos
+
+
+## Gráficos no PDF do Cartão de Pré-natal (04/02/2026)
+- [x] Instalar chartjs-node-canvas para gerar gráficos no servidor
+- [x] Criar função gerarTodosGraficos() que gera 3 gráficos como imagens PNG base64
+- [x] Implementar gráfico de Evolução do Peso
+- [x] Implementar gráfico de Evolução da Altura Uterina (AU)
+- [x] Implementar gráfico de Evolução da Pressão Arterial (PA sistólica e diastólica)
+- [x] Atualizar template HTML (pdfTemplateCompleto.ts) para incluir gráficos como imagens
+- [x] Corrigir comando WeasyPrint para usar Python 3.11 e evitar conflitos de versão
+- [x] Testar geração de PDF com gestante TESTE TESTE - gráficos aparecem corretamente
+- [x] PDF gerado pelo endpoint mobile (gestante.gerarPdfCartao) agora inclui gráficos idênticos à interface web
+

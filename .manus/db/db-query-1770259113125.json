@@ -1,0 +1,15 @@
+{
+  "query": "SELECT s.token, s.expiraEm, g.nome FROM sessoesGestante s JOIN gestantes g ON s.gestanteId = g.id WHERE g.nome LIKE '%TESTE%' AND s.expiraEm > NOW() LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT s.token, s.expiraEm, g.nome FROM sessoesGestante s JOIN gestantes g ON s.gestanteId = g.id WHERE g.nome LIKE '%TESTE%' AND s.expiraEm > NOW() LIMIT 1;",
+  "rows": [
+    {
+      "token": "830e527acb39e3ac21f9e4c35040010beb8c505e29ba5a5cfca0e7cfcf5491bca04cef8e98defc9528105abaa6b3f602cf0cc1aa792f8608d32d1dca1e7c11bc",
+      "expiraEm": "2026-02-21 00:55:46",
+      "nome": "TESTE TESTE"
+    }
+  ],
+  "messages": [],
+  "stdout": "token\texpiraEm\tnome\n830e527acb39e3ac21f9e4c35040010beb8c505e29ba5a5cfca0e7cfcf5491bca04cef8e98defc9528105abaa6b3f602cf0cc1aa792f8608d32d1dca1e7c11bc\t2026-02-21 00:55:46\tTESTE TESTE\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

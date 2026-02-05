@@ -1,0 +1,106 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gestantes' ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gestantes' ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "userId"
+    },
+    {
+      "COLUMN_NAME": "nome"
+    },
+    {
+      "COLUMN_NAME": "telefone"
+    },
+    {
+      "COLUMN_NAME": "email"
+    },
+    {
+      "COLUMN_NAME": "dataNascimento"
+    },
+    {
+      "COLUMN_NAME": "planoSaudeId"
+    },
+    {
+      "COLUMN_NAME": "carteirinhaUnimed"
+    },
+    {
+      "COLUMN_NAME": "medicoId"
+    },
+    {
+      "COLUMN_NAME": "tipoPartoDesejado"
+    },
+    {
+      "COLUMN_NAME": "gesta"
+    },
+    {
+      "COLUMN_NAME": "para"
+    },
+    {
+      "COLUMN_NAME": "partosNormais"
+    },
+    {
+      "COLUMN_NAME": "cesareas"
+    },
+    {
+      "COLUMN_NAME": "abortos"
+    },
+    {
+      "COLUMN_NAME": "dum"
+    },
+    {
+      "COLUMN_NAME": "igUltrassomSemanas"
+    },
+    {
+      "COLUMN_NAME": "igUltrassomDias"
+    },
+    {
+      "COLUMN_NAME": "dataUltrassom"
+    },
+    {
+      "COLUMN_NAME": "cartaoPrenatalUrl"
+    },
+    {
+      "COLUMN_NAME": "guiaExameUrl"
+    },
+    {
+      "COLUMN_NAME": "documentosUrls"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "dataPartoProgramado"
+    },
+    {
+      "COLUMN_NAME": "observacoes"
+    },
+    {
+      "COLUMN_NAME": "altura"
+    },
+    {
+      "COLUMN_NAME": "pesoInicial"
+    },
+    {
+      "COLUMN_NAME": "nomeBebe"
+    },
+    {
+      "COLUMN_NAME": "sexoBebe"
+    },
+    {
+      "COLUMN_NAME": "motivoCesarea"
+    },
+    {
+      "COLUMN_NAME": "motivoCesareaOutro"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\nuserId\nnome\ntelefone\nemail\ndataNascimento\nplanoSaudeId\ncarteirinhaUnimed\nmedicoId\ntipoPartoDesejado\ngesta\npara\npartosNormais\ncesareas\nabortos\ndum\nigUltrassomSemanas\nigUltrassomDias\ndataUltrassom\ncartaoPrenatalUrl\nguiaExameUrl\ndocumentosUrls\ncreatedAt\nupdatedAt\ndataPartoProgramado\nobservacoes\naltura\npesoInicial\nnomeBebe\nsexoBebe\nmotivoCesarea\nmotivoCesareaOutro\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}

@@ -5,6 +5,9 @@ import * as gestanteDb from "./gestante-db";
 import { randomBytes, createHash } from "crypto";
 import { sendVerificationCode } from "./email-service";
 import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
+import { gerarHTMLCartaoCompleto, DadosPdfCompleto } from "./pdfTemplateCompleto";
+import { htmlToPdf } from "./htmlToPdf";
+import { gerarTodosGraficos, DadoConsulta } from "./chartGenerator";
 
 // Generate 6-digit verification code
 function generateCode(): string {
@@ -714,13 +717,52 @@ export const gestanteRouter = router({
         });
       }
       
-      const dadosPdf = {
+      // Calcular DPP pelo US
+      let dppUS = null;
+      if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+        const usDate = new Date(gestante.dataUltrassom + 'T12:00:00');
+        const diasRestantes = (40 * 7) - ((gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0));
+        const dppUSDate = new Date(usDate.getTime() + diasRestantes * 24 * 60 * 60 * 1000);
+        dppUS = dppUSDate.toISOString().split('T')[0];
+      }
+      
+      // Preparar dados para gráficos
+      const dadosConsultasGraficos: DadoConsulta[] = consultas.map((c: any) => {
+        // Calcular IG em semanas para cada consulta
+        let igSemanas: number | undefined;
+        if (c.igSemanas) {
+          igSemanas = c.igSemanas;
+        } else if (c.igDumSemanas) {
+          igSemanas = c.igDumSemanas;
+        }
+        return {
+          dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
+          igSemanas,
+          peso: c.peso ? c.peso / 1000 : null, // Converter de gramas para kg
+          au: c.alturaUterina ? (c.alturaUterina === -1 ? null : c.alturaUterina / 10) : null, // Converter para cm
+          paSistolica: c.pressaoSistolica || null,
+          paDiastolica: c.pressaoDiastolica || null,
+        };
+      });
+
+      // Gerar gráficos como imagens base64
+      const graficosGerados = await gerarTodosGraficos(dadosConsultasGraficos);
+
+      const dadosPdf: DadosPdfCompleto = {
+        graficos: {
+          peso: graficosGerados.graficoPeso || undefined,
+          au: graficosGerados.graficoAU || undefined,
+          pa: graficosGerados.graficoPA || undefined,
+        },
         gestante: {
           nome: gestante.nome,
           idade: idade,
           dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompatível') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
           dppDUM: dppDUM,
-          dppUS: null,
+          dppUS: dppUS,
+          dataUltrassom: gestante.dataUltrassom,
+          igUltrassomSemanas: gestante.igUltrassomSemanas,
+          igUltrassomDias: gestante.igUltrassomDias,
           gesta: gestante.gesta,
           para: gestante.para,
           abortos: gestante.abortos,
@@ -760,7 +802,9 @@ export const gestanteRouter = router({
         fatoresRisco: fatoresRisco.map((f: any) => ({ tipo: f.tipo })),
         medicamentos: medicamentos.map((m: any) => ({ tipo: m.tipo, especificacao: m.especificacao })),
       };
-      const pdfBuffer = await gerarPdfCartaoPrenatal(dadosPdf);
+      // Gerar HTML e converter para PDF usando WeasyPrint
+      const html = gerarHTMLCartaoCompleto(dadosPdf);
+      const pdfBuffer = await htmlToPdf(html);
       const pdfBase64 = pdfBuffer.toString('base64');
       const nomeGestante = gestante.nome.replace(/\s+/g, '-').toLowerCase();
       const filename = `cartao-prenatal-${nomeGestante}.pdf`;

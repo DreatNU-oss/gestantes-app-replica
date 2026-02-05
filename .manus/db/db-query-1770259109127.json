@@ -1,0 +1,65 @@
+{
+  "query": "SELECT * FROM sessoesGestante LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM sessoesGestante LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "gestanteId": "1110002",
+      "token": "3d0131d9d7ec779073beb91c9b7830477e2b59546bcd1b38821126f5bafea6747c80250fb5ab9507da0b4b8eae2a67e5770c61837f7d7408cf93302753bc3529",
+      "dispositivo": "web - 0.0.0",
+      "ip": "NULL",
+      "ativo": "1",
+      "ultimoAcesso": "2025-12-17 13:26:19",
+      "expiraEm": "2026-01-16 13:26:19",
+      "createdAt": "2025-12-17 13:26:19"
+    },
+    {
+      "id": "30001",
+      "gestanteId": "1110002",
+      "token": "bcce9058d484cabf882ab74910d5b4fcf789f2915cb76eb3fd8f2c558a7806fbed03b353519606aa82217d6c398338761bfb70d6dd117890ea063d1267767855",
+      "dispositivo": "web - 0.0.0",
+      "ip": "NULL",
+      "ativo": "1",
+      "ultimoAcesso": "2025-12-17 15:50:17",
+      "expiraEm": "2026-01-16 15:50:17",
+      "createdAt": "2025-12-17 15:50:17"
+    },
+    {
+      "id": "60001",
+      "gestanteId": "1110002",
+      "token": "5529ebbc3c8056b963f55a77ac89aa1282c8a402a2a3861469e77116dd37fa6929aeab91d66754cc212392b9a48d6177c35d545fe3c9dd7481f1750c93355fa5",
+      "dispositivo": "web - 0.0.0",
+      "ip": "NULL",
+      "ativo": "1",
+      "ultimoAcesso": "2025-12-17 18:46:28",
+      "expiraEm": "2026-01-16 18:46:28",
+      "createdAt": "2025-12-17 18:46:28"
+    },
+    {
+      "id": "90001",
+      "gestanteId": "1110002",
+      "token": "322fafc7455535f61de22dea4e29f6313093992b53700f3e27c4193fc28b4eba8e667d3fd9da86f6ca4d90da36f69eafa874fffab7dd5efa509c992b569a42f2",
+      "dispositivo": "web - 0.0.0",
+      "ip": "NULL",
+      "ativo": "1",
+      "ultimoAcesso": "2025-12-17 20:23:17",
+      "expiraEm": "2026-01-16 20:23:17",
+      "createdAt": "2025-12-17 20:23:17"
+    },
+    {
+      "id": "120001",
+      "gestanteId": "1110002",
+      "token": "f20b9b36a65e7ed7eb2ea6886474828f439c44632d3fca35c4b9a5011d9de065bc52abb14c09c562397eecad2b041ff582170aeb4462c4e82bc3b81872bfbdc0",
+      "dispositivo": "web - 0.0.0",
+      "ip": "NULL",
+      "ativo": "1",
+      "ultimoAcesso": "2025-12-18 20:15:18",
+      "expiraEm": "2026-01-17 20:15:18",
+      "createdAt": "2025-12-18 20:15:18"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttoken\tdispositivo\tip\tativo\tultimoAcesso\texpiraEm\tcreatedAt\n1\t1110002\t3d0131d9d7ec779073beb91c9b7830477e2b59546bcd1b38821126f5bafea6747c80250fb5ab9507da0b4b8eae2a67e5770c61837f7d7408cf93302753bc3529\tweb - 0.0.0\tNULL\t1\t2025-12-17 13:26:19\t2026-01-16 13:26:19\t2025-12-17 13:26:19\n30001\t1110002\tbcce9058d484cabf882ab74910d5b4fcf789f2915cb76eb3fd8f2c558a7806fbed03b353519606aa82217d6c398338761bfb70d6dd117890ea063d1267767855\tweb - 0.0.0\tNULL\t1\t2025-12-17 15:50:17\t2026-01-16 15:50:17\t2025-12-17 15:50:17\n60001\t1110002\t5529ebbc3c8056b963f55a77ac89aa1282c8a402a2a3861469e77116dd37fa6929aeab91d66754cc212392b9a48d6177c35d545fe3c9dd7481f1750c93355fa5\tweb - 0.0.0\tNULL\t1\t2025-12-17 18:46:28\t2026-01-16 18:46:28\t2025-12-17 18:46:28\n90001\t1110002\t322fafc7455535f61de22dea4e29f6313093992b53700f3e27c4193fc28b4eba8e667d3fd9da86f6ca4d90da36f69eafa874fffab7dd5efa509c992b569a42f2\tweb - 0.0.0\tNULL\t1\t2025-12-17 20:23:17\t2026-01-16 20:23:17\t2025-12-17 20:23:17\n120001\t1110002\tf20b9b36a65e7ed7eb2ea6886474828f439c44632d3fca35c4b9a5011d9de065bc52abb14c09c562397eecad2b041ff582170aeb4462c4e82bc3b81872bfbdc0\tweb - 0.0.0\tNULL\t1\t2025-12-18 20:15:18\t2026-01-17 20:15:18\t2025-12-18 20:15:18\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}
