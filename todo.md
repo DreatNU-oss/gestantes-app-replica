@@ -969,3 +969,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Testar geração de PDF localmente - gráficos aparecem corretamente
 - [ ] Publicar versão corrigida e testar em produção
 
+
+## Curvas de Referência nos Gráficos do PDF (05/02/2026)
+- [x] Adicionar curva de percentil 10 (mínimo) no gráfico de AU
+- [x] Adicionar curva de percentil 90 (máximo) no gráfico de AU
+- [x] Adicionar área sombreada entre percentis 10-90 no gráfico de AU
+- [x] Adicionar linha de limite de hipertensão (140/90) no gráfico de PA
+- [x] Testar geração de PDF com curvas de referência
