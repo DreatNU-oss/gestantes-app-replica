@@ -962,9 +962,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Correção Erro Deploy canvas.node (05/02/2026)
 - [x] Remover dependência chartjs-node-canvas que usa módulo nativo canvas
 - [x] Implementar gráficos usando SVG puro (sem dependências nativas)
-- [x] Converter SVG para PNG usando sharp (biblioteca compatível com produção)
-- [x] Atualizar pdfCharts.ts para usar nova implementação
+- [x] Substituir WeasyPrint por Puppeteer (100% JavaScript, sem dependências Python)
+- [x] Usar SVG inline no HTML ao invés de imagens base64
+- [x] Atualizar chartGenerator.ts para retornar SVG como string
+- [x] Atualizar pdfTemplateCompleto.ts para inserir SVG inline
 - [x] Testar geração de PDF localmente - gráficos aparecem corretamente
-- [x] Corrigir comando WeasyPrint para detectar automaticamente o Python disponível
 - [ ] Publicar versão corrigida e testar em produção
 

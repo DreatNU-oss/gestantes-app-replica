@@ -487,11 +487,11 @@ export function gerarHTMLCartaoCompleto(dados: DadosPdfCompleto): string {
   ${graficos && (graficos.peso || graficos.au || graficos.pa) ? `
   <div class="section">
     <h2>Gráficos de Evolução</h2>
-    <div style="display: grid; grid-template-columns: repeat(${[graficos.peso, graficos.au, graficos.pa].filter(Boolean).length > 2 ? 2 : [graficos.peso, graficos.au, graficos.pa].filter(Boolean).length}, 1fr); gap: 16px; margin-bottom: 16px;">
-      ${graficos.peso ? `<div style="text-align: center;"><img src="data:image/png;base64,${graficos.peso}" style="max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 8px;" alt="Gráfico de Peso" /></div>` : ''}
-      ${graficos.au ? `<div style="text-align: center;"><img src="data:image/png;base64,${graficos.au}" style="max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 8px;" alt="Gráfico de AU" /></div>` : ''}
-      ${graficos.pa ? `<div style="text-align: center;"><img src="data:image/png;base64,${graficos.pa}" style="max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 8px;" alt="Gráfico de PA" /></div>` : ''}
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;">
+      ${graficos.peso ? `<div style="text-align: center; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: white;">${graficos.peso}</div>` : ''}
+      ${graficos.au ? `<div style="text-align: center; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: white;">${graficos.au}</div>` : ''}
     </div>
+    ${graficos.pa ? `<div style="text-align: center; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: white; max-width: 50%; margin: 0 auto;">${graficos.pa}</div>` : ''}
   </div>
   ` : ''}
 

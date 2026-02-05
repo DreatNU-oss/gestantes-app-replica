@@ -1,5 +1,6 @@
 /**
  * Gerador de gráficos SVG puro para o PDF do Cartão de Pré-natal
+ * Retorna SVG como string para ser inserido diretamente no HTML
  * Não usa dependências nativas, funciona em qualquer ambiente
  */
 
@@ -116,8 +117,8 @@ export async function gerarGraficoPeso(consultas: DadoConsulta[]): Promise<strin
   
   svg += '</svg>';
   
-  // Converter para base64
-  return Buffer.from(svg).toString('base64');
+  // Retornar SVG como string (não base64)
+  return svg;
 }
 
 // Gerar SVG do gráfico de altura uterina
@@ -182,7 +183,7 @@ export async function gerarGraficoAU(consultas: DadoConsulta[]): Promise<string>
   
   svg += '</svg>';
   
-  return Buffer.from(svg).toString('base64');
+  return svg;
 }
 
 // Gerar SVG do gráfico de pressão arterial
@@ -258,7 +259,7 @@ export async function gerarGraficoPA(consultas: DadoConsulta[]): Promise<string>
   
   svg += '</svg>';
   
-  return Buffer.from(svg).toString('base64');
+  return svg;
 }
 
 // Gerar todos os gráficos de uma vez
