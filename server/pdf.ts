@@ -139,8 +139,17 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         doc.text('Nome Completo', 50, yInicial);
         doc.fontSize(11).fillColor(corTexto).text(gestante.nome || '-', 50, yInicial + 12);
         
-        doc.fontSize(9).fillColor(corCinza).text('Telefone', 50, yInicial + 35);
-        doc.fontSize(11).fillColor(corTexto).text(gestante.telefone || '-', 50, yInicial + 47);
+        // Calcular DPP pela DUM (DUM + 280 dias)
+        let dppDUM: Date | null = null;
+        if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
+          const dumStr = typeof gestante.dum === 'string' ? gestante.dum.split('T')[0] : gestante.dum;
+          const dumDate = new Date(dumStr + 'T12:00:00');
+          if (!isNaN(dumDate.getTime())) {
+            dppDUM = new Date(dumDate.getTime() + 280 * 24 * 60 * 60 * 1000);
+          }
+        }
+        doc.fontSize(9).fillColor(corCinza).text('DPP pela DUM', 50, yInicial + 35);
+        doc.fontSize(11).fillColor(corTexto).text(dppDUM ? formatarData(dppDUM) : '-', 50, yInicial + 47);
         
         doc.fontSize(9).fillColor(corCinza).text('DUM', 50, yInicial + 70);
         const dumDisplay = gestante.dum === 'Incerta' || gestante.dum === 'Incompatível com US' 
@@ -158,11 +167,11 @@ export async function gerarPDFCartaoPrenatal(gestanteId: number): Promise<Buffer
         doc.fontSize(9).fillColor(corCinza).text('Cesáreas', 220, yInicial + 70);
         doc.fontSize(11).fillColor(corTexto).text(gestante.cesareas?.toString() || '-', 220, yInicial + 82);
         
-        // Coluna 3
-        doc.fontSize(9).fillColor(corCinza).text('Data Ultrassom', 390, yInicial);
+        // Coluna 3 - Dados do Primeiro Ultrassom
+        doc.fontSize(9).fillColor(corCinza).text('Data do 1º Ultrassom', 390, yInicial);
         doc.fontSize(11).fillColor(corTexto).text(gestante.dataUltrassom ? formatarData(gestante.dataUltrassom) : '-', 390, yInicial + 12);
         
-        doc.fontSize(9).fillColor(corCinza).text('IG no Ultrassom', 390, yInicial + 35);
+        doc.fontSize(9).fillColor(corCinza).text('IG no 1º Ultrassom', 390, yInicial + 35);
         const igUSDisplay = gestante.igUltrassomSemanas !== null 
           ? `${gestante.igUltrassomSemanas}s ${gestante.igUltrassomDias || 0}d` 
           : '-';

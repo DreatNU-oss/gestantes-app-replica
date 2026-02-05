@@ -899,3 +899,15 @@
 - [x] Remover telefone da gestante no PDF - substituído por História Obstétrica (G/P/A)
 - [x] Testar impressão HTML sem data no topo
 - [x] Testar PDF baixável sem telefone da gestante
+
+## Correções no Cartão de Pré-natal HTML e PDF (04/02/2026)
+
+- [x] Remover História Obstétrica duplicada na versão HTML
+- [x] Corrigir seção "Dados do Ultrassom" para "Dados do Primeiro Ultrassom"
+- [x] Corrigir labels: Data do 1º Ultrassom, IG no 1º Ultrassom, DPP pelo 1º Ultrassom
+- [x] Remover Tipo de Parto Desejado/Indicado (HTML e PDF)
+- [x] Remover Médico Responsável (HTML e PDF)
+- [x] Remover Plano de Saúde (HTML e PDF)
+- [x] Remover Telefone da gestante no PDF Profissional (pdf.ts e pdfTemplate.ts)
+- [x] Testar versão HTML de impressão
+- [x] Testar versão PDF profissional

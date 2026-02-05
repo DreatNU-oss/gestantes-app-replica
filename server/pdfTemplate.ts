@@ -226,10 +226,6 @@ export function gerarHTMLCartaoPrenatal(dados: DadosCartaoPrenatal): string {
         <span class="field-value">-</span>
       </div>
       <div class="field">
-        <span class="field-label">Telefone:</span>
-        <span class="field-value">${gestante.telefone || '-'}</span>
-      </div>
-      <div class="field">
         <span class="field-label">DUM:</span>
         <span class="field-value">${gestante.dum === 'Incerta' || gestante.dum === 'Incompatível com US' ? gestante.dum : (gestante.dum ? formatarData(gestante.dum) : '-')}</span>
       </div>
@@ -244,27 +240,27 @@ export function gerarHTMLCartaoPrenatal(dados: DadosCartaoPrenatal): string {
     </div>
     
     <div class="divider">
-      <div style="font-weight: 600; font-size: 16px; margin-bottom: 16px;">Dados do Ultrassom</div>
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: 16px;">Dados do Primeiro Ultrassom</div>
       <div class="grid">
         <div class="field">
-          <span class="field-label">Data do Ultrassom:</span>
+          <span class="field-label">Data do 1º Ultrassom:</span>
           <span class="field-value">${gestante.dataUltrassom ? formatarData(gestante.dataUltrassom) : '-'}</span>
         </div>
         <div class="field">
-          <span class="field-label">IG no Ultrassom:</span>
+          <span class="field-label">IG no 1º Ultrassom:</span>
           <span class="field-value">${gestante.igUltrassomSemanas !== null ? `${gestante.igUltrassomSemanas}s ${gestante.igUltrassomDias || 0}d` : '-'}</span>
         </div>
         <div class="field">
-          <span class="field-label">DPP pelo Ultrassom:</span>
-          <span class="field-value">-</span>
+          <span class="field-label">DPP pelo 1º Ultrassom:</span>
+          <span class="field-value">${(() => {
+            if (!gestante.dataUltrassom || gestante.igUltrassomSemanas === null) return '-';
+            const usDate = new Date(gestante.dataUltrassom + 'T12:00:00');
+            if (isNaN(usDate.getTime())) return '-';
+            const diasRestantes = (40 * 7) - ((gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0));
+            const dppUS = new Date(usDate.getTime() + diasRestantes * 24 * 60 * 60 * 1000);
+            return formatarData(dppUS);
+          })()}</span>
         </div>
-      </div>
-    </div>
-    
-    <div class="grid" style="margin-top: 16px;">
-      <div class="field">
-        <span class="field-label">Plano de Saúde:</span>
-        <span class="field-value">-</span>
       </div>
     </div>
   </div>

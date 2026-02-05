@@ -163,38 +163,22 @@ export default function CartaoPrenatalImpressao() {
             <span className="font-semibold">DPP pela DUM:</span>
             <div>{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</div>
           </div>
-          <div>
-            <span className="font-semibold">História Obstétrica:</span>
-            <div>G{gestante.gesta || 0}P{gestante.para || 0}A{gestante.abortos || 0}</div>
-          </div>
           <div className="col-span-3 border-t pt-4 mt-2">
-            <div className="font-semibold text-base mb-2">Dados do Ultrassom</div>
+            <div className="font-semibold text-base mb-2">Dados do Primeiro Ultrassom</div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <span className="font-semibold">Data do Ultrassom:</span>
+                <span className="font-semibold">Data do Primeiro Ultrassom:</span>
                 <div>{gestante.dataUltrassom ? formatarData(gestante.dataUltrassom) : "-"}</div>
               </div>
               <div>
-                <span className="font-semibold">IG no Ultrassom:</span>
+                <span className="font-semibold">IG no Primeiro Ultrassom:</span>
                 <div>{gestante.igUltrassomSemanas !== null ? `${gestante.igUltrassomSemanas}s ${gestante.igUltrassomDias || 0}d` : "-"}</div>
               </div>
               <div>
-                <span className="font-semibold">DPP pelo Ultrassom:</span>
+                <span className="font-semibold">DPP pelo Primeiro Ultrassom:</span>
                 <div>{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</div>
               </div>
             </div>
-          </div>
-          <div>
-            <span className="font-semibold">Tipo de Parto Desejado/Indicado:</span>
-            <div>{gestante.tipoPartoDesejado || "-"}</div>
-          </div>
-          <div>
-            <span className="font-semibold">Médico Responsável:</span>
-            <div>-</div>
-          </div>
-          <div>
-            <span className="font-semibold">Plano de Saúde:</span>
-            <div>-</div>
           </div>
         </div>
       </div>
