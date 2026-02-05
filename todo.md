@@ -922,3 +922,7 @@
 - [x] Usuário usa "Salvar como PDF" no diálogo de impressão do navegador
 
 Nota: A abordagem final é a mais confiável pois usa o motor de renderização nativo do navegador.
+
+## Remoção do Botão Visualizar para Impressão (05/02/2026)
+
+- [x] Remover botão "Visualizar para Impressão" do Cartão de Pré-natal
