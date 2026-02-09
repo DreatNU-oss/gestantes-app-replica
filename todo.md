@@ -1020,3 +1020,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover ModalInfoGestante completamente do GestantesLayout.tsx
 - [x] Verificar e remover de qualquer outro componente no fluxo de consulta (Dashboard já limpo)
 - [x] Testado - servidor rodando sem erros, nenhuma referência restante ao modal no fluxo
+
+## Remover Campo Apresentação Fetal do Texto PEP (09/02/2026)
+- [x] Remover campo Apresentação Fetal do texto PEP gerado no formulário de nova consulta
+- [x] Remover Apresentação Fetal do texto PEP gerado no histórico de consultas
+- [x] Verificado - servidor rodando sem erros, campo não aparece mais no texto PEP

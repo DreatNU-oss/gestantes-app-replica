@@ -1248,16 +1248,7 @@ export default function CartaoPrenatal() {
       bcfTexto = "Não audível";
     }
     
-    // Formatar Apresentação Fetal (MF - Movimentação Fetal / Apresentação)
-    let apresentacaoTexto = "-";
-    if (formData.mf === "1") {
-      apresentacaoTexto = "Cefálica";
-    } else if (formData.mf === "2") {
-      apresentacaoTexto = "Pélvica";
-    } else if (formData.mf === "3") {
-      apresentacaoTexto = "Transversa";
-    }
-    
+
     // Formatar Edema
     let edemaTexto = "-";
     if (formData.edema === "0") {
@@ -1279,7 +1270,6 @@ export default function CartaoPrenatal() {
       `Peso:\n${formData.peso ? `${formData.peso}kg` : "-"}`,
       `AUF:\n${aufTexto}`,
       `BCF:\n${bcfTexto}`,
-      `Apresentação Fetal:\n${apresentacaoTexto}`,
       `Edema:\n${edemaTexto}`,
       `Pressão Arterial:\n${formData.pressaoArterial || "-"}`,
       `Conduta:\n${condutaTexto}`,
@@ -1335,16 +1325,7 @@ export default function CartaoPrenatal() {
       bcfTexto = "Não audível";
     }
     
-    // Formatar Apresentação Fetal (MF)
-    let apresentacaoTexto = "-";
-    if (consulta.mf === 1) {
-      apresentacaoTexto = "Cefálica";
-    } else if (consulta.mf === 2) {
-      apresentacaoTexto = "Pélvica";
-    } else if (consulta.mf === 3) {
-      apresentacaoTexto = "Transversa";
-    }
-    
+
     // Formatar Peso
     let pesoTexto = "-";
     if (consulta.peso) {
@@ -1366,7 +1347,6 @@ export default function CartaoPrenatal() {
       `Peso:\n${pesoTexto}`,
       `AUF:\n${aufTexto}`,
       `BCF:\n${bcfTexto}`,
-      `Apresentação Fetal:\n${apresentacaoTexto}`,
       `Edema:\n${(() => {
         const edema = (consulta as any).edema;
         if (!edema) return "-";
