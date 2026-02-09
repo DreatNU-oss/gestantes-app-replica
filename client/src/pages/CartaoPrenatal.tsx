@@ -2095,6 +2095,149 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
+        {/* Histórico de Consultas */}
+        {gestanteSelecionada && consultas && consultas.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Histórico de Consultas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>IG</TableHead>
+                    <TableHead>Peso</TableHead>
+                    <TableHead>PA</TableHead>
+                    <TableHead>AU</TableHead>
+                    <TableHead>BCF</TableHead>
+                    <TableHead>MF</TableHead>
+                    <TableHead>Conduta</TableHead>
+                    <TableHead>Observações</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {consultas.map((consulta: any) => {
+                    const igDUM = calcularIG(consulta.dataConsulta);
+                    const igUS = gestante?.dataUltrassom ? calcularIGPorUS(consulta.dataConsulta) : null;
+                    return (
+                      <TableRow key={consulta.id}>
+                        <TableCell>{formatarData(consulta.dataConsulta)}</TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>I.G. DUM: {igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : "-"}</div>
+                            {igUS && <div>I.G. US: {igUS.semanas}s {igUS.dias}d</div>}
+                          </div>
+                        </TableCell>
+                        <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {consulta.pressaoSistolica && consulta.pressaoDiastolica 
+                              ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
+                              : consulta.pressaoArterial || "-"}
+                            {((consulta.pressaoSistolica && consulta.pressaoSistolica >= 140) || 
+                              (consulta.pressaoDiastolica && consulta.pressaoDiastolica >= 90) ||
+                              isBPAbnormal(consulta.pressaoArterial)) && (
+                              <span title="Pressão arterial ≥140/90 mmHg">
+                                <AlertTriangle className="h-4 w-4 text-red-600" />
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span>
+                              {consulta.alturaUterina === -1 ? (
+                                <span className="text-muted-foreground italic">Útero não palpável</span>
+                              ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
+                            </span>
+                            {consulta.alturaUterina && consulta.alturaUterina !== -1 && isAUAbnormal(consulta.alturaUterina / 10, consulta.igDumSemanas || consulta.igUltrassomSemanas) && (
+                              <span title="Altura uterina fora dos percentis 10-90">
+                                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {consulta.bcf === 1 ? (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Positivo</span>
+                          ) : consulta.bcf === 0 ? (
+                            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Não audível</span>
+                          ) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {consulta.mf === 1 ? (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
+                          ) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {(() => {
+                            if (!consulta.conduta) return "-";
+                            try {
+                              const condutas = JSON.parse(consulta.conduta);
+                              if (condutas.length === 0) return "-";
+                              return (
+                                <div className="space-y-1">
+                                  {condutas.map((c: string, idx: number) => (
+                                    <span key={idx} className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 mr-1">
+                                      {c}
+                                    </span>
+                                  ))}
+                                  {consulta.condutaComplementacao && (
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                      {consulta.condutaComplementacao}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            } catch {
+                              return "-";
+                            }
+                          })()}
+                        </TableCell>
+                        <TableCell>{consulta.observacoes || "-"}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Copiar texto PEP"
+                              onClick={() => {
+                                const texto = gerarTextoPEPConsultaAnterior(consulta);
+                                setTextoPEPConsultaAnterior(texto);
+                                setShowPEPConsultaAnterior(true);
+                              }}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Editar consulta"
+                              onClick={() => handleEdit(consulta)}
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Excluir consulta"
+                              onClick={() => handleDelete(consulta.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Data Planejada para a Cesárea */}
         {gestanteSelecionada && gestante && (
           <Card>
@@ -2422,149 +2565,6 @@ export default function CartaoPrenatal() {
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Histórico de Consultas */}
-        {gestanteSelecionada && consultas && consultas.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Histórico de Consultas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>IG</TableHead>
-                    <TableHead>Peso</TableHead>
-                    <TableHead>PA</TableHead>
-                    <TableHead>AU</TableHead>
-                    <TableHead>BCF</TableHead>
-                    <TableHead>MF</TableHead>
-                    <TableHead>Conduta</TableHead>
-                    <TableHead>Observações</TableHead>
-                    <TableHead>Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {consultas.map((consulta: any) => {
-                    const igDUM = calcularIG(consulta.dataConsulta);
-                    const igUS = gestante?.dataUltrassom ? calcularIGPorUS(consulta.dataConsulta) : null;
-                    return (
-                      <TableRow key={consulta.id}>
-                        <TableCell>{formatarData(consulta.dataConsulta)}</TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <div>I.G. DUM: {igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : "-"}</div>
-                            {igUS && <div>I.G. US: {igUS.semanas}s {igUS.dias}d</div>}
-                          </div>
-                        </TableCell>
-                        <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {consulta.pressaoSistolica && consulta.pressaoDiastolica 
-                              ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
-                              : consulta.pressaoArterial || "-"}
-                            {((consulta.pressaoSistolica && consulta.pressaoSistolica >= 140) || 
-                              (consulta.pressaoDiastolica && consulta.pressaoDiastolica >= 90) ||
-                              isBPAbnormal(consulta.pressaoArterial)) && (
-                              <span title="Pressão arterial ≥140/90 mmHg">
-                                <AlertTriangle className="h-4 w-4 text-red-600" />
-                              </span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <span>
-                              {consulta.alturaUterina === -1 ? (
-                                <span className="text-muted-foreground italic">Útero não palpável</span>
-                              ) : consulta.alturaUterina ? `${(consulta.alturaUterina / 10).toFixed(0)} cm` : "-"}
-                            </span>
-                            {consulta.alturaUterina && consulta.alturaUterina !== -1 && isAUAbnormal(consulta.alturaUterina / 10, consulta.igDumSemanas || consulta.igUltrassomSemanas) && (
-                              <span title="Altura uterina fora dos percentis 10-90">
-                                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                              </span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {consulta.bcf === 1 ? (
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Positivo</span>
-                          ) : consulta.bcf === 0 ? (
-                            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Não audível</span>
-                          ) : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {consulta.mf === 1 ? (
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Sim</span>
-                          ) : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {(() => {
-                            if (!consulta.conduta) return "-";
-                            try {
-                              const condutas = JSON.parse(consulta.conduta);
-                              if (condutas.length === 0) return "-";
-                              return (
-                                <div className="space-y-1">
-                                  {condutas.map((c: string, idx: number) => (
-                                    <span key={idx} className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 mr-1">
-                                      {c}
-                                    </span>
-                                  ))}
-                                  {consulta.condutaComplementacao && (
-                                    <div className="text-xs text-muted-foreground mt-1">
-                                      {consulta.condutaComplementacao}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            } catch {
-                              return "-";
-                            }
-                          })()}
-                        </TableCell>
-                        <TableCell>{consulta.observacoes || "-"}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              title="Copiar texto PEP"
-                              onClick={() => {
-                                const texto = gerarTextoPEPConsultaAnterior(consulta);
-                                setTextoPEPConsultaAnterior(texto);
-                                setShowPEPConsultaAnterior(true);
-                              }}
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              title="Editar consulta"
-                              onClick={() => handleEdit(consulta)}
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              title="Excluir consulta"
-                              onClick={() => handleDelete(consulta.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
             </CardContent>
           </Card>
         )}

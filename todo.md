@@ -1067,4 +1067,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Manter rótulo e dado na mesma linha (formato: "Rótulo: dado")
 
 ## Mover Histórico de Consultas (09/02/2026)
-- [ ] Mover "Histórico de Consultas" para logo abaixo do Formulário de Nova Consulta
+- [x] Mover "Histórico de Consultas" para logo abaixo do Formulário de Nova Consulta
