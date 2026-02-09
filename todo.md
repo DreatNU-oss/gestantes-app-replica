@@ -1025,3 +1025,16 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover campo Apresentação Fetal do texto PEP gerado no formulário de nova consulta
 - [x] Remover Apresentação Fetal do texto PEP gerado no histórico de consultas
 - [x] Verificado - servidor rodando sem erros, campo não aparece mais no texto PEP
+
+## Wizard Pré-Natal 1ª Consulta (09/02/2026)
+- [x] Adicionar campos no banco: isPrimeiraConsulta, historiaPatologicaPregressa, historiaSocial, historiaFamiliar, condutaCheckboxes (JSON)
+- [x] Atualizar router do servidor para aceitar novos campos
+- [x] Criar componente WizardPrimeiraConsulta com 3 etapas (Anamnese, Exame Físico, Conduta)
+- [x] Etapa 1: Dados automáticos (Paridade, IG DUM, IG US, DPP) + campos de história
+- [x] Etapa 2: Queixas, Peso, PA, AUF, BCF, Edema
+- [x] Etapa 3: Checkboxes de conduta (20 opções) + complementação + observações
+- [x] Barra de progresso visual entre etapas
+- [x] Integrar Wizard no Dashboard (botão 1ª Consulta no ConsultaUnificadaDialog)
+- [x] Integrar Wizard no CartaoPrenatal (via ConsultaUnificadaDialog)
+- [x] Gerar texto PEP específico para 1ª consulta com todos os campos
+- [x] Testar fluxo completo - testes vitest passando

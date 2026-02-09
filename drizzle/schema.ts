@@ -210,6 +210,12 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   apresentacaoFetal: varchar("apresentacaoFetal", { length: 50 }), // cefálica, pélvica, transversa, não avaliada
   observacoes: text("observacoes"),
   queixas: text("queixas"), // queixas da gestante na consulta
+  // Campos específicos da 1ª consulta
+  isPrimeiraConsulta: int("isPrimeiraConsulta").default(0), // 1 = sim, 0 = não
+  historiaPatologicaPregressa: text("historiaPatologicaPregressa"),
+  historiaSocial: text("historiaSocial"),
+  historiaFamiliar: text("historiaFamiliar"),
+  condutaCheckboxes: json("condutaCheckboxes"), // JSON object com checkboxes de conduta da 1ª consulta
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

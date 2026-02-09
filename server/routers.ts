@@ -798,12 +798,23 @@ export const appRouter = router({
         observacoes: z.string().optional(),
         queixas: z.string().optional(),
         edema: z.string().optional(),
+        // Campos específicos da 1ª consulta
+        isPrimeiraConsulta: z.number().optional(),
+        historiaPatologicaPregressa: z.string().optional(),
+        historiaSocial: z.string().optional(),
+        historiaFamiliar: z.string().optional(),
+        condutaCheckboxes: z.record(z.string(), z.boolean()).optional(),
       }))
       .mutation(({ input }) => {
         const data: any = {
           ...input,
           dataConsulta: parseLocalDate(input.dataConsulta),
         };
+        
+        // Converter condutaCheckboxes para JSON string se fornecido
+        if (input.condutaCheckboxes) {
+          data.condutaCheckboxes = input.condutaCheckboxes;
+        }
         
         // Processar pressão arterial se fornecida como string
         if (input.pressaoArterial && !input.pressaoSistolica && !input.pressaoDiastolica) {
@@ -839,6 +850,12 @@ export const appRouter = router({
         observacoes: z.string().optional(),
         queixas: z.string().optional(),
         edema: z.string().optional(),
+        // Campos específicos da 1ª consulta
+        isPrimeiraConsulta: z.number().optional(),
+        historiaPatologicaPregressa: z.string().optional(),
+        historiaSocial: z.string().optional(),
+        historiaFamiliar: z.string().optional(),
+        condutaCheckboxes: z.record(z.string(), z.boolean()).optional(),
       }))
       .mutation(({ input }) => {
         const { id, ...rest } = input;

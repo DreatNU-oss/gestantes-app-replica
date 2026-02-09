@@ -53,6 +53,7 @@ import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import AltoRiscoBadge from "@/components/AltoRiscoBadge";
 import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
+import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
 
 // Função para formatar data de forma segura, evitando problemas de timezone
 const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
@@ -100,6 +101,7 @@ export default function Dashboard() {
   
   // Estados para diálogo de confirmação de consulta
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
+  const [showWizardPrimeiraConsulta, setShowWizardPrimeiraConsulta] = useState(false);
   const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{
     id: number;
     nome: string;
@@ -673,13 +675,34 @@ export default function Dashboard() {
           setShowConsultaDialog(false);
           setGestanteParaConsulta(null);
         }}
-        onConfirm={() => {
+        onConfirm={(isPrimeiraConsulta?: boolean) => {
           setShowConsultaDialog(false);
           if (gestanteParaConsulta) {
-            window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true&skipInfoModal=true`;
+            if (isPrimeiraConsulta) {
+              setShowWizardPrimeiraConsulta(true);
+            } else {
+              window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true&skipInfoModal=true`;
+            }
           }
         }}
       />
+
+      {/* Wizard de 1ª Consulta */}
+      {gestanteParaConsulta && (
+        <WizardPrimeiraConsulta
+          open={showWizardPrimeiraConsulta}
+          onOpenChange={(open) => {
+            setShowWizardPrimeiraConsulta(open);
+            if (!open) setGestanteParaConsulta(null);
+          }}
+          gestante={gestanteParaConsulta}
+          onSuccess={() => {
+            setShowWizardPrimeiraConsulta(false);
+            setGestanteParaConsulta(null);
+            refetchGestantes();
+          }}
+        />
+      )}
 
       {/* Modal de Registro de Parto */}
       <Dialog open={showPartoModal} onOpenChange={setShowPartoModal}>

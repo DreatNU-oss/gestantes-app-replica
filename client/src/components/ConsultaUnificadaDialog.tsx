@@ -19,6 +19,7 @@ import {
   Heart,
   Calendar,
   Loader2,
+  ClipboardList,
 } from "lucide-react";
 
 // Labels de fatores de risco
@@ -108,7 +109,7 @@ interface ConsultaUnificadaDialogProps {
     abortos?: number;
   } | null;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (isPrimeiraConsulta?: boolean) => void;
 }
 
 export default function ConsultaUnificadaDialog({
@@ -440,15 +441,19 @@ export default function ConsultaUnificadaDialog({
 
         <Separator className="my-2" />
 
-        <p className="text-muted-foreground text-sm text-center">Deseja registrar uma consulta agora?</p>
+        <p className="text-muted-foreground text-sm text-center">Que tipo de consulta deseja registrar?</p>
 
-        <DialogFooter>
+        <DialogFooter className="flex flex-col sm:flex-row gap-2">
           <Button variant="outline" onClick={onClose}>
             Não, agora não
           </Button>
-          <Button onClick={onConfirm} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={() => onConfirm(true)} className="bg-[#722F37] hover:bg-[#5a252c]">
+            <ClipboardList className="h-4 w-4 mr-2" />
+            1ª Consulta
+          </Button>
+          <Button onClick={() => onConfirm(false)} className="bg-emerald-600 hover:bg-emerald-700">
             <Stethoscope className="h-4 w-4 mr-2" />
-            Sim, registrar consulta
+            Consulta de Retorno
           </Button>
         </DialogFooter>
       </DialogContent>
