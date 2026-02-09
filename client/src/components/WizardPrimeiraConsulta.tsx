@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
+import { toBold } from "@/lib/unicodeBold";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -278,27 +279,27 @@ export default function WizardPrimeiraConsulta({
     const linhas = [
       `PRÉ-NATAL - 1ª CONSULTA`,
       ``,
-      `**Paridade:** ${paridade}`,
-      `**Idade Gestacional (DUM):** ${igDum}`,
-      `**Idade Gestacional (US):** ${igUs}`,
-      `**Queixa(s):** ${exameFisico.queixas || "Sem queixas hoje."}`,
-      `**História Patológica Pregressa:** ${anamnese.historiaPatologicaPregressa || "-"}`,
-      `**História Social:** ${anamnese.historiaSocial || "-"}`,
-      `**História Familiar:** ${anamnese.historiaFamiliar || "-"}`,
-      `**Peso:** ${exameFisico.peso ? `${exameFisico.peso}kg` : "-"}`,
-      `**Pressão Arterial:** ${exameFisico.pressaoArterial || "-"}`,
-      `**AUF:** ${aufTexto}`,
-      `**BCF:** ${bcfTexto}`,
-      `**Edema:** ${edemaTexto}`,
-      `**Conduta:** ${condutasSelecionadas.length > 0 ? condutasSelecionadas.join(", ") : "-"}`,
+      `${toBold("Paridade:")} ${paridade}`,
+      `${toBold("Idade Gestacional (DUM):")} ${igDum}`,
+      `${toBold("Idade Gestacional (US):")} ${igUs}`,
+      `${toBold("Queixa(s):")} ${exameFisico.queixas || "Sem queixas hoje."}`,
+      `${toBold("História Patológica Pregressa:")} ${anamnese.historiaPatologicaPregressa || "-"}`,
+      `${toBold("História Social:")} ${anamnese.historiaSocial || "-"}`,
+      `${toBold("História Familiar:")} ${anamnese.historiaFamiliar || "-"}`,
+      `${toBold("Peso:")} ${exameFisico.peso ? `${exameFisico.peso}kg` : "-"}`,
+      `${toBold("Pressão Arterial:")} ${exameFisico.pressaoArterial || "-"}`,
+      `${toBold("AUF:")} ${aufTexto}`,
+      `${toBold("BCF:")} ${bcfTexto}`,
+      `${toBold("Edema:")} ${edemaTexto}`,
+      `${toBold("Conduta:")} ${condutasSelecionadas.length > 0 ? condutasSelecionadas.join(", ") : "-"}`,
     ];
 
     if (condutaComplementacao) {
-      linhas.push(`**Conduta (complementação):** ${condutaComplementacao}`);
+      linhas.push(`${toBold("Conduta (complementação):")} ${condutaComplementacao}`);
     }
 
     if (observacoes) {
-      linhas.push(`**Observações:** ${observacoes}`);
+      linhas.push(`${toBold("Observações:")} ${observacoes}`);
     }
 
     return linhas.join("\n\n");

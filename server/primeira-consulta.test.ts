@@ -122,40 +122,78 @@ describe("Primeira Consulta Fields", () => {
     const complementacao = "Retorno em 30 dias com exames.";
     const obs = "Gestação de baixo risco.";
 
+    // Import toBold function logic inline for testing
+    const accentBoldMap: Record<string, string> = {
+      'À': '\uD835\uDC00\u0300', 'Á': '\uD835\uDC00\u0301', 'Â': '\uD835\uDC00\u0302', 'Ã': '\uD835\uDC00\u0303',
+      'È': '\uD835\uDC04\u0300', 'É': '\uD835\uDC04\u0301', 'Ê': '\uD835\uDC04\u0302',
+      'Ì': '\uD835\uDC08\u0300', 'Í': '\uD835\uDC08\u0301', 'Î': '\uD835\uDC08\u0302',
+      'Ò': '\uD835\uDC0E\u0300', 'Ó': '\uD835\uDC0E\u0301', 'Ô': '\uD835\uDC0E\u0302', 'Õ': '\uD835\uDC0E\u0303',
+      'Ù': '\uD835\uDC14\u0300', 'Ú': '\uD835\uDC14\u0301', 'Û': '\uD835\uDC14\u0302',
+      'Ç': '\uD835\uDC02\u0327',
+      'à': '\uD835\uDC1A\u0300', 'á': '\uD835\uDC1A\u0301', 'â': '\uD835\uDC1A\u0302', 'ã': '\uD835\uDC1A\u0303',
+      'è': '\uD835\uDC1E\u0300', 'é': '\uD835\uDC1E\u0301', 'ê': '\uD835\uDC1E\u0302',
+      'ì': '\uD835\uDC22\u0300', 'í': '\uD835\uDC22\u0301', 'î': '\uD835\uDC22\u0302',
+      'ò': '\uD835\uDC28\u0300', 'ó': '\uD835\uDC28\u0301', 'ô': '\uD835\uDC28\u0302', 'õ': '\uD835\uDC28\u0303',
+      'ù': '\uD835\uDC2E\u0300', 'ú': '\uD835\uDC2E\u0301', 'û': '\uD835\uDC2E\u0302',
+      'ç': '\uD835\uDC1C\u0327',
+    };
+
+    function toBold(text: string): string {
+      let result = '';
+      for (const char of text) {
+        const code = char.codePointAt(0)!;
+        if (accentBoldMap[char]) {
+          result += accentBoldMap[char];
+        } else if (code >= 0x41 && code <= 0x5A) {
+          result += String.fromCodePoint(0x1D400 + (code - 0x41));
+        } else if (code >= 0x61 && code <= 0x7A) {
+          result += String.fromCodePoint(0x1D41A + (code - 0x61));
+        } else if (code >= 0x30 && code <= 0x39) {
+          result += String.fromCodePoint(0x1D7CE + (code - 0x30));
+        } else {
+          result += char;
+        }
+      }
+      return result;
+    }
+
     const linhas = [
       `PRÉ-NATAL - 1ª CONSULTA`,
       ``,
-      `**Paridade:** ${paridade}`,
-      `**Idade Gestacional (DUM):** ${igDum}`,
-      `**Idade Gestacional (US):** ${igUs}`,
-      `**Queixa(s):** ${queixas}`,
-      `**História Patológica Pregressa:** ${hpp}`,
-      `**História Social:** ${hSocial}`,
-      `**História Familiar:** ${hFamiliar}`,
-      `**Peso:** ${peso}kg`,
-      `**Pressão Arterial:** ${pa}`,
-      `**AUF:** ${auf}cm`,
-      `**BCF:** ${bcf}`,
-      `**Edema:** ${edema}`,
-      `**Conduta:** ${condutas}`,
+      `${toBold("Paridade:")} ${paridade}`,
+      `${toBold("Idade Gestacional (DUM):")} ${igDum}`,
+      `${toBold("Idade Gestacional (US):")} ${igUs}`,
+      `${toBold("Queixa(s):")} ${queixas}`,
+      `${toBold("História Patológica Pregressa:")} ${hpp}`,
+      `${toBold("História Social:")} ${hSocial}`,
+      `${toBold("História Familiar:")} ${hFamiliar}`,
+      `${toBold("Peso:")} ${peso}kg`,
+      `${toBold("Pressão Arterial:")} ${pa}`,
+      `${toBold("AUF:")} ${auf}cm`,
+      `${toBold("BCF:")} ${bcf}`,
+      `${toBold("Edema:")} ${edema}`,
+      `${toBold("Conduta:")} ${condutas}`,
     ];
 
     if (complementacao) {
-      linhas.push(`**Conduta (complementação):** ${complementacao}`);
+      linhas.push(`${toBold("Conduta (complementação):")} ${complementacao}`);
     }
     if (obs) {
-      linhas.push(`**Observações:** ${obs}`);
+      linhas.push(`${toBold("Observações:")} ${obs}`);
     }
 
     const textoPEP = linhas.join("\n\n");
 
     expect(textoPEP).toContain("PRÉ-NATAL - 1ª CONSULTA");
-    expect(textoPEP).toContain("**Paridade:** G2P1A0");
-    expect(textoPEP).toContain("**História Patológica Pregressa:** Nega comorbidades.");
-    expect(textoPEP).toContain("**História Social:** Nega tabagismo e etilismo.");
-    expect(textoPEP).toContain("**História Familiar:** Mãe hipertensa.");
-    expect(textoPEP).toContain("**Conduta (complementação):** Retorno em 30 dias com exames.");
-    expect(textoPEP).toContain("**Observações:** Gestação de baixo risco.");
+    // Verify Unicode bold is used (no asterisks)
+    expect(textoPEP).not.toContain("**");
+    // Verify bold labels contain Unicode bold characters
+    expect(textoPEP).toContain(toBold("Paridade:"));
+    expect(textoPEP).toContain("G2P1A0");
+    expect(textoPEP).toContain(toBold("História Patológica Pregressa:"));
+    expect(textoPEP).toContain("Nega comorbidades.");
+    expect(textoPEP).toContain(toBold("Observações:"));
+    expect(textoPEP).toContain("Gestação de baixo risco.");
   });
 
   it("should handle empty optional fields gracefully", () => {

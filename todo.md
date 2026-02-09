@@ -1049,3 +1049,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Localizar função handleUpdate no CartaoPrenatal
 - [x] Modificar handleUpdate para gerar texto PEP após atualização bem-sucedida
 - [x] Abrir modal de PEP automaticamente após atualização
+
+## Negrito Real no Texto PEP - Unicode Bold (09/02/2026)
+- [x] Criar função toBold() que converte texto para Unicode Mathematical Bold
+- [x] Substituir asteriscos Markdown por Unicode bold no WizardPrimeiraConsulta
+- [x] Substituir asteriscos Markdown por Unicode bold no CartaoPrenatal (gerarTextoPEP)
+- [x] Substituir asteriscos Markdown por Unicode bold no CartaoPrenatal (gerarTextoPEPConsultaAnterior)
