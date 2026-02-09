@@ -1730,267 +1730,6 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
-        {/* Data Planejada para a Cesárea */}
-        {gestanteSelecionada && gestante && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Data Planejada para a Cesárea
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="dataPartoProgramado">Selecione a data programada</Label>
-                <div className="flex gap-2 items-center">
-                  <Input
-                    id="dataPartoProgramado"
-                    type="date"
-                    value={gestante.dataPartoProgramado || ""}
-                    onChange={(e) => {
-                      const novaData = e.target.value;
-                      updateGestanteMutation.mutate({
-                        id: gestanteSelecionada!,
-                        dataPartoProgramado: novaData,
-                        // Automaticamente mudar para cesárea quando data for cadastrada
-                        tipoPartoDesejado: novaData ? "cesariana" : (gestante.tipoPartoDesejado || undefined),
-                      });
-                      
-                      // Validar data da cesárea
-                      if (novaData && gestante) {
-                        let dataReferencia: Date | null = null;
-                        let igReferenciaDias: number = 0;
-                        
-                        // Priorizar ultrassom se disponível
-                        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-                          dataReferencia = new Date(gestante.dataUltrassom);
-                          igReferenciaDias = gestante.igUltrassomSemanas * 7 + (gestante.igUltrassomDias || 0);
-                        } else if (gestante.dum) {
-                          dataReferencia = new Date(gestante.dum);
-                          igReferenciaDias = 0; // IG na DUM é 0
-                        }
-                        
-                        if (dataReferencia) {
-                          const dataCesarea = new Date(novaData);
-                          const diffMs = dataCesarea.getTime() - dataReferencia.getTime();
-                          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                          const igNaDataDias = igReferenciaDias + diffDias;
-                          const igNaDataSemanas = Math.floor(igNaDataDias / 7);
-                          const igNaDataDiasRestantes = igNaDataDias % 7;
-                          
-                          // Verificar se está antes de 37 semanas (259 dias) ou após 41 semanas (287 dias)
-                          if (igNaDataDias < 259) {
-                            setAlertaDataCesarea({
-                              show: true,
-                              tipo: 'pre-termo',
-                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                            });
-                          } else if (igNaDataDias > 287) {
-                            setAlertaDataCesarea({
-                              show: true,
-                              tipo: 'pos-termo',
-                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                            });
-                          } else {
-                            setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
-                          }
-                        }
-                      } else {
-                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
-                      }
-                    }}
-                    className="max-w-xs"
-                  />
-                </div>
-                {gestante.dataPartoProgramado && (
-                  <p className="text-sm text-muted-foreground">
-                    Data programada: {formatarData(gestante.dataPartoProgramado)}
-                  </p>
-                )}
-                
-                {alertaDataCesarea.show && alertaDataCesarea.igNaData && (
-                  <div className={`mt-2 p-3 rounded-lg border ${
-                    alertaDataCesarea.tipo === 'pre-termo' 
-                      ? 'bg-orange-50 border-orange-300 text-orange-900' 
-                      : 'bg-red-50 border-red-300 text-red-900'
-                  }`}>
-                    <div className="flex items-start gap-2">
-                      <span className="text-lg">⚠️</span>
-                      <div className="flex-1">
-                        <p className="font-semibold text-sm">
-                          {alertaDataCesarea.tipo === 'pre-termo' 
-                            ? 'Cesárea agendada antes de 37 semanas (pré-termo)' 
-                            : 'Cesárea agendada após 41 semanas (pós-termo)'}
-                        </p>
-                        <p className="text-xs mt-1">
-                          IG estimada na data: {alertaDataCesarea.igNaData.semanas}s{alertaDataCesarea.igNaData.dias}d
-                        </p>
-                        <p className="text-xs mt-1">
-                          {alertaDataCesarea.tipo === 'pre-termo' 
-                            ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
-                            : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {gestante.dataPartoProgramado && (
-                <div className="space-y-2 mt-4">
-                  <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
-                  <Select
-                    value={gestante.motivoCesarea || ""}
-                    onValueChange={(value) => {
-                      updateGestanteMutation.mutate({
-                        id: gestanteSelecionada!,
-                        motivoCesarea: value,
-                      });
-                    }}
-                  >
-                    <SelectTrigger id="motivoCesarea" className="max-w-md">
-                      <SelectValue placeholder="Selecione o motivo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Apresentacao pelvica">Apresentação pélvica</SelectItem>
-                      <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
-                      <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
-                      <SelectItem value="Descolamento prematuro placenta">Descolamento prematuro de placenta</SelectItem>
-                      <SelectItem value="Desejo materno">Desejo materno</SelectItem>
-                      <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
-                      <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
-                      <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
-                      <SelectItem value="Herpes genital ativo">Herpes genital ativo</SelectItem>
-                      <SelectItem value="HIV positivo">HIV positivo (carga viral elevada)</SelectItem>
-                      <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
-                      <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
-                      <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
-                      <SelectItem value="Outro">Outro motivo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cesárea</p>
-                  
-                  {gestante.motivoCesarea === "Outro" && (
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            updateGestanteMutation.mutate({
-                              id: gestanteSelecionada!,
-                              motivoCesareaOutro: motivoCesareaOutroLocal,
-                            });
-                          }}
-                          className="h-8"
-                        >
-                          <Check className="h-4 w-4 mr-1" />
-                          Salvar
-                        </Button>
-                      </div>
-                      <Input
-                        id="motivoCesareaOutro"
-                        type="text"
-                        placeholder="Descreva a indicação médica"
-                        value={motivoCesareaOutroLocal}
-                        onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Dados do Bebê */}
-        {gestanteSelecionada && gestante && (
-          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {gestante.sexoBebe === "masculino" ? (
-                  <Baby className="h-5 w-5 text-blue-500" />
-                ) : gestante.sexoBebe === "feminino" ? (
-                  <Baby className="h-5 w-5 text-pink-500" />
-                ) : (
-                  <Baby className="h-5 w-5" />
-                )}
-                <span>Dados do Bebê</span>
-                {gestante.sexoBebe === "masculino" && (
-                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
-                    ♂ Menino
-                  </span>
-                )}
-                {gestante.sexoBebe === "feminino" && (
-                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
-                    ♀ Menina
-                  </span>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
-                    <Input
-                      id="nomeBebe"
-                      placeholder="Ex: Maria, João, etc."
-                      value={dadosBebe.nomeBebe}
-                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
-                      className="max-w-xs"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sexoBebe">Sexo do bebê</Label>
-                    <Select
-                      value={dadosBebe.sexoBebe}
-                      onValueChange={(value) => setDadosBebe(prev => ({ ...prev, sexoBebe: value as "masculino" | "feminino" | "nao_informado" }))}
-                    >
-                      <SelectTrigger id="sexoBebe" className={`max-w-xs ${dadosBebe.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : dadosBebe.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
-                        <SelectValue placeholder="Selecione o sexo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nao_informado">Não Informado</SelectItem>
-                        <SelectItem value="masculino">
-                          <span className="flex items-center gap-2">
-                            <span className="text-blue-500">♂</span> Masculino
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="feminino">
-                          <span className="flex items-center gap-2">
-                            <span className="text-pink-500">♀</span> Feminino
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    onClick={() => {
-                      updateGestanteMutation.mutate({
-                        id: gestanteSelecionada!,
-                        nomeBebe: dadosBebe.nomeBebe,
-                        sexoBebe: dadosBebe.sexoBebe,
-                      }, {
-                        onSuccess: () => {
-                          toast.success("Dados do bebê atualizados com sucesso!");
-                        }
-                      });
-                    }}
-                    disabled={updateGestanteMutation.isPending}
-                  >
-                    {updateGestanteMutation.isPending ? "Salvando..." : "Salvar"}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Fatores de Risco */}
         {gestanteSelecionada && gestante && (
           <FatoresRiscoManager 
@@ -2356,6 +2095,177 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
+        {/* Data Planejada para a Cesárea */}
+        {gestanteSelecionada && gestante && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Data Planejada para a Cesárea
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="dataPartoProgramado">Selecione a data programada</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    id="dataPartoProgramado"
+                    type="date"
+                    value={gestante.dataPartoProgramado || ""}
+                    onChange={(e) => {
+                      const novaData = e.target.value;
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        dataPartoProgramado: novaData,
+                        tipoPartoDesejado: novaData ? "cesariana" : (gestante.tipoPartoDesejado || undefined),
+                      });
+                      
+                      if (novaData && gestante) {
+                        let dataReferencia: Date | null = null;
+                        let igReferenciaDias: number = 0;
+                        
+                        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+                          dataReferencia = new Date(gestante.dataUltrassom);
+                          igReferenciaDias = gestante.igUltrassomSemanas * 7 + (gestante.igUltrassomDias || 0);
+                        } else if (gestante.dum) {
+                          dataReferencia = new Date(gestante.dum);
+                          igReferenciaDias = 0;
+                        }
+                        
+                        if (dataReferencia) {
+                          const dataCesarea = new Date(novaData);
+                          const diffMs = dataCesarea.getTime() - dataReferencia.getTime();
+                          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                          const igNaDataDias = igReferenciaDias + diffDias;
+                          const igNaDataSemanas = Math.floor(igNaDataDias / 7);
+                          const igNaDataDiasRestantes = igNaDataDias % 7;
+                          
+                          if (igNaDataDias < 259) {
+                            setAlertaDataCesarea({
+                              show: true,
+                              tipo: 'pre-termo',
+                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                            });
+                          } else if (igNaDataDias > 287) {
+                            setAlertaDataCesarea({
+                              show: true,
+                              tipo: 'pos-termo',
+                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                            });
+                          } else {
+                            setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                          }
+                        }
+                      } else {
+                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                      }
+                    }}
+                    className="max-w-xs"
+                  />
+                </div>
+                {gestante.dataPartoProgramado && (
+                  <p className="text-sm text-muted-foreground">
+                    Data programada: {formatarData(gestante.dataPartoProgramado)}
+                  </p>
+                )}
+                
+                {alertaDataCesarea.show && alertaDataCesarea.igNaData && (
+                  <div className={`mt-2 p-3 rounded-lg border ${
+                    alertaDataCesarea.tipo === 'pre-termo' 
+                      ? 'bg-orange-50 border-orange-300 text-orange-900' 
+                      : 'bg-red-50 border-red-300 text-red-900'
+                  }`}>
+                    <div className="flex items-start gap-2">
+                      <span className="text-lg">{"\u26A0\uFE0F"}</span>
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">
+                          {alertaDataCesarea.tipo === 'pre-termo' 
+                            ? 'Cesárea agendada antes de 37 semanas (pré-termo)' 
+                            : 'Cesárea agendada após 41 semanas (pós-termo)'}
+                        </p>
+                        <p className="text-xs mt-1">
+                          IG estimada na data: {alertaDataCesarea.igNaData.semanas}s{alertaDataCesarea.igNaData.dias}d
+                        </p>
+                        <p className="text-xs mt-1">
+                          {alertaDataCesarea.tipo === 'pre-termo' 
+                            ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
+                            : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {gestante.dataPartoProgramado && (
+                <div className="space-y-2 mt-4">
+                  <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
+                  <Select
+                    value={gestante.motivoCesarea || ""}
+                    onValueChange={(value) => {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        motivoCesarea: value,
+                      });
+                    }}
+                  >
+                    <SelectTrigger id="motivoCesarea" className="max-w-md">
+                      <SelectValue placeholder="Selecione o motivo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Apresentacao pelvica">Apresentação pélvica</SelectItem>
+                      <SelectItem value="Cesarea iterativa">Cesárea iterativa</SelectItem>
+                      <SelectItem value="Cirurgia uterina previa">Cirurgia uterina prévia</SelectItem>
+                      <SelectItem value="Descolamento prematuro placenta">Descolamento prematuro de placenta</SelectItem>
+                      <SelectItem value="Desejo materno">Desejo materno</SelectItem>
+                      <SelectItem value="Desproporção cefalopelvica">Desproporção cefalopélvica</SelectItem>
+                      <SelectItem value="Falha inducao parto">Falha na indução do parto</SelectItem>
+                      <SelectItem value="Gemelar">Gestação gemelar</SelectItem>
+                      <SelectItem value="Herpes genital ativo">Herpes genital ativo</SelectItem>
+                      <SelectItem value="HIV positivo">HIV positivo (carga viral elevada)</SelectItem>
+                      <SelectItem value="Macrossomia fetal">Macrossomia fetal</SelectItem>
+                      <SelectItem value="Placenta previa">Placenta prévia</SelectItem>
+                      <SelectItem value="Sofrimento fetal">Sofrimento fetal</SelectItem>
+                      <SelectItem value="Outro">Outro motivo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cesárea</p>
+                  
+                  {gestante.motivoCesarea === "Outro" && (
+                    <div className="mt-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="motivoCesareaOutro">Especifique o motivo</Label>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            updateGestanteMutation.mutate({
+                              id: gestanteSelecionada!,
+                              motivoCesareaOutro: motivoCesareaOutroLocal,
+                            });
+                          }}
+                          className="h-8"
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Salvar
+                        </Button>
+                      </div>
+                      <Input
+                        id="motivoCesareaOutro"
+                        type="text"
+                        placeholder="Descreva a indicação médica"
+                        value={motivoCesareaOutroLocal}
+                        onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Marcos Importantes da Gestação */}
         {gestante && (gestante.dataUltrassom || gestante.dum) && (
           <Card>
@@ -2425,6 +2335,92 @@ export default function CartaoPrenatal() {
                     </Card>
                   );
                 })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Dados do Bebê */}
+        {gestanteSelecionada && gestante && (
+          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                {gestante.sexoBebe === "masculino" ? (
+                  <Baby className="h-5 w-5 text-blue-500" />
+                ) : gestante.sexoBebe === "feminino" ? (
+                  <Baby className="h-5 w-5 text-pink-500" />
+                ) : (
+                  <Baby className="h-5 w-5" />
+                )}
+                <span>Dados do Bebê</span>
+                {gestante.sexoBebe === "masculino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                    \u2642 Menino
+                  </span>
+                )}
+                {gestante.sexoBebe === "feminino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
+                    \u2640 Menina
+                  </span>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
+                    <Input
+                      id="nomeBebe"
+                      placeholder="Ex: Maria, João, etc."
+                      value={dadosBebe.nomeBebe}
+                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="sexoBebe">Sexo do bebê</Label>
+                    <Select
+                      value={dadosBebe.sexoBebe}
+                      onValueChange={(value) => setDadosBebe(prev => ({ ...prev, sexoBebe: value as "masculino" | "feminino" | "nao_informado" }))}
+                    >
+                      <SelectTrigger id="sexoBebe" className={`max-w-xs ${dadosBebe.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : dadosBebe.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
+                        <SelectValue placeholder="Selecione o sexo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nao_informado">Não Informado</SelectItem>
+                        <SelectItem value="masculino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-blue-500">\u2642</span> Masculino
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="feminino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-pink-500">\u2640</span> Feminino
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        nomeBebe: dadosBebe.nomeBebe,
+                        sexoBebe: dadosBebe.sexoBebe,
+                      }, {
+                        onSuccess: () => {
+                          toast.success("Dados do bebê atualizados com sucesso!");
+                        }
+                      });
+                    }}
+                    disabled={updateGestanteMutation.isPending}
+                  >
+                    {updateGestanteMutation.isPending ? "Salvando..." : "Salvar"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -1055,3 +1055,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir asteriscos Markdown por Unicode bold no WizardPrimeiraConsulta
 - [x] Substituir asteriscos Markdown por Unicode bold no CartaoPrenatal (gerarTextoPEP)
 - [x] Substituir asteriscos Markdown por Unicode bold no CartaoPrenatal (gerarTextoPEPConsultaAnterior)
+
+## Reorganizar Layout do Cartão de Pré-natal (09/02/2026)
+- [x] Mover "Data Planejada para a Cesárea" para após o Formulário de Consulta
+- [x] Mover "Marcos Importantes" para após Data Planejada para a Cesárea
+- [x] Mover "Dados do Bebê" para após Marcos Importantes
