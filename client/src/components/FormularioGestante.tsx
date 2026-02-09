@@ -1393,7 +1393,7 @@ export default function FormularioGestante({
                 onClick={() => {
                   setShowStartConsultaModal(false);
                   // Navegar para página de consultas com gestante selecionada
-                  setLocation(`/cartao-prenatal?gestanteId=${createdGestanteId}&novaConsulta=true`);
+                  setLocation(`/cartao-prenatal?gestanteId=${createdGestanteId}&novaConsulta=true&skipInfoModal=true`);
                 }}
               >
                 Sim, iniciar consulta

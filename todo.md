@@ -998,3 +998,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar geração de PDF com jsPDF incluindo gráficos SVG
 - [x] Testar geração de PDF localmente - PDF de 3 páginas gerado com sucesso
 - [ ] Publicar e testar em produção
+
+## Bug Fuso Horário e Unificação de Janelas na Consulta (09/02/2026)
+- [x] Investigar as duas janelas que abrem ao clicar em Consulta no Dashboard
+- [x] Corrigir bug de fuso horário que mostra data 1 dia a menos (adicionado T12:00:00 nas datas)
+- [x] Unificar as duas janelas em uma única janela com todas as informações (ConsultaUnificadaDialog)
+- [x] Corrigir botão Consulta no GestantesLayout e FormularioGestante para usar skipInfoModal
+- [x] Testar correção - diálogo unificado funciona corretamente com todas as informações

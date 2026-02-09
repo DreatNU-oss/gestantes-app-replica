@@ -149,7 +149,8 @@ export default function ModalInfoGestante({
     
     // Calcular IG pela DUM
     if (dum) {
-      const dumDate = new Date(dum);
+      const dumStr = typeof dum === 'string' && !dum.includes('T') ? dum + 'T12:00:00' : dum;
+      const dumDate = new Date(dumStr);
       const diffMs = hoje.getTime() - dumDate.getTime();
       const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       if (diffDias >= 0) {
@@ -162,7 +163,8 @@ export default function ModalInfoGestante({
     
     // Calcular IG pelo Ultrassom
     if (dataUltrassom && igUsSemanas !== null && igUsSemanas !== undefined) {
-      const usDate = new Date(dataUltrassom);
+      const usStr = typeof dataUltrassom === 'string' && !dataUltrassom.includes('T') ? dataUltrassom + 'T12:00:00' : dataUltrassom;
+      const usDate = new Date(usStr);
       const diffMs = hoje.getTime() - usDate.getTime();
       const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const diasTotaisNoUs = (igUsSemanas * 7) + (igUsDias || 0);
@@ -196,7 +198,8 @@ export default function ModalInfoGestante({
   // Data do parto: preferência para data programada, senão usa DPP calculada
   const dataPartoProgramado = gestante?.dataPartoProgramado;
   const dppCalculada = gestante?.calculado?.dppUS || gestante?.calculado?.dpp;
-  const dataParto = dataPartoProgramado || (dppCalculada ? formatDateObjBR(new Date(dppCalculada)) : null);
+  const dppDate = dppCalculada ? new Date(typeof dppCalculada === 'string' && !String(dppCalculada).includes('T') ? dppCalculada + 'T12:00:00' : dppCalculada) : null;
+  const dataParto = dataPartoProgramado || (dppDate ? formatDateObjBR(dppDate) : null);
   const isDataProgramada = !!dataPartoProgramado;
   const temDataParto = !!dataParto;
 

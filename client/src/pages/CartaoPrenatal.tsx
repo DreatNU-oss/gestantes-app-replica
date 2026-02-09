@@ -78,7 +78,10 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
-      setShowInfoModal(true);
+      const skipInfoModal = params.get('skipInfoModal');
+      if (skipInfoModal !== 'true') {
+        setShowInfoModal(true);
+      }
       // Limpar query params da URL
       window.history.replaceState({}, '', '/cartao-prenatal');
     }

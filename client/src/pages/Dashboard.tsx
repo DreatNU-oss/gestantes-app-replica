@@ -44,6 +44,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+
 import FormularioGestante from "@/components/FormularioGestante";
 import DetalhesGestante from "@/components/DetalhesGestante";
 import { AlertasPartosProximos } from "@/components/AlertasPartosProximos";
@@ -51,7 +52,7 @@ import { AlertaConsultasAtrasadas } from "@/components/AlertaConsultasAtrasadas"
 import { AutocompleteGestante } from "@/components/AutocompleteGestante";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import AltoRiscoBadge from "@/components/AltoRiscoBadge";
-import ModalInfoGestante from "@/components/ModalInfoGestante";
+import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
 
 // Função para formatar data de forma segura, evitando problemas de timezone
 const formatarDataSegura = (dateValue: Date | string | null | undefined): string => {
@@ -114,9 +115,7 @@ export default function Dashboard() {
     abortos?: number;
   } | null>(null);
   
-  // Estados para modal de informações da gestante
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoGestante, setInfoGestante] = useState<{id: number, nome: string} | null>(null);
+
   
   const { data: gestantes, isLoading, refetch: refetchGestantes } = trpc.gestantes.list.useQuery(
     { searchTerm, sortBy },
@@ -665,137 +664,22 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Diálogo de Confirmação de Consulta */}
-      <Dialog open={showConsultaDialog} onOpenChange={setShowConsultaDialog}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Baby className="h-5 w-5 text-[#722F37]" />
-              Gestante cadastrada com sucesso!
-            </DialogTitle>
-          </DialogHeader>
-          
-          {/* Informações da Gestante */}
-          {gestanteParaConsulta && (
-            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-              <div className="font-semibold text-lg">{gestanteParaConsulta.nome}</div>
-              
-              {/* Idade Gestacional */}
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">IG (DUM):</span>
-                  <span className="ml-2 font-medium">
-                    {(() => {
-                      if (gestanteParaConsulta.tipoDum === "incerta") return "DUM Incerta";
-                      if (gestanteParaConsulta.tipoDum === "incompativel") return "Não considerada (incompatível com US)";
-                      if (!gestanteParaConsulta.dum) return "Não informada";
-                      const hoje = new Date();
-                      const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
-                      const diffMs = hoje.getTime() - dumDate.getTime();
-                      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                      const semanas = Math.floor(diffDays / 7);
-                      const dias = diffDays % 7;
-                      return `${semanas}s ${dias}d`;
-                    })()}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">IG (US):</span>
-                  <span className="ml-2 font-medium">
-                    {(() => {
-                      if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "Não informada";
-                      const hoje = new Date();
-                      const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
-                      const diffMs = hoje.getTime() - dataUS.getTime();
-                      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                      const igTotalDias = (gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0) + diffDays;
-                      const semanas = Math.floor(igTotalDias / 7);
-                      const dias = igTotalDias % 7;
-                      return `${semanas}s ${dias}d`;
-                    })()}
-                  </span>
-                </div>
-              </div>
-              
-              {/* DPP */}
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">DPP (DUM):</span>
-                  <span className="ml-2 font-medium">
-                    {(() => {
-                      if (!gestanteParaConsulta.dum || gestanteParaConsulta.tipoDum !== "data") return "-";
-                      const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
-                      const dppDate = new Date(dumDate);
-                      dppDate.setDate(dppDate.getDate() + 280);
-                      return dppDate.toLocaleDateString('pt-BR');
-                    })()}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">DPP (US):</span>
-                  <span className="ml-2 font-medium">
-                    {(() => {
-                      if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "-";
-                      const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
-                      const diasRestantes = (40 * 7) - ((gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0));
-                      const dppDate = new Date(dataUS);
-                      dppDate.setDate(dppDate.getDate() + diasRestantes);
-                      return dppDate.toLocaleDateString('pt-BR');
-                    })()}
-                  </span>
-                </div>
-              </div>
-              
-              {/* História Obstétrica */}
-              <div className="border-t pt-3 mt-3">
-                <span className="text-muted-foreground text-sm">História Obstétrica:</span>
-                <div className="flex flex-wrap gap-3 mt-2">
-                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
-                    G{gestanteParaConsulta.gesta || 0}
-                  </span>
-                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
-                    P{gestanteParaConsulta.para || 0}
-                  </span>
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
-                    PN: {gestanteParaConsulta.partosNormais || 0}
-                  </span>
-                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">
-                    PC: {gestanteParaConsulta.cesareas || 0}
-                  </span>
-                  <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
-                    A: {gestanteParaConsulta.abortos || 0}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <p className="text-muted-foreground text-sm">Deseja registrar uma consulta agora?</p>
-          
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowConsultaDialog(false);
-                setGestanteParaConsulta(null);
-              }}
-            >
-              Não, agora não
-            </Button>
-            <Button
-              onClick={() => {
-                setShowConsultaDialog(false);
-                // Redirecionar para Cartão Pré-Natal com query params para abrir formulário
-                if (gestanteParaConsulta) {
-                  window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true`;
-                }
-              }}
-            >
-              Sim, registrar consulta
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Diálogo Unificado de Consulta */}
+      <ConsultaUnificadaDialog
+        open={showConsultaDialog}
+        onOpenChange={setShowConsultaDialog}
+        gestanteParaConsulta={gestanteParaConsulta}
+        onClose={() => {
+          setShowConsultaDialog(false);
+          setGestanteParaConsulta(null);
+        }}
+        onConfirm={() => {
+          setShowConsultaDialog(false);
+          if (gestanteParaConsulta) {
+            window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true&skipInfoModal=true`;
+          }
+        }}
+      />
 
       {/* Modal de Registro de Parto */}
       <Dialog open={showPartoModal} onOpenChange={setShowPartoModal}>
@@ -866,13 +750,7 @@ export default function Dashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Informações da Gestante */}
-      <ModalInfoGestante
-        open={showInfoModal}
-        onOpenChange={setShowInfoModal}
-        gestanteId={infoGestante?.id || null}
-        gestanteNome={infoGestante?.nome || ""}
-      />
+
     </GestantesLayout>
   );
 }
