@@ -125,37 +125,37 @@ describe("Primeira Consulta Fields", () => {
     const linhas = [
       `PRÉ-NATAL - 1ª CONSULTA`,
       ``,
-      `Paridade:\n${paridade}`,
-      `Idade Gestacional (DUM):\n${igDum}`,
-      `Idade Gestacional (US):\n${igUs}`,
-      `Queixa(s):\n${queixas}`,
-      `História Patológica Pregressa:\n${hpp}`,
-      `História Social:\n${hSocial}`,
-      `História Familiar:\n${hFamiliar}`,
-      `Peso:\n${peso}kg`,
-      `Pressão Arterial:\n${pa}`,
-      `AUF:\n${auf}cm`,
-      `BCF:\n${bcf}`,
-      `Edema:\n${edema}`,
-      `Conduta:\n${condutas}`,
+      `**Paridade:** ${paridade}`,
+      `**Idade Gestacional (DUM):** ${igDum}`,
+      `**Idade Gestacional (US):** ${igUs}`,
+      `**Queixa(s):** ${queixas}`,
+      `**História Patológica Pregressa:** ${hpp}`,
+      `**História Social:** ${hSocial}`,
+      `**História Familiar:** ${hFamiliar}`,
+      `**Peso:** ${peso}kg`,
+      `**Pressão Arterial:** ${pa}`,
+      `**AUF:** ${auf}cm`,
+      `**BCF:** ${bcf}`,
+      `**Edema:** ${edema}`,
+      `**Conduta:** ${condutas}`,
     ];
 
     if (complementacao) {
-      linhas.push(`Conduta (complementação):\n${complementacao}`);
+      linhas.push(`**Conduta (complementação):** ${complementacao}`);
     }
     if (obs) {
-      linhas.push(`Observações:\n${obs}`);
+      linhas.push(`**Observações:** ${obs}`);
     }
 
     const textoPEP = linhas.join("\n\n");
 
     expect(textoPEP).toContain("PRÉ-NATAL - 1ª CONSULTA");
-    expect(textoPEP).toContain("Paridade:\nG2P1A0");
-    expect(textoPEP).toContain("História Patológica Pregressa:\nNega comorbidades.");
-    expect(textoPEP).toContain("História Social:\nNega tabagismo e etilismo.");
-    expect(textoPEP).toContain("História Familiar:\nMãe hipertensa.");
-    expect(textoPEP).toContain("Conduta (complementação):\nRetorno em 30 dias com exames.");
-    expect(textoPEP).toContain("Observações:\nGestação de baixo risco.");
+    expect(textoPEP).toContain("**Paridade:** G2P1A0");
+    expect(textoPEP).toContain("**História Patológica Pregressa:** Nega comorbidades.");
+    expect(textoPEP).toContain("**História Social:** Nega tabagismo e etilismo.");
+    expect(textoPEP).toContain("**História Familiar:** Mãe hipertensa.");
+    expect(textoPEP).toContain("**Conduta (complementação):** Retorno em 30 dias com exames.");
+    expect(textoPEP).toContain("**Observações:** Gestação de baixo risco.");
   });
 
   it("should handle empty optional fields gracefully", () => {

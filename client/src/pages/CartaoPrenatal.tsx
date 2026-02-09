@@ -1263,21 +1263,21 @@ export default function CartaoPrenatal() {
       edemaTexto = "++++";
     }
     
-    // Montar texto no formato do PEP (com linhas em branco entre itens)
+    // Montar texto no formato do PEP (rótulos em negrito, dados na mesma linha)
     const linhas = [
-      `Idade Gestacional:\n${igTexto}`,
-      `Queixa(s):\n${formData.queixas || "Sem queixas hoje."}`,
-      `Peso:\n${formData.peso ? `${formData.peso}kg` : "-"}`,
-      `AUF:\n${aufTexto}`,
-      `BCF:\n${bcfTexto}`,
-      `Edema:\n${edemaTexto}`,
-      `Pressão Arterial:\n${formData.pressaoArterial || "-"}`,
-      `Conduta:\n${condutaTexto}`,
+      `**Idade Gestacional:** ${igTexto}`,
+      `**Queixa(s):** ${formData.queixas || "Sem queixas hoje."}`,
+      `**Peso:** ${formData.peso ? `${formData.peso}kg` : "-"}`,
+      `**AUF:** ${aufTexto}`,
+      `**BCF:** ${bcfTexto}`,
+      `**Edema:** ${edemaTexto}`,
+      `**Pressão Arterial:** ${formData.pressaoArterial || "-"}`,
+      `**Conduta:** ${condutaTexto}`,
     ];
     
     // Adicionar complementação se houver
     if (formData.condutaComplementacao) {
-      linhas.push(`Conduta (complementação):\n${formData.condutaComplementacao}`);
+      linhas.push(`**Conduta (complementação):** ${formData.condutaComplementacao}`);
     }
     
     return linhas.join("\n\n");
@@ -1340,14 +1340,14 @@ export default function CartaoPrenatal() {
       paTexto = consulta.pressaoArterial;
     }
     
-    // Montar texto no formato do PEP (com linhas em branco entre itens)
+    // Montar texto no formato do PEP (rótulos em negrito, dados na mesma linha)
     const linhas = [
-      `Idade Gestacional:\n${igTexto}`,
-      `Queixa(s):\n${consulta.queixas || "Sem queixas hoje."}`,
-      `Peso:\n${pesoTexto}`,
-      `AUF:\n${aufTexto}`,
-      `BCF:\n${bcfTexto}`,
-      `Edema:\n${(() => {
+      `**Idade Gestacional:** ${igTexto}`,
+      `**Queixa(s):** ${consulta.queixas || "Sem queixas hoje."}`,
+      `**Peso:** ${pesoTexto}`,
+      `**AUF:** ${aufTexto}`,
+      `**BCF:** ${bcfTexto}`,
+      `**Edema:** ${(() => {
         const edema = (consulta as any).edema;
         if (!edema) return "-";
         if (edema === "0") return "Ausente";
@@ -1357,18 +1357,18 @@ export default function CartaoPrenatal() {
         if (edema === "4") return "++++";
         return edema;
       })()}`,
-      `Pressão Arterial:\n${paTexto}`,
-      `Conduta:\n${condutaTexto}`,
+      `**Pressão Arterial:** ${paTexto}`,
+      `**Conduta:** ${condutaTexto}`,
     ];
     
     // Adicionar complementação se houver
     if (consulta.condutaComplementacao) {
-      linhas.push(`Conduta (complementação):\n${consulta.condutaComplementacao}`);
+      linhas.push(`**Conduta (complementação):** ${consulta.condutaComplementacao}`);
     }
     
     // Adicionar observações se houver
     if (consulta.observacoes) {
-      linhas.push(`Observações:\n${consulta.observacoes}`);
+      linhas.push(`**Observações:** ${consulta.observacoes}`);
     }
     
     return linhas.join("\n\n");

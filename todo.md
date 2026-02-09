@@ -1038,3 +1038,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Integrar Wizard no CartaoPrenatal (via ConsultaUnificadaDialog)
 - [x] Gerar texto PEP específico para 1ª consulta com todos os campos
 - [x] Testar fluxo completo - testes vitest passando
+
+## Formatação do Texto PEP - Negrito e Mesma Linha (09/02/2026)
+- [x] Formatar rótulos em negrito no texto PEP do Wizard 1ª Consulta
+- [x] Formatar rótulos em negrito no texto PEP do formulário de consulta normal (CartaoPrenatal)
+- [x] Formatar rótulos em negrito no texto PEP do histórico de consultas (CartaoPrenatal)
+- [x] Manter dados na mesma linha do rótulo (ex: **Peso:** 68.5kg)

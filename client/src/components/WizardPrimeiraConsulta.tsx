@@ -278,27 +278,27 @@ export default function WizardPrimeiraConsulta({
     const linhas = [
       `PRÉ-NATAL - 1ª CONSULTA`,
       ``,
-      `Paridade:\n${paridade}`,
-      `Idade Gestacional (DUM):\n${igDum}`,
-      `Idade Gestacional (US):\n${igUs}`,
-      `Queixa(s):\n${exameFisico.queixas || "Sem queixas hoje."}`,
-      `História Patológica Pregressa:\n${anamnese.historiaPatologicaPregressa || "-"}`,
-      `História Social:\n${anamnese.historiaSocial || "-"}`,
-      `História Familiar:\n${anamnese.historiaFamiliar || "-"}`,
-      `Peso:\n${exameFisico.peso ? `${exameFisico.peso}kg` : "-"}`,
-      `Pressão Arterial:\n${exameFisico.pressaoArterial || "-"}`,
-      `AUF:\n${aufTexto}`,
-      `BCF:\n${bcfTexto}`,
-      `Edema:\n${edemaTexto}`,
-      `Conduta:\n${condutasSelecionadas.length > 0 ? condutasSelecionadas.join(", ") : "-"}`,
+      `**Paridade:** ${paridade}`,
+      `**Idade Gestacional (DUM):** ${igDum}`,
+      `**Idade Gestacional (US):** ${igUs}`,
+      `**Queixa(s):** ${exameFisico.queixas || "Sem queixas hoje."}`,
+      `**História Patológica Pregressa:** ${anamnese.historiaPatologicaPregressa || "-"}`,
+      `**História Social:** ${anamnese.historiaSocial || "-"}`,
+      `**História Familiar:** ${anamnese.historiaFamiliar || "-"}`,
+      `**Peso:** ${exameFisico.peso ? `${exameFisico.peso}kg` : "-"}`,
+      `**Pressão Arterial:** ${exameFisico.pressaoArterial || "-"}`,
+      `**AUF:** ${aufTexto}`,
+      `**BCF:** ${bcfTexto}`,
+      `**Edema:** ${edemaTexto}`,
+      `**Conduta:** ${condutasSelecionadas.length > 0 ? condutasSelecionadas.join(", ") : "-"}`,
     ];
 
     if (condutaComplementacao) {
-      linhas.push(`Conduta (complementação):\n${condutaComplementacao}`);
+      linhas.push(`**Conduta (complementação):** ${condutaComplementacao}`);
     }
 
     if (observacoes) {
-      linhas.push(`Observações:\n${observacoes}`);
+      linhas.push(`**Observações:** ${observacoes}`);
     }
 
     return linhas.join("\n\n");
