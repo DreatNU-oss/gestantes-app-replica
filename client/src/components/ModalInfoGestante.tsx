@@ -144,6 +144,7 @@ export default function ModalInfoGestante({
   // Calcular Idade Gestacional
   const calcularIdadeGestacional = (dum: string | null | undefined, dataUltrassom: string | null | undefined, igUsSemanas: number | null | undefined, igUsDias: number | null | undefined) => {
     const hoje = new Date();
+    hoje.setHours(12, 0, 0, 0);
     let igDum: { semanas: number; dias: number } | null = null;
     let igUs: { semanas: number; dias: number } | null = null;
     
@@ -152,7 +153,7 @@ export default function ModalInfoGestante({
       const dumStr = typeof dum === 'string' && !dum.includes('T') ? dum + 'T12:00:00' : dum;
       const dumDate = new Date(dumStr);
       const diffMs = hoje.getTime() - dumDate.getTime();
-      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
       if (diffDias >= 0) {
         igDum = {
           semanas: Math.floor(diffDias / 7),
@@ -166,7 +167,7 @@ export default function ModalInfoGestante({
       const usStr = typeof dataUltrassom === 'string' && !dataUltrassom.includes('T') ? dataUltrassom + 'T12:00:00' : dataUltrassom;
       const usDate = new Date(usStr);
       const diffMs = hoje.getTime() - usDate.getTime();
-      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
       const diasTotaisNoUs = (igUsSemanas * 7) + (igUsDias || 0);
       const diasAtuais = diasTotaisNoUs + diffDias;
       if (diasAtuais >= 0) {

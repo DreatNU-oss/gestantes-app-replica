@@ -78,10 +78,7 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
-      const skipInfoModal = params.get('skipInfoModal');
-      if (skipInfoModal !== 'true') {
-        setShowInfoModal(true);
-      }
+      // Não abrir mais o ModalInfoGestante - as informações já foram mostradas no ConsultaUnificadaDialog do Dashboard
       // Limpar query params da URL
       window.history.replaceState({}, '', '/cartao-prenatal');
     }
@@ -1370,7 +1367,16 @@ export default function CartaoPrenatal() {
       `AUF:\n${aufTexto}`,
       `BCF:\n${bcfTexto}`,
       `Apresentação Fetal:\n${apresentacaoTexto}`,
-      `Edema:\n-`, // Edema não é salvo no banco ainda
+      `Edema:\n${(() => {
+        const edema = (consulta as any).edema;
+        if (!edema) return "-";
+        if (edema === "0") return "Ausente";
+        if (edema === "1") return "+";
+        if (edema === "2") return "++";
+        if (edema === "3") return "+++";
+        if (edema === "4") return "++++";
+        return edema;
+      })()}`,
       `Pressão Arterial:\n${paTexto}`,
       `Conduta:\n${condutaTexto}`,
     ];
@@ -1416,6 +1422,7 @@ export default function CartaoPrenatal() {
       condutaComplementacao: formData.condutaComplementacao || undefined,
       observacoes: formData.observacoes || undefined,
       queixas: formData.queixas || undefined,
+      edema: formData.edema || undefined,
       // Salvar IG calculada pela DUM
       igDumSemanas: (igDUM && !isNaN(igDUM.semanas)) ? igDUM.semanas : undefined,
       igDumDias: (igDUM && !isNaN(igDUM.dias)) ? igDUM.dias : undefined,
@@ -1450,7 +1457,7 @@ export default function CartaoPrenatal() {
       alturaUterina: consulta.alturaUterina === -1 ? "nao_palpavel" : (consulta.alturaUterina ? String(consulta.alturaUterina / 10) : ""),
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
-      edema: "",
+      edema: (consulta as any).edema || "",
       conduta: condutaArray,
       condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
@@ -2018,7 +2025,6 @@ export default function CartaoPrenatal() {
         {gestanteSelecionada && !mostrarFormulario && (
           <Button onClick={() => {
             setMostrarFormulario(true);
-            setShowInfoModal(true);
           }}>
             <Plus className="h-4 w-4 mr-2" />
             Nova Consulta
@@ -2173,6 +2179,21 @@ export default function CartaoPrenatal() {
                       <option value="">Selecione...</option>
                       <option value="1">Sim</option>
                       <option value="0">Não</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Edema</Label>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      value={formData.edema}
+                      onChange={(e) => setFormData({ ...formData, edema: e.target.value })}
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="0">Ausente</option>
+                      <option value="1">+ (Tornozelo)</option>
+                      <option value="2">++ (Joelho)</option>
+                      <option value="3">+++ (Coxa)</option>
+                      <option value="4">++++ (Generalizado)</option>
                     </select>
                   </div>
                 </div>

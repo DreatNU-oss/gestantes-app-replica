@@ -156,15 +156,37 @@ export default function ConsultaUnificadaDialog({
 
   if (!gestanteParaConsulta) return null;
 
+  // Função para normalizar data para formato YYYY-MM-DD
+  const normalizarData = (data: string): string => {
+    if (!data) return '';
+    // Se já contém T (ISO format), extrair apenas a parte da data
+    if (data.includes('T')) {
+      return data.split('T')[0];
+    }
+    // Se já está no formato YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(data)) {
+      return data;
+    }
+    // Tentar converter
+    const d = new Date(data);
+    if (!isNaN(d.getTime())) {
+      return d.toISOString().split('T')[0];
+    }
+    return data;
+  };
+
   // Calcular IG pela DUM
   const calcularIgDum = () => {
     if (gestanteParaConsulta.tipoDum === "incerta") return "DUM Incerta";
     if (gestanteParaConsulta.tipoDum === "incompativel") return "Não considerada (incompatível com US)";
     if (!gestanteParaConsulta.dum) return "Não informada";
     const hoje = new Date();
-    const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
+    hoje.setHours(12, 0, 0, 0);
+    const dumNorm = normalizarData(gestanteParaConsulta.dum);
+    const dumDate = new Date(dumNorm + "T12:00:00");
+    if (isNaN(dumDate.getTime())) return "Não informada";
     const diffMs = hoje.getTime() - dumDate.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
     const semanas = Math.floor(diffDays / 7);
     const dias = diffDays % 7;
     return `${semanas}s ${dias}d`;
@@ -174,9 +196,12 @@ export default function ConsultaUnificadaDialog({
   const calcularIgUs = () => {
     if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "Não informada";
     const hoje = new Date();
-    const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
+    hoje.setHours(12, 0, 0, 0);
+    const usNorm = normalizarData(gestanteParaConsulta.dataUltrassom);
+    const dataUS = new Date(usNorm + "T12:00:00");
+    if (isNaN(dataUS.getTime())) return "Não informada";
     const diffMs = hoje.getTime() - dataUS.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
     const igTotalDias = (gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0) + diffDays;
     const semanas = Math.floor(igTotalDias / 7);
     const dias = igTotalDias % 7;
@@ -186,7 +211,9 @@ export default function ConsultaUnificadaDialog({
   // Calcular DPP pela DUM
   const calcularDppDum = () => {
     if (!gestanteParaConsulta.dum || gestanteParaConsulta.tipoDum !== "data") return "-";
-    const dumDate = new Date(gestanteParaConsulta.dum + "T12:00:00");
+    const dumNorm = normalizarData(gestanteParaConsulta.dum);
+    const dumDate = new Date(dumNorm + "T12:00:00");
+    if (isNaN(dumDate.getTime())) return "-";
     const dppDate = new Date(dumDate);
     dppDate.setDate(dppDate.getDate() + 280);
     return dppDate.toLocaleDateString('pt-BR');
@@ -195,7 +222,9 @@ export default function ConsultaUnificadaDialog({
   // Calcular DPP pelo US
   const calcularDppUs = () => {
     if (!gestanteParaConsulta.dataUltrassom || gestanteParaConsulta.igUltrassomSemanas === undefined) return "-";
-    const dataUS = new Date(gestanteParaConsulta.dataUltrassom + "T12:00:00");
+    const usNorm = normalizarData(gestanteParaConsulta.dataUltrassom);
+    const dataUS = new Date(usNorm + "T12:00:00");
+    if (isNaN(dataUS.getTime())) return "-";
     const diasRestantes = (40 * 7) - ((gestanteParaConsulta.igUltrassomSemanas * 7) + (gestanteParaConsulta.igUltrassomDias || 0));
     const dppDate = new Date(dataUS);
     dppDate.setDate(dppDate.getDate() + diasRestantes);

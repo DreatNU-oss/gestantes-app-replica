@@ -206,6 +206,8 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   mf: int("mf"), // movimento fetal (1 = sim, 0 = não)
   conduta: text("conduta"), // JSON array com condutas selecionadas
   condutaComplementacao: text("condutaComplementacao"), // texto livre para complementação
+  edema: varchar("edema", { length: 20 }), // ausência, +, ++, +++, ++++
+  apresentacaoFetal: varchar("apresentacaoFetal", { length: 50 }), // cefálica, pélvica, transversa, não avaliada
   observacoes: text("observacoes"),
   queixas: text("queixas"), // queixas da gestante na consulta
   createdAt: timestamp("createdAt").defaultNow().notNull(),

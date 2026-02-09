@@ -1005,3 +1005,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Unificar as duas janelas em uma única janela com todas as informações (ConsultaUnificadaDialog)
 - [x] Corrigir botão Consulta no GestantesLayout e FormularioGestante para usar skipInfoModal
 - [x] Testar correção - diálogo unificado funciona corretamente com todas as informações
+
+## Correções 09/02/2026 - Lote 2
+- [x] Remover flash do ModalInfoGestante ao iniciar consulta (removido do fluxo de nova consulta)
+- [x] Corrigir IG com 1 dia a menos - normalizar datas com normalizarData() e usar Math.round
+- [x] Adicionar campo Edema no formulário de registro de consulta (select com 5 opções)
+- [x] Adicionar coluna edema no banco de dados
+- [x] Atualizar texto PEP para mostrar edema salvo no banco
+- [x] Atualizar router do servidor para aceitar campo edema
