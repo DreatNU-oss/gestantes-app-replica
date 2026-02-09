@@ -1013,3 +1013,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar coluna edema no banco de dados
 - [x] Atualizar texto PEP para mostrar edema salvo no banco
 - [x] Atualizar router do servidor para aceitar campo edema
+
+## Remoção Completa do ModalInfoGestante do Fluxo de Consulta (09/02/2026)
+- [x] Identificar todos os pontos onde ModalInfoGestante é chamado no fluxo de consulta
+- [x] Remover ModalInfoGestante completamente do CartaoPrenatal.tsx
+- [x] Remover ModalInfoGestante completamente do GestantesLayout.tsx
+- [x] Verificar e remover de qualquer outro componente no fluxo de consulta (Dashboard já limpo)
+- [x] Testado - servidor rodando sem erros, nenhuma referência restante ao modal no fluxo

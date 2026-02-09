@@ -34,7 +34,7 @@ import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import MedicamentosManager from "@/components/MedicamentosManager";
-import ModalInfoGestante from "@/components/ModalInfoGestante";
+// ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
 import { isAUAbnormal } from "@/lib/auReferenceData";
 import { isBPAbnormal } from "@/lib/bpValidation";
@@ -85,7 +85,7 @@ export default function CartaoPrenatal() {
   }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
-  const [showInfoModal, setShowInfoModal] = useState(false);
+
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
   
@@ -2696,13 +2696,7 @@ export default function CartaoPrenatal() {
           />
         )}
 
-        {/* Modal de Informações da Gestante ao abrir consulta */}
-        <ModalInfoGestante
-          open={showInfoModal}
-          onOpenChange={setShowInfoModal}
-          gestanteId={gestanteSelecionada}
-          gestanteNome={gestante?.nome || ""}
-        />
+
 
         {/* Modal de Texto para PEP (nova consulta) */}
         {showPEPModal && (
