@@ -311,6 +311,8 @@ export default function CartaoPrenatal() {
     onSuccess: () => {
       toast.success("Consulta atualizada com sucesso!");
       refetchConsultas();
+      // Abrir modal de PEP após atualização
+      setShowPEPModal(true);
       resetForm();
       // Invalidar cache de alertas de consultas atrasadas
       utils.gestantes.semConsultaRecente.invalidate();

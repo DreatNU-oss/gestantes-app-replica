@@ -1044,3 +1044,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Formatar rótulos em negrito no texto PEP do formulário de consulta normal (CartaoPrenatal)
 - [x] Formatar rótulos em negrito no texto PEP do histórico de consultas (CartaoPrenatal)
 - [x] Manter dados na mesma linha do rótulo (ex: **Peso:** 68.5kg)
+
+## Abrir Janela PEP ao Atualizar Consulta (09/02/2026)
+- [x] Localizar função handleUpdate no CartaoPrenatal
+- [x] Modificar handleUpdate para gerar texto PEP após atualização bem-sucedida
+- [x] Abrir modal de PEP automaticamente após atualização
