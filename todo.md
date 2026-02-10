@@ -1130,3 +1130,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar tooltip no AutocompleteInput com atalhos (Tab, ↑↓, Enter, Esc)
 - [x] Adicionar tooltip no TextareaComAutocomplete com atalhos (Tab, ↑↓, Enter, Esc)
 - [x] Testar visualmente em diferentes campos
+
+## Destaque para Sugestão Mais Usada no Autocomplete (10/02/2026)
+- [x] Adicionar badge/ícone "Mais Usado" na primeira sugestão do AutocompleteInput
+- [x] Adicionar badge/ícone "Mais Usado" na primeira sugestão do TextareaComAutocomplete
+- [x] Usar ícone Star ou badge visual discreto
+- [x] Testar visualmente em diferentes campos

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Loader2, HelpCircle } from "lucide-react";
+import { Loader2, HelpCircle, Star } from "lucide-react";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
@@ -178,9 +178,14 @@ export function TextareaComAutocomplete({
                         <span className="flex-1 line-clamp-2">
                           {highlightMatch(sugestao.texto, value)}
                         </span>
-                        <span className="text-xs text-muted-foreground shrink-0">
-                          {sugestao.contadorUso}x
-                        </span>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {index === 0 && (
+                            <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {sugestao.contadorUso}x
+                          </span>
+                        </div>
                       </div>
                     </button>
                   ))}

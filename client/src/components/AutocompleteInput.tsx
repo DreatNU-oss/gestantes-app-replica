@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Star } from "lucide-react";
 
 interface AutocompleteInputProps {
   value: string;
@@ -213,7 +213,12 @@ export function AutocompleteInput({
               }}
               onMouseEnter={() => setSelectedIndex(index)}
             >
-              {highlightMatch(suggestion, lastSegment)}
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex-1">{highlightMatch(suggestion, lastSegment)}</span>
+                {index === 0 && (
+                  <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 shrink-0" />
+                )}
+              </div>
             </button>
           ))}
         </div>
