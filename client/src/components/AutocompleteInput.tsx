@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import { highlightMatch } from "@/lib/highlightMatch";
 
 interface AutocompleteInputProps {
   value: string;
@@ -21,6 +22,14 @@ export function AutocompleteInput({
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Extrair o último segmento digitado (após / ou ,) para usar no highlight
+  const getLastSegment = (): string => {
+    if (!value.trim()) return "";
+    const separators = /[/,]/;
+    const parts = value.split(separators);
+    return parts[parts.length - 1].trim();
+  };
 
   useEffect(() => {
     if (!value.trim()) {
@@ -87,6 +96,8 @@ export function AutocompleteInput({
     inputRef.current?.focus();
   };
 
+  const lastSegment = getLastSegment();
+
   return (
     <div ref={containerRef} className="relative">
       <Input
@@ -111,7 +122,7 @@ export function AutocompleteInput({
                 handleSelectSuggestion(suggestion);
               }}
             >
-              {suggestion}
+              {highlightMatch(suggestion, lastSegment)}
             </button>
           ))}
         </div>

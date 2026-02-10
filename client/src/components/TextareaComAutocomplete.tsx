@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Loader2 } from "lucide-react";
+import { highlightMatch } from "@/lib/highlightMatch";
 
 interface TextareaComAutocompleteProps {
   value: string;
@@ -164,7 +165,9 @@ export function TextareaComAutocomplete({
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="flex-1 line-clamp-2">{sugestao.texto}</span>
+                    <span className="flex-1 line-clamp-2">
+                      {highlightMatch(sugestao.texto, value)}
+                    </span>
                     <span className="text-xs text-muted-foreground shrink-0">
                       {sugestao.contadorUso}x
                     </span>

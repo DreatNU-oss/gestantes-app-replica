@@ -1107,3 +1107,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar "Queixas comuns dessa fase da gestação..." como primeira opção em queixas
 - [x] Ordenar sugestões por mais utilizados/novos no topo em todas as caixas de texto
 - [x] Aplicar autocomplete em todos os campos de texto livre: Wizard 1ª consulta, Ultrassons, complementação de conduta, observações
+
+## Highlight nas Sugestões de Autocomplete (10/02/2026)
+- [x] Criar função utilitária highlightMatch para destacar texto correspondente
+- [x] Aplicar highlight no AutocompleteInput (campo Queixas)
+- [x] Aplicar highlight no TextareaComAutocomplete (todos os campos de texto livre)
+- [x] Testes unitários para lógica de matching
