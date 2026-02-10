@@ -87,12 +87,12 @@ export function AutocompleteInput({
     const parts = value.split(separators);
 
     if (parts.length > 1) {
+      // Há múltiplos segmentos: substituir o último segmento pela sugestão
       const separator = value.includes("/") ? " / " : ", ";
       const prefix = parts.slice(0, -1).join(separator).trim();
       onChange(`${prefix}${separator}${suggestion}`);
-    } else if (value.trim() && !suggestions.some(s => s.toLowerCase() === value.trim().toLowerCase())) {
-      onChange(`${value.trim()} / ${suggestion}`);
     } else {
+      // Segmento único: substituir completamente pelo texto sugerido
       onChange(suggestion);
     }
 

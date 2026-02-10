@@ -1142,3 +1142,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir comportamento para ser consistente com botão Nova Consulta da página principal e do card (setLocation -> window.location.href)
 - [x] Integrar ConsultaUnificadaDialog no GestantesLayout para abrir diálogo com lembretes antes de redirecionar
 - [x] Incluir WizardPrimeiraConsulta para fluxo de 1ª consulta
+
+## Bug: Erro tRPC retornando HTML ao invés de JSON (10/02/2026)
+- [ ] Investigar erro "Unexpected token '<', <!doctype..." na página /dashboard
+- [ ] Verificar qual query tRPC está falhando
+- [ ] Corrigir a causa raiz
+
+## Bug: Campo Queixas concatena texto ao invés de substituir (10/02/2026)
+- [x] Ao selecionar sugestão no AutocompleteInput (Queixas), o texto digitado é concatenado com o sugerido ao invés de ser substituído
+- [x] Corrigir lógica de seleção no AutocompleteInput para substituir o texto digitado pelo sugerido
