@@ -1136,3 +1136,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar badge/ícone "Mais Usado" na primeira sugestão do TextareaComAutocomplete
 - [x] Usar ícone Star ou badge visual discreto
 - [x] Testar visualmente em diferentes campos
+
+## Bug: Botão Nova Consulta no GestantesLayout (10/02/2026)
+- [x] Investigar botão na linha ~174 do GestantesLayout que não funciona como os outros botões de consulta
+- [x] Corrigir comportamento para ser consistente com botão Nova Consulta da página principal e do card (setLocation -> window.location.href)

@@ -176,7 +176,7 @@ export default function GestantesLayout({
                         size="sm"
                         className="h-8 text-xs"
                         onClick={() => {
-                          setLocation(`/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true&skipInfoModal=true`);
+                          window.location.href = `/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true&skipInfoModal=true`;
                         }}
                         title="Nova Consulta"
                       >
