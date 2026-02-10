@@ -12,6 +12,45 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
+import { AutocompleteInput } from "@/components/AutocompleteInput";
+
+const SUGESTOES_QUEIXAS = [
+  "Sem queixas hoje",
+  "Dor lombar",
+  "Náuseas",
+  "Vômitos",
+  "Cefaleia",
+  "Dor abdominal",
+  "Sangramento vaginal",
+  "Leucorreia",
+  "Prurido vaginal",
+  "Disúria",
+  "Polaciúria",
+  "Edema de MMII",
+  "Tontura",
+  "Epigastralgia",
+  "Pirose",
+  "Constipação",
+  "Diarreia",
+  "Dispneia",
+  "Palpitações",
+  "Insônia",
+  "Ansiedade",
+  "Dor pélvica",
+  "Contrações",
+  "Perda de líquido",
+  "Diminuição de movimentos fetais",
+  "Dor em baixo ventre",
+  "Cólicas",
+  "Febre",
+  "Tosse",
+  "Coriza",
+  "Dor de garganta",
+  "Câimbras",
+  "Dor em membros inferiores",
+  "Prurido generalizado",
+  "Mastalgia",
+];
 import { trpc } from "@/lib/trpc";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -1839,10 +1878,10 @@ export default function CartaoPrenatal() {
                   </div>
                   <div className="col-span-2">
                     <Label>Queixa(s)</Label>
-                    <Input
-                      type="text"
+                    <AutocompleteInput
                       value={formData.queixas}
-                      onChange={(e) => setFormData({ ...formData, queixas: e.target.value })}
+                      onChange={(val) => setFormData({ ...formData, queixas: val })}
+                      suggestions={SUGESTOES_QUEIXAS}
                       placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                     />
                   </div>

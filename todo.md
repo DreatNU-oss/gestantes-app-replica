@@ -1072,3 +1072,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Reorganizar Layout - Dados do Bebê e Marcos (09/02/2026)
 - [x] Mover "Dados do Bebê" para logo após "Data da Cesárea"
 - [x] Mover "Marcos Importantes" para logo após "Dados do Bebê"
+
+## Autocomplete no Campo Queixas (10/02/2026)
+- [x] Implementar autocomplete no campo "Queixas" com textos mais utilizados em pré-natal
