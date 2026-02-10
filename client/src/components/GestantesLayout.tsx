@@ -46,6 +46,8 @@ import { trpc } from "@/lib/trpc";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
+import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
 
 
 const menuItems = [
@@ -83,7 +85,29 @@ export default function GestantesLayout({
   const [busca, setBusca] = useState("");
   const [sugestoes, setSugestoes] = useState<Array<{ id: number; nome: string }>>([]);
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+  const [showConsultaDialog, setShowConsultaDialog] = useState(false);
+  const [showWizardPrimeiraConsulta, setShowWizardPrimeiraConsulta] = useState(false);
+  const [gestanteParaConsulta, setGestanteParaConsulta] = useState<{
+    id: number;
+    nome: string;
+    dum?: string;
+    tipoDum?: string;
+    dataUltrassom?: string;
+    igUltrassomSemanas?: number;
+    igUltrassomDias?: number;
+    gesta?: number;
+    para?: number;
+    partosNormais?: number;
+    cesareas?: number;
+    abortos?: number;
+  } | null>(null);
 
+
+  // Buscar dados completos da gestante ativa para o diálogo de consulta
+  const { data: gestanteAtivaCompleta } = trpc.gestantes.get.useQuery(
+    { id: gestanteAtiva?.id! },
+    { enabled: !!gestanteAtiva?.id }
+  );
 
   // Buscar gestantes para autocomplete
   const { data: gestantes } = trpc.gestantes.list.useQuery({
@@ -176,7 +200,22 @@ export default function GestantesLayout({
                         size="sm"
                         className="h-8 text-xs"
                         onClick={() => {
-                          window.location.href = `/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true&skipInfoModal=true`;
+                          const g = gestanteAtivaCompleta || gestanteAtiva;
+                          setGestanteParaConsulta({
+                            id: gestanteAtiva.id,
+                            nome: gestanteAtiva.nome,
+                            dum: (g as any).dum || undefined,
+                            tipoDum: (g as any).tipoDum || undefined,
+                            dataUltrassom: (g as any).dataUltrassom || undefined,
+                            igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
+                            igUltrassomDias: (g as any).igUltrassomDias || undefined,
+                            gesta: (g as any).gesta || undefined,
+                            para: (g as any).para || undefined,
+                            partosNormais: (g as any).partosNormais || undefined,
+                            cesareas: (g as any).cesareas || undefined,
+                            abortos: (g as any).abortos || undefined,
+                          });
+                          setShowConsultaDialog(true);
                         }}
                         title="Nova Consulta"
                       >
@@ -319,6 +358,42 @@ export default function GestantesLayout({
       </div>
 
 
+      {/* Diálogo Unificado de Consulta */}
+      <ConsultaUnificadaDialog
+        open={showConsultaDialog}
+        onOpenChange={setShowConsultaDialog}
+        gestanteParaConsulta={gestanteParaConsulta}
+        onClose={() => {
+          setShowConsultaDialog(false);
+          setGestanteParaConsulta(null);
+        }}
+        onConfirm={(isPrimeiraConsulta?: boolean) => {
+          setShowConsultaDialog(false);
+          if (gestanteParaConsulta) {
+            if (isPrimeiraConsulta) {
+              setShowWizardPrimeiraConsulta(true);
+            } else {
+              window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true&skipInfoModal=true`;
+            }
+          }
+        }}
+      />
+
+      {/* Wizard de 1ª Consulta */}
+      {gestanteParaConsulta && (
+        <WizardPrimeiraConsulta
+          open={showWizardPrimeiraConsulta}
+          onOpenChange={(open) => {
+            setShowWizardPrimeiraConsulta(open);
+            if (!open) setGestanteParaConsulta(null);
+          }}
+          gestante={gestanteParaConsulta}
+          onSuccess={() => {
+            setShowWizardPrimeiraConsulta(false);
+            setGestanteParaConsulta(null);
+          }}
+        />
+      )}
     </SidebarProvider>
   );
 }

@@ -1140,3 +1140,5 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Bug: Botão Nova Consulta no GestantesLayout (10/02/2026)
 - [x] Investigar botão na linha ~174 do GestantesLayout que não funciona como os outros botões de consulta
 - [x] Corrigir comportamento para ser consistente com botão Nova Consulta da página principal e do card (setLocation -> window.location.href)
+- [x] Integrar ConsultaUnificadaDialog no GestantesLayout para abrir diálogo com lembretes antes de redirecionar
+- [x] Incluir WizardPrimeiraConsulta para fluxo de 1ª consulta
