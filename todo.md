@@ -1078,3 +1078,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Autocomplete Queixas no Wizard 1ª Consulta (10/02/2026)
 - [x] Adicionar AutocompleteInput no campo Queixas do WizardPrimeiraConsulta
+
+## Centralizar Lista de Sugestões de Queixas (10/02/2026)
+- [x] Criar arquivo compartilhado com lista de sugestões de queixas
+- [x] Atualizar CartaoPrenatal para importar do arquivo centralizado
+- [x] Atualizar WizardPrimeiraConsulta para importar do arquivo centralizado
