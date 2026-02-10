@@ -1113,3 +1113,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Aplicar highlight no AutocompleteInput (campo Queixas)
 - [x] Aplicar highlight no TextareaComAutocomplete (todos os campos de texto livre)
 - [x] Testes unitários para lógica de matching
+
+## Navegação por Teclado no AutocompleteInput (10/02/2026)
+- [x] Adicionar estado para índice selecionado (indiceSelecionado)
+- [x] Implementar handler de teclado (ArrowDown, ArrowUp, Enter, Escape)
+- [x] Destacar visualmente o item selecionado na lista
+- [x] Scroll automático para manter item selecionado visível

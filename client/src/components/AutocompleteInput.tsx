@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
 
@@ -20,8 +20,10 @@ export function AutocompleteInput({
   const value = rawValue || "";
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   // Extrair o último segmento digitado (após / ou ,) para usar no highlight
   const getLastSegment = (): string => {
@@ -33,12 +35,10 @@ export function AutocompleteInput({
 
   useEffect(() => {
     if (!value.trim()) {
-      // Show all suggestions when input is empty and focused
       setFilteredSuggestions(suggestions);
       return;
     }
 
-    // Get the last segment after the last separator (/ or ,)
     const separators = /[/,]/;
     const parts = value.split(separators);
     const lastPart = parts[parts.length - 1].trim().toLowerCase();
@@ -48,7 +48,6 @@ export function AutocompleteInput({
       return;
     }
 
-    // Filter suggestions that match the last part and aren't already in the value
     const alreadyUsed = parts
       .slice(0, -1)
       .map((p) => p.trim().toLowerCase());
@@ -62,6 +61,11 @@ export function AutocompleteInput({
     setFilteredSuggestions(filtered);
   }, [value, suggestions]);
 
+  // Reset selected index when filtered suggestions change
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [filteredSuggestions]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -69,31 +73,73 @@ export function AutocompleteInput({
         !containerRef.current.contains(event.target as Node)
       ) {
         setShowSuggestions(false);
+        setSelectedIndex(-1);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelectSuggestion = (suggestion: string) => {
-    // If there's already text, append with separator
+  const handleSelectSuggestion = useCallback((suggestion: string) => {
     const separators = /[/,]/;
     const parts = value.split(separators);
 
     if (parts.length > 1) {
-      // Replace the last part with the selected suggestion
       const separator = value.includes("/") ? " / " : ", ";
       const prefix = parts.slice(0, -1).join(separator).trim();
       onChange(`${prefix}${separator}${suggestion}`);
     } else if (value.trim() && !suggestions.some(s => s.toLowerCase() === value.trim().toLowerCase())) {
-      // There's text that isn't a suggestion, append
       onChange(`${value.trim()} / ${suggestion}`);
     } else {
       onChange(suggestion);
     }
 
     setShowSuggestions(false);
+    setSelectedIndex(-1);
     inputRef.current?.focus();
+  }, [value, suggestions, onChange]);
+
+  // Scroll the selected item into view
+  useEffect(() => {
+    if (selectedIndex >= 0 && listRef.current) {
+      const items = listRef.current.querySelectorAll("[data-suggestion-item]");
+      const selectedItem = items[selectedIndex] as HTMLElement | undefined;
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [selectedIndex]);
+
+  // Keyboard navigation handler
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions || filteredSuggestions.length === 0) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedIndex((prev) =>
+          prev < filteredSuggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        break;
+
+      case "Enter":
+        if (selectedIndex >= 0) {
+          e.preventDefault();
+          handleSelectSuggestion(filteredSuggestions[selectedIndex]);
+        }
+        break;
+
+      case "Escape":
+        e.preventDefault();
+        setShowSuggestions(false);
+        setSelectedIndex(-1);
+        break;
+    }
   };
 
   const lastSegment = getLastSegment();
@@ -104,23 +150,36 @@ export function AutocompleteInput({
         ref={inputRef}
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          onChange(e.target.value);
+          if (!showSuggestions) setShowSuggestions(true);
+        }}
         onFocus={() => setShowSuggestions(true)}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={className}
         autoComplete="off"
       />
       {showSuggestions && filteredSuggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground border border-border rounded-md shadow-lg max-h-60 overflow-y-auto">
+        <div
+          ref={listRef}
+          className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
+        >
           {filteredSuggestions.map((suggestion, index) => (
             <button
               key={index}
               type="button"
-              className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+              data-suggestion-item
+              className={`w-full text-left px-3 py-2 text-sm cursor-pointer transition-colors ${
+                index === selectedIndex
+                  ? "bg-accent text-accent-foreground"
+                  : "hover:bg-accent hover:text-accent-foreground"
+              }`}
               onMouseDown={(e) => {
                 e.preventDefault();
                 handleSelectSuggestion(suggestion);
               }}
+              onMouseEnter={() => setSelectedIndex(index)}
             >
               {highlightMatch(suggestion, lastSegment)}
             </button>
