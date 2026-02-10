@@ -10,12 +10,13 @@ interface AutocompleteInputProps {
 }
 
 export function AutocompleteInput({
-  value,
+  value: rawValue,
   onChange,
   suggestions,
   placeholder,
   className,
 }: AutocompleteInputProps) {
+  const value = rawValue || "";
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);

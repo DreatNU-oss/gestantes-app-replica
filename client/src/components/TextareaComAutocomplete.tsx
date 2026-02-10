@@ -13,13 +13,14 @@ interface TextareaComAutocompleteProps {
 }
 
 export function TextareaComAutocomplete({
-  value,
+  value: rawValue,
   onChange,
   placeholder,
   rows = 3,
   tipo,
   className,
 }: TextareaComAutocompleteProps) {
+  const value = rawValue || "";
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
   const [sugestoesFiltradas, setSugestoesFiltradas] = useState<any[]>([]);
   const [indiceSelecionado, setIndiceSelecionado] = useState(-1);

@@ -1089,3 +1089,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Opção "Útero não palpável" no campo AUF do Wizard
 - [x] Após salvar Wizard, redirecionar para CartaoPrenatal com modal PEP aberto
 - [x] Após copiar PEP, scroll automático para Marcos Importantes
+
+## Bug: Erro trim ao iniciar consulta de retorno (10/02/2026)
+- [x] Corrigir "Cannot read properties of undefined (reading 'trim')" ao iniciar consulta de retorno
