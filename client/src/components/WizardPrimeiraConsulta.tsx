@@ -6,6 +6,45 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { AutocompleteInput } from "@/components/AutocompleteInput";
+
+const SUGESTOES_QUEIXAS = [
+  "Sem queixas hoje",
+  "Dor lombar",
+  "Náuseas",
+  "Vômitos",
+  "Cefaleia",
+  "Dor abdominal",
+  "Sangramento vaginal",
+  "Leucorreia",
+  "Prurido vaginal",
+  "Disúria",
+  "Polaciúria",
+  "Edema de MMII",
+  "Tontura",
+  "Epigastralgia",
+  "Pirose",
+  "Constipação",
+  "Diarreia",
+  "Dispneia",
+  "Palpitações",
+  "Insônia",
+  "Ansiedade",
+  "Dor pélvica",
+  "Contrações",
+  "Perda de líquido",
+  "Diminuição de movimentos fetais",
+  "Dor em baixo ventre",
+  "Cólicas",
+  "Febre",
+  "Tosse",
+  "Coriza",
+  "Dor de garganta",
+  "Câimbras",
+  "Dor em membros inferiores",
+  "Prurido generalizado",
+  "Mastalgia",
+];
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -537,11 +576,11 @@ export default function WizardPrimeiraConsulta({
             <div className="space-y-4">
               <div>
                 <Label className="text-sm font-semibold">Queixas</Label>
-                <Textarea
-                  placeholder="Queixas da paciente..."
+                <AutocompleteInput
                   value={exameFisico.queixas}
-                  onChange={(e) => setExameFisico({ ...exameFisico, queixas: e.target.value })}
-                  className="mt-1 min-h-[60px]"
+                  onChange={(val) => setExameFisico({ ...exameFisico, queixas: val })}
+                  suggestions={SUGESTOES_QUEIXAS}
+                  placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                 />
               </div>
 

@@ -1075,3 +1075,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Autocomplete no Campo Queixas (10/02/2026)
 - [x] Implementar autocomplete no campo "Queixas" com textos mais utilizados em pré-natal
+
+## Autocomplete Queixas no Wizard 1ª Consulta (10/02/2026)
+- [x] Adicionar AutocompleteInput no campo Queixas do WizardPrimeiraConsulta
