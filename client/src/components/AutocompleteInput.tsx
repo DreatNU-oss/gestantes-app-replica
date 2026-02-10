@@ -139,6 +139,15 @@ export function AutocompleteInput({
         setShowSuggestions(false);
         setSelectedIndex(-1);
         break;
+
+      case "Tab":
+        // Accept the selected suggestion, or the first one if none is selected
+        if (filteredSuggestions.length > 0) {
+          e.preventDefault();
+          const idx = selectedIndex >= 0 ? selectedIndex : 0;
+          handleSelectSuggestion(filteredSuggestions[idx]);
+        }
+        break;
     }
   };
 

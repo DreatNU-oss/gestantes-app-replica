@@ -92,6 +92,13 @@ export function TextareaComAutocomplete({
       selecionarSugestao(sugestoesFiltradas[indiceSelecionado]);
     } else if (e.key === "Escape") {
       setMostrarSugestoes(false);
+    } else if (e.key === "Tab") {
+      // Accept the selected suggestion, or the first one if none is selected
+      if (sugestoesFiltradas.length > 0) {
+        e.preventDefault();
+        const idx = indiceSelecionado >= 0 ? indiceSelecionado : 0;
+        selecionarSugestao(sugestoesFiltradas[idx]);
+      }
     }
   };
 

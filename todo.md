@@ -1119,3 +1119,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar handler de teclado (ArrowDown, ArrowUp, Enter, Escape)
 - [x] Destacar visualmente o item selecionado na lista
 - [x] Scroll automático para manter item selecionado visível
+
+## Atalho Tab para Aceitar Primeira Sugestão (10/02/2026)
+- [x] Implementar Tab no AutocompleteInput para aceitar primeira sugestão (ou selecionada)
+- [x] Implementar Tab no TextareaComAutocomplete para aceitar primeira sugestão (ou selecionada)
+- [x] Testes unitários para lógica do Tab

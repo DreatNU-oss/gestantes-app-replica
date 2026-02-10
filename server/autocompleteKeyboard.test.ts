@@ -123,6 +123,26 @@ describe("AutocompleteInput keyboard navigation logic", () => {
     });
   });
 
+  describe("Tab shortcut", () => {
+    it("should resolve to index 0 when no item is selected (selectedIndex = -1)", () => {
+      const selectedIndex = -1;
+      const idx = selectedIndex >= 0 ? selectedIndex : 0;
+      expect(idx).toBe(0);
+    });
+
+    it("should resolve to selectedIndex when an item is already selected", () => {
+      const selectedIndex = 3;
+      const idx = selectedIndex >= 0 ? selectedIndex : 0;
+      expect(idx).toBe(3);
+    });
+
+    it("should resolve to 0 when selectedIndex is 0", () => {
+      const selectedIndex = 0;
+      const idx = selectedIndex >= 0 ? selectedIndex : 0;
+      expect(idx).toBe(0);
+    });
+  });
+
   describe("Full navigation sequence", () => {
     it("should navigate down then up correctly", () => {
       let index = -1;
