@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE historicoTextos MODIFY COLUMN tipo ENUM('observacao', 'conduta_complementacao', 'historia_patologica', 'historia_social', 'historia_familiar') NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute ALTER TABLE historicoTextos MODIFY COLUMN tipo ENUM('observacao', 'conduta_complementacao', 'historia_patologica', 'historia_social', 'historia_familiar') NOT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 274
+}

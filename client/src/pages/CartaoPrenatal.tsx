@@ -74,6 +74,9 @@ export default function CartaoPrenatal() {
     const params = new URLSearchParams(window.location.search);
     const gestanteIdParam = params.get('gestanteId');
     const novaConsultaParam = params.get('novaConsulta');
+    const showPEPParam = params.get('showPEP');
+    const pepTextoParam = params.get('pepTexto');
+    const scrollToMarcosParam = params.get('scrollToMarcos');
     
     if (gestanteIdParam) {
       setGestanteSelecionada(parseInt(gestanteIdParam));
@@ -81,8 +84,30 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
-      // Não abrir mais o ModalInfoGestante - as informações já foram mostradas no ConsultaUnificadaDialog do Dashboard
-      // Limpar query params da URL
+    }
+    
+    if (showPEPParam === 'true' && pepTextoParam) {
+      try {
+        const decodedPEP = decodeURIComponent(pepTextoParam);
+        setTextoPEP(decodedPEP);
+        setShowPEPModal(true);
+        setScrollToMarcosAfterPEP(true);
+      } catch {
+        // ignore decode errors
+      }
+    }
+    
+    if (scrollToMarcosParam === 'true') {
+      setTimeout(() => {
+        const marcosEl = document.getElementById('marcos-importantes');
+        if (marcosEl) {
+          marcosEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 1000);
+    }
+    
+    // Limpar query params da URL
+    if (gestanteIdParam || novaConsultaParam || showPEPParam || scrollToMarcosParam) {
       window.history.replaceState({}, '', '/cartao-prenatal');
     }
   }, []);
@@ -109,6 +134,9 @@ export default function CartaoPrenatal() {
   // Estado para modal de PEP de consulta anterior
   const [showPEPConsultaAnterior, setShowPEPConsultaAnterior] = useState(false);
   const [textoPEPConsultaAnterior, setTextoPEPConsultaAnterior] = useState("");
+  
+  // Estado para scroll automático para Marcos Importantes após fechar PEP
+  const [scrollToMarcosAfterPEP, setScrollToMarcosAfterPEP] = useState(false);
 
   // Lista de opções de conduta predefinidas
   const OPCOES_CONDUTA = [
@@ -2499,7 +2527,7 @@ export default function CartaoPrenatal() {
 
         {/* Marcos Importantes da Gestação */}
         {gestante && (gestante.dataUltrassom || gestante.dum) && (
-          <Card>
+          <Card id="marcos-importantes">
             <CardHeader>
               <CardTitle>Marcos Importantes da Gestação</CardTitle>
               <CardDescription>
@@ -2704,6 +2732,16 @@ export default function CartaoPrenatal() {
                     onClick={() => {
                       navigator.clipboard.writeText(textoPEP);
                       toast.success("Texto copiado para a área de transferência!");
+                      setShowPEPModal(false);
+                      if (scrollToMarcosAfterPEP) {
+                        setScrollToMarcosAfterPEP(false);
+                        setTimeout(() => {
+                          const marcosEl = document.getElementById('marcos-importantes');
+                          if (marcosEl) {
+                            marcosEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }, 300);
+                      }
                     }}
                     className="flex-1"
                   >
@@ -2712,7 +2750,18 @@ export default function CartaoPrenatal() {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setShowPEPModal(false)}
+                    onClick={() => {
+                      setShowPEPModal(false);
+                      if (scrollToMarcosAfterPEP) {
+                        setScrollToMarcosAfterPEP(false);
+                        setTimeout(() => {
+                          const marcosEl = document.getElementById('marcos-importantes');
+                          if (marcosEl) {
+                            marcosEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }, 300);
+                      }
+                    }}
                   >
                     Fechar
                   </Button>

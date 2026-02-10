@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AutocompleteInput } from "@/components/AutocompleteInput";
+import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -271,7 +272,8 @@ export default function WizardPrimeiraConsulta({
 
     // Formatar AUF
     let aufTexto = "-";
-    if (exameFisico.alturaUterina) aufTexto = `${exameFisico.alturaUterina}cm`;
+    if (exameFisico.alturaUterina === "nao_palpavel") aufTexto = "Não palpável";
+    else if (exameFisico.alturaUterina) aufTexto = `${exameFisico.alturaUterina}cm`;
 
     // Condutas selecionadas
     const condutasSelecionadas = CONDUTA_CHECKBOXES
@@ -347,7 +349,7 @@ export default function WizardPrimeiraConsulta({
         pressaoArterial: exameFisico.pressaoArterial || undefined,
         pressaoSistolica,
         pressaoDiastolica,
-        alturaUterina: exameFisico.alturaUterina ? Math.round(parseFloat(exameFisico.alturaUterina) * 10) : undefined,
+        alturaUterina: exameFisico.alturaUterina === "nao_palpavel" ? -1 : (exameFisico.alturaUterina ? Math.round(parseFloat(exameFisico.alturaUterina) * 10) : undefined),
         bcf: exameFisico.bcf ? parseInt(exameFisico.bcf) : undefined,
         edema: exameFisico.edema || undefined,
         conduta: condutasSelecionadas.length > 0 ? JSON.stringify(condutasSelecionadas) : undefined,
@@ -362,12 +364,16 @@ export default function WizardPrimeiraConsulta({
         condutaCheckboxes: condutaCheckboxes,
       });
 
-      // Gerar texto PEP e mostrar
+      // Gerar texto PEP e redirecionar para cartão com PEP aberto
       const pep = gerarTextoPEP();
       setTextoPEP(pep);
-      setShowPEP(true);
-
+      
       toast.success("1ª Consulta registrada com sucesso!");
+      
+      // Redirecionar para o cartão pré-natal com modal PEP aberto
+      onOpenChange(false);
+      const pepEncoded = encodeURIComponent(pep);
+      window.location.href = `/cartao-prenatal?gestanteId=${gestante.id}&showPEP=true&pepTexto=${pepEncoded}`;
     } catch (error) {
       console.error("Erro ao salvar consulta:", error);
       toast.error("Erro ao salvar consulta. Tente novamente.");
@@ -382,12 +388,16 @@ export default function WizardPrimeiraConsulta({
       setCopiado(true);
       toast.success("Texto copiado para a área de transferência!");
       setTimeout(() => setCopiado(false), 2000);
+      // Redirecionar para o cartão pré-natal com scroll para marcos
+      setTimeout(() => {
+        irParaCartaoPrenatal(false);
+      }, 500);
     } catch {
       toast.error("Erro ao copiar texto");
     }
   };
 
-  const fecharTudo = () => {
+  const irParaCartaoPrenatal = (comPEP: boolean) => {
     setShowPEP(false);
     setEtapaAtual(1);
     setAnamnese({ historiaPatologicaPregressa: "", historiaSocial: "", historiaFamiliar: "" });
@@ -396,7 +406,19 @@ export default function WizardPrimeiraConsulta({
     setCondutaComplementacao("");
     setObservacoes("");
     onOpenChange(false);
-    onSuccess();
+    
+    if (comPEP) {
+      // Ir para cartão com modal PEP aberto
+      const pepEncoded = encodeURIComponent(textoPEP);
+      window.location.href = `/cartao-prenatal?gestanteId=${gestante.id}&showPEP=true&pepTexto=${pepEncoded}`;
+    } else {
+      // Ir para cartão e scroll para marcos
+      window.location.href = `/cartao-prenatal?gestanteId=${gestante.id}&scrollToMarcos=true`;
+    }
+  };
+
+  const fecharTudo = () => {
+    irParaCartaoPrenatal(false);
   };
 
   const etapas = [
@@ -505,28 +527,34 @@ export default function WizardPrimeiraConsulta({
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-semibold">História Patológica Pregressa</Label>
-                  <Textarea
+                  <TextareaComAutocomplete
                     placeholder="Doenças prévias, cirurgias, internações..."
                     value={anamnese.historiaPatologicaPregressa}
-                    onChange={(e) => setAnamnese({ ...anamnese, historiaPatologicaPregressa: e.target.value })}
+                    onChange={(val) => setAnamnese({ ...anamnese, historiaPatologicaPregressa: val })}
+                    tipo="historia_patologica"
+                    rows={3}
                     className="mt-1 min-h-[80px]"
                   />
                 </div>
                 <div>
                   <Label className="text-sm font-semibold">História Social</Label>
-                  <Textarea
+                  <TextareaComAutocomplete
                     placeholder="Tabagismo, etilismo, drogas, profissão, situação conjugal..."
                     value={anamnese.historiaSocial}
-                    onChange={(e) => setAnamnese({ ...anamnese, historiaSocial: e.target.value })}
+                    onChange={(val) => setAnamnese({ ...anamnese, historiaSocial: val })}
+                    tipo="historia_social"
+                    rows={3}
                     className="mt-1 min-h-[80px]"
                   />
                 </div>
                 <div>
                   <Label className="text-sm font-semibold">História Familiar</Label>
-                  <Textarea
+                  <TextareaComAutocomplete
                     placeholder="HAS, DM, pré-eclâmpsia, doenças genéticas na família..."
                     value={anamnese.historiaFamiliar}
-                    onChange={(e) => setAnamnese({ ...anamnese, historiaFamiliar: e.target.value })}
+                    onChange={(val) => setAnamnese({ ...anamnese, historiaFamiliar: val })}
+                    tipo="historia_familiar"
+                    rows={3}
                     className="mt-1 min-h-[80px]"
                   />
                 </div>
@@ -573,14 +601,17 @@ export default function WizardPrimeiraConsulta({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-semibold">AUF (cm)</Label>
-                  <Input
-                    type="number"
-                    step="0.5"
-                    placeholder="Ex: 30"
+                  <select
                     value={exameFisico.alturaUterina}
                     onChange={(e) => setExameFisico({ ...exameFisico, alturaUterina: e.target.value })}
-                    className="mt-1"
-                  />
+                    className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="nao_palpavel">Útero não palpável</option>
+                    {Array.from({ length: 31 }, (_, i) => i + 10).map(cm => (
+                      <option key={cm} value={String(cm)}>{cm} cm</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <Label className="text-sm font-semibold">BCF</Label>

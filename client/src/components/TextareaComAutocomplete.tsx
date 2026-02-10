@@ -8,7 +8,7 @@ interface TextareaComAutocompleteProps {
   onChange: (value: string) => void;
   placeholder?: string;
   rows?: number;
-  tipo: "observacao" | "conduta_complementacao";
+  tipo: "observacao" | "conduta_complementacao" | "historia_patologica" | "historia_social" | "historia_familiar";
   className?: string;
 }
 

@@ -2644,7 +2644,7 @@ export const appRouter = router({
     // Buscar sugestões ordenadas por frequência de uso
     getSugestoes: protectedProcedure
       .input(z.object({
-        tipo: z.enum(["observacao", "conduta_complementacao"]),
+        tipo: z.enum(["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar"]),
         busca: z.string().optional(),
       }))
       .query(async ({ input }) => {
@@ -2677,7 +2677,7 @@ export const appRouter = router({
     // Registrar uso de texto (incrementar contador ou criar novo)
     registrarUso: protectedProcedure
       .input(z.object({
-        tipo: z.enum(["observacao", "conduta_complementacao"]),
+        tipo: z.enum(["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar"]),
         texto: z.string().min(1),
       }))
       .mutation(async ({ input }) => {

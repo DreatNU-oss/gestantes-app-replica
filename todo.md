@@ -1083,3 +1083,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar arquivo compartilhado com lista de sugestões de queixas
 - [x] Atualizar CartaoPrenatal para importar do arquivo centralizado
 - [x] Atualizar WizardPrimeiraConsulta para importar do arquivo centralizado
+
+## Melhorias no Wizard 1ª Consulta (10/02/2026)
+- [x] Autocomplete nos campos HPP, Hist Social e Hist Familiar do Wizard
+- [x] Opção "Útero não palpável" no campo AUF do Wizard
+- [x] Após salvar Wizard, redirecionar para CartaoPrenatal com modal PEP aberto
+- [x] Após copiar PEP, scroll automático para Marcos Importantes
