@@ -1313,6 +1313,11 @@ export default function CartaoPrenatal() {
       linhas.push(`Conduta (complementação): ${formData.condutaComplementacao}`);
     }
     
+    // Adicionar observações se houver
+    if (formData.observacoes) {
+      linhas.push(`Observações: ${formData.observacoes}`);
+    }
+    
     return linhas.join("\n\n");
   };
   

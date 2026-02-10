@@ -1095,3 +1095,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Nome do Bebê no ConsultaUnificadaDialog (10/02/2026)
 - [x] Adicionar nome do bebê na janela inicial que abre ao iniciar uma consulta
+
+## Observações no Texto PEP da Consulta de Retorno (10/02/2026)
+- [x] Adicionar campo "Observações" no texto PEP da consulta de retorno (gerarTextoPEP)
+- [x] Adicionar campo "Observações" no texto PEP do histórico de consultas (gerarTextoPEPConsultaAnterior) - já existia
