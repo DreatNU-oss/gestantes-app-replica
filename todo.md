@@ -1124,3 +1124,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar Tab no AutocompleteInput para aceitar primeira sugestão (ou selecionada)
 - [x] Implementar Tab no TextareaComAutocomplete para aceitar primeira sugestão (ou selecionada)
 - [x] Testes unitários para lógica do Tab
+
+## Tooltip com Atalhos de Teclado no Autocomplete (10/02/2026)
+- [x] Verificar se componente Tooltip existe no projeto
+- [x] Adicionar tooltip no AutocompleteInput com atalhos (Tab, ↑↓, Enter, Esc)
+- [x] Adicionar tooltip no TextareaComAutocomplete com atalhos (Tab, ↑↓, Enter, Esc)
+- [x] Testar visualmente em diferentes campos

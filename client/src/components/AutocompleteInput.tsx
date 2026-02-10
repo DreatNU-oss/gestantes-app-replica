@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 interface AutocompleteInputProps {
   value: string;
@@ -155,20 +157,41 @@ export function AutocompleteInput({
 
   return (
     <div ref={containerRef} className="relative">
-      <Input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-          if (!showSuggestions) setShowSuggestions(true);
-        }}
-        onFocus={() => setShowSuggestions(true)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className={className}
-        autoComplete="off"
-      />
+      <div className="flex items-center gap-1">
+        <Input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            if (!showSuggestions) setShowSuggestions(true);
+          }}
+          onFocus={() => setShowSuggestions(true)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className={className}
+          autoComplete="off"
+        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              tabIndex={-1}
+            >
+              <HelpCircle className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="max-w-xs">
+            <div className="text-xs space-y-1">
+              <div><strong>Tab</strong> - Aceitar primeira sugestão</div>
+              <div><strong>↑ ↓</strong> - Navegar sugestões</div>
+              <div><strong>Enter</strong> - Selecionar</div>
+              <div><strong>Esc</strong> - Fechar</div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </div>
       {showSuggestions && filteredSuggestions.length > 0 && (
         <div
           ref={listRef}

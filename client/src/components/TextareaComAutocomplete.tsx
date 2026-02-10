@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Loader2 } from "lucide-react";
+import { Loader2, HelpCircle } from "lucide-react";
 import { highlightMatch } from "@/lib/highlightMatch";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface TextareaComAutocompleteProps {
   value: string;
@@ -129,62 +130,85 @@ export function TextareaComAutocomplete({
   };
 
   return (
-    <div className="relative">
-      <Textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
-        onFocus={() => {
-          // Mostrar sugestões ao focar, mesmo sem texto
-          if (sugestoesFiltradas.length > 0) {
-            setMostrarSugestoes(true);
-          }
-        }}
-        placeholder={placeholder}
-        rows={rows}
-        className={className}
-      />
+    <div className="space-y-1">
+      <div className="flex items-start gap-1">
+        <div className="relative flex-1">
+          <Textarea
+            ref={textareaRef}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
+            onFocus={() => {
+              // Mostrar sugestões ao focar, mesmo sem texto
+              if (sugestoesFiltradas.length > 0) {
+                setMostrarSugestoes(true);
+              }
+            }}
+            placeholder={placeholder}
+            rows={rows}
+            className={className}
+          />
 
-      {/* Lista de sugestões */}
-      {mostrarSugestoes && sugestoesFiltradas.length > 0 && (
-        <div
-          ref={sugestoesRef}
-          className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
-        >
-          {isLoading ? (
-            <div className="flex items-center justify-center p-4">
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </div>
-          ) : (
-            <div className="py-1">
-              {sugestoesFiltradas.map((sugestao, index) => (
-                <button
-                  key={sugestao.id}
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    selecionarSugestao(sugestao);
-                  }}
-                  className={`w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors ${
-                    index === indiceSelecionado ? "bg-muted" : ""
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="flex-1 line-clamp-2">
-                      {highlightMatch(sugestao.texto, value)}
-                    </span>
-                    <span className="text-xs text-muted-foreground shrink-0">
-                      {sugestao.contadorUso}x
-                    </span>
-                  </div>
-                </button>
-              ))}
+          {/* Lista de sugestões */}
+          {mostrarSugestoes && sugestoesFiltradas.length > 0 && (
+            <div
+              ref={sugestoesRef}
+              className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center p-4">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                <div className="py-1">
+                  {sugestoesFiltradas.map((sugestao, index) => (
+                    <button
+                      key={sugestao.id}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        selecionarSugestao(sugestao);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors ${
+                        index === indiceSelecionado ? "bg-muted" : ""
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="flex-1 line-clamp-2">
+                          {highlightMatch(sugestao.texto, value)}
+                        </span>
+                        <span className="text-xs text-muted-foreground shrink-0">
+                          {sugestao.contadorUso}x
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground transition-colors mt-2"
+              tabIndex={-1}
+            >
+              <HelpCircle className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="max-w-xs">
+            <div className="text-xs space-y-1">
+              <div><strong>Tab</strong> - Aceitar primeira sugestão</div>
+              <div><strong>↑ ↓</strong> - Navegar sugestões</div>
+              <div><strong>Enter</strong> - Selecionar</div>
+              <div><strong>Esc</strong> - Fechar</div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </div>
     </div>
   );
 }
