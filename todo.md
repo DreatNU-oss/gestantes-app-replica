@@ -1151,3 +1151,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Bug: Campo Queixas concatena texto ao invés de substituir (10/02/2026)
 - [x] Ao selecionar sugestão no AutocompleteInput (Queixas), o texto digitado é concatenado com o sugerido ao invés de ser substituído
 - [x] Corrigir lógica de seleção no AutocompleteInput para substituir o texto digitado pelo sugerido
+
+## Novas Opções de Conduta: Ferro Venoso e Aguardo Exames (10/02/2026)
+- [x] Adicionar checkbox "Ferro Venoso" nas opções de conduta da consulta de retorno
+- [x] Adicionar checkbox "Aguardo exames laboratoriais" nas opções de conduta da consulta de retorno
+- [x] Adicionar checkbox "Ferro Venoso" nas opções de conduta da 1ª consulta (Wizard)
+- [x] Adicionar checkbox "Aguardo exames laboratoriais" nas opções de conduta da 1ª consulta (Wizard)

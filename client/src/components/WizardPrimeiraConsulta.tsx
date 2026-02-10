@@ -62,6 +62,8 @@ const CONDUTA_CHECKBOXES = [
   { key: "sintomaticos", label: "Sintomáticos" },
   { key: "agendada_cesarea", label: "Agendada Cesárea" },
   { key: "indico_curetagem_uterina", label: "Indico Curetagem Uterina" },
+  { key: "ferro_venoso", label: "Ferro Venoso" },
+  { key: "aguardo_exames_laboratoriais", label: "Aguardo Exames Laboratoriais" },
 ];
 
 // Função para normalizar data para formato YYYY-MM-DD

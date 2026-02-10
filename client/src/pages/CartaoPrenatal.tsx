@@ -158,6 +158,8 @@ export default function CartaoPrenatal() {
     "Agendamento Cesárea",
     "Indico Curetagem Uterina",
     "Acompanhamento Rotina",
+    "Ferro Venoso",
+    "Aguardo Exames Laboratoriais",
   ];
 
   const [formData, setFormData] = useState({
