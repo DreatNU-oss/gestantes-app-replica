@@ -294,6 +294,18 @@ export default function CartaoPrenatal() {
     { enabled: !!gestanteSelecionada }
   );
 
+  // Buscar lembretes pendentes da gestante
+  const { data: lembretesPendentes, refetch: refetchLembretes } = trpc.lembretes.pendentes.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+  const [lembretesResolvidos, setLembretesResolvidos] = useState<number[]>([]);
+  const resolverLembretesMutation = trpc.lembretes.resolver.useMutation({
+    onSuccess: () => {
+      refetchLembretes();
+    },
+  });
+
   // Buscar condutas personalizadas
   const { data: condutasPersonalizadas, refetch: refetchCondutas } = trpc.condutas.list.useQuery();
   const createCondutaMutation = trpc.condutas.create.useMutation({
@@ -326,9 +338,20 @@ export default function CartaoPrenatal() {
   const utils = trpc.useUtils();
 
   const createMutation = trpc.consultasPrenatal.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (result) => {
       toast.success("Consulta registrada com sucesso!");
+      
+      // Resolver lembretes marcados
+      if (lembretesResolvidos.length > 0 && result && (result as any).insertId) {
+        resolverLembretesMutation.mutate({
+          ids: lembretesResolvidos,
+          consultaId: (result as any).insertId,
+        });
+      }
+      setLembretesResolvidos([]);
+      
       refetchConsultas();
+      refetchLembretes();
       // Mostrar modal PEP antes de resetar o formulário
       setShowPEPModal(true);
       resetForm();
@@ -1934,6 +1957,62 @@ export default function CartaoPrenatal() {
                   </div>
                 </div>
                 
+                {/* Seção de Lembretes Pendentes */}
+                {!consultaEditando && lembretesPendentes && lembretesPendentes.length > 0 && (
+                  <div className="border-2 border-amber-400 rounded-lg p-4 bg-amber-50 dark:bg-amber-950/30">
+                    <div className="flex items-center gap-2 mb-3">
+                      <AlertTriangle className="h-5 w-5 text-amber-600" />
+                      <Label className="text-base font-semibold text-amber-800 dark:text-amber-300">Lembretes da Consulta Anterior</Label>
+                      <span className="text-xs text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-2 py-0.5 rounded-full">
+                        {lembretesPendentes.length} {lembretesPendentes.length === 1 ? 'pendente' : 'pendentes'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-amber-700 dark:text-amber-400 mb-3">
+                      Marque os itens resolvidos. Itens não marcados continuarão aparecendo na próxima consulta.
+                    </p>
+                    <div className="space-y-2">
+                      {lembretesPendentes.map((lembrete) => (
+                        <label
+                          key={lembrete.id}
+                          className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
+                            lembretesResolvidos.includes(lembrete.id)
+                              ? 'bg-green-50 dark:bg-green-950/30 border border-green-300 dark:border-green-700'
+                              : 'bg-white dark:bg-background border border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/50'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={lembretesResolvidos.includes(lembrete.id)}
+                            onChange={() => {
+                              setLembretesResolvidos(prev =>
+                                prev.includes(lembrete.id)
+                                  ? prev.filter(id => id !== lembrete.id)
+                                  : [...prev, lembrete.id]
+                              );
+                            }}
+                            className="h-4 w-4 rounded border-amber-400 text-green-600 focus:ring-green-500"
+                          />
+                          <div className="flex-1">
+                            <span className={`text-sm font-medium ${
+                              lembretesResolvidos.includes(lembrete.id)
+                                ? 'line-through text-muted-foreground'
+                                : 'text-foreground'
+                            }`}>
+                              {lembrete.conduta}
+                            </span>
+                            <span className="text-xs text-muted-foreground ml-2">
+                              (desde {new Date(lembrete.criadoEm).toLocaleDateString('pt-BR')})
+                            </span>
+                          </div>
+                          {lembretesResolvidos.includes(lembrete.id) && (
+                            <Check className="h-4 w-4 text-green-600" />
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Seção de Conduta com Checkboxes */}
                 <div className="border rounded-lg p-4 bg-muted/30">
                   <div className="flex items-center justify-between mb-3">

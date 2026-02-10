@@ -50,7 +50,10 @@ import {
   OpcaoFatorRisco,
   opcoesMedicamentos,
   InsertOpcaoMedicamento,
-  OpcaoMedicamento
+  OpcaoMedicamento,
+  lembretesConduta,
+  InsertLembreteConduta,
+  LembreteConduta
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -1037,5 +1040,124 @@ export async function inicializarOpcoesPadrao(): Promise<void> {
     for (const medicamento of medicamentosPadrao) {
       await db.insert(opcoesMedicamentos).values(medicamento);
     }
+  }
+}
+
+// ============ LEMBRETES DE CONDUTA ============
+
+// Condutas que geram lembrete automático na próxima consulta
+export const CONDUTAS_COM_LEMBRETE = [
+  "Rotina Laboratorial 1º Trimestre",
+  "Rotina Laboratorial 2º Trimestre",
+  "Rotina Laboratorial 3º Trimestre",
+  "Outros Exames Laboratoriais Específicos",
+  "US Obstétrico Endovaginal",
+  "US Morfológico 1º Trimestre",
+  "US Morfológico 2º Trimestre",
+  "US Obstétrico com Doppler",
+  "Ecocardiograma Fetal",
+  "Colhido Cultura para EGB",
+  "Aguardo Exames Laboratoriais",
+];
+
+// Labels equivalentes no WizardPrimeiraConsulta (1ª consulta)
+export const CONDUTAS_WIZARD_COM_LEMBRETE: Record<string, string> = {
+  "rotina_lab_1tri": "Rotina Laboratorial 1º Trim",
+  "rotina_lab_2tri": "Rotina Lab 2º Trim",
+  "rotina_lab_3tri": "Rotina Lab 3º Trim",
+  "outros_exames_lab": "Outros Exames Laboratoriais Específicos",
+  "us_obstetrico_endovaginal": "US Obstétrico Endovaginal",
+  "us_morfologico_1tri": "US Morfológico 1º Trim",
+  "us_morfologico_2tri": "US Morfológico 2º Trim",
+  "us_obstetrico_doppler": "US Obstétrico com Doppler",
+  "ecocardiograma_fetal": "Ecocardiograma Fetal",
+  "colhido_cultura_egb": "Colhido Cultura para EGB",
+  "aguardo_exames_laboratoriais": "Aguardo Exames Laboratoriais",
+};
+
+export async function criarLembretesConduta(gestanteId: number, consultaOrigemId: number, condutas: string[]): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  // Filtrar apenas condutas que geram lembrete
+  const condutasComLembrete = condutas.filter(c => 
+    CONDUTAS_COM_LEMBRETE.some(cl => c.toLowerCase().includes(cl.toLowerCase()) || cl.toLowerCase().includes(c.toLowerCase()))
+  );
+
+  for (const conduta of condutasComLembrete) {
+    // Verificar se já existe um lembrete pendente para essa conduta nessa gestante
+    const existente = await db.select()
+      .from(lembretesConduta)
+      .where(and(
+        eq(lembretesConduta.gestanteId, gestanteId),
+        eq(lembretesConduta.conduta, conduta),
+        eq(lembretesConduta.resolvido, 0)
+      ))
+      .limit(1);
+
+    if (existente.length === 0) {
+      await db.insert(lembretesConduta).values({
+        gestanteId,
+        consultaOrigemId,
+        conduta,
+      });
+    }
+  }
+}
+
+export async function criarLembretesCondutaWizard(gestanteId: number, consultaOrigemId: number, condutaCheckboxes: Record<string, boolean>): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  for (const [key, checked] of Object.entries(condutaCheckboxes)) {
+    if (checked && CONDUTAS_WIZARD_COM_LEMBRETE[key]) {
+      const condutaLabel = CONDUTAS_WIZARD_COM_LEMBRETE[key];
+      
+      // Verificar se já existe um lembrete pendente
+      const existente = await db.select()
+        .from(lembretesConduta)
+        .where(and(
+          eq(lembretesConduta.gestanteId, gestanteId),
+          eq(lembretesConduta.conduta, condutaLabel),
+          eq(lembretesConduta.resolvido, 0)
+        ))
+        .limit(1);
+
+      if (existente.length === 0) {
+        await db.insert(lembretesConduta).values({
+          gestanteId,
+          consultaOrigemId,
+          conduta: condutaLabel,
+        });
+      }
+    }
+  }
+}
+
+export async function listarLembretesPendentes(gestanteId: number): Promise<LembreteConduta[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db.select()
+    .from(lembretesConduta)
+    .where(and(
+      eq(lembretesConduta.gestanteId, gestanteId),
+      eq(lembretesConduta.resolvido, 0)
+    ))
+    .orderBy(lembretesConduta.criadoEm);
+}
+
+export async function resolverLembretes(ids: number[], consultaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  for (const id of ids) {
+    await db.update(lembretesConduta)
+      .set({
+        resolvido: 1,
+        resolvidoNaConsultaId: consultaId,
+        resolvidoEm: new Date(),
+      })
+      .where(eq(lembretesConduta.id, id));
   }
 }

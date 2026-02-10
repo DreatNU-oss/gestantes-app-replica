@@ -1157,3 +1157,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar checkbox "Aguardo exames laboratoriais" nas opções de conduta da consulta de retorno
 - [x] Adicionar checkbox "Ferro Venoso" nas opções de conduta da 1ª consulta (Wizard)
 - [x] Adicionar checkbox "Aguardo exames laboratoriais" nas opções de conduta da 1ª consulta (Wizard)
+
+## Sistema de Lembretes de Conduta (10/02/2026)
+- [x] Criar tabela lembretes_conduta no schema (gestanteId, consultaId, conduta, resolvido, criadoEm, resolvidoEm)
+- [x] Rodar migração do banco (pnpm db:push)
+- [x] Criar helpers no db.ts para lembretes (criar, listar pendentes, resolver)
+- [x] Criar routers tRPC para lembretes (listar pendentes por gestante, resolver lembrete)
+- [x] Gerar lembretes automaticamente ao salvar consulta (condutas 1-10 e 20)
+- [x] Exibir lembretes pendentes no formulário de nova consulta com checkboxes
+- [x] Ao marcar checkbox do lembrete, resolver (sumir na próxima consulta)
+- [x] Ao salvar consulta, resolver lembretes marcados
+- [x] Lembretes não marcados persistem para próxima consulta

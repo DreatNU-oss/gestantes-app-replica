@@ -75,7 +75,11 @@ import {
   createOpcaoMedicamento,
   updateOpcaoMedicamento,
   deleteOpcaoMedicamento,
-  inicializarOpcoesPadrao
+  inicializarOpcoesPadrao,
+  criarLembretesConduta,
+  criarLembretesCondutaWizard,
+  listarLembretesPendentes,
+  resolverLembretes
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -805,7 +809,7 @@ export const appRouter = router({
         historiaFamiliar: z.string().optional(),
         condutaCheckboxes: z.record(z.string(), z.boolean()).optional(),
       }))
-      .mutation(({ input }) => {
+      .mutation(async ({ input }) => {
         const data: any = {
           ...input,
           dataConsulta: parseLocalDate(input.dataConsulta),
@@ -825,7 +829,29 @@ export const appRouter = router({
           }
         }
         
-        return createConsultaPrenatal(data);
+        const result = await createConsultaPrenatal(data);
+        
+        // Gerar lembretes automáticos baseados nas condutas selecionadas
+        if (result && (result as any).insertId) {
+          const consultaId = (result as any).insertId;
+          
+          // Condutas da consulta de retorno (array JSON)
+          if (input.conduta) {
+            try {
+              const condutas = JSON.parse(input.conduta);
+              if (Array.isArray(condutas)) {
+                await criarLembretesConduta(input.gestanteId, consultaId, condutas);
+              }
+            } catch (e) { /* ignore parse errors */ }
+          }
+          
+          // Condutas da 1ª consulta (checkboxes)
+          if (input.condutaCheckboxes) {
+            await criarLembretesCondutaWizard(input.gestanteId, consultaId, input.condutaCheckboxes);
+          }
+        }
+        
+        return result;
       }),
     
     update: protectedProcedure
@@ -2723,6 +2749,22 @@ export const appRouter = router({
           return { id: novoRegistro.insertId, novo: true };
         }
       }),
+  }),
+
+  // Lembretes de Conduta
+  lembretes: router({
+    // Listar lembretes pendentes de uma gestante
+    pendentes: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(({ input }) => listarLembretesPendentes(input.gestanteId)),
+    
+    // Resolver lembretes (marcar como concluídos)
+    resolver: protectedProcedure
+      .input(z.object({
+        ids: z.array(z.number()),
+        consultaId: z.number(),
+      }))
+      .mutation(({ input }) => resolverLembretes(input.ids, input.consultaId)),
   }),
 });
 export type AppRouter = typeof appRouter;

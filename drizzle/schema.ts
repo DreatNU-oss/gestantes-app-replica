@@ -674,3 +674,22 @@ export const emailsAutorizados = mysqlTable("emailsAutorizados", {
 
 export type EmailAutorizado = typeof emailsAutorizados.$inferSelect;
 export type InsertEmailAutorizado = typeof emailsAutorizados.$inferInsert;
+
+/**
+ * Tabela de lembretes de conduta
+ * Gerados automaticamente quando certas condutas são marcadas em uma consulta.
+ * Aparecem no formulário da próxima consulta com checkbox para resolver.
+ */
+export const lembretesConduta = mysqlTable("lembretesConduta", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  consultaOrigemId: int("consultaOrigemId").notNull(), // consulta que gerou o lembrete
+  conduta: varchar("conduta", { length: 255 }).notNull(), // nome da conduta que gerou o lembrete
+  resolvido: int("resolvido").default(0).notNull(), // 0 = pendente, 1 = resolvido
+  resolvidoNaConsultaId: int("resolvidoNaConsultaId"), // consulta em que foi resolvido
+  criadoEm: timestamp("criadoEm").defaultNow().notNull(),
+  resolvidoEm: timestamp("resolvidoEm"),
+});
+
+export type LembreteConduta = typeof lembretesConduta.$inferSelect;
+export type InsertLembreteConduta = typeof lembretesConduta.$inferInsert;
