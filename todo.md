@@ -1102,3 +1102,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Compactar Card Dados da Gestante (10/02/2026)
 - [x] Reduzir espaço vertical do card "Dados da Gestante" no CartaoPrenatal
+
+## Autocomplete Global e Ordenação por Frequência (10/02/2026)
+- [x] Adicionar "Queixas comuns dessa fase da gestação..." como primeira opção em queixas
+- [x] Ordenar sugestões por mais utilizados/novos no topo em todas as caixas de texto
+- [x] Aplicar autocomplete em todos os campos de texto livre: Wizard 1ª consulta, Ultrassons, complementação de conduta, observações

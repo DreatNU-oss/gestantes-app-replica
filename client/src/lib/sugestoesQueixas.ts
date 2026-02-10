@@ -6,6 +6,7 @@
  * Os componentes CartaoPrenatal e WizardPrimeiraConsulta importam daqui.
  */
 export const SUGESTOES_QUEIXAS = [
+  "Queixas comuns dessa fase da gestação. Nenhuma queixa sugere sinal de gravidade nem de urgência.",
   "Sem queixas hoje",
   "Dor lombar",
   "Náuseas",

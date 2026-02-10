@@ -686,20 +686,24 @@ export default function WizardPrimeiraConsulta({
 
               <div>
                 <Label className="text-sm font-semibold">Conduta (complementação)</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Complementação da conduta..."
                   value={condutaComplementacao}
-                  onChange={(e) => setCondutaComplementacao(e.target.value)}
+                  onChange={(val) => setCondutaComplementacao(val)}
+                  tipo="conduta_complementacao"
+                  rows={2}
                   className="mt-1 min-h-[60px]"
                 />
               </div>
 
               <div>
                 <Label className="text-sm font-semibold">Observações</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Observações gerais..."
                   value={observacoes}
-                  onChange={(e) => setObservacoes(e.target.value)}
+                  onChange={(val) => setObservacoes(val)}
+                  tipo="observacao"
+                  rows={2}
                   className="mt-1 min-h-[60px]"
                 />
               </div>

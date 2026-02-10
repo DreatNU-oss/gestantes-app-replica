@@ -8,7 +8,7 @@ interface TextareaComAutocompleteProps {
   onChange: (value: string) => void;
   placeholder?: string;
   rows?: number;
-  tipo: "observacao" | "conduta_complementacao" | "historia_patologica" | "historia_social" | "historia_familiar";
+  tipo: "observacao" | "conduta_complementacao" | "historia_patologica" | "historia_social" | "historia_familiar" | "us_biometria" | "us_avaliacao_anatomica" | "us_observacoes" | "eco_conclusao" | "us_seguimento_observacoes";
   className?: string;
 }
 
@@ -27,7 +27,7 @@ export function TextareaComAutocomplete({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
-  // Buscar sugestões do histórico
+  // Buscar sugestões do histórico (ordenadas por contadorUso desc, ultimoUso desc)
   const { data: sugestoes, isLoading } = trpc.historicoTextos.getSugestoes.useQuery({
     tipo,
   });
@@ -37,9 +37,14 @@ export function TextareaComAutocomplete({
 
   // Filtrar sugestões baseado no texto digitado
   useEffect(() => {
-    if (!sugestoes || !value.trim()) {
+    if (!sugestoes) {
       setSugestoesFiltradas([]);
-      setMostrarSugestoes(false);
+      return;
+    }
+
+    // Se não há texto, mostrar todas as sugestões (mais usadas no topo)
+    if (!value.trim()) {
+      setSugestoesFiltradas(sugestoes);
       return;
     }
 
@@ -49,7 +54,6 @@ export function TextareaComAutocomplete({
     );
 
     setSugestoesFiltradas(filtradas);
-    setMostrarSugestoes(filtradas.length > 0 && value.length >= 3);
     setIndiceSelecionado(-1);
   }, [value, sugestoes]);
 
@@ -125,7 +129,8 @@ export function TextareaComAutocomplete({
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         onFocus={() => {
-          if (value.length >= 3 && sugestoesFiltradas.length > 0) {
+          // Mostrar sugestões ao focar, mesmo sem texto
+          if (sugestoesFiltradas.length > 0) {
             setMostrarSugestoes(true);
           }
         }}
@@ -150,7 +155,10 @@ export function TextareaComAutocomplete({
                 <button
                   key={sugestao.id}
                   type="button"
-                  onClick={() => selecionarSugestao(sugestao)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    selecionarSugestao(sugestao);
+                  }}
                   className={`w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors ${
                     index === indiceSelecionado ? "bg-muted" : ""
                   }`}
@@ -165,13 +173,6 @@ export function TextareaComAutocomplete({
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Indicador de sugestões disponíveis */}
-      {!mostrarSugestoes && sugestoes && sugestoes.length > 0 && value.length < 3 && (
-        <div className="absolute right-2 top-2 text-xs text-muted-foreground">
-          Digite 3+ caracteres para ver sugestões
         </div>
       )}
     </div>

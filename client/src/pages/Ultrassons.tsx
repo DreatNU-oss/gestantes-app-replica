@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { TextareaComAutocomplete } from '@/components/TextareaComAutocomplete';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, ArrowLeft, Sparkles, Check } from 'lucide-react';
 import { useAutoSave } from '@/hooks/useAutoSave';
@@ -867,11 +868,12 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Biometria Completa</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="DBP, CC, CA, CF..."
                   className={getInputClassName('morfologico_2tri', 'biometria')}
                   value={morfo2Tri.biometria}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'biometria'); setMorfo2Tri({ ...morfo2Tri, biometria: e.target.value }); }}
+                  onChange={(val) => { removerDestaqueIA('morfologico_2tri', 'biometria'); setMorfo2Tri({ ...morfo2Tri, biometria: val }); }}
+                  tipo="us_biometria"
                   rows={3}
                 />
               </div>
@@ -928,11 +930,12 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Avaliação Anatômica Detalhada</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Crânio, face, coluna, tórax, coração, abdome, membros..."
                   className={getInputClassName('morfologico_2tri', 'avaliacaoAnatomica')}
                   value={morfo2Tri.avaliacaoAnatomica}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'avaliacaoAnatomica'); setMorfo2Tri({ ...morfo2Tri, avaliacaoAnatomica: e.target.value }); }}
+                  onChange={(val) => { removerDestaqueIA('morfologico_2tri', 'avaliacaoAnatomica'); setMorfo2Tri({ ...morfo2Tri, avaliacaoAnatomica: val }); }}
+                  tipo="us_avaliacao_anatomica"
                   rows={4}
                 />
               </div>
@@ -959,11 +962,12 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Observações</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Observações adicionais..."
                   className={getInputClassName('morfologico_2tri', 'observacoes')}
                   value={morfo2Tri.observacoes}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'observacoes'); setMorfo2Tri({ ...morfo2Tri, observacoes: e.target.value }); }}
+                  onChange={(val) => { removerDestaqueIA('morfologico_2tri', 'observacoes'); setMorfo2Tri({ ...morfo2Tri, observacoes: val }); }}
+                  tipo="us_observacoes"
                   rows={3}
                 />
               </div>
@@ -1008,11 +1012,12 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Conclusão</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Conclusão do ecocardiograma fetal..."
                   className={getInputClassName('ecocardiograma', 'conclusao')}
                   value={ecocardiograma.conclusao}
-                  onChange={(e) => { removerDestaqueIA('ecocardiograma', 'conclusao'); setEcocardiograma({ ...ecocardiograma, conclusao: e.target.value }); }}
+                  onChange={(val) => { removerDestaqueIA('ecocardiograma', 'conclusao'); setEcocardiograma({ ...ecocardiograma, conclusao: val }); }}
+                  tipo="eco_conclusao"
                   rows={5}
                 />
               </div>
@@ -1160,11 +1165,12 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Observações</Label>
-                <Textarea
+                <TextareaComAutocomplete
                   placeholder="Observações adicionais..."
                   className={getInputClassName('ultrassom_seguimento', 'observacoes')}
                   value={usSeguimento.observacoes}
-                  onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'observacoes'); setUsSeguimento({ ...usSeguimento, observacoes: e.target.value }); }}
+                  onChange={(val) => { removerDestaqueIA('ultrassom_seguimento', 'observacoes'); setUsSeguimento({ ...usSeguimento, observacoes: val }); }}
+                  tipo="us_seguimento_observacoes"
                   rows={3}
                 />
               </div>
