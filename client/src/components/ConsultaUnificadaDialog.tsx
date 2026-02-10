@@ -240,6 +240,14 @@ export default function ConsultaUnificadaDialog({
             <Stethoscope className="h-5 w-5 text-[#722F37]" />
             {gestanteParaConsulta.nome}
           </DialogTitle>
+          {gestante?.nomeBebe && (
+            <div className="flex items-center gap-2 mt-1 ml-1">
+              <Baby className={`h-4 w-4 ${gestante?.sexoBebe === 'masculino' ? 'text-blue-500' : gestante?.sexoBebe === 'feminino' ? 'text-pink-500' : 'text-muted-foreground'}`} />
+              <span className={`text-sm font-medium ${gestante?.sexoBebe === 'masculino' ? 'text-blue-600' : gestante?.sexoBebe === 'feminino' ? 'text-pink-600' : 'text-muted-foreground'}`}>
+                Bebê: {gestante.nomeBebe}
+              </span>
+            </div>
+          )}
         </DialogHeader>
 
         <div className="space-y-4">

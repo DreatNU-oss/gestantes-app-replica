@@ -1092,3 +1092,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug: Erro trim ao iniciar consulta de retorno (10/02/2026)
 - [x] Corrigir "Cannot read properties of undefined (reading 'trim')" ao iniciar consulta de retorno
+
+## Nome do Bebê no ConsultaUnificadaDialog (10/02/2026)
+- [x] Adicionar nome do bebê na janela inicial que abre ao iniciar uma consulta
