@@ -1099,3 +1099,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Observações no Texto PEP da Consulta de Retorno (10/02/2026)
 - [x] Adicionar campo "Observações" no texto PEP da consulta de retorno (gerarTextoPEP)
 - [x] Adicionar campo "Observações" no texto PEP do histórico de consultas (gerarTextoPEPConsultaAnterior) - já existia
+
+## Compactar Card Dados da Gestante (10/02/2026)
+- [x] Reduzir espaço vertical do card "Dados da Gestante" no CartaoPrenatal

@@ -1705,60 +1705,37 @@ export default function CartaoPrenatal() {
         {/* Informações da Gestante */}
         {gestante && (
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+            <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <FileText className="h-4 w-4" />
                 Dados da Gestante
               </CardTitle>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation(`/dashboard?editar=${gestante.id}`)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 h-7 text-xs"
               >
-                <UserCog className="h-4 w-4" />
+                <UserCog className="h-3 w-3" />
                 Editar Cadastro
               </Button>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Nome Completo</Label>
-                    <p className="font-semibold text-lg">{gestante.nome}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Gesta</Label>
-                    <p className="font-medium">{gestante.gesta || "-"}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Partos Normais</Label>
-                    <p className="font-medium">{gestante.partosNormais || "-"}</p>
-                  </div>
+            <CardContent className="px-4 pb-3 pt-0">
+              <div className="flex items-center gap-2 mb-2">
+                <p className="font-semibold text-base">{gestante.nome}</p>
+                <span className="text-muted-foreground text-xs">|</span>
+                <span className="text-sm text-muted-foreground">
+                  G{gestante.gesta || 0}P{gestante.para || 0}(PN{gestante.partosNormais || 0}PC{gestante.cesareas || 0})A{gestante.abortos || 0}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">DPP (DUM):</span>
+                  <span className="font-medium">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</span>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-muted-foreground text-sm">DPP pela DUM</Label>
-                    <p className="font-semibold text-lg">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Para</Label>
-                    <p className="font-medium">{gestante.para || "-"}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Cesáreas</Label>
-                    <p className="font-medium">{gestante.cesareas || "-"}</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-muted-foreground text-sm">DPP pelo Ultrassom</Label>
-                    <p className="font-semibold text-lg">{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</p>
-                  </div>
-                  <div>
-                    <Label className="text-muted-foreground text-sm">Abortos</Label>
-                    <p className="font-medium">{gestante.abortos || "-"}</p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground">DPP (US):</span>
+                  <span className="font-medium">{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</span>
                 </div>
               </div>
             </CardContent>
