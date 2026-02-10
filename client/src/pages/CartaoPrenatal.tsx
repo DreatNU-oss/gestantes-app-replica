@@ -2409,6 +2409,92 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
+        {/* Dados do Bebê */}
+        {gestanteSelecionada && gestante && (
+          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                {gestante.sexoBebe === "masculino" ? (
+                  <Baby className="h-5 w-5 text-blue-500" />
+                ) : gestante.sexoBebe === "feminino" ? (
+                  <Baby className="h-5 w-5 text-pink-500" />
+                ) : (
+                  <Baby className="h-5 w-5" />
+                )}
+                <span>Dados do Bebê</span>
+                {gestante.sexoBebe === "masculino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+                    ♂ Menino
+                  </span>
+                )}
+                {gestante.sexoBebe === "feminino" && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
+                    ♀ Menina
+                  </span>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
+                    <Input
+                      id="nomeBebe"
+                      placeholder="Ex: Maria, João, etc."
+                      value={dadosBebe.nomeBebe}
+                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="sexoBebe">Sexo do bebê</Label>
+                    <Select
+                      value={dadosBebe.sexoBebe}
+                      onValueChange={(value) => setDadosBebe(prev => ({ ...prev, sexoBebe: value as "masculino" | "feminino" | "nao_informado" }))}
+                    >
+                      <SelectTrigger id="sexoBebe" className={`max-w-xs ${dadosBebe.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : dadosBebe.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
+                        <SelectValue placeholder="Selecione o sexo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nao_informado">Não Informado</SelectItem>
+                        <SelectItem value="masculino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-blue-500">♂</span> Masculino
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="feminino">
+                          <span className="flex items-center gap-2">
+                            <span className="text-pink-500">♀</span> Feminino
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        nomeBebe: dadosBebe.nomeBebe,
+                        sexoBebe: dadosBebe.sexoBebe,
+                      }, {
+                        onSuccess: () => {
+                          toast.success("Dados do bebê atualizados com sucesso!");
+                        }
+                      });
+                    }}
+                    disabled={updateGestanteMutation.isPending}
+                  >
+                    {updateGestanteMutation.isPending ? "Salvando..." : "Salvar"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Marcos Importantes da Gestação */}
         {gestante && (gestante.dataUltrassom || gestante.dum) && (
           <Card>
@@ -2478,92 +2564,6 @@ export default function CartaoPrenatal() {
                     </Card>
                   );
                 })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Dados do Bebê */}
-        {gestanteSelecionada && gestante && (
-          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {gestante.sexoBebe === "masculino" ? (
-                  <Baby className="h-5 w-5 text-blue-500" />
-                ) : gestante.sexoBebe === "feminino" ? (
-                  <Baby className="h-5 w-5 text-pink-500" />
-                ) : (
-                  <Baby className="h-5 w-5" />
-                )}
-                <span>Dados do Bebê</span>
-                {gestante.sexoBebe === "masculino" && (
-                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
-                    \u2642 Menino
-                  </span>
-                )}
-                {gestante.sexoBebe === "feminino" && (
-                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
-                    \u2640 Menina
-                  </span>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
-                    <Input
-                      id="nomeBebe"
-                      placeholder="Ex: Maria, João, etc."
-                      value={dadosBebe.nomeBebe}
-                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
-                      className="max-w-xs"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sexoBebe">Sexo do bebê</Label>
-                    <Select
-                      value={dadosBebe.sexoBebe}
-                      onValueChange={(value) => setDadosBebe(prev => ({ ...prev, sexoBebe: value as "masculino" | "feminino" | "nao_informado" }))}
-                    >
-                      <SelectTrigger id="sexoBebe" className={`max-w-xs ${dadosBebe.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : dadosBebe.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}`}>
-                        <SelectValue placeholder="Selecione o sexo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nao_informado">Não Informado</SelectItem>
-                        <SelectItem value="masculino">
-                          <span className="flex items-center gap-2">
-                            <span className="text-blue-500">\u2642</span> Masculino
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="feminino">
-                          <span className="flex items-center gap-2">
-                            <span className="text-pink-500">\u2640</span> Feminino
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    onClick={() => {
-                      updateGestanteMutation.mutate({
-                        id: gestanteSelecionada!,
-                        nomeBebe: dadosBebe.nomeBebe,
-                        sexoBebe: dadosBebe.sexoBebe,
-                      }, {
-                        onSuccess: () => {
-                          toast.success("Dados do bebê atualizados com sucesso!");
-                        }
-                      });
-                    }}
-                    disabled={updateGestanteMutation.isPending}
-                  >
-                    {updateGestanteMutation.isPending ? "Salvando..." : "Salvar"}
-                  </Button>
-                </div>
               </div>
             </CardContent>
           </Card>
