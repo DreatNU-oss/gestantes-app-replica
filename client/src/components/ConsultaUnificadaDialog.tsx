@@ -451,21 +451,23 @@ export default function ConsultaUnificadaDialog({
 
         <p className="text-muted-foreground text-sm text-center">Que tipo de consulta deseja registrar?</p>
 
-        <DialogFooter className="flex flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="flex flex-col gap-3 sm:flex-col">
+          <div className="grid grid-cols-3 gap-2 w-full">
+            <Button onClick={() => onConfirm(true)} className="bg-[#722F37] hover:bg-[#5a252c] text-xs sm:text-sm px-2">
+              <ClipboardList className="h-4 w-4 mr-1 shrink-0" />
+              1ª Consulta
+            </Button>
+            <Button onClick={() => onConfirm(false)} className="bg-emerald-600 hover:bg-emerald-700 text-xs sm:text-sm px-2">
+              <Stethoscope className="h-4 w-4 mr-1 shrink-0" />
+              Retorno
+            </Button>
+            <Button onClick={() => onConfirm(false, true)} className="bg-red-600 hover:bg-red-700 text-xs sm:text-sm px-2">
+              <AlertTriangle className="h-4 w-4 mr-1 shrink-0" />
+              Urgência
+            </Button>
+          </div>
+          <Button variant="outline" onClick={onClose} className="w-full">
             Não, agora não
-          </Button>
-          <Button onClick={() => onConfirm(true)} className="bg-[#722F37] hover:bg-[#5a252c]">
-            <ClipboardList className="h-4 w-4 mr-2" />
-            1ª Consulta
-          </Button>
-          <Button onClick={() => onConfirm(false)} className="bg-emerald-600 hover:bg-emerald-700">
-            <Stethoscope className="h-4 w-4 mr-2" />
-            Consulta de Retorno
-          </Button>
-          <Button onClick={() => onConfirm(false, true)} className="bg-red-600 hover:bg-red-700">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            Urgência
           </Button>
         </DialogFooter>
       </DialogContent>

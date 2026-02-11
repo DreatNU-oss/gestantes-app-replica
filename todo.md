@@ -1192,3 +1192,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Opção 1: 1ª Consulta (abre WizardPrimeiraConsulta)
 - [x] Opção 2: Consulta de Retorno (redireciona para CartaoPrenatal)
 - [x] Opção 3: Consulta de Urgência (redireciona para ConsultaUrgencia)
+
+## Bug: Botões não cabem no ConsultaUnificadaDialog (11/02/2026)
+- [x] Reorganizar botões em duas linhas para caber na janela do diálogo
