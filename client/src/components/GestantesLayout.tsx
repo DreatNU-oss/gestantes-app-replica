@@ -37,7 +37,10 @@ import {
   Plus,
   TestTube,
   Scan,
-  Mail
+  Mail,
+  Stethoscope,
+  ClipboardList,
+  AlertTriangle
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -195,33 +198,64 @@ export default function GestantesLayout({
                         <Eye className="h-3 w-3 mr-1" />
                         Cartão
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => {
-                          const g = gestanteAtivaCompleta || gestanteAtiva;
-                          setGestanteParaConsulta({
-                            id: gestanteAtiva.id,
-                            nome: gestanteAtiva.nome,
-                            dum: (g as any).dum || undefined,
-                            tipoDum: (g as any).tipoDum || undefined,
-                            dataUltrassom: (g as any).dataUltrassom || undefined,
-                            igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
-                            igUltrassomDias: (g as any).igUltrassomDias || undefined,
-                            gesta: (g as any).gesta || undefined,
-                            para: (g as any).para || undefined,
-                            partosNormais: (g as any).partosNormais || undefined,
-                            cesareas: (g as any).cesareas || undefined,
-                            abortos: (g as any).abortos || undefined,
-                          });
-                          setShowConsultaDialog(true);
-                        }}
-                        title="Nova Consulta"
-                      >
-                        <Plus className="h-3 w-3 mr-1" />
-                        Consulta
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs"
+                            title="Nova Consulta"
+                          >
+                            <Plus className="h-3 w-3 mr-1" />
+                            Consulta
+                            <ChevronDown className="h-3 w-3 ml-1" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-52">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              const g = gestanteAtivaCompleta || gestanteAtiva;
+                              setGestanteParaConsulta({
+                                id: gestanteAtiva.id,
+                                nome: gestanteAtiva.nome,
+                                dum: (g as any).dum || undefined,
+                                tipoDum: (g as any).tipoDum || undefined,
+                                dataUltrassom: (g as any).dataUltrassom || undefined,
+                                igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
+                                igUltrassomDias: (g as any).igUltrassomDias || undefined,
+                                gesta: (g as any).gesta || undefined,
+                                para: (g as any).para || undefined,
+                                partosNormais: (g as any).partosNormais || undefined,
+                                cesareas: (g as any).cesareas || undefined,
+                                abortos: (g as any).abortos || undefined,
+                              });
+                              setShowWizardPrimeiraConsulta(true);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <Stethoscope className="h-4 w-4 mr-2 text-emerald-600" />
+                            1ª Consulta
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              window.location.href = `/cartao-prenatal?gestanteId=${gestanteAtiva.id}&novaConsulta=true&skipInfoModal=true`;
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <ClipboardList className="h-4 w-4 mr-2 text-blue-600" />
+                            Consulta de Retorno
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              window.location.href = `/consulta-urgencia?gestanteId=${gestanteAtiva.id}`;
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <AlertTriangle className="h-4 w-4 mr-2 text-red-600" />
+                            Consulta de Urgência
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                       <Button
                         variant="outline"
                         size="sm"

@@ -1186,3 +1186,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Botão "Urgência" no ConsultaUnificadaDialog junto com 1ª Consulta e Consulta de Retorno
 - [x] Integrar lembretes no sistema existente
 - [x] Salvar consulta de urgência no banco
+
+## Menu de Opções no Botão Consulta da Sidebar (11/02/2026)
+- [x] Modificar botão Consulta no menu lateral para abrir menu com 3 opções
+- [x] Opção 1: 1ª Consulta (abre WizardPrimeiraConsulta)
+- [x] Opção 2: Consulta de Retorno (redireciona para CartaoPrenatal)
+- [x] Opção 3: Consulta de Urgência (redireciona para ConsultaUrgencia)
