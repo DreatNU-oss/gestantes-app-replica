@@ -2216,7 +2216,17 @@ export default function CartaoPrenatal() {
                     const igUS = gestante?.dataUltrassom ? calcularIGPorUS(consulta.dataConsulta) : null;
                     return (
                       <TableRow key={consulta.id}>
-                        <TableCell>{formatarData(consulta.dataConsulta)}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            <span>{formatarData(consulta.dataConsulta)}</span>
+                            {consulta.tipoConsulta === 'urgencia' && (
+                              <span className="inline-flex items-center rounded-full bg-red-100 border border-red-300 px-2 py-0.5 text-xs font-semibold text-red-700">
+                                <AlertTriangle className="h-3 w-3 mr-1" />
+                                Urgência
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div className="text-sm">
                             <div>I.G. DUM: {igDUM ? `${igDUM.semanas}s ${igDUM.dias}d` : "-"}</div>
@@ -2289,7 +2299,17 @@ export default function CartaoPrenatal() {
                             }
                           })()}
                         </TableCell>
-                        <TableCell>{consulta.observacoes || "-"}</TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            {consulta.observacoes && <span>{consulta.observacoes}</span>}
+                            {consulta.tipoConsulta === 'urgencia' && consulta.hipoteseDiagnostica && (
+                              <div className="text-xs text-red-700 bg-red-50 rounded px-1.5 py-0.5">
+                                <span className="font-medium">HD:</span> {consulta.hipoteseDiagnostica}
+                              </div>
+                            )}
+                            {!consulta.observacoes && !(consulta.tipoConsulta === 'urgencia' && consulta.hipoteseDiagnostica) && "-"}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button

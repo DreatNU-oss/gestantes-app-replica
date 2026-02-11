@@ -1199,3 +1199,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Substituir Dropdown por ConsultaUnificadaDialog na Sidebar (11/02/2026)
 - [x] Remover DropdownMenu do botão Consulta na sidebar
 - [x] Abrir ConsultaUnificadaDialog ao clicar no botão Consulta (mesmo comportamento do Dashboard)
+
+## Badge de Urgência no Histórico de Consultas (11/02/2026)
+- [x] Adicionar badge vermelho "Urgência" no histórico de consultas do Cartão de Pré-natal
+- [x] Identificar consultas de urgência pelo campo tipoConsulta === 'urgencia'
+- [x] Exibir informações específicas da urgência (hipótese diagnóstica) na coluna Observações
