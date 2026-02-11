@@ -1195,3 +1195,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug: Botões não cabem no ConsultaUnificadaDialog (11/02/2026)
 - [x] Reorganizar botões em duas linhas para caber na janela do diálogo
+
+## Substituir Dropdown por ConsultaUnificadaDialog na Sidebar (11/02/2026)
+- [x] Remover DropdownMenu do botão Consulta na sidebar
+- [x] Abrir ConsultaUnificadaDialog ao clicar no botão Consulta (mesmo comportamento do Dashboard)
