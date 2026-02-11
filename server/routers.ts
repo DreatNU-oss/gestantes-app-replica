@@ -78,6 +78,7 @@ import {
   inicializarOpcoesPadrao,
   criarLembretesConduta,
   criarLembretesCondutaWizard,
+  criarLembretesCondutaUrgencia,
   listarLembretesPendentes,
   resolverLembretes
 } from "./db";
@@ -808,6 +809,17 @@ export const appRouter = router({
         historiaSocial: z.string().optional(),
         historiaFamiliar: z.string().optional(),
         condutaCheckboxes: z.record(z.string(), z.boolean()).optional(),
+        // Campos específicos da consulta de urgência
+        isUrgencia: z.number().optional(),
+        queixasUrgencia: z.array(z.string()).optional(),
+        detalhamentoQueixa: z.string().optional(),
+        auf: z.string().optional(),
+        atividadeUterina: z.array(z.string()).optional(),
+        toqueVaginal: z.string().optional(),
+        usgHoje: z.string().optional(),
+        hipoteseDiagnostica: z.string().optional(),
+        condutaUrgencia: z.record(z.string(), z.boolean()).optional(),
+        outraCondutaDescricao: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const data: any = {
@@ -849,6 +861,11 @@ export const appRouter = router({
           if (input.condutaCheckboxes) {
             await criarLembretesCondutaWizard(input.gestanteId, consultaId, input.condutaCheckboxes);
           }
+          
+          // Condutas da consulta de urgência
+          if (input.condutaUrgencia) {
+            await criarLembretesCondutaUrgencia(input.gestanteId, consultaId, input.condutaUrgencia, input.outraCondutaDescricao);
+          }
         }
         
         return result;
@@ -882,6 +899,17 @@ export const appRouter = router({
         historiaSocial: z.string().optional(),
         historiaFamiliar: z.string().optional(),
         condutaCheckboxes: z.record(z.string(), z.boolean()).optional(),
+        // Campos específicos da consulta de urgência
+        isUrgencia: z.number().optional(),
+        queixasUrgencia: z.array(z.string()).optional(),
+        detalhamentoQueixa: z.string().optional(),
+        auf: z.string().optional(),
+        atividadeUterina: z.array(z.string()).optional(),
+        toqueVaginal: z.string().optional(),
+        usgHoje: z.string().optional(),
+        hipoteseDiagnostica: z.string().optional(),
+        condutaUrgencia: z.record(z.string(), z.boolean()).optional(),
+        outraCondutaDescricao: z.string().optional(),
       }))
       .mutation(({ input }) => {
         const { id, ...rest } = input;

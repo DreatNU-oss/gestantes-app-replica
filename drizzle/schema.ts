@@ -216,6 +216,17 @@ export const consultasPrenatal = mysqlTable("consultasPrenatal", {
   historiaSocial: text("historiaSocial"),
   historiaFamiliar: text("historiaFamiliar"),
   condutaCheckboxes: json("condutaCheckboxes"), // JSON object com checkboxes de conduta da 1ª consulta
+  // Campos específicos da consulta de urgência
+  isUrgencia: int("isUrgencia").default(0), // 1 = consulta de urgência, 0 = não
+  queixasUrgencia: json("queixasUrgencia"), // JSON array com checkboxes de queixas de urgência
+  detalhamentoQueixa: text("detalhamentoQueixa"), // Detalhamento da queixa (texto livre)
+  auf: text("auf"), // Altura uterina de fundo (texto livre)
+  atividadeUterina: json("atividadeUterina"), // JSON array com checkboxes de atividade uterina
+  toqueVaginal: text("toqueVaginal"), // Toque vaginal (texto livre)
+  usgHoje: text("usgHoje"), // USG realizado hoje (texto livre)
+  hipoteseDiagnostica: text("hipoteseDiagnostica"), // Hipótese diagnóstica (texto livre)
+  condutaUrgencia: json("condutaUrgencia"), // JSON object com checkboxes de conduta de urgência
+  outraCondutaDescricao: text("outraCondutaDescricao"), // Descrição da "Outra Conduta"
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

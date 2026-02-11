@@ -372,6 +372,13 @@
       "when": 1770763490210,
       "tag": "0052_mighty_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1770771338113,
+      "tag": "0053_nostalgic_true_believers",
+      "breakpoints": true
     }
   ]
 }

@@ -1168,3 +1168,21 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Ao marcar checkbox do lembrete, resolver (sumir na próxima consulta)
 - [x] Ao salvar consulta, resolver lembretes marcados
 - [x] Lembretes não marcados persistem para próxima consulta
+
+## Lembretes Retroativos para Consultas Existentes (10/02/2026)
+- [x] Varrer todas as consultas existentes no banco
+- [x] Identificar última consulta de cada gestante com condutas que geram lembrete
+- [x] Gerar lembretes retroativos para essas gestantes (74 gestantes, 110 lembretes)
+- [x] Verificar resultados no banco (110 lembretes pendentes)
+
+## Consulta de Urgência Obstétrica (10/02/2026)
+- [x] Criar formulário de Consulta de Urgência Obstétrica com campos:
+  - Idade Gestacional, Queixas (checkboxes), Detalhamento da Queixa, Pressão Arterial, AUF, Atividade Uterina (checkboxes), Toque Vaginal, USG Hoje, Hipótese Diagnóstica, Condutas (checkboxes), Conduta Complementação
+- [x] Queixas: Sangramento Vaginal, Dor em Baixo Ventre/Abdominal, Dor abaixo do rebordo costal, Lombalgia, Cefaleia, Perda de Líquido, Febre, Dispneia, Elevação dos Níveis Pressóricos, Sintomas de Resfriado, Contrações Uterinas, Outra (Descreva Abaixo)
+- [x] Condutas: Orientações, Exames Laboratoriais, Progesterona Micronizada, Analgésicos, US de Rins e Vias Urinárias, US de Fígado e Vias Biliares, Internação Hospitalar, Indicação Curetagem, Indicação Cesárea, Outra Conduta (com descrição)
+- [x] Condutas com lembrete: 2 (Exames Laboratoriais), 5 (US Rins), 6 (US Fígado), 10 (Outra Conduta - descrição no lembrete)
+- [x] Atividade Uterina: Ausência/Não é Possível, Útero Não Palpável (1º Tri), Ausente — Tônus Uterino Normal, Contrações de Braxton-Hicks, Trabalho de Parto (>5DU/Montevidéu)
+- [x] Auto-texto com todas as features em campos de texto (Detalhamento, AUF, Toque Vaginal, USG Hoje, Hipótese Diagnóstica, Conduta Complementação, Outra Conduta)
+- [x] Botão "Urgência" no ConsultaUnificadaDialog junto com 1ª Consulta e Consulta de Retorno
+- [x] Integrar lembretes no sistema existente
+- [x] Salvar consulta de urgência no banco

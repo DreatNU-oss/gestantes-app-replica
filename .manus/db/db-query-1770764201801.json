@@ -1,0 +1,19 @@
+{
+  "query": "SELECT COUNT(*) as total_consultas FROM consultasPrenatal; SELECT COUNT(DISTINCT gestanteId) as total_gestantes_com_consulta FROM consultasPrenatal;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as total_consultas FROM consultasPrenatal; SELECT COUNT(DISTINCT gestanteId) as total_gestantes_com_consulta FROM consultasPrenatal;",
+  "rows": [
+    {
+      "total_consultas": "379"
+    },
+    {
+      "total_consultas": "total_gestantes_com_consulta"
+    },
+    {
+      "total_consultas": "139"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_consultas\n379\ntotal_gestantes_com_consulta\n139\n",
+  "stderr": "",
+  "execution_time_ms": 83
+}

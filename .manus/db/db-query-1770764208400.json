@@ -1,0 +1,360 @@
+{
+  "query": "SELECT cp.id, cp.gestanteId, cp.conduta, cp.dataConsulta, g.nome FROM consultasPrenatal cp JOIN gestantes g ON cp.gestanteId = g.id WHERE cp.conduta IS NOT NULL AND cp.conduta != '' AND cp.conduta != '[]' ORDER BY cp.gestanteId, cp.dataConsulta DESC LIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT cp.id, cp.gestanteId, cp.conduta, cp.dataConsulta, g.nome FROM consultasPrenatal cp JOIN gestantes g ON cp.gestanteId = g.id WHERE cp.conduta IS NOT NULL AND cp.conduta != '' AND cp.conduta != '[]' ORDER BY cp.gestanteId, cp.dataConsulta DESC LIMIT 50;",
+  "rows": [
+    {
+      "id": "5580006",
+      "gestanteId": "30001",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]",
+      "dataConsulta": "2026-01-28",
+      "nome": "Adrieli Rezende Barros"
+    },
+    {
+      "id": "4440002",
+      "gestanteId": "30001",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-31",
+      "nome": "Adrieli Rezende Barros"
+    },
+    {
+      "id": "5250002",
+      "gestanteId": "270001",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-26",
+      "nome": "Raissa Andrade Gibram"
+    },
+    {
+      "id": "3210002",
+      "gestanteId": "270001",
+      "conduta": "[\"AAS\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]",
+      "dataConsulta": "2025-12-22",
+      "nome": "Raissa Andrade Gibram"
+    },
+    {
+      "id": "3270002",
+      "gestanteId": "300004",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2025-12-22",
+      "nome": "Camila Zanco Pereira"
+    },
+    {
+      "id": "3120002",
+      "gestanteId": "300004",
+      "conduta": "[\"Acompanhamento Rotina\",\"US Obstétrico com Doppler\"]",
+      "dataConsulta": "2025-12-19",
+      "nome": "Camila Zanco Pereira"
+    },
+    {
+      "id": "2220007",
+      "gestanteId": "300004",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-15",
+      "nome": "Camila Zanco Pereira"
+    },
+    {
+      "id": "4530002",
+      "gestanteId": "330002",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-31",
+      "nome": "Paula Marques de Oliveira"
+    },
+    {
+      "id": "3870002",
+      "gestanteId": "330002",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-24",
+      "nome": "Paula Marques de Oliveira"
+    },
+    {
+      "id": "3060002",
+      "gestanteId": "330002",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-17",
+      "nome": "Paula Marques de Oliveira"
+    },
+    {
+      "id": "3900002",
+      "gestanteId": "330004",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2025-12-24",
+      "nome": "Ketlin Pereira Ferreira"
+    },
+    {
+      "id": "2580002",
+      "gestanteId": "330005",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2025-12-16",
+      "nome": "Daniela Aparecida Françoso"
+    },
+    {
+      "id": "5580005",
+      "gestanteId": "330006",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-28",
+      "nome": "Thabata Aline de Oliveira Costa"
+    },
+    {
+      "id": "4260002",
+      "gestanteId": "330006",
+      "conduta": "[\"Vacinas (Prescrevo ou Oriento)\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]",
+      "dataConsulta": "2025-12-30",
+      "nome": "Thabata Aline de Oliveira Costa"
+    },
+    {
+      "id": "5490008",
+      "gestanteId": "330007",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-27",
+      "nome": "Camila Soares Ferreira Sidrin"
+    },
+    {
+      "id": "6030003",
+      "gestanteId": "330008",
+      "conduta": "[\"Acompanhamento Rotina\",\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Ecocardiograma Fetal\"]",
+      "dataConsulta": "2026-02-09",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo"
+    },
+    {
+      "id": "4560002",
+      "gestanteId": "330008",
+      "conduta": "[\"AAS\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-12",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo"
+    },
+    {
+      "id": "4770002",
+      "gestanteId": "330009",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\",\"AAS\"]",
+      "dataConsulta": "2026-01-13",
+      "nome": "Jenilda Aparecida Souza Santos"
+    },
+    {
+      "id": "4860003",
+      "gestanteId": "330010",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]",
+      "dataConsulta": "2026-01-14",
+      "nome": "Letícia Aparecida Silveira"
+    },
+    {
+      "id": "4890003",
+      "gestanteId": "330011",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2026-01-14",
+      "nome": "Aline Aparecida Ribeiro Reis"
+    },
+    {
+      "id": "5760005",
+      "gestanteId": "330012",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2026-02-03",
+      "nome": "Aline Clara Silva"
+    },
+    {
+      "id": "5430004",
+      "gestanteId": "330012",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-27",
+      "nome": "Aline Clara Silva"
+    },
+    {
+      "id": "4770005",
+      "gestanteId": "330012",
+      "conduta": "[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]",
+      "dataConsulta": "2026-01-13",
+      "nome": "Aline Clara Silva"
+    },
+    {
+      "id": "5430002",
+      "gestanteId": "330013",
+      "conduta": "[\"Ecocardiograma Fetal\",\"Acompanhamento Rotina\",\"Rotina Laboratorial 2º Trimestre\"]",
+      "dataConsulta": "2026-01-27",
+      "nome": "Aline Cristina Soares Gallo"
+    },
+    {
+      "id": "3690002",
+      "gestanteId": "330013",
+      "conduta": "[\"US Morfológico 2º Trimestre\",\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-23",
+      "nome": "Aline Cristina Soares Gallo"
+    },
+    {
+      "id": "5460003",
+      "gestanteId": "330014",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2026-01-27",
+      "nome": "Amanda Cristina Souza Oliveira"
+    },
+    {
+      "id": "5100005",
+      "gestanteId": "330014",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-20",
+      "nome": "Amanda Cristina Souza Oliveira"
+    },
+    {
+      "id": "4890005",
+      "gestanteId": "330014",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-14",
+      "nome": "Amanda Cristina Souza Oliveira"
+    },
+    {
+      "id": "6090008",
+      "gestanteId": "330015",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-02-10",
+      "nome": "Amanda Junqueira Vilela"
+    },
+    {
+      "id": "5580007",
+      "gestanteId": "330015",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-28",
+      "nome": "Amanda Junqueira Vilela"
+    },
+    {
+      "id": "4800006",
+      "gestanteId": "330015",
+      "conduta": "[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-13",
+      "nome": "Amanda Junqueira Vilela"
+    },
+    {
+      "id": "6090010",
+      "gestanteId": "330016",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-02-10",
+      "nome": "Amanda Paula da Costa Silva"
+    },
+    {
+      "id": "4800009",
+      "gestanteId": "330016",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-13",
+      "nome": "Amanda Paula da Costa Silva"
+    },
+    {
+      "id": "5100007",
+      "gestanteId": "330017",
+      "conduta": "[\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]",
+      "dataConsulta": "2026-01-20",
+      "nome": "Amanda Tavares Amado"
+    },
+    {
+      "id": "6030007",
+      "gestanteId": "330018",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-02-09",
+      "nome": "Ana Clara Borges da Silva"
+    },
+    {
+      "id": "4800003",
+      "gestanteId": "330018",
+      "conduta": "[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]",
+      "dataConsulta": "2026-01-13",
+      "nome": "Ana Clara Borges da Silva"
+    },
+    {
+      "id": "5310002",
+      "gestanteId": "330019",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-26",
+      "nome": "Andressa Helena Silva Fonseca"
+    },
+    {
+      "id": "3510002",
+      "gestanteId": "330019",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-23",
+      "nome": "Andressa Helena Silva Fonseca"
+    },
+    {
+      "id": "5910003",
+      "gestanteId": "330020",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-02-04",
+      "nome": "Anna Clara Sousa Borges"
+    },
+    {
+      "id": "5010002",
+      "gestanteId": "330020",
+      "conduta": "[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-19",
+      "nome": "Anna Clara Sousa Borges"
+    },
+    {
+      "id": "5490006",
+      "gestanteId": "330021",
+      "conduta": "[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-27",
+      "nome": "Bianca Aparecida Marcolino do Carmo"
+    },
+    {
+      "id": "3720002",
+      "gestanteId": "330021",
+      "conduta": "[\"Acompanhamento Rotina\",\"Vacinas (Prescrevo ou Oriento)\"]",
+      "dataConsulta": "2025-12-23",
+      "nome": "Bianca Aparecida Marcolino do Carmo"
+    },
+    {
+      "id": "5190013",
+      "gestanteId": "330022",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-21",
+      "nome": "Bianca Fonseca Moreno da Cruz"
+    },
+    {
+      "id": "3750002",
+      "gestanteId": "330022",
+      "conduta": "[\"Acompanhamento Rotina\",\"Vacinas (Prescrevo ou Oriento)\"]",
+      "dataConsulta": "2025-12-23",
+      "nome": "Bianca Fonseca Moreno da Cruz"
+    },
+    {
+      "id": "5010003",
+      "gestanteId": "330023",
+      "conduta": "[\"US Morfológico 2º Trimestre\",\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-19",
+      "nome": "Bruna do Carmo Cunha"
+    },
+    {
+      "id": "3270003",
+      "gestanteId": "330023",
+      "conduta": "[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-22",
+      "nome": "Bruna do Carmo Cunha"
+    },
+    {
+      "id": "5700003",
+      "gestanteId": "330024",
+      "conduta": "[\"Agendamento Cesárea\"]",
+      "dataConsulta": "2026-02-03",
+      "nome": "Bruna Fernandes Fonseca Oliveira"
+    },
+    {
+      "id": "5610004",
+      "gestanteId": "330024",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2026-01-28",
+      "nome": "Bruna Fernandes Fonseca Oliveira"
+    },
+    {
+      "id": "5130007",
+      "gestanteId": "330024",
+      "conduta": "[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]",
+      "dataConsulta": "2026-01-20",
+      "nome": "Bruna Fernandes Fonseca Oliveira"
+    },
+    {
+      "id": "1770030",
+      "gestanteId": "330024",
+      "conduta": "[\"Acompanhamento Rotina\"]",
+      "dataConsulta": "2025-12-08",
+      "nome": "Bruna Fernandes Fonseca Oliveira"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tconduta\tdataConsulta\tnome\n5580006\t30001\t[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]\t2026-01-28\tAdrieli Rezende Barros\n4440002\t30001\t[\"Acompanhamento Rotina\"]\t2025-12-31\tAdrieli Rezende Barros\n5250002\t270001\t[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-26\tRaissa Andrade Gibram\n3210002\t270001\t[\"AAS\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]\t2025-12-22\tRaissa Andrade Gibram\n3270002\t300004\t[\"Agendamento Cesárea\"]\t2025-12-22\tCamila Zanco Pereira\n3120002\t300004\t[\"Acompanhamento Rotina\",\"US Obstétrico com Doppler\"]\t2025-12-19\tCamila Zanco Pereira\n2220007\t300004\t[\"Acompanhamento Rotina\"]\t2025-12-15\tCamila Zanco Pereira\n4530002\t330002\t[\"Acompanhamento Rotina\"]\t2025-12-31\tPaula Marques de Oliveira\n3870002\t330002\t[\"Acompanhamento Rotina\"]\t2025-12-24\tPaula Marques de Oliveira\n3060002\t330002\t[\"Acompanhamento Rotina\"]\t2025-12-17\tPaula Marques de Oliveira\n3900002\t330004\t[\"Agendamento Cesárea\"]\t2025-12-24\tKetlin Pereira Ferreira\n2580002\t330005\t[\"Agendamento Cesárea\"]\t2025-12-16\tDaniela Aparecida Françoso\n5580005\t330006\t[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-28\tThabata Aline de Oliveira Costa\n4260002\t330006\t[\"Vacinas (Prescrevo ou Oriento)\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]\t2025-12-30\tThabata Aline de Oliveira Costa\n5490008\t330007\t[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-27\tCamila Soares Ferreira Sidrin\n6030003\t330008\t[\"Acompanhamento Rotina\",\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Ecocardiograma Fetal\"]\t2026-02-09\tLucíola Viviane Achilles Medeiros Araújo\n4560002\t330008\t[\"AAS\",\"Acompanhamento Rotina\"]\t2026-01-12\tLucíola Viviane Achilles Medeiros Araújo\n4770002\t330009\t[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\",\"AAS\"]\t2026-01-13\tJenilda Aparecida Souza Santos\n4860003\t330010\t[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]\t2026-01-14\tLetícia Aparecida Silveira\n4890003\t330011\t[\"Agendamento Cesárea\"]\t2026-01-14\tAline Aparecida Ribeiro Reis\n5760005\t330012\t[\"Agendamento Cesárea\"]\t2026-02-03\tAline Clara Silva\n5430004\t330012\t[\"Acompanhamento Rotina\"]\t2026-01-27\tAline Clara Silva\n4770005\t330012\t[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]\t2026-01-13\tAline Clara Silva\n5430002\t330013\t[\"Ecocardiograma Fetal\",\"Acompanhamento Rotina\",\"Rotina Laboratorial 2º Trimestre\"]\t2026-01-27\tAline Cristina Soares Gallo\n3690002\t330013\t[\"US Morfológico 2º Trimestre\",\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]\t2025-12-23\tAline Cristina Soares Gallo\n5460003\t330014\t[\"Agendamento Cesárea\"]\t2026-01-27\tAmanda Cristina Souza Oliveira\n5100005\t330014\t[\"Acompanhamento Rotina\"]\t2026-01-20\tAmanda Cristina Souza Oliveira\n4890005\t330014\t[\"Acompanhamento Rotina\"]\t2026-01-14\tAmanda Cristina Souza Oliveira\n6090008\t330015\t[\"Acompanhamento Rotina\"]\t2026-02-10\tAmanda Junqueira Vilela\n5580007\t330015\t[\"Acompanhamento Rotina\"]\t2026-01-28\tAmanda Junqueira Vilela\n4800006\t330015\t[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-13\tAmanda Junqueira Vilela\n6090010\t330016\t[\"Acompanhamento Rotina\"]\t2026-02-10\tAmanda Paula da Costa Silva\n4800009\t330016\t[\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-13\tAmanda Paula da Costa Silva\n5100007\t330017\t[\"Acompanhamento Rotina\",\"US Morfológico 2º Trimestre\"]\t2026-01-20\tAmanda Tavares Amado\n6030007\t330018\t[\"Acompanhamento Rotina\"]\t2026-02-09\tAna Clara Borges da Silva\n4800003\t330018\t[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]\t2026-01-13\tAna Clara Borges da Silva\n5310002\t330019\t[\"Acompanhamento Rotina\"]\t2026-01-26\tAndressa Helena Silva Fonseca\n3510002\t330019\t[\"Acompanhamento Rotina\"]\t2025-12-23\tAndressa Helena Silva Fonseca\n5910003\t330020\t[\"Acompanhamento Rotina\"]\t2026-02-04\tAnna Clara Sousa Borges\n5010002\t330020\t[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-19\tAnna Clara Sousa Borges\n5490006\t330021\t[\"Rotina Laboratorial 3º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-27\tBianca Aparecida Marcolino do Carmo\n3720002\t330021\t[\"Acompanhamento Rotina\",\"Vacinas (Prescrevo ou Oriento)\"]\t2025-12-23\tBianca Aparecida Marcolino do Carmo\n5190013\t330022\t[\"Acompanhamento Rotina\"]\t2026-01-21\tBianca Fonseca Moreno da Cruz\n3750002\t330022\t[\"Acompanhamento Rotina\",\"Vacinas (Prescrevo ou Oriento)\"]\t2025-12-23\tBianca Fonseca Moreno da Cruz\n5010003\t330023\t[\"US Morfológico 2º Trimestre\",\"Rotina Laboratorial 2º Trimestre\",\"Acompanhamento Rotina\"]\t2026-01-19\tBruna do Carmo Cunha\n3270003\t330023\t[\"Rotina Laboratorial 2º Trimestre\",\"US Morfológico 2º Trimestre\",\"Acompanhamento Rotina\"]\t2025-12-22\tBruna do Carmo Cunha\n5700003\t330024\t[\"Agendamento Cesárea\"]\t2026-02-03\tBruna Fernandes Fonseca Oliveira\n5610004\t330024\t[\"Acompanhamento Rotina\"]\t2026-01-28\tBruna Fernandes Fonseca Oliveira\n5130007\t330024\t[\"Acompanhamento Rotina\",\"Rotina Laboratorial 3º Trimestre\"]\t2026-01-20\tBruna Fernandes Fonseca Oliveira\n1770030\t330024\t[\"Acompanhamento Rotina\"]\t2025-12-08\tBruna Fernandes Fonseca Oliveira\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}

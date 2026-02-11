@@ -675,10 +675,12 @@ export default function Dashboard() {
           setShowConsultaDialog(false);
           setGestanteParaConsulta(null);
         }}
-        onConfirm={(isPrimeiraConsulta?: boolean) => {
+        onConfirm={(isPrimeiraConsulta?: boolean, isUrgencia?: boolean) => {
           setShowConsultaDialog(false);
           if (gestanteParaConsulta) {
-            if (isPrimeiraConsulta) {
+            if (isUrgencia) {
+              window.location.href = `/consulta-urgencia?gestanteId=${gestanteParaConsulta.id}`;
+            } else if (isPrimeiraConsulta) {
               setShowWizardPrimeiraConsulta(true);
             } else {
               window.location.href = `/cartao-prenatal?gestanteId=${gestanteParaConsulta.id}&novaConsulta=true&skipInfoModal=true`;

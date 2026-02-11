@@ -109,7 +109,7 @@ interface ConsultaUnificadaDialogProps {
     abortos?: number;
   } | null;
   onClose: () => void;
-  onConfirm: (isPrimeiraConsulta?: boolean) => void;
+  onConfirm: (isPrimeiraConsulta?: boolean, isUrgencia?: boolean) => void;
 }
 
 export default function ConsultaUnificadaDialog({
@@ -462,6 +462,10 @@ export default function ConsultaUnificadaDialog({
           <Button onClick={() => onConfirm(false)} className="bg-emerald-600 hover:bg-emerald-700">
             <Stethoscope className="h-4 w-4 mr-2" />
             Consulta de Retorno
+          </Button>
+          <Button onClick={() => onConfirm(false, true)} className="bg-red-600 hover:bg-red-700">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            Urgência
           </Button>
         </DialogFooter>
       </DialogContent>

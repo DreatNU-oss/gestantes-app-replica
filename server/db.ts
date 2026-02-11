@@ -1161,3 +1161,58 @@ export async function resolverLembretes(ids: number[], consultaId: number): Prom
       .where(eq(lembretesConduta.id, id));
   }
 }
+
+
+// Condutas de urgência que geram lembrete (2=Exames Laboratoriais, 5=US Rins/Vias Urinárias, 6=US Fígado/Vias Biliares, 10=Outra Conduta)
+export const CONDUTAS_URGENCIA_COM_LEMBRETE = [
+  "exames_laboratoriais",
+  "us_rins_vias_urinarias",
+  "us_figado_vias_biliares",
+  "outra_conduta",
+];
+
+export const CONDUTAS_URGENCIA_LABELS: Record<string, string> = {
+  "exames_laboratoriais": "Exames Laboratoriais (Urgência)",
+  "us_rins_vias_urinarias": "US de Rins e Vias Urinárias (Urgência)",
+  "us_figado_vias_biliares": "US de Fígado e Vias Biliares (Urgência)",
+  "outra_conduta": "Outra Conduta (Urgência)",
+};
+
+export async function criarLembretesCondutaUrgencia(
+  gestanteId: number,
+  consultaOrigemId: number,
+  condutaUrgencia: Record<string, boolean>,
+  outraCondutaDescricao?: string
+): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  for (const [key, checked] of Object.entries(condutaUrgencia)) {
+    if (checked && CONDUTAS_URGENCIA_COM_LEMBRETE.includes(key)) {
+      let condutaLabel = CONDUTAS_URGENCIA_LABELS[key] || key;
+      
+      // Para "Outra Conduta", incluir a descrição no lembrete
+      if (key === "outra_conduta" && outraCondutaDescricao) {
+        condutaLabel = `Outra Conduta: ${outraCondutaDescricao}`;
+      }
+      
+      // Verificar se já existe um lembrete pendente
+      const existente = await db.select()
+        .from(lembretesConduta)
+        .where(and(
+          eq(lembretesConduta.gestanteId, gestanteId),
+          eq(lembretesConduta.conduta, condutaLabel),
+          eq(lembretesConduta.resolvido, 0)
+        ))
+        .limit(1);
+
+      if (existente.length === 0) {
+        await db.insert(lembretesConduta).values({
+          gestanteId,
+          consultaOrigemId,
+          conduta: condutaLabel,
+        });
+      }
+    }
+  }
+}
