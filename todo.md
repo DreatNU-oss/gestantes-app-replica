@@ -1204,3 +1204,16 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar badge vermelho "Urgência" no histórico de consultas do Cartão de Pré-natal
 - [x] Identificar consultas de urgência pelo campo tipoConsulta === 'urgencia'
 - [x] Exibir informações específicas da urgência (hipótese diagnóstica) na coluna Observações
+
+## Auto-texto nos Campos de Texto Livre do Wizard de 1ª Consulta (11/02/2026)
+- [x] Identificar os 3 campos de texto livre da 1ª página do Wizard
+- [x] Substituir textareas simples por TextareaComAutocomplete com todas as features
+- [x] Verificar que highlight, navegação por teclado, Tab e tooltip funcionam
+
+## Correção do Autocomplete - Sugestões não apareciam + Escape fechava Dialog (11/02/2026)
+- [x] Corrigir sugestões não aparecendo ao abrir o Wizard (onFocus chamado antes dos dados da API)
+- [x] Adicionar useEffect para mostrar sugestões quando dados carregam com campo focado
+- [x] Adicionar lógica para mostrar sugestões ao digitar (handleChange)
+- [x] Corrigir Escape que fechava o Dialog inteiro em vez de apenas as sugestões
+- [x] Adicionar data-autocomplete-dropdown e onEscapeKeyDown no DialogContent
+- [x] Adicionar flag dismissedByEscape para evitar reabertura indesejada

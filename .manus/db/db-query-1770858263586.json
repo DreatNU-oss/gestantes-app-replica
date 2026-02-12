@@ -1,0 +1,30 @@
+{
+  "query": "SELECT tipo, texto, contadorUso FROM historicoTextos WHERE tipo IN ('historia_patologica', 'historia_social', 'historia_familiar') ORDER BY tipo, contadorUso DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipo, texto, contadorUso FROM historicoTextos WHERE tipo IN ('historia_patologica', 'historia_social', 'historia_familiar') ORDER BY tipo, contadorUso DESC LIMIT 20;",
+  "rows": [
+    {
+      "tipo": "historia_patologica",
+      "texto": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.",
+      "contadorUso": "1"
+    },
+    {
+      "tipo": "historia_patologica",
+      "texto": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais).",
+      "contadorUso": "1"
+    },
+    {
+      "tipo": "historia_social",
+      "texto": "Tabagista.",
+      "contadorUso": "1"
+    },
+    {
+      "tipo": "historia_familiar",
+      "texto": "Nega DHEG materna.",
+      "contadorUso": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipo\ttexto\tcontadorUso\nhistoria_patologica\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.\t1\nhistoria_patologica\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais).\t1\nhistoria_social\tTabagista.\t1\nhistoria_familiar\tNega DHEG materna.\t1\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

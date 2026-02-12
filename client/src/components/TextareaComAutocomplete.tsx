@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Loader2, HelpCircle, Star } from "lucide-react";
@@ -26,6 +26,8 @@ export function TextareaComAutocomplete({
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
   const [sugestoesFiltradas, setSugestoesFiltradas] = useState<any[]>([]);
   const [indiceSelecionado, setIndiceSelecionado] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
+  const [dismissedByEscape, setDismissedByEscape] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +61,14 @@ export function TextareaComAutocomplete({
     setIndiceSelecionado(-1);
   }, [value, sugestoes]);
 
+  // Mostrar sugestões quando o campo está focado e há sugestões disponíveis
+  // Isso resolve o caso onde onFocus é chamado antes dos dados serem carregados
+  useEffect(() => {
+    if (isFocused && sugestoesFiltradas.length > 0 && !dismissedByEscape) {
+      setMostrarSugestoes(true);
+    }
+  }, [isFocused, sugestoesFiltradas, dismissedByEscape]);
+
   // Fechar sugestões ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -78,6 +88,14 @@ export function TextareaComAutocomplete({
 
   // Navegar pelas sugestões com teclado
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape" && mostrarSugestoes && sugestoesFiltradas.length > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      setMostrarSugestoes(false);
+      setDismissedByEscape(true);
+      return;
+    }
+
     if (!mostrarSugestoes || sugestoesFiltradas.length === 0) return;
 
     if (e.key === "ArrowDown") {
@@ -91,8 +109,6 @@ export function TextareaComAutocomplete({
     } else if (e.key === "Enter" && indiceSelecionado >= 0) {
       e.preventDefault();
       selecionarSugestao(sugestoesFiltradas[indiceSelecionado]);
-    } else if (e.key === "Escape") {
-      setMostrarSugestoes(false);
     } else if (e.key === "Tab") {
       // Accept the selected suggestion, or the first one if none is selected
       if (sugestoesFiltradas.length > 0) {
@@ -118,6 +134,8 @@ export function TextareaComAutocomplete({
 
   // Registrar uso ao perder foco (blur) se houver texto
   const handleBlur = () => {
+    setIsFocused(false);
+    setDismissedByEscape(false);
     // Delay para permitir clique em sugestão
     setTimeout(() => {
       if (value.trim() && value.length >= 5) {
@@ -129,6 +147,16 @@ export function TextareaComAutocomplete({
     }, 200);
   };
 
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
+    // Reset escape dismiss when user types
+    setDismissedByEscape(false);
+    // Mostrar sugestões ao digitar
+    if (!mostrarSugestoes) {
+      setMostrarSugestoes(true);
+    }
+  }, [onChange, mostrarSugestoes]);
+
   return (
     <div className="space-y-1">
       <div className="flex items-start gap-1">
@@ -136,10 +164,12 @@ export function TextareaComAutocomplete({
           <Textarea
             ref={textareaRef}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             onFocus={() => {
+              setIsFocused(true);
+              setDismissedByEscape(false);
               // Mostrar sugestões ao focar, mesmo sem texto
               if (sugestoesFiltradas.length > 0) {
                 setMostrarSugestoes(true);
@@ -154,7 +184,8 @@ export function TextareaComAutocomplete({
           {mostrarSugestoes && sugestoesFiltradas.length > 0 && (
             <div
               ref={sugestoesRef}
-              className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
+              data-autocomplete-dropdown
+              className="absolute z-[100] w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center p-4">

@@ -432,7 +432,13 @@ export default function WizardPrimeiraConsulta({
   return (
     <>
       <Dialog open={open && !showPEP} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" onEscapeKeyDown={(e) => {
+            // Prevenir fechamento do dialog se algum dropdown de autocomplete estiver aberto
+            const autocompleteDropdown = document.querySelector('[data-autocomplete-dropdown]');
+            if (autocompleteDropdown) {
+              e.preventDefault();
+            }
+          }}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Stethoscope className="h-5 w-5 text-[#722F37]" />

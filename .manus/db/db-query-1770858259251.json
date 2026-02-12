@@ -1,0 +1,22 @@
+{
+  "query": "SELECT tipo, COUNT(*) as total FROM historicoTextos WHERE tipo IN ('historia_patologica', 'historia_social', 'historia_familiar') GROUP BY tipo;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipo, COUNT(*) as total FROM historicoTextos WHERE tipo IN ('historia_patologica', 'historia_social', 'historia_familiar') GROUP BY tipo;",
+  "rows": [
+    {
+      "tipo": "historia_social",
+      "total": "1"
+    },
+    {
+      "tipo": "historia_familiar",
+      "total": "1"
+    },
+    {
+      "tipo": "historia_patologica",
+      "total": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipo\ttotal\nhistoria_social\t1\nhistoria_familiar\t1\nhistoria_patologica\t2\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}
