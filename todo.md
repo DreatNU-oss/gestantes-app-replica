@@ -1217,3 +1217,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir Escape que fechava o Dialog inteiro em vez de apenas as sugestões
 - [x] Adicionar data-autocomplete-dropdown e onEscapeKeyDown no DialogContent
 - [x] Adicionar flag dismissedByEscape para evitar reabertura indesejada
+
+## Autocomplete nos Campos de Texto da Consulta de Urgência (11/02/2026)
+- [x] Identificar campos de texto livre na Consulta de Urgência (6 campos: detalhamento queixa, AUF, toque vaginal, USG hoje, hipótese diagnóstica, conduta complementação)
+- [x] Criar tipos específicos no schema (hipotese_diagnostica, detalhamento_queixa_urgencia, toque_vaginal, usg_hoje, auf_urgencia)
+- [x] Atualizar enum no banco de dados e no router tRPC
+- [x] Atualizar campos da ConsultaUrgencia para usar tipos específicos
+- [x] Testar autocomplete funcionando com sugestões aparecendo ao focar no campo
+- [x] Nota: Consulta de Urgência é página completa (não Dialog), não precisa proteção de Escape

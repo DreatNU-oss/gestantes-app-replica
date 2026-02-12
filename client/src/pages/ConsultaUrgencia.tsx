@@ -543,7 +543,7 @@ export default function ConsultaUrgencia() {
                 }
                 placeholder="Detalhe a queixa da paciente..."
                 rows={3}
-                tipo="observacao"
+                tipo="detalhamento_queixa_urgencia"
               />
             </CardContent>
           </Card>
@@ -571,7 +571,7 @@ export default function ConsultaUrgencia() {
                 onChange={(auf) => setFormData({ ...formData, auf })}
                 placeholder="Altura uterina de fundo..."
                 rows={1}
-                tipo="observacao"
+                tipo="auf_urgencia"
               />
             </CardContent>
           </Card>
@@ -613,7 +613,7 @@ export default function ConsultaUrgencia() {
                 }
                 placeholder="Resultado do toque vaginal..."
                 rows={2}
-                tipo="observacao"
+                tipo="toque_vaginal"
               />
             </CardContent>
           </Card>
@@ -627,7 +627,7 @@ export default function ConsultaUrgencia() {
                 onChange={(usgHoje) => setFormData({ ...formData, usgHoje })}
                 placeholder="Resultado da USG realizada hoje..."
                 rows={2}
-                tipo="observacao"
+                tipo="usg_hoje"
               />
             </CardContent>
           </Card>
@@ -643,7 +643,7 @@ export default function ConsultaUrgencia() {
                 }
                 placeholder="Hipótese diagnóstica..."
                 rows={2}
-                tipo="observacao"
+                tipo="hipotese_diagnostica"
               />
             </CardContent>
           </Card>

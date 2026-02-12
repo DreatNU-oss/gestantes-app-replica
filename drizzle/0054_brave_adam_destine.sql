@@ -1,0 +1,1 @@
+ALTER TABLE `historicoTextos` MODIFY COLUMN `tipo` enum('observacao','conduta_complementacao','historia_patologica','historia_social','historia_familiar','us_biometria','us_avaliacao_anatomica','us_observacoes','eco_conclusao','us_seguimento_observacoes','hipotese_diagnostica','detalhamento_queixa_urgencia','toque_vaginal','usg_hoje','auf_urgencia') NOT NULL;
