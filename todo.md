@@ -1225,3 +1225,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar campos da ConsultaUrgencia para usar tipos específicos
 - [x] Testar autocomplete funcionando com sugestões aparecendo ao focar no campo
 - [x] Nota: Consulta de Urgência é página completa (não Dialog), não precisa proteção de Escape
+
+## Autocomplete no Campo 'Outra Conduta' da Consulta de Urgência (12/02/2026)
+- [x] Identificar como o campo Outra Conduta é renderizado (já usava TextareaComAutocomplete com tipo genérico)
+- [x] Criar tipo específico outra_conduta_urgencia no schema, router e banco
+- [x] Alterar campo para usar tipo específico outra_conduta_urgencia
+- [x] Testar autocomplete funcionando no campo Outra Conduta

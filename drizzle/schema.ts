@@ -592,7 +592,7 @@ export type InsertJustificativaAlerta = typeof justificativasAlerta.$inferInsert
  */
 export const historicoTextos = mysqlTable("historicoTextos", {
   id: int("id").autoincrement().primaryKey(),
-  tipo: mysqlEnum("tipo", ["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar", "us_biometria", "us_avaliacao_anatomica", "us_observacoes", "eco_conclusao", "us_seguimento_observacoes", "hipotese_diagnostica", "detalhamento_queixa_urgencia", "toque_vaginal", "usg_hoje", "auf_urgencia"]).notNull(),
+  tipo: mysqlEnum("tipo", ["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar", "us_biometria", "us_avaliacao_anatomica", "us_observacoes", "eco_conclusao", "us_seguimento_observacoes", "hipotese_diagnostica", "detalhamento_queixa_urgencia", "toque_vaginal", "usg_hoje", "auf_urgencia", "outra_conduta_urgencia"]).notNull(),
   texto: text("texto").notNull(),
   contadorUso: int("contadorUso").default(1).notNull(), // Incrementa cada vez que o texto é usado
   ultimoUso: timestamp("ultimoUso").defaultNow().notNull(),

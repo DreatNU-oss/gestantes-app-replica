@@ -681,8 +681,8 @@ export default function ConsultaUrgencia() {
                             }
                             placeholder="Descreva a conduta..."
                             rows={2}
-                            tipo="conduta_complementacao"
-                          />
+tipo="outra_conduta_urgencia"
+                           />
                         </div>
                       )}
                   </div>

@@ -10,7 +10,7 @@ interface TextareaComAutocompleteProps {
   onChange: (value: string) => void;
   placeholder?: string;
   rows?: number;
-  tipo: "observacao" | "conduta_complementacao" | "historia_patologica" | "historia_social" | "historia_familiar" | "us_biometria" | "us_avaliacao_anatomica" | "us_observacoes" | "eco_conclusao" | "us_seguimento_observacoes" | "hipotese_diagnostica" | "detalhamento_queixa_urgencia" | "toque_vaginal" | "usg_hoje" | "auf_urgencia";
+  tipo: "observacao" | "conduta_complementacao" | "historia_patologica" | "historia_social" | "historia_familiar" | "us_biometria" | "us_avaliacao_anatomica" | "us_observacoes" | "eco_conclusao" | "us_seguimento_observacoes" | "hipotese_diagnostica" | "detalhamento_queixa_urgencia" | "toque_vaginal" | "usg_hoje" | "auf_urgencia" | "outra_conduta_urgencia";
   className?: string;
 }
 
