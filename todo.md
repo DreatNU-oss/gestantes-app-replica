@@ -1245,3 +1245,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Alterar GestantesLayout e Dashboard para redirecionar urgência para CartaoPrenatal
 - [x] Remover rota /consulta-urgencia do App.tsx
 - [x] Testar salvamento, edição e PEP de consulta de urgência
+
+## Ajustar IG da TESTE TESTE para 34 semanas (13/02/2026)
+- [x] Analisar dados atuais da paciente (DUM, consultas, exames, ultrassons)
+- [x] Calcular nova DUM para IG de 34 semanas a partir de hoje (13/02/2026) → 2025-06-20
+- [x] Atualizar DUM e dados da gestante no banco
+- [x] Recalcular e atualizar datas das 8 consultas (7s, 11s, 15s, 19s, 23s, 27s, 31s, 33s)
+- [x] Remover consultas duplicadas e consulta futura (IG 35s)
+- [x] Não havia exames laboratoriais no banco para atualizar
+- [x] Recalcular e atualizar datas dos 4 ultrassons (7s, 12s, 22s, 32s)
+- [x] Verificar coerência dos dados no app (IG: 34s0d, DPP: 27/03/2026)
