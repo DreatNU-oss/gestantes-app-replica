@@ -73,6 +73,7 @@ const configMenuItems = [
   { label: "Emails Autorizados", path: "/emails-autorizados" },
   { label: "Alterar Senha", path: "/alterar-senha" },
   { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
+  { label: "Integrações", path: "/integracoes" },
 ];
 
 export default function GestantesLayout({

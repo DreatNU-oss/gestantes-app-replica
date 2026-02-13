@@ -1255,3 +1255,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Não havia exames laboratoriais no banco para atualizar
 - [x] Recalcular e atualizar datas dos 4 ultrassons (7s, 12s, 22s, 32s)
 - [x] Verificar coerência dos dados no app (IG: 34s0d, DPP: 27/03/2026)
+
+## Integração com Mapa Cirúrgico - Sistema Administrativo (13/02/2026)
+- [x] Analisar schema e routers para entender como a data de cesárea é gerenciada
+- [x] Criar variáveis de ambiente ADMIN_SYSTEM_URL e ADMIN_INTEGRATION_API_KEY
+- [x] Criar função de sincronização no backend (cesareanSync.ts com sincronizarCesareaComAdmin e sincronizarTodasCesareasComAdmin)
+- [x] Implementar sincronização automática contínua (POST ao criar/atualizar gestante com cesárea, DELETE ao remover)
+- [x] Implementar sincronização em lote com botão na página de Integrações (Configurações)
+- [x] Adicionar feedback visual (badge de sincronização) no campo Data Planejada para a Cesárea
+- [x] Escrever testes vitest para a integração (9 testes passando)
+- [x] Testar no browser (página de Integrações funcional, sincronização em lote executou com 35 gestantes)

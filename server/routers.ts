@@ -92,6 +92,7 @@ import { interpretarExamesComIA } from './interpretarExames';
 import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto } from './partosRealizados';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
+import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -583,6 +584,15 @@ export const appRouter = router({
           // Não falhar a criação da gestante se o medicamento não puder ser adicionado
         }
         
+        // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico) se data definida
+        if (input.dataPartoProgramado && input.tipoPartoDesejado === 'cesariana') {
+          sincronizarCesareaComAdmin({
+            id: novaGestante.id,
+            nomeCompleto: novaGestante.nome,
+            dataCesarea: input.dataPartoProgramado,
+          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+        }
+        
         // Retornar dados da gestante para permitir seleção automática e exibir no modal
         return { 
           success: true,
@@ -660,6 +670,9 @@ export const appRouter = router({
         if (data.dataUltrassom) data.dataUltrassom = parseLocalDate(data.dataUltrassom);
         if (data.dataPartoProgramado) data.dataPartoProgramado = parseLocalDate(data.dataPartoProgramado);
         
+        // Buscar gestante antes da atualização para comparar data de cesárea
+        const gestanteAntes = await getGestanteById(id);
+        
         await updateGestante(id, data);
         
         // Retornar dados da gestante para permitir seleção automática
@@ -667,6 +680,33 @@ export const appRouter = router({
         if (!gestante) {
           throw new Error('Gestante não encontrada após atualização');
         }
+        
+        // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico)
+        // Detectar mudanças na data de cesárea ou tipo de parto
+        const dataPartoProgramadoAntes = gestanteAntes?.dataPartoProgramado ? String(gestanteAntes.dataPartoProgramado) : null;
+        const dataPartoProgramadoDepois = gestante.dataPartoProgramado ? String(gestante.dataPartoProgramado) : null;
+        const tipoPartoAntes = gestanteAntes?.tipoPartoDesejado;
+        const tipoPartoDepois = gestante.tipoPartoDesejado;
+        
+        const tinhaDataCesarea = dataPartoProgramadoAntes && tipoPartoAntes === 'cesariana';
+        const temDataCesarea = dataPartoProgramadoDepois && tipoPartoDepois === 'cesariana';
+        
+        if (temDataCesarea) {
+          // Criar ou atualizar agendamento
+          sincronizarCesareaComAdmin({
+            id: gestante.id,
+            nomeCompleto: gestante.nome,
+            dataCesarea: dataPartoProgramadoDepois,
+          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+        } else if (tinhaDataCesarea && !temDataCesarea) {
+          // Data foi removida ou tipo de parto mudou - deletar agendamento
+          sincronizarCesareaComAdmin({
+            id: gestante.id,
+            nomeCompleto: gestante.nome,
+            dataCesarea: null,
+          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+        }
+        
         return { 
           success: true,
           id: gestante.id,
@@ -677,6 +717,16 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
+        // Buscar gestante antes de deletar para remover agendamento do Mapa Cirúrgico
+        const gestante = await getGestanteById(input.id);
+        if (gestante && gestante.dataPartoProgramado && gestante.tipoPartoDesejado === 'cesariana') {
+          sincronizarCesareaComAdmin({
+            id: gestante.id,
+            nomeCompleto: gestante.nome,
+            dataCesarea: null, // null = remover agendamento
+          }).catch(err => console.error('[Integração] Erro ao remover agendamento:', err));
+        }
+        
         await deleteGestante(input.id);
         return { success: true };
       }),
@@ -2793,6 +2843,64 @@ export const appRouter = router({
         consultaId: z.number(),
       }))
       .mutation(({ input }) => resolverLembretes(input.ids, input.consultaId)),
+  }),
+
+  // Router de Integração com Sistema Administrativo (Mapa Cirúrgico)
+  integracao: router({
+    // Sincronização em lote de cesáreas
+    syncCesareas: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
+        
+        // Buscar todas as gestantes com data de cesárea e tipo cesariana
+        const todasGestantes = await db
+          .select({
+            id: gestantes.id,
+            nome: gestantes.nome,
+            dataPartoProgramado: gestantes.dataPartoProgramado,
+            tipoPartoDesejado: gestantes.tipoPartoDesejado,
+            planoSaudeId: gestantes.planoSaudeId,
+          })
+          .from(gestantes)
+          .where(
+            and(
+              isNotNull(gestantes.dataPartoProgramado),
+              eq(gestantes.tipoPartoDesejado, 'cesariana')
+            )
+          );
+        
+        if (todasGestantes.length === 0) {
+          return { sucesso: 0, falhas: 0, total: 0, detalhes: [] };
+        }
+        
+        // Buscar nomes dos planos de saúde para mapear convênio
+        const { planosSaude } = await import('../drizzle/schema');
+        const planos = await db.select().from(planosSaude);
+        const planosMap = new Map(planos.map(p => [p.id, p.nome]));
+        
+        const gestantesParaSync = todasGestantes.map(g => ({
+          id: g.id,
+          nome: g.nome,
+          dataPartoProgramado: String(g.dataPartoProgramado),
+          planoSaudeNome: g.planoSaudeId ? planosMap.get(g.planoSaudeId) || undefined : undefined,
+        }));
+        
+        const resultado = await sincronizarTodasCesareasComAdmin(gestantesParaSync);
+        return resultado;
+      }),
+    
+    // Verificar status da configuração de integração
+    status: protectedProcedure
+      .query(async () => {
+        const adminUrl = process.env.ADMIN_SYSTEM_URL;
+        const apiKey = process.env.ADMIN_INTEGRATION_API_KEY;
+        return {
+          configurado: !!(adminUrl && apiKey),
+          urlConfigurada: !!adminUrl,
+          apiKeyConfigurada: !!apiKey,
+        };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;
