@@ -49,7 +49,6 @@ describe("cesareanSync", () => {
         id: 123,
         nomeCompleto: "Maria Silva Santos",
         dataCesarea: "2026-04-15",
-        hospital: "Hospital Unimed",
         convenio: "Unimed",
       });
 
@@ -68,7 +67,6 @@ describe("cesareanSync", () => {
           body: JSON.stringify({
             pacienteNome: "Maria Silva Santos",
             dataCirurgia: "2026-04-15",
-            hospital: "Hospital Unimed",
             convenio: "Unimed",
             procedimento: "Cesárea",
             observacoes: "Agendamento via APP Gestantes",

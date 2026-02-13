@@ -14,7 +14,6 @@ interface SyncCesareaParams {
   id: number | string;
   nomeCompleto: string;
   dataCesarea: string | null; // YYYY-MM-DD ou null se cancelada/removida
-  hospital?: string;
   convenio?: string;
   observacoes?: string;
 }
@@ -54,7 +53,6 @@ export async function sincronizarCesareaComAdmin(params: SyncCesareaParams): Pro
         body: JSON.stringify({
           pacienteNome: params.nomeCompleto,
           dataCirurgia: params.dataCesarea,
-          hospital: params.hospital || 'Hospital Unimed',
           convenio: params.convenio || 'Particular',
           procedimento: 'Cesárea',
           observacoes: params.observacoes || 'Agendamento via APP Gestantes',

@@ -1265,3 +1265,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar feedback visual (badge de sincronização) no campo Data Planejada para a Cesárea
 - [x] Escrever testes vitest para a integração (9 testes passando)
 - [x] Testar no browser (página de Integrações funcional, sincronização em lote executou com 35 gestantes)
+
+## Ajustar Integração conforme Especificação do Sistema Administrativo (13/02/2026)
+- [x] Usar Formato A da API (pacienteNome, dataCirurgia, convenio, procedimento, observacoes, externalId)
+- [x] Usar DELETE method para remover agendamento (DELETE /cesarea/gestante-{id})
+- [x] Mapear convênios para valores aceitos (Particular, Cortesia, Unimed, FUSEX)
+- [x] Remover campo hospital não suportado (campos medicoResponsavel, nomeBebe, etc. já não eram enviados)
+- [x] Atualizar testes vitest para o novo formato (9 testes passando)
+- [x] Implementação já estava alinhada com a especificação - apenas ajuste menor
