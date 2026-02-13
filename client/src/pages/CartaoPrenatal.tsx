@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { AutocompleteInput } from "@/components/AutocompleteInput";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
@@ -77,6 +78,7 @@ export default function CartaoPrenatal() {
     const showPEPParam = params.get('showPEP');
     const pepTextoParam = params.get('pepTexto');
     const scrollToMarcosParam = params.get('scrollToMarcos');
+    const urgenciaParam = params.get('urgencia');
     
     if (gestanteIdParam) {
       setGestanteSelecionada(parseInt(gestanteIdParam));
@@ -84,6 +86,9 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
+      if (urgenciaParam === 'true') {
+        setIsUrgencia(true);
+      }
     }
     
     if (showPEPParam === 'true' && pepTextoParam) {
@@ -107,12 +112,13 @@ export default function CartaoPrenatal() {
     }
     
     // Limpar query params da URL
-    if (gestanteIdParam || novaConsultaParam || showPEPParam || scrollToMarcosParam) {
+    if (gestanteIdParam || novaConsultaParam || showPEPParam || scrollToMarcosParam || urgenciaParam) {
       window.history.replaceState({}, '', '/cartao-prenatal');
     }
   }, []);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
+  const [isUrgencia, setIsUrgencia] = useState(false);
 
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
@@ -139,6 +145,45 @@ export default function CartaoPrenatal() {
   const [scrollToMarcosAfterPEP, setScrollToMarcosAfterPEP] = useState(false);
 
   // Lista de opções de conduta predefinidas
+  // Queixas de urgência (checkboxes)
+  const QUEIXAS_URGENCIA = [
+    "Sangramento Vaginal",
+    "Dor em Baixo Ventre / Abdominal",
+    "Dor abaixo do Rebordo Costal",
+    "Lombalgia",
+    "Cefaleia",
+    "Perda de Líquido",
+    "Febre",
+    "Dispneia",
+    "Elevação dos Níveis Pressóricos",
+    "Sintomas de Resfriado",
+    "Contrações Uterinas",
+    "Outra (Descreva Abaixo)",
+  ];
+
+  // Atividade uterina (checkboxes)
+  const ATIVIDADE_UTERINA = [
+    "Ausência / Não é Possível",
+    "Útero Não Palpável no Abdome (1º Trimestre)",
+    "Ausente — Tônus Uterino Normal",
+    "Contrações de Braxton-Hicks",
+    "Trabalho de Parto (>5DU/Montevidéu)",
+  ];
+
+  // Condutas de urgência (checkboxes)
+  const CONDUTAS_URGENCIA = [
+    { key: "orientacoes", label: "Orientações" },
+    { key: "exames_laboratoriais", label: "Exames Laboratoriais" },
+    { key: "progesterona_micronizada", label: "Progesterona Micronizada" },
+    { key: "analgesicos", label: "Analgésicos" },
+    { key: "us_rins_vias_urinarias", label: "US de Rins e Vias Urinárias" },
+    { key: "us_figado_vias_biliares", label: "US de Fígado e Vias Biliares" },
+    { key: "internacao_hospitalar", label: "Internação Hospitalar" },
+    { key: "indicacao_curetagem", label: "Indicação Curetagem" },
+    { key: "indicacao_cesarea", label: "Indicação Cesárea" },
+    { key: "outra_conduta", label: "Outra Conduta" },
+  ];
+
   const OPCOES_CONDUTA = [
     "Rotina Laboratorial 1º Trimestre",
     "Rotina Laboratorial 2º Trimestre",
@@ -174,6 +219,16 @@ export default function CartaoPrenatal() {
     condutaComplementacao: "",
     observacoes: "",
     queixas: "",
+    // Campos de urgência
+    queixasUrgencia: [] as string[],
+    detalhamentoQueixa: "",
+    atividadeUterina: [] as string[],
+    toqueVaginal: "",
+    usgHoje: "",
+    hipoteseDiagnostica: "",
+    condutaUrgencia: {} as Record<string, boolean>,
+    outraCondutaDescricao: "",
+    auf: "",
   });
 
   // Auto-save: salvar rascunho automaticamente (500ms padrão)
@@ -1194,10 +1249,20 @@ export default function CartaoPrenatal() {
       condutaComplementacao: "",
       observacoes: "",
       queixas: "",
+      queixasUrgencia: [],
+      detalhamentoQueixa: "",
+      atividadeUterina: [],
+      toqueVaginal: "",
+      usgHoje: "",
+      hipoteseDiagnostica: "",
+      condutaUrgencia: {},
+      outraCondutaDescricao: "",
+      auf: "",
     });
     clearDraft(); // Limpar rascunho ao resetar formulário
     setMostrarFormulario(false);
     setConsultaEditando(null);
+    setIsUrgencia(false);
   };
 
   // Função para toggle de conduta no checkbox
@@ -1322,16 +1387,68 @@ export default function CartaoPrenatal() {
     }
     
     // Montar texto no formato do PEP (rótulos e dados na mesma linha)
-    const linhas = [
-      `Idade Gestacional: ${igTexto}`,
-      `Queixa(s): ${formData.queixas || "Sem queixas hoje."}`,
+    const linhas: string[] = [];
+    
+    if (isUrgencia) {
+      linhas.push(`** CONSULTA DE URGÊNCIA **`);
+    }
+    
+    linhas.push(`Idade Gestacional: ${igTexto}`);
+    
+    if (isUrgencia) {
+      // Queixas de urgência
+      const queixasTexto = formData.queixasUrgencia.length > 0 
+        ? formData.queixasUrgencia.join(", ") 
+        : "-";
+      linhas.push(`Queixa(s): ${queixasTexto}`);
+      if (formData.detalhamentoQueixa) {
+        linhas.push(`Detalhamento: ${formData.detalhamentoQueixa}`);
+      }
+    } else {
+      linhas.push(`Queixa(s): ${formData.queixas || "Sem queixas hoje."}`);
+    }
+    
+    linhas.push(
       `Peso: ${formData.peso ? `${formData.peso}kg` : "-"}`,
       `AUF: ${aufTexto}`,
       `BCF: ${bcfTexto}`,
       `Edema: ${edemaTexto}`,
       `Pressão Arterial: ${formData.pressaoArterial || "-"}`,
-      `Conduta: ${condutaTexto}`,
-    ];
+    );
+    
+    // Campos extras de urgência
+    if (isUrgencia) {
+      if (formData.atividadeUterina.length > 0) {
+        linhas.push(`Atividade Uterina: ${formData.atividadeUterina.join(", ")}`);
+      }
+      if (formData.auf) {
+        linhas.push(`AUF (Urgência): ${formData.auf}`);
+      }
+      if (formData.toqueVaginal) {
+        linhas.push(`Toque Vaginal: ${formData.toqueVaginal}`);
+      }
+      if (formData.usgHoje) {
+        linhas.push(`USG Hoje: ${formData.usgHoje}`);
+      }
+      if (formData.hipoteseDiagnostica) {
+        linhas.push(`Hipótese Diagnóstica: ${formData.hipoteseDiagnostica}`);
+      }
+      // Condutas de urgência
+      const condutasUrg = Object.entries(formData.condutaUrgencia)
+        .filter(([_, v]) => v)
+        .map(([k]) => {
+          const found = CONDUTAS_URGENCIA.find(c => c.key === k);
+          return found ? found.label : k;
+        });
+      if (condutasUrg.length > 0) {
+        linhas.push(`Condutas de Urgência: ${condutasUrg.join(", ")}`);
+      }
+      if (formData.outraCondutaDescricao) {
+        linhas.push(`Outra Conduta: ${formData.outraCondutaDescricao}`);
+      }
+    }
+    
+    linhas.push(`Conduta: ${condutaTexto}`);
     
     // Adicionar complementação se houver
     if (formData.condutaComplementacao) {
@@ -1403,10 +1520,35 @@ export default function CartaoPrenatal() {
       paTexto = consulta.pressaoArterial;
     }
     
+    const isConsultaUrg = consulta.isUrgencia === 1;
+    
     // Montar texto no formato do PEP (rótulos e dados na mesma linha)
-    const linhas = [
-      `Idade Gestacional: ${igTexto}`,
-      `Queixa(s): ${consulta.queixas || "Sem queixas hoje."}`,
+    const linhas: string[] = [];
+    
+    if (isConsultaUrg) {
+      linhas.push(`** CONSULTA DE URGÊNCIA **`);
+    }
+    
+    linhas.push(`Idade Gestacional: ${igTexto}`);
+    
+    if (isConsultaUrg) {
+      // Queixas de urgência
+      let queixasTexto = "-";
+      if (consulta.queixasUrgencia) {
+        try {
+          const q = typeof consulta.queixasUrgencia === 'string' ? JSON.parse(consulta.queixasUrgencia) : consulta.queixasUrgencia;
+          if (q.length > 0) queixasTexto = q.join(", ");
+        } catch { /* ignore */ }
+      }
+      linhas.push(`Queixa(s): ${queixasTexto}`);
+      if (consulta.detalhamentoQueixa) {
+        linhas.push(`Detalhamento: ${consulta.detalhamentoQueixa}`);
+      }
+    } else {
+      linhas.push(`Queixa(s): ${consulta.queixas || "Sem queixas hoje."}`);
+    }
+    
+    linhas.push(
       `Peso: ${pesoTexto}`,
       `AUF: ${aufTexto}`,
       `BCF: ${bcfTexto}`,
@@ -1421,8 +1563,36 @@ export default function CartaoPrenatal() {
         return edema;
       })()}`,
       `Pressão Arterial: ${paTexto}`,
-      `Conduta: ${condutaTexto}`,
-    ];
+    );
+    
+    // Campos extras de urgência
+    if (isConsultaUrg) {
+      if (consulta.atividadeUterina) {
+        try {
+          const au = typeof consulta.atividadeUterina === 'string' ? JSON.parse(consulta.atividadeUterina) : consulta.atividadeUterina;
+          if (au.length > 0) linhas.push(`Atividade Uterina: ${au.join(", ")}`);
+        } catch { /* ignore */ }
+      }
+      if (consulta.auf) linhas.push(`AUF (Urgência): ${consulta.auf}`);
+      if (consulta.toqueVaginal) linhas.push(`Toque Vaginal: ${consulta.toqueVaginal}`);
+      if (consulta.usgHoje) linhas.push(`USG Hoje: ${consulta.usgHoje}`);
+      if (consulta.hipoteseDiagnostica) linhas.push(`Hipótese Diagnóstica: ${consulta.hipoteseDiagnostica}`);
+      if (consulta.condutaUrgencia) {
+        try {
+          const cu = typeof consulta.condutaUrgencia === 'string' ? JSON.parse(consulta.condutaUrgencia) : consulta.condutaUrgencia;
+          const condutasUrg = Object.entries(cu)
+            .filter(([_, v]) => v)
+            .map(([k]) => {
+              const found = CONDUTAS_URGENCIA.find(c => c.key === k);
+              return found ? found.label : k;
+            });
+          if (condutasUrg.length > 0) linhas.push(`Condutas de Urgência: ${condutasUrg.join(", ")}`);
+        } catch { /* ignore */ }
+      }
+      if (consulta.outraCondutaDescricao) linhas.push(`Outra Conduta: ${consulta.outraCondutaDescricao}`);
+    }
+    
+    linhas.push(`Conduta: ${condutaTexto}`);
     
     // Adicionar complementação se houver
     if (consulta.condutaComplementacao) {
@@ -1472,6 +1642,19 @@ export default function CartaoPrenatal() {
       // Salvar IG calculada pelo Ultrassom
       igUltrassomSemanas: (igUS && !isNaN(igUS.semanas)) ? igUS.semanas : undefined,
       igUltrassomDias: (igUS && !isNaN(igUS.dias)) ? igUS.dias : undefined,
+      // Campos de urgência
+      ...(isUrgencia ? {
+        isUrgencia: 1,
+        queixasUrgencia: formData.queixasUrgencia.length > 0 ? formData.queixasUrgencia : undefined,
+        detalhamentoQueixa: formData.detalhamentoQueixa || undefined,
+        atividadeUterina: formData.atividadeUterina.length > 0 ? formData.atividadeUterina : undefined,
+        toqueVaginal: formData.toqueVaginal || undefined,
+        usgHoje: formData.usgHoje || undefined,
+        hipoteseDiagnostica: formData.hipoteseDiagnostica || undefined,
+        condutaUrgencia: Object.keys(formData.condutaUrgencia).length > 0 ? formData.condutaUrgencia : undefined,
+        outraCondutaDescricao: formData.outraCondutaDescricao || undefined,
+        auf: formData.auf || undefined,
+      } : {}),
     };
 
     if (consultaEditando) {
@@ -1483,6 +1666,9 @@ export default function CartaoPrenatal() {
 
   const handleEdit = (consulta: any) => {
     setConsultaEditando(consulta.id);
+    const isConsultaUrgencia = consulta.isUrgencia === 1;
+    setIsUrgencia(isConsultaUrgencia);
+    
     let condutaArray: string[] = [];
     if (consulta.conduta) {
       try {
@@ -1491,6 +1677,43 @@ export default function CartaoPrenatal() {
         condutaArray = [];
       }
     }
+    
+    // Parse queixas de urgência
+    let queixasUrgenciaArray: string[] = [];
+    if (isConsultaUrgencia && consulta.queixasUrgencia) {
+      try {
+        queixasUrgenciaArray = typeof consulta.queixasUrgencia === 'string' 
+          ? JSON.parse(consulta.queixasUrgencia) 
+          : consulta.queixasUrgencia;
+      } catch {
+        queixasUrgenciaArray = [];
+      }
+    }
+    
+    // Parse atividade uterina
+    let atividadeUterinaArray: string[] = [];
+    if (isConsultaUrgencia && consulta.atividadeUterina) {
+      try {
+        atividadeUterinaArray = typeof consulta.atividadeUterina === 'string'
+          ? JSON.parse(consulta.atividadeUterina)
+          : consulta.atividadeUterina;
+      } catch {
+        atividadeUterinaArray = [];
+      }
+    }
+    
+    // Parse conduta de urgência
+    let condutaUrgenciaObj: Record<string, boolean> = {};
+    if (isConsultaUrgencia && consulta.condutaUrgencia) {
+      try {
+        condutaUrgenciaObj = typeof consulta.condutaUrgencia === 'string'
+          ? JSON.parse(consulta.condutaUrgencia)
+          : consulta.condutaUrgencia;
+      } catch {
+        condutaUrgenciaObj = {};
+      }
+    }
+    
     setFormData({
       dataConsulta: new Date(consulta.dataConsulta).toISOString().split('T')[0],
       peso: consulta.peso ? String(consulta.peso / 1000) : "",
@@ -1505,6 +1728,16 @@ export default function CartaoPrenatal() {
       condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
       queixas: consulta.queixas || "",
+      // Campos de urgência
+      queixasUrgencia: queixasUrgenciaArray,
+      detalhamentoQueixa: consulta.detalhamentoQueixa || "",
+      atividadeUterina: atividadeUterinaArray,
+      toqueVaginal: consulta.toqueVaginal || "",
+      usgHoje: consulta.usgHoje || "",
+      hipoteseDiagnostica: consulta.hipoteseDiagnostica || "",
+      condutaUrgencia: condutaUrgenciaObj,
+      outraCondutaDescricao: consulta.outraCondutaDescricao || "",
+      auf: consulta.auf || "",
     });
     setMostrarFormulario(true);
   };
@@ -1795,7 +2028,15 @@ export default function CartaoPrenatal() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>{consultaEditando ? "Editar Consulta" : "Nova Consulta"}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  {consultaEditando ? "Editar Consulta" : "Nova Consulta"}
+                  {isUrgencia && (
+                    <span className="inline-flex items-center rounded-full bg-red-100 border border-red-300 px-2 py-0.5 text-xs font-semibold text-red-700">
+                      <AlertTriangle className="h-3 w-3 mr-1" />
+                      Urgência
+                    </span>
+                  )}
+                </CardTitle>
                 {savedAt && !consultaEditando && (
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3 text-green-600" />
@@ -1876,12 +2117,50 @@ export default function CartaoPrenatal() {
                   </div>
                   <div className="col-span-2">
                     <Label>Queixa(s)</Label>
-                    <AutocompleteInput
-                      value={formData.queixas}
-                      onChange={(val) => setFormData({ ...formData, queixas: val })}
-                      suggestions={SUGESTOES_QUEIXAS}
-                      placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
-                    />
+                    {isUrgencia ? (
+                      <div className="border rounded-lg p-4 bg-red-50/50 dark:bg-red-950/20 space-y-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                          {QUEIXAS_URGENCIA.map((queixa) => (
+                            <label
+                              key={queixa}
+                              className="flex items-center gap-2 cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/30 p-2 rounded transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={formData.queixasUrgencia.includes(queixa)}
+                                onChange={() => {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    queixasUrgencia: prev.queixasUrgencia.includes(queixa)
+                                      ? prev.queixasUrgencia.filter(q => q !== queixa)
+                                      : [...prev.queixasUrgencia, queixa]
+                                  }));
+                                }}
+                                className="h-4 w-4 rounded border-red-300 text-red-600 focus:ring-red-500"
+                              />
+                              <span className="text-sm">{queixa}</span>
+                            </label>
+                          ))}
+                        </div>
+                        <div>
+                          <Label className="text-sm">Detalhamento da Queixa</Label>
+                          <TextareaComAutocomplete
+                            value={formData.detalhamentoQueixa}
+                            onChange={(detalhamentoQueixa) => setFormData({ ...formData, detalhamentoQueixa })}
+                            placeholder="Detalhe a queixa da paciente..."
+                            rows={2}
+                            tipo="detalhamento_queixa_urgencia"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <AutocompleteInput
+                        value={formData.queixas}
+                        onChange={(val) => setFormData({ ...formData, queixas: val })}
+                        suggestions={SUGESTOES_QUEIXAS}
+                        placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
+                      />
+                    )}
                   </div>
                   <div>
                     <Label>Peso (kg)</Label>
@@ -2119,6 +2398,133 @@ export default function CartaoPrenatal() {
                   </div>
                 </div>
 
+                {/* Campos extras de Urgência */}
+                {isUrgencia && (
+                  <div className="border-2 border-red-200 rounded-lg p-4 bg-red-50/30 dark:bg-red-950/10 space-y-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                      <Label className="text-base font-semibold text-red-800 dark:text-red-300">Campos da Consulta de Urgência</Label>
+                    </div>
+
+                    {/* Atividade Uterina */}
+                    <div>
+                      <Label className="text-sm font-medium">Atividade Uterina</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
+                        {ATIVIDADE_UTERINA.map((opcao) => (
+                          <label
+                            key={opcao}
+                            className="flex items-center gap-2 cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/30 p-2 rounded transition-colors"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={formData.atividadeUterina.includes(opcao)}
+                              onChange={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  atividadeUterina: prev.atividadeUterina.includes(opcao)
+                                    ? prev.atividadeUterina.filter(a => a !== opcao)
+                                    : [...prev.atividadeUterina, opcao]
+                                }));
+                              }}
+                              className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                            />
+                            <span className="text-sm">{opcao}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* AUF */}
+                    <div>
+                      <Label className="text-sm font-medium">AUF</Label>
+                      <TextareaComAutocomplete
+                        value={formData.auf}
+                        onChange={(auf) => setFormData({ ...formData, auf })}
+                        placeholder="Altura uterina de fundo..."
+                        rows={1}
+                        tipo="auf_urgencia"
+                      />
+                    </div>
+
+                    {/* Toque Vaginal */}
+                    <div>
+                      <Label className="text-sm font-medium">Toque Vaginal</Label>
+                      <TextareaComAutocomplete
+                        value={formData.toqueVaginal}
+                        onChange={(toqueVaginal) => setFormData({ ...formData, toqueVaginal })}
+                        placeholder="Resultado do toque vaginal..."
+                        rows={1}
+                        tipo="toque_vaginal"
+                      />
+                    </div>
+
+                    {/* USG Hoje */}
+                    <div>
+                      <Label className="text-sm font-medium">USG Hoje</Label>
+                      <TextareaComAutocomplete
+                        value={formData.usgHoje}
+                        onChange={(usgHoje) => setFormData({ ...formData, usgHoje })}
+                        placeholder="Resultado da ultrassonografia..."
+                        rows={2}
+                        tipo="usg_hoje"
+                      />
+                    </div>
+
+                    {/* Hipótese Diagnóstica */}
+                    <div>
+                      <Label className="text-sm font-medium">Hipótese Diagnóstica</Label>
+                      <TextareaComAutocomplete
+                        value={formData.hipoteseDiagnostica}
+                        onChange={(hipoteseDiagnostica) => setFormData({ ...formData, hipoteseDiagnostica })}
+                        placeholder="Hipótese diagnóstica..."
+                        rows={2}
+                        tipo="hipotese_diagnostica"
+                      />
+                    </div>
+
+                    {/* Condutas de Urgência */}
+                    <div>
+                      <Label className="text-sm font-medium">Condutas de Urgência</Label>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-1">
+                        {CONDUTAS_URGENCIA.map((conduta) => (
+                          <label
+                            key={conduta.key}
+                            className="flex items-center gap-2 cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/30 p-2 rounded transition-colors"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={!!formData.condutaUrgencia[conduta.key]}
+                              onChange={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  condutaUrgencia: {
+                                    ...prev.condutaUrgencia,
+                                    [conduta.key]: !prev.condutaUrgencia[conduta.key]
+                                  }
+                                }));
+                              }}
+                              className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                            />
+                            <span className="text-sm">{conduta.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {formData.condutaUrgencia['outra_conduta'] && (
+                        <div className="mt-2">
+                          <Label className="text-sm">Descrição da Outra Conduta</Label>
+                          <TextareaComAutocomplete
+                            value={formData.outraCondutaDescricao}
+                            onChange={(outraCondutaDescricao) => setFormData({ ...formData, outraCondutaDescricao })}
+                            placeholder="Descreva a outra conduta..."
+                            rows={2}
+                            tipo="outra_conduta_urgencia"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Conduta Complementação */}
                 <div>
                   <Label>Conduta (complementação):</Label>
@@ -2171,6 +2577,15 @@ export default function CartaoPrenatal() {
                           condutaComplementacao: "",
                           observacoes: "",
                           queixas: "",
+                          queixasUrgencia: [],
+                          detalhamentoQueixa: "",
+                          atividadeUterina: [],
+                          toqueVaginal: "",
+                          usgHoje: "",
+                          hipoteseDiagnostica: "",
+                          condutaUrgencia: {},
+                          outraCondutaDescricao: "",
+                          auf: "",
                         });
                         toast.success('Rascunho limpo', {
                           description: 'Formulário resetado com sucesso.',
@@ -2219,7 +2634,7 @@ export default function CartaoPrenatal() {
                         <TableCell>
                           <div className="flex flex-col gap-1">
                             <span>{formatarData(consulta.dataConsulta)}</span>
-                            {consulta.tipoConsulta === 'urgencia' && (
+                            {consulta.isUrgencia === 1 && (
                               <span className="inline-flex items-center rounded-full bg-red-100 border border-red-300 px-2 py-0.5 text-xs font-semibold text-red-700">
                                 <AlertTriangle className="h-3 w-3 mr-1" />
                                 Urgência
@@ -2302,12 +2717,12 @@ export default function CartaoPrenatal() {
                         <TableCell>
                           <div className="space-y-1">
                             {consulta.observacoes && <span>{consulta.observacoes}</span>}
-                            {consulta.tipoConsulta === 'urgencia' && consulta.hipoteseDiagnostica && (
+                            {consulta.isUrgencia === 1 && consulta.hipoteseDiagnostica && (
                               <div className="text-xs text-red-700 bg-red-50 rounded px-1.5 py-0.5">
                                 <span className="font-medium">HD:</span> {consulta.hipoteseDiagnostica}
                               </div>
                             )}
-                            {!consulta.observacoes && !(consulta.tipoConsulta === 'urgencia' && consulta.hipoteseDiagnostica) && "-"}
+                            {!consulta.observacoes && !(consulta.isUrgencia === 1 && consulta.hipoteseDiagnostica) && "-"}
                           </div>
                         </TableCell>
                         <TableCell>

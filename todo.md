@@ -1231,3 +1231,17 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar tipo específico outra_conduta_urgencia no schema, router e banco
 - [x] Alterar campo para usar tipo específico outra_conduta_urgencia
 - [x] Testar autocomplete funcionando no campo Outra Conduta
+
+## Transformar Consulta de Urgência em Formulário Inline no Cartão (13/02/2026)
+- [x] Analisar WizardRetorno, ConsultaUrgencia e CartaoPrenatal
+- [x] Adicionar estado isUrgencia e campos extras de urgência no formData do CartaoPrenatal
+- [x] Processar query param urgencia=true no useEffect
+- [x] Renderizar campos de urgência condicionalmente (queixas checkbox, detalhamento, atividade uterina, AUF, toque vaginal, USG hoje, hipótese diagnóstica, condutas de urgência)
+- [x] Atualizar handleSubmit para enviar campos de urgência
+- [x] Atualizar handleEdit para detectar isUrgencia e carregar campos extras
+- [x] Atualizar resetForm para limpar campos de urgência
+- [x] Corrigir referências tipoConsulta para isUrgencia no handleEdit e tabela
+- [x] Atualizar gerarTextoPEP e gerarTextoPEPConsultaAnterior com campos de urgência
+- [x] Alterar GestantesLayout e Dashboard para redirecionar urgência para CartaoPrenatal
+- [x] Remover rota /consulta-urgencia do App.tsx
+- [x] Testar salvamento, edição e PEP de consulta de urgência
