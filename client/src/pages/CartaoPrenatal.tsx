@@ -2933,6 +2933,28 @@ export default function CartaoPrenatal() {
                   )}
                 </div>
               )}
+
+              {/* Hospital do Parto */}
+              <div className="space-y-2 mt-4">
+                <Label htmlFor="hospitalParto">Hospital do Parto</Label>
+                <Select
+                  value={gestante.hospitalParto || "hospital_unimed"}
+                  onValueChange={(value) => {
+                    updateGestanteMutation.mutate({
+                      id: gestanteSelecionada!,
+                      hospitalParto: value as "hospital_unimed" | "hospital_sao_sebastiao",
+                    });
+                  }}
+                >
+                  <SelectTrigger id="hospitalParto" className="max-w-md">
+                    <SelectValue placeholder="Selecione o hospital" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hospital_unimed">Hospital Unimed</SelectItem>
+                    <SelectItem value="hospital_sao_sebastiao">Hospital São Sebastião</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardContent>
           </Card>
         )}

@@ -15,7 +15,16 @@ interface SyncCesareaParams {
   nomeCompleto: string;
   dataCesarea: string | null; // YYYY-MM-DD ou null se cancelada/removida
   convenio?: string;
+  hospital?: string;
   observacoes?: string;
+}
+
+/**
+ * Mapeia o valor do enum hospitalParto para o nome legível.
+ */
+export function mapearHospital(hospitalParto?: string | null): string {
+  if (hospitalParto === 'hospital_sao_sebastiao') return 'Hospital São Sebastião';
+  return 'Hospital Unimed'; // padrão
 }
 
 interface SyncResult {
@@ -55,6 +64,7 @@ export async function sincronizarCesareaComAdmin(params: SyncCesareaParams): Pro
           dataCirurgia: params.dataCesarea,
           convenio: params.convenio || 'Particular',
           procedimento: 'Cesárea',
+          hospital: params.hospital || 'Hospital Unimed',
           observacoes: params.observacoes || 'Agendamento via APP Gestantes',
           externalId: `gestante-${params.id}`,
         }),
@@ -107,6 +117,7 @@ export async function sincronizarTodasCesareasComAdmin(
     nome: string;
     dataPartoProgramado: string;
     planoSaudeNome?: string;
+    hospitalParto?: string | null;
   }>,
   onProgress?: (current: number, total: number, nome: string) => void
 ): Promise<{ sucesso: number; falhas: number; total: number; detalhes: Array<{ nome: string; status: 'sucesso' | 'falha'; mensagem: string }> }> {
@@ -130,6 +141,7 @@ export async function sincronizarTodasCesareasComAdmin(
       nomeCompleto: gestante.nome,
       dataCesarea: gestante.dataPartoProgramado,
       convenio: mapearConvenio(gestante.planoSaudeNome),
+      hospital: mapearHospital(gestante.hospitalParto),
       observacoes: 'Sincronização em lote - APP Gestantes',
     });
 

@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE gestantes SET hospital_parto = 'hospital_unimed' WHERE tipo_parto_desejado = 'cesariana' AND data_parto_programado IS NOT NULL AND (hospital_parto IS NULL OR hospital_parto = '')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE gestantes SET hospital_parto = 'hospital_unimed' WHERE tipo_parto_desejado = 'cesariana' AND data_parto_programado IS NOT NULL AND (hospital_parto IS NULL OR hospital_parto = '')",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'tipo_parto_desejado' in 'where clause'"
+  ]
+}

@@ -105,6 +105,7 @@ export const gestantes = mysqlTable("gestantes", {
   dataPartoProgramado: varchar("dataPartoProgramado", { length: 10 }), // YYYY-MM-DD
   motivoCesarea: text("motivoCesarea"), // Motivo da indicação da cesárea
   motivoCesareaOutro: text("motivoCesareaOutro"), // Descrição quando "Outro motivo" é selecionado
+  hospitalParto: mysqlEnum("hospitalParto", ["hospital_unimed", "hospital_sao_sebastiao"]).default("hospital_unimed"),
   
   // Dados antropométricos
   altura: int("altura"), // altura em cm

@@ -1273,3 +1273,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover campo hospital não suportado (campos medicoResponsavel, nomeBebe, etc. já não eram enviados)
 - [x] Atualizar testes vitest para o novo formato (9 testes passando)
 - [x] Implementação já estava alinhada com a especificação - apenas ajuste menor
+
+## Adicionar Campo Hospital do Parto (13/02/2026)
+- [x] Gerar prompt para o sistema administrativo receber o campo hospital
+- [x] Adicionar campo hospitalParto no schema (enum: hospital_unimed, hospital_sao_sebastiao)
+- [x] Adicionar campo hospitalParto no router (create/update gestante)
+- [x] Adicionar seletor de hospital no FormularioGestante (padrão: Hospital Unimed)
+- [x] Adicionar seletor de hospital no CartaoPrenatal (seção de cesárea)
+- [x] Integrar campo hospital na sincronização de cesáreas (cesareanSync.ts)
+- [x] Definir Hospital Unimed como padrão para todas as 35 gestantes existentes
+- [x] Ressincronizar as 35 gestantes com hospital = Hospital Unimed (35/35 sucesso, status "Atualizado")
+- [x] Testar no browser

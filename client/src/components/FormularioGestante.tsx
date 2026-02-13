@@ -110,6 +110,7 @@ export default function FormularioGestante({
     dataPartoProgramado: "",
     motivoCesarea: "",
     motivoCesareaOutro: "",
+    hospitalParto: "hospital_unimed",
     nomeBebe: "",
     sexoBebe: "nao_informado",
     observacoes: "",
@@ -408,6 +409,7 @@ export default function FormularioGestante({
         dataPartoProgramado: gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "",
         motivoCesarea: gestante.motivoCesarea || "",
         motivoCesareaOutro: gestante.motivoCesareaOutro || "",
+        hospitalParto: gestante.hospitalParto || "hospital_unimed",
         nomeBebe: gestante.nomeBebe || "",
         sexoBebe: gestante.sexoBebe || "nao_informado",
         observacoes: gestante.observacoes || "",
@@ -524,6 +526,7 @@ export default function FormularioGestante({
       dataPartoProgramado: formData.dataPartoProgramado || undefined,
       motivoCesarea: formData.motivoCesarea || undefined,
       motivoCesareaOutro: formData.motivoCesareaOutro || undefined,
+      hospitalParto: formData.hospitalParto as "hospital_unimed" | "hospital_sao_sebastiao" || undefined,
       nomeBebe: formData.nomeBebe || undefined,
       sexoBebe: formData.sexoBebe as "masculino" | "feminino" | "nao_informado" || undefined,
       observacoes: formData.observacoes || undefined,
@@ -1153,6 +1156,23 @@ export default function FormularioGestante({
                 )}
               </div>
             )}
+
+            {/* Hospital do Parto */}
+            <div className="space-y-2">
+              <Label htmlFor="hospitalParto">Hospital do Parto</Label>
+              <Select
+                value={formData.hospitalParto}
+                onValueChange={(v: any) => setFormData({ ...formData, hospitalParto: v })}
+              >
+                <SelectTrigger id="hospitalParto">
+                  <SelectValue placeholder="Selecione o hospital" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hospital_unimed">Hospital Unimed</SelectItem>
+                  <SelectItem value="hospital_sao_sebastiao">Hospital São Sebastião</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
         </Card>
 

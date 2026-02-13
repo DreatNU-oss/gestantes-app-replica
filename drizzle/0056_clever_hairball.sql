@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` ADD `hospitalParto` enum('hospital_unimed','hospital_sao_sebastiao') DEFAULT 'hospital_unimed';
