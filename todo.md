@@ -1284,3 +1284,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Definir Hospital Unimed como padrão para todas as 35 gestantes existentes
 - [x] Ressincronizar as 35 gestantes com hospital = Hospital Unimed (35/35 sucesso, status "Atualizado")
 - [x] Testar no browser
+
+## Endpoint de Callback para Reagendamento de Cesárea (14/02/2026)
+- [x] Criar variável de ambiente GESTANTES_INTEGRATION_API_KEY para autenticar callbacks recebidos
+- [x] Criar endpoint POST /api/integration/callback/reagendamento no servidor
+- [x] Validar autenticação via X-API-Key no endpoint
+- [x] Atualizar dataPartoProgramado da gestante ao receber reagendamento
+- [x] Re-sincronizar a cesárea com o sistema administrativo após atualização
+- [x] Escrever testes vitest para o endpoint de callback (17 testes passando)
+- [x] Gerar prompt para o APP Admin configurar o envio de callbacks

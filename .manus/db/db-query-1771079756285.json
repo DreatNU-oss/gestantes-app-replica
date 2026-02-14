@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, nome FROM gestantes LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM gestantes LIMIT 5;",
+  "rows": [
+    {
+      "id": "30001",
+      "nome": "Adrieli Rezende Barros"
+    },
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram"
+    },
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira"
+    },
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista"
+    },
+    {
+      "id": "330002",
+      "nome": "Paula Marques de Oliveira"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n30001\tAdrieli Rezende Barros\n270001\tRaissa Andrade Gibram\n300004\tCamila Zanco Pereira\n300005\tJosiane Alves Batista\n330002\tPaula Marques de Oliveira\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}

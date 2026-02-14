@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, nome, tipoPartoDesejado, dataPartoProgramado FROM gestantes WHERE tipoPartoDesejado = 'cesariana' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, tipoPartoDesejado, dataPartoProgramado FROM gestantes WHERE tipoPartoDesejado = 'cesariana' LIMIT 5;",
+  "rows": [
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-18"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-30"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-19"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "NULL"
+    },
+    {
+      "id": "330011",
+      "nome": "Aline Aparecida Ribeiro Reis",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2026-01-19"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttipoPartoDesejado\tdataPartoProgramado\n300005\tJosiane Alves Batista\tcesariana\t2025-12-18\n330004\tKetlin Pereira Ferreira\tcesariana\t2025-12-30\n330005\tDaniela Aparecida Françoso\tcesariana\t2025-12-19\n330007\tCamila Soares Ferreira Sidrin\tcesariana\tNULL\n330011\tAline Aparecida Ribeiro Reis\tcesariana\t2026-01-19\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

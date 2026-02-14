@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, nome, tipoPartoDesejado, dataPartoProgramado, hospitalParto FROM gestantes WHERE tipoPartoDesejado = 'cesariana' AND dataPartoProgramado IS NOT NULL LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, tipoPartoDesejado, dataPartoProgramado, hospitalParto FROM gestantes WHERE tipoPartoDesejado = 'cesariana' AND dataPartoProgramado IS NOT NULL LIMIT 3;",
+  "rows": [
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-18",
+      "hospitalParto": "hospital_unimed"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-30",
+      "hospitalParto": "hospital_unimed"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "tipoPartoDesejado": "cesariana",
+      "dataPartoProgramado": "2025-12-19",
+      "hospitalParto": "hospital_unimed"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttipoPartoDesejado\tdataPartoProgramado\thospitalParto\n300005\tJosiane Alves Batista\tcesariana\t2025-12-18\thospital_unimed\n330004\tKetlin Pereira Ferreira\tcesariana\t2025-12-30\thospital_unimed\n330005\tDaniela Aparecida Françoso\tcesariana\t2025-12-19\thospital_unimed\n",
+  "stderr": "",
+  "execution_time_ms": 100
+}

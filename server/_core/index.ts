@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { uploadLaudoRouter } from "../uploadLaudo";
 import { processarLembretes } from "../lembretes";
 import gestanteApiRouter from "../gestanteApi";
+import { integrationCallbackRouter } from "../integrationCallback";
 import { serveStatic, setupVite } from "./vite";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -42,6 +43,7 @@ async function startServer() {
     const allowedOrigins = [
       'https://gestantesapp.com',
       'https://www.gestantesapp.com',
+      'https://clinicaapp-f6ne6cpt.manus.space', // APP Administrativo
       /https:\/\/.*\.manusvm\.computer$/, // Permite todos os subdomínios manusvm.computer
       /https:\/\/.*\.manus\.space$/, // Permite todos os subdomínios manus.space
     ];
@@ -61,7 +63,7 @@ async function startServer() {
     }
     
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
     // Handle preflight requests
@@ -83,6 +85,9 @@ async function startServer() {
   
   // API REST para App da Gestante (Mobile)
   app.use('/api/gestante', gestanteApiRouter);
+  
+  // API de Callback para integração bidirecional com sistema administrativo
+  app.use('/api/integration/callback', integrationCallbackRouter);
   
   // Endpoint para processamento automático de lembretes (chamado por cron/scheduler)
   app.get('/api/cron/processar-lembretes', async (req, res) => {
