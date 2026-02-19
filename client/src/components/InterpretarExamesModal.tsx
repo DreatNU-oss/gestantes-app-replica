@@ -55,8 +55,15 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
   const [modoAutomatico, setModoAutomatico] = useState(true); // Novo: modo automático por padrão
   const [relatorioExtracao, setRelatorioExtracao] = useState<{
     examesEncontrados: { nome: string; valor: string; dataColeta?: string; trimestre?: number }[];
-    examesNaoEncontrados: string[];
-    estatisticas: { totalEsperado: number; totalEncontrado: number; taxaSucesso: number };
+    examesNaoPresentes?: string[]; // Novo: exames não presentes no PDF
+    examesNaoEncontrados?: string[]; // Legado: manter compatibilidade
+    estatisticas: { 
+      totalEncontradosNoPDF?: number;
+      totalCadastrados?: number;
+      totalEsperado: number; 
+      totalEncontrado: number; 
+      taxaSucesso: number 
+    };
     avisos: string[];
   } | null>(null);
   const [mostrarDetalhesRelatorio, setMostrarDetalhesRelatorio] = useState(false);
@@ -842,39 +849,54 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
           )}
 
           {/* Relatório de Extração */}
-          {relatorioExtracao && !isProcessing && (
+          {relatorioExtracao && !isProcessing && (() => {
+            // Usar novos campos se disponíveis, senão fallback para legados
+            const totalNoPDF = relatorioExtracao.estatisticas.totalEncontradosNoPDF ?? relatorioExtracao.estatisticas.totalEncontrado;
+            const totalCadastrados = relatorioExtracao.estatisticas.totalCadastrados ?? relatorioExtracao.estatisticas.totalEncontrado;
+            const todosCadastrados = totalCadastrados === totalNoPDF;
+            const examesNaoPresentes = relatorioExtracao.examesNaoPresentes ?? relatorioExtracao.examesNaoEncontrados ?? [];
+            
+            return (
             <div className="space-y-3">
-              {/* Estatísticas */}
+              {/* Estatísticas - baseadas no que foi encontrado no PDF */}
               <div className={`rounded-md p-3 border ${
-                relatorioExtracao.estatisticas.taxaSucesso >= 80 
+                todosCadastrados 
                   ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
-                  : relatorioExtracao.estatisticas.taxaSucesso >= 50 
+                  : totalNoPDF > 0
                     ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'
                     : 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
               }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {relatorioExtracao.estatisticas.taxaSucesso >= 80 ? (
+                    {todosCadastrados ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
-                    ) : relatorioExtracao.estatisticas.taxaSucesso >= 50 ? (
+                    ) : totalNoPDF > 0 ? (
                       <AlertTriangle className="h-5 w-5 text-yellow-600" />
                     ) : (
                       <AlertTriangle className="h-5 w-5 text-red-600" />
                     )}
                     <span className="font-semibold text-sm">
-                      {relatorioExtracao.estatisticas.totalEncontrado} exames extraídos
+                      {totalNoPDF} {totalNoPDF === 1 ? 'exame encontrado' : 'exames encontrados'} no PDF
                     </span>
                   </div>
                   <span className={`text-sm font-medium px-2 py-1 rounded ${
-                    relatorioExtracao.estatisticas.taxaSucesso >= 80 
+                    todosCadastrados 
                       ? 'bg-green-100 text-green-800' 
-                      : relatorioExtracao.estatisticas.taxaSucesso >= 50 
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
+                      : 'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {relatorioExtracao.estatisticas.taxaSucesso}% de sucesso
+                    {totalCadastrados}/{totalNoPDF} cadastrados
                   </span>
                 </div>
+                {todosCadastrados && totalNoPDF > 0 && (
+                  <p className="text-xs text-green-700 mt-1">
+                    Todos os exames presentes no PDF foram cadastrados com sucesso.
+                  </p>
+                )}
+                {!todosCadastrados && totalNoPDF > 0 && (
+                  <p className="text-xs text-yellow-700 mt-1">
+                    {totalNoPDF - totalCadastrados} {totalNoPDF - totalCadastrados === 1 ? 'exame não pôde ser cadastrado' : 'exames não puderam ser cadastrados'} (valor vazio ou inválido).
+                  </p>
+                )}
               </div>
 
               {/* Avisos */}
@@ -894,7 +916,7 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               )}
 
               {/* Botão para expandir/colapsar detalhes */}
-              {(relatorioExtracao.examesEncontrados.length > 0 || relatorioExtracao.examesNaoEncontrados.length > 0) && (
+              {(relatorioExtracao.examesEncontrados.length > 0 || examesNaoPresentes.length > 0) && (
                 <button
                   type="button"
                   onClick={() => setMostrarDetalhesRelatorio(!mostrarDetalhesRelatorio)}
@@ -912,12 +934,12 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
               {/* Detalhes expandidos */}
               {mostrarDetalhesRelatorio && (
                 <div className="space-y-3 border rounded-md p-3 bg-muted/30">
-                  {/* Exames encontrados */}
+                  {/* Exames encontrados e cadastrados */}
                   {relatorioExtracao.examesEncontrados.length > 0 && (
                     <div>
                       <h4 className="text-xs font-semibold text-green-700 mb-2 flex items-center gap-1">
                         <CheckCircle className="h-3 w-3" />
-                        Exames extraídos ({relatorioExtracao.examesEncontrados.length})
+                        Exames encontrados no PDF e cadastrados ({relatorioExtracao.examesEncontrados.length})
                       </h4>
                       <div className="max-h-32 overflow-y-auto space-y-1">
                         {relatorioExtracao.examesEncontrados.map((exame, index) => (
@@ -932,17 +954,17 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                     </div>
                   )}
 
-                  {/* Exames não encontrados */}
-                  {relatorioExtracao.examesNaoEncontrados.length > 0 && (
+                  {/* Exames não presentes no PDF (informativo) */}
+                  {examesNaoPresentes.length > 0 && (
                     <div>
-                      <h4 className="text-xs font-semibold text-amber-700 mb-2 flex items-center gap-1">
-                        <AlertTriangle className="h-3 w-3" />
-                        Exames não encontrados ({relatorioExtracao.examesNaoEncontrados.length})
+                      <h4 className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
+                        <Info className="h-3 w-3" />
+                        Exames não presentes no PDF ({examesNaoPresentes.length})
                       </h4>
                       <div className="max-h-32 overflow-y-auto">
                         <div className="flex flex-wrap gap-1">
-                          {relatorioExtracao.examesNaoEncontrados.map((exame, index) => (
-                            <span key={index} className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
+                          {examesNaoPresentes.map((exame, index) => (
+                            <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
                               {exame}
                             </span>
                           ))}
@@ -953,7 +975,8 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                 </div>
               )}
             </div>
-          )}
+          );
+          })()}
         </div>
 
         <DialogFooter className="flex-shrink-0 pt-2 border-t">

@@ -26,8 +26,11 @@ export interface RelatorioExtracao {
     dataColeta?: string;
     trimestre?: number;
   }[];
-  examesNaoEncontrados: string[];
+  examesNaoPresentes: string[]; // Exames do formulário que não estavam no PDF (não solicitados)
   estatisticas: {
+    totalEncontradosNoPDF: number; // Quantos exames a IA encontrou no PDF
+    totalCadastrados: number; // Quantos foram efetivamente cadastrados
+    // Campos legados mantidos para compatibilidade
     totalEsperado: number;
     totalEncontrado: number;
     taxaSucesso: number; // Percentual de 0 a 100
@@ -555,6 +558,7 @@ function gerarRelatorioExtracao(
   // Processar exames extraídos
   const examesEncontrados: RelatorioExtracao['examesEncontrados'] = [];
   const nomesEncontrados = new Set<string>();
+  let examesComValorVazio = 0;
   
   for (const exame of examesExtraidos) {
     const nomeNormalizado = normalizarNome(exame.nomeExame);
@@ -581,12 +585,13 @@ function gerarRelatorioExtracao(
     
     // Verificar se o valor está vazio ou suspeito
     if (!exame.valor || exame.valor.trim() === '') {
+      examesComValorVazio++;
       avisos.push(`O exame "${exame.nomeExame}" foi encontrado mas não possui valor.`);
     }
   }
   
-  // Identificar exames não encontrados
-  const examesNaoEncontrados: string[] = [];
+  // Identificar exames do formulário que não estavam no PDF (informativos, não são erro)
+  const examesNaoPresentes: string[] = [];
   
   for (const exameEsperado of examesEsperados) {
     const nomeNormalizado = normalizarNome(exameEsperado);
@@ -600,32 +605,34 @@ function gerarRelatorioExtracao(
     }
     
     if (!encontrado) {
-      examesNaoEncontrados.push(exameEsperado);
+      examesNaoPresentes.push(exameEsperado);
     }
   }
   
-  // Calcular estatísticas
+  // Calcular estatísticas baseadas no que foi encontrado no PDF
+  const totalEncontradosNoPDF = examesEncontrados.length;
+  const totalCadastrados = totalEncontradosNoPDF - examesComValorVazio; // Exames com valor válido
+  
+  // Taxa de sucesso: % de exames encontrados no PDF que foram cadastrados com sucesso
+  const taxaSucesso = totalEncontradosNoPDF > 0 
+    ? Math.round((totalCadastrados / totalEncontradosNoPDF) * 100) 
+    : 0;
+  
+  // Campos legados para compatibilidade
   const totalEsperado = examesEsperados.length;
   const totalEncontrado = examesEncontrados.length;
-  const taxaSucesso = totalEsperado > 0 ? Math.round((totalEncontrado / totalEsperado) * 100) : 0;
   
   // Adicionar avisos baseados nas estatísticas
-  if (totalEncontrado === 0) {
+  if (totalEncontradosNoPDF === 0) {
     avisos.push('Nenhum exame foi encontrado no documento. Verifique se o arquivo está legível e contém resultados de exames laboratoriais.');
-  } else if (taxaSucesso < 50) {
-    avisos.push(`Apenas ${taxaSucesso}% dos exames esperados foram encontrados. O documento pode estar incompleto ou ilegível.`);
-  }
-  
-  if (examesNaoEncontrados.length > 0 && examesNaoEncontrados.length <= 5) {
-    avisos.push(`Os seguintes exames não foram encontrados: ${examesNaoEncontrados.join(', ')}.`);
-  } else if (examesNaoEncontrados.length > 5) {
-    avisos.push(`${examesNaoEncontrados.length} exames não foram encontrados no documento.`);
   }
   
   return {
     examesEncontrados,
-    examesNaoEncontrados,
+    examesNaoPresentes,
     estatisticas: {
+      totalEncontradosNoPDF,
+      totalCadastrados,
       totalEsperado,
       totalEncontrado,
       taxaSucesso

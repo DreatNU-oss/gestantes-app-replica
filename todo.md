@@ -1315,3 +1315,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigar código de interpretação da IA (prompt e mapeamento)
 - [x] Identificar causa raiz e corrigir — Dupla correção: prompt da IA + fallback numérico no frontend
 - [x] Testar a correção — Testes existentes passando, servidor reiniciado
+
+## Melhorar relatório de extração da IA (19/02/2026)
+- [x] Analisar lógica atual do relatório de extração (servidor e frontend)
+- [x] Alterar para mostrar: exames encontrados no PDF vs exames cadastrados com sucesso
+- [x] Remover comparação com campos em branco do formulário
+- [x] Testar e verificar — 7 testes passando
