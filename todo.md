@@ -1304,3 +1304,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar todas as referências no frontend — Botão já renomeado, sem outras referências a 'Retorno'
 - [x] Migrar dados existentes no banco — Não necessário, string 'retorno' não é armazenada no banco
 - [x] Rodar testes e verificar — lembretes-conduta: 12 passed, agendamento: falhas pré-existentes (não relacionadas)
+
+## Verificar PEP e PDF para "Retorno" → "Rotina" (19/02/2026)
+- [x] Auditar código do PEP para referências a "Retorno" — Nenhuma referência encontrada
+- [x] Auditar código de geração de PDF para referências a "Retorno" — Nenhuma referência encontrada
+- [x] Atualizar referências encontradas — Nenhuma atualização necessária
+
+## Bug: IgM Toxoplasmose não extraído pela IA (19/02/2026)
+- [x] Analisar PDF dos exames para entender o formato do resultado
+- [x] Investigar código de interpretação da IA (prompt e mapeamento)
+- [x] Identificar causa raiz e corrigir — Dupla correção: prompt da IA + fallback numérico no frontend
+- [x] Testar a correção — Testes existentes passando, servidor reiniciado

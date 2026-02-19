@@ -133,6 +133,13 @@ export async function interpretarExamesComIA(
    - Para sorologias: se houver "Leitura: 0.35" ou "Índice: 0.15", extraia esse valor
    - Para exames de contagem: extraia o valor com unidade (ex: "12.5 g/dL", "191.000 /mm³")
    - Para resultados qualitativos: use "Reagente", "Não Reagente", "Positivo", "Negativo"
+   
+   **REGRA CRÍTICA PARA SOROLOGIAS (IgG, IgM, VDRL, HIV, Hepatites, Anti-HBs, Coombs):**
+   - O valor DEVE SEMPRE conter a interpretação qualitativa (Reagente/Não Reagente/Indeterminado)
+   - Se houver valor numérico, inclua-o JUNTO com a interpretação: "0.08 (Não Reagente)"
+   - NUNCA retorne apenas o valor numérico sem a interpretação qualitativa
+   - Compare o valor numérico com os valores de referência do laudo para determinar a interpretação
+   - Exemplo correto: "0.08 (Não Reagente)" - Exemplo ERRADO: "0.08" ou "0,08"
 
 4. **UROCULTURA - ATENÇÃO ESPECIAL:**
    - Se encontrar "Urocultura" ou "Cultura de Urina":

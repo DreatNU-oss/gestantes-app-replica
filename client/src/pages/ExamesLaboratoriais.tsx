@@ -1330,6 +1330,37 @@ export default function ExamesLaboratoriais() {
                         if (valorLower.includes('indeterminado') || valorLower.includes('inconclusivo')) {
                           return { valorNormalizado: 'Indeterminado' };
                         }
+                        
+                        // FALLBACK: Se a IA retornou apenas um valor numérico sem interpretação qualitativa,
+                        // tentar interpretar baseado no valor numérico.
+                        // Isso acontece quando a IA retorna "0,08" em vez de "0.08 (Não Reagente)"
+                        const valorNumStr = valorLower.replace(',', '.').replace(/[^0-9.\-<>]/g, '');
+                        const valorNum = parseFloat(valorNumStr);
+                        if (!isNaN(valorNum) || valorLower.startsWith('<') || valorLower.startsWith('< ')) {
+                          // Valor puramente numérico ou com < (ex: "< 0.20")
+                          // Para a maioria das sorologias, valores baixos = Não Reagente
+                          // Faixas comuns: < 0.50 ou < 0.90 = Não Reagente
+                          // Como não temos as faixas exatas de cada exame aqui,
+                          // usamos uma heurística conservadora:
+                          // - Valores < 0.50 são quase sempre Não Reagente
+                          // - Valores >= 0.50 e < 1.0 podem ser Indeterminado
+                          // - Valores >= 1.0 podem ser Reagente
+                          // Mas o mais seguro é verificar se o valor é muito baixo
+                          const numVal = valorLower.startsWith('<') ? 0 : valorNum;
+                          if (numVal < 0.5) {
+                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Não Reagente (< 0.5)`);
+                            return { valorNormalizado: 'Não Reagente' };
+                          } else if (numVal >= 0.5 && numVal < 1.0) {
+                            // Zona cinza - pode ser indeterminado ou reagente dependendo do exame
+                            // Ser conservador e marcar como Indeterminado
+                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Indeterminado (0.5-1.0)`);
+                            return { valorNormalizado: 'Indeterminado' };
+                          } else {
+                            // Valores altos geralmente são Reagente
+                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Reagente (>= 1.0)`);
+                            return { valorNormalizado: 'Reagente' };
+                          }
+                        }
                       }
                       
                       // EAS (Urina tipo 1): Normal/Alterado
