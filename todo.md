@@ -1321,3 +1321,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Alterar para mostrar: exames encontrados no PDF vs exames cadastrados com sucesso
 - [x] Remover comparação com campos em branco do formulário
 - [x] Testar e verificar — 7 testes passando
+
+## Alerta visual para exames alterados na extração da IA (19/02/2026)
+- [x] Analisar valoresReferencia.ts e mapeamentoExames.ts para entender faixas de referência
+- [x] Implementar validação no frontend usando validarResultado + MAPEAMENTO_EXAMES existentes
+- [x] Adicionar seção de alertas visuais no relatório (crítico/anormal/atenção com cores distintas)
+- [x] Implementar alerta visual no frontend (InterpretarExamesModal.tsx) com ShieldAlert icon
+- [x] Destacar exames alterados na lista de detalhes com cores e emojis
+- [x] Escrever testes vitest para a detecção de valores alterados — 26 testes passando

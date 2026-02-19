@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
+import { Upload, FileText, Image, Loader2, X, CheckCircle, Minimize2, AlertTriangle, Info, ChevronDown, ChevronUp, Lock, Unlock, ShieldAlert } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { compressImage, formatFileSize, calculateReduction } from "@/lib/imageCompression";
+import { validarResultado, type TipoAlerta } from "@/data/valoresReferencia";
+import { MAPEAMENTO_EXAMES } from "@/data/mapeamentoExames";
 
 interface InterpretarExamesModalProps {
   open: boolean;
@@ -856,6 +858,27 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
             const todosCadastrados = totalCadastrados === totalNoPDF;
             const examesNaoPresentes = relatorioExtracao.examesNaoPresentes ?? relatorioExtracao.examesNaoEncontrados ?? [];
             
+            // Validar cada exame encontrado contra os valores de referência
+            const trimestreNum = (trimestre === "primeiro" ? 1 : trimestre === "segundo" ? 2 : 3) as 1 | 2 | 3;
+            const examesComAlerta = relatorioExtracao.examesEncontrados.map(exame => {
+              // Resolver o nome do exame para a chave de validação
+              // Tratar subcampos do TTGO: "TTGO 75g (Curva Glicêmica) - Jejum" → "TTGO 75g (Curva Glicêmica)-Jejum"
+              const nomeParaMapeamento = exame.nome.replace(' - ', '-');
+              const idValidacao = MAPEAMENTO_EXAMES[nomeParaMapeamento] || MAPEAMENTO_EXAMES[exame.nome] || null;
+              
+              let alerta: { tipo: TipoAlerta; mensagem?: string } = { tipo: 'normal' };
+              if (idValidacao && exame.valor && exame.valor.trim() !== '') {
+                const tri = (exame.trimestre || trimestreNum) as 1 | 2 | 3;
+                alerta = validarResultado(idValidacao, exame.valor, tri);
+              }
+              return { ...exame, alerta };
+            });
+            
+            const examesAlterados = examesComAlerta.filter(e => e.alerta.tipo !== 'normal');
+            const examesCriticos = examesComAlerta.filter(e => e.alerta.tipo === 'critico');
+            const examesAnormais = examesComAlerta.filter(e => e.alerta.tipo === 'anormal');
+            const examesAtencao = examesComAlerta.filter(e => e.alerta.tipo === 'atencao');
+            
             return (
             <div className="space-y-3">
               {/* Estatísticas - baseadas no que foi encontrado no PDF */}
@@ -899,6 +922,85 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                 )}
               </div>
 
+              {/* Alerta de Exames Alterados */}
+              {examesAlterados.length > 0 && (
+                <div className={`rounded-md p-3 border ${
+                  examesCriticos.length > 0
+                    ? 'bg-red-50 border-red-300 dark:bg-red-950 dark:border-red-700'
+                    : 'bg-amber-50 border-amber-300 dark:bg-amber-950 dark:border-amber-700'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <ShieldAlert className={`h-5 w-5 ${
+                      examesCriticos.length > 0 ? 'text-red-600' : 'text-amber-600'
+                    }`} />
+                    <span className={`font-semibold text-sm ${
+                      examesCriticos.length > 0 ? 'text-red-800 dark:text-red-200' : 'text-amber-800 dark:text-amber-200'
+                    }`}>
+                      {examesAlterados.length} {examesAlterados.length === 1 ? 'exame com resultado alterado' : 'exames com resultados alterados'}
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {examesAlterados.map((exame, index) => (
+                      <div key={index} className={`flex items-start gap-2 rounded px-2 py-1.5 ${
+                        exame.alerta.tipo === 'critico'
+                          ? 'bg-red-100 dark:bg-red-900/50'
+                          : exame.alerta.tipo === 'anormal'
+                            ? 'bg-orange-100 dark:bg-orange-900/50'
+                            : 'bg-yellow-100 dark:bg-yellow-900/50'
+                      }`}>
+                        <span className={`text-xs font-bold mt-0.5 flex-shrink-0 ${
+                          exame.alerta.tipo === 'critico'
+                            ? 'text-red-700 dark:text-red-300'
+                            : exame.alerta.tipo === 'anormal'
+                              ? 'text-orange-700 dark:text-orange-300'
+                              : 'text-yellow-700 dark:text-yellow-300'
+                        }`}>
+                          {exame.alerta.tipo === 'critico' ? '🚨' : '⚠️'}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-semibold ${
+                              exame.alerta.tipo === 'critico'
+                                ? 'text-red-800 dark:text-red-200'
+                                : exame.alerta.tipo === 'anormal'
+                                  ? 'text-orange-800 dark:text-orange-200'
+                                  : 'text-yellow-800 dark:text-yellow-200'
+                            }`}>
+                              {exame.nome}
+                            </span>
+                            <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                              exame.alerta.tipo === 'critico'
+                                ? 'bg-red-200 text-red-900 dark:bg-red-800 dark:text-red-100'
+                                : exame.alerta.tipo === 'anormal'
+                                  ? 'bg-orange-200 text-orange-900 dark:bg-orange-800 dark:text-orange-100'
+                                  : 'bg-yellow-200 text-yellow-900 dark:bg-yellow-800 dark:text-yellow-100'
+                            }`}>
+                              {exame.valor}
+                            </span>
+                          </div>
+                          {exame.alerta.mensagem && (
+                            <p className={`text-xs mt-0.5 ${
+                              exame.alerta.tipo === 'critico'
+                                ? 'text-red-700 dark:text-red-300'
+                                : exame.alerta.tipo === 'anormal'
+                                  ? 'text-orange-700 dark:text-orange-300'
+                                  : 'text-yellow-700 dark:text-yellow-300'
+                            }`}>
+                              {exame.alerta.mensagem}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {examesCriticos.length > 0 && (
+                    <p className="text-xs font-medium text-red-700 dark:text-red-300 mt-2 border-t border-red-200 dark:border-red-700 pt-2">
+                      Atenção: {examesCriticos.length} {examesCriticos.length === 1 ? 'resultado crítico requer' : 'resultados críticos requerem'} avaliação imediata.
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Avisos */}
               {relatorioExtracao.avisos.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 dark:bg-amber-950 dark:border-amber-800 rounded-md p-3">
@@ -941,15 +1043,39 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
                         <CheckCircle className="h-3 w-3" />
                         Exames encontrados no PDF e cadastrados ({relatorioExtracao.examesEncontrados.length})
                       </h4>
-                      <div className="max-h-32 overflow-y-auto space-y-1">
-                        {relatorioExtracao.examesEncontrados.map((exame, index) => (
-                          <div key={index} className="text-xs flex justify-between items-center py-1 border-b border-muted last:border-0">
-                            <span className="text-muted-foreground">{exame.nome}</span>
-                            <span className="font-medium text-foreground truncate max-w-[150px]" title={exame.valor}>
-                              {exame.valor}
-                            </span>
-                          </div>
-                        ))}
+                      <div className="max-h-40 overflow-y-auto space-y-1">
+                        {examesComAlerta.map((exame, index) => {
+                          const isAlterado = exame.alerta.tipo !== 'normal';
+                          return (
+                            <div key={index} className={`text-xs flex justify-between items-center py-1 px-1.5 rounded border-b border-muted last:border-0 ${
+                              exame.alerta.tipo === 'critico'
+                                ? 'bg-red-50 dark:bg-red-950/50'
+                                : exame.alerta.tipo === 'anormal'
+                                  ? 'bg-orange-50 dark:bg-orange-950/50'
+                                  : exame.alerta.tipo === 'atencao'
+                                    ? 'bg-yellow-50 dark:bg-yellow-950/50'
+                                    : ''
+                            }`}>
+                              <span className={isAlterado ? 'font-medium text-foreground' : 'text-muted-foreground'}>
+                                {isAlterado && (
+                                  <span className="mr-1">{exame.alerta.tipo === 'critico' ? '🚨' : '⚠️'}</span>
+                                )}
+                                {exame.nome}
+                              </span>
+                              <span className={`font-medium truncate max-w-[150px] ${
+                                exame.alerta.tipo === 'critico'
+                                  ? 'text-red-700 dark:text-red-300'
+                                  : exame.alerta.tipo === 'anormal'
+                                    ? 'text-orange-700 dark:text-orange-300'
+                                    : exame.alerta.tipo === 'atencao'
+                                      ? 'text-yellow-700 dark:text-yellow-300'
+                                      : 'text-foreground'
+                              }`} title={exame.valor}>
+                                {exame.valor}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
