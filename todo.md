@@ -1293,3 +1293,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Re-sincronizar a cesárea com o sistema administrativo após atualização
 - [x] Escrever testes vitest para o endpoint de callback (17 testes passando)
 - [x] Gerar prompt para o APP Admin configurar o envio de callbacks
+
+## Edição Visual (18/02/2026)
+- [x] Renomear botão "Retorno" para "Rotina" no ConsultaUnificadaDialog

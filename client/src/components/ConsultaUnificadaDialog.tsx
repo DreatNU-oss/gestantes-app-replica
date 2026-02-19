@@ -459,7 +459,7 @@ export default function ConsultaUnificadaDialog({
             </Button>
             <Button onClick={() => onConfirm(false)} className="bg-emerald-600 hover:bg-emerald-700 text-xs sm:text-sm px-2">
               <Stethoscope className="h-4 w-4 mr-1 shrink-0" />
-              Retorno
+              Rotina
             </Button>
             <Button onClick={() => onConfirm(false, true)} className="bg-red-600 hover:bg-red-700 text-xs sm:text-sm px-2">
               <AlertTriangle className="h-4 w-4 mr-1 shrink-0" />
