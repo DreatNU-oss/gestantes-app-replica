@@ -95,7 +95,7 @@ describe('Agendamento de Consultas', () => {
     expect(diffDias).toBeLessThanOrEqual(10);
   });
 
-  it('NÃO deve incluir a primeira consulta no retorno (usuário já agendou)', () => {
+  it('NÃO deve incluir a primeira consulta na rotina (usuário já agendou)', () => {
     const dum = new Date('2025-06-01');
     const primeiraConsulta = new Date('2025-12-15');
     

@@ -1296,3 +1296,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Edição Visual (18/02/2026)
 - [x] Renomear botão "Retorno" para "Rotina" no ConsultaUnificadaDialog
+
+## Renomear tipo de consulta "Retorno" para "Rotina" (18/02/2026)
+- [x] Verificar schema do banco (enum/campo de tipo de consulta) — NÃO há campo enum, usa flags isPrimeiraConsulta/isUrgencia
+- [x] Atualizar schema drizzle se necessário — Não necessário, não há campo de tipo de consulta
+- [x] Atualizar todas as referências no servidor (comentários: retorno → rotina)
+- [x] Atualizar todas as referências no frontend — Botão já renomeado, sem outras referências a 'Retorno'
+- [x] Migrar dados existentes no banco — Não necessário, string 'retorno' não é armazenada no banco
+- [x] Rodar testes e verificar — lembretes-conduta: 12 passed, agendamento: falhas pré-existentes (não relacionadas)

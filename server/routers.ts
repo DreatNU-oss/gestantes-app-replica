@@ -902,7 +902,7 @@ export const appRouter = router({
         if (result && (result as any).insertId) {
           const consultaId = (result as any).insertId;
           
-          // Condutas da consulta de retorno (array JSON)
+          // Condutas da consulta de rotina (array JSON)
           if (input.conduta) {
             try {
               const condutas = JSON.parse(input.conduta);

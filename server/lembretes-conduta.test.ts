@@ -59,7 +59,7 @@ function filtrarCondutasWizardComLembrete(checkboxes: Record<string, boolean>): 
 }
 
 describe("Sistema de Lembretes de Conduta", () => {
-  describe("Filtragem de condutas que geram lembrete (consulta de retorno)", () => {
+  describe("Filtragem de condutas que geram lembrete (consulta de rotina)", () => {
     it("deve gerar lembretes para condutas 1-10 e 20", () => {
       const condutas = [
         "Rotina Laboratorial 1º Trimestre",
