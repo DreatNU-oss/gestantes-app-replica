@@ -1329,3 +1329,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar alerta visual no frontend (InterpretarExamesModal.tsx) com ShieldAlert icon
 - [x] Destacar exames alterados na lista de detalhes com cores e emojis
 - [x] Escrever testes vitest para a detecção de valores alterados — 26 testes passando
+
+## Registrar Abortamento ao Excluir Gestante (20/02/2026)
+- [x] Analisar fluxo atual de exclusão e estrutura do banco
+- [x] Criar tabela `abortamentos` no schema (gestanteId, data, IG, tipo, observações)
+- [x] Criar funções de registro, listagem e estatísticas no servidor (abortamentos.ts)
+- [x] Substituir `confirm()` por diálogo com opções Excluir/Abortamento
+- [x] Adicionar campos de data, tipo, IG e observações no diálogo de abortamento
+- [x] Criar componente GraficoAbortamentos para a página de Estatísticas
+- [x] Adicionar gráficos por tipo, por IG e evolução mensal
+- [x] Escrever testes vitest — 8 testes passando

@@ -4,6 +4,7 @@ import { GraficoMorfologicos } from "@/components/GraficoMorfologicos";
 import { GraficoTiposPartosDesejados } from "@/components/GraficoTiposPartosDesejados";
 import { GraficoConvenios } from "@/components/GraficoConvenios";
 import { GraficoMotivosCesarea } from "@/components/GraficoMotivosCesarea";
+import { GraficoAbortamentos } from "@/components/GraficoAbortamentos";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -44,6 +45,7 @@ export default function Estatisticas() {
             <GraficoTiposPartosDesejados />
             <GraficoMotivosCesarea />
             <GraficoConvenios />
+            <GraficoAbortamentos />
           </>
         )}
       </div>

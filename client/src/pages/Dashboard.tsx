@@ -32,8 +32,10 @@ import {
   TestTube,
   MonitorDot,
   X,
-  User
+  User,
+  AlertTriangle
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -252,9 +254,77 @@ export default function Dashboard() {
     setEditingId(null);
   };
 
+  // Estados para diálogo de exclusão/abortamento
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteGestanteId, setDeleteGestanteId] = useState<number | null>(null);
+  const [deleteGestanteNome, setDeleteGestanteNome] = useState<string>("");
+  const [deleteGestanteIG, setDeleteGestanteIG] = useState<{semanas?: number; dias?: number} | null>(null);
+  const [isAbortamento, setIsAbortamento] = useState(false);
+  const [abortamentoData, setAbortamentoData] = useState<string>("");
+  const [abortamentoTipo, setAbortamentoTipo] = useState<string>("espontaneo");
+  const [abortamentoIGSemanas, setAbortamentoIGSemanas] = useState<string>("");
+  const [abortamentoIGDias, setAbortamentoIGDias] = useState<string>("");
+  const [abortamentoObs, setAbortamentoObs] = useState<string>("");
+
+  const registrarAbortamentoMutation = trpc.abortamentos.registrar.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Abortamento registrado para ${data.nomeGestante}`);
+      setShowDeleteDialog(false);
+      resetDeleteDialog();
+      utils.gestantes.list.invalidate();
+      utils.gestantes.semConsultaRecente.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao registrar abortamento: " + error.message);
+    },
+  });
+
+  const resetDeleteDialog = () => {
+    setDeleteGestanteId(null);
+    setDeleteGestanteNome("");
+    setDeleteGestanteIG(null);
+    setIsAbortamento(false);
+    setAbortamentoData("");
+    setAbortamentoTipo("espontaneo");
+    setAbortamentoIGSemanas("");
+    setAbortamentoIGDias("");
+    setAbortamentoObs("");
+  };
+
   const handleDelete = (id: number) => {
-    if (confirm("Tem certeza que deseja remover esta gestante?")) {
-      deleteMutation.mutate({ id });
+    const gestante = gestantes?.find(g => g.id === id);
+    setDeleteGestanteId(id);
+    setDeleteGestanteNome(gestante?.nome || "");
+    setAbortamentoData(new Date().toISOString().split('T')[0]);
+    // Pré-preencher IG se disponível (usar igDUM ou igUS)
+    const ig = gestante?.calculado?.igDUM || gestante?.calculado?.igUS;
+    if (ig) {
+      setAbortamentoIGSemanas(String(ig.semanas));
+      setAbortamentoIGDias(String(ig.dias || 0));
+      setDeleteGestanteIG({ semanas: ig.semanas, dias: ig.dias });
+    }
+    setShowDeleteDialog(true);
+  };
+
+  const handleConfirmarDelete = () => {
+    if (!deleteGestanteId) return;
+    if (isAbortamento) {
+      if (!abortamentoData) {
+        toast.error("Informe a data do abortamento");
+        return;
+      }
+      registrarAbortamentoMutation.mutate({
+        gestanteId: deleteGestanteId,
+        dataAbortamento: abortamentoData,
+        igSemanas: abortamentoIGSemanas ? parseInt(abortamentoIGSemanas) : undefined,
+        igDias: abortamentoIGDias ? parseInt(abortamentoIGDias) : undefined,
+        tipoAbortamento: abortamentoTipo as any,
+        observacoes: abortamentoObs || undefined,
+      });
+    } else {
+      deleteMutation.mutate({ id: deleteGestanteId });
+      setShowDeleteDialog(false);
+      resetDeleteDialog();
     }
   };
 
@@ -705,6 +775,149 @@ export default function Dashboard() {
           }}
         />
       )}
+
+      {/* Diálogo de Exclusão / Abortamento */}
+      <Dialog open={showDeleteDialog} onOpenChange={(open) => { if (!open) { setShowDeleteDialog(false); resetDeleteDialog(); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              Remover Gestante
+            </DialogTitle>
+            <DialogDescription>
+              {deleteGestanteNome && (
+                <span>Escolha como deseja remover <strong>{deleteGestanteNome}</strong> do sistema.</span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Opções: Excluir ou Abortamento */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Motivo da remoção</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant={!isAbortamento ? "default" : "outline"}
+                  onClick={() => setIsAbortamento(false)}
+                  className="w-full"
+                  size="sm"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Excluir
+                </Button>
+                <Button
+                  variant={isAbortamento ? "default" : "outline"}
+                  onClick={() => setIsAbortamento(true)}
+                  className={`w-full ${isAbortamento ? 'bg-amber-600 hover:bg-amber-700' : ''}`}
+                  size="sm"
+                >
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  Abortamento
+                </Button>
+              </div>
+            </div>
+
+            {!isAbortamento && (
+              <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                A gestante será removida permanentemente do sistema. Esta ação não pode ser desfeita.
+              </p>
+            )}
+
+            {isAbortamento && (
+              <div className="space-y-3 border rounded-md p-3 bg-amber-50 dark:bg-amber-950/20">
+                <p className="text-sm text-muted-foreground">
+                  O abortamento será registrado nas estatísticas e a gestante será removida da lista ativa.
+                </p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="abortamentoData">Data do Abortamento *</Label>
+                  <Input
+                    id="abortamentoData"
+                    type="date"
+                    value={abortamentoData}
+                    onChange={(e) => setAbortamentoData(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="abortamentoTipo">Tipo</Label>
+                  <Select value={abortamentoTipo} onValueChange={setAbortamentoTipo}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="espontaneo">Espontâneo</SelectItem>
+                      <SelectItem value="retido">Retido</SelectItem>
+                      <SelectItem value="incompleto">Incompleto</SelectItem>
+                      <SelectItem value="inevitavel">Inevitável</SelectItem>
+                      <SelectItem value="outro">Outro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Idade Gestacional</Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="number"
+                      placeholder="Sem."
+                      value={abortamentoIGSemanas}
+                      onChange={(e) => setAbortamentoIGSemanas(e.target.value)}
+                      className="w-20"
+                      min={0}
+                      max={42}
+                    />
+                    <span className="text-sm text-muted-foreground">sem</span>
+                    <Input
+                      type="number"
+                      placeholder="Dias"
+                      value={abortamentoIGDias}
+                      onChange={(e) => setAbortamentoIGDias(e.target.value)}
+                      className="w-20"
+                      min={0}
+                      max={6}
+                    />
+                    <span className="text-sm text-muted-foreground">dias</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="abortamentoObs">Observações</Label>
+                  <Textarea
+                    id="abortamentoObs"
+                    value={abortamentoObs}
+                    onChange={(e) => setAbortamentoObs(e.target.value)}
+                    placeholder="Observações sobre o abortamento..."
+                    rows={2}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => { setShowDeleteDialog(false); resetDeleteDialog(); }}
+              disabled={registrarAbortamentoMutation.isPending || deleteMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant={isAbortamento ? "default" : "destructive"}
+              onClick={handleConfirmarDelete}
+              disabled={registrarAbortamentoMutation.isPending || deleteMutation.isPending}
+              className={isAbortamento ? 'bg-amber-600 hover:bg-amber-700' : ''}
+            >
+              {(registrarAbortamentoMutation.isPending || deleteMutation.isPending)
+                ? "Processando..."
+                : isAbortamento
+                  ? "Registrar Abortamento"
+                  : "Excluir Permanentemente"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Registro de Parto */}
       <Dialog open={showPartoModal} onOpenChange={setShowPartoModal}>

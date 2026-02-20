@@ -90,6 +90,7 @@ import { storagePut } from './storage';
 import { eq, desc, and, sql, isNotNull } from 'drizzle-orm';
 import { interpretarExamesComIA } from './interpretarExames';
 import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto } from './partosRealizados';
+import { registrarAbortamento, listarAbortamentos, getEstatisticasAbortamentos, deletarAbortamento } from './abortamentos';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin, mapearHospital } from './cesareanSync';
@@ -2579,6 +2580,38 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         return await deletarParto(input.id);
+      }),
+  }),
+
+  // Router de Abortamentos
+  abortamentos: router({
+    registrar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        dataAbortamento: z.string(),
+        igSemanas: z.number().optional(),
+        igDias: z.number().optional(),
+        tipoAbortamento: z.enum(["espontaneo", "retido", "incompleto", "inevitavel", "outro"]).optional(),
+        observacoes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await registrarAbortamento(input);
+      }),
+
+    listar: protectedProcedure
+      .query(async () => {
+        return await listarAbortamentos();
+      }),
+
+    estatisticas: protectedProcedure
+      .query(async () => {
+        return await getEstatisticasAbortamentos();
+      }),
+
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deletarAbortamento(input.id);
       }),
   }),
 

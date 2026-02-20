@@ -532,6 +532,28 @@ export type PartoRealizado = typeof partosRealizados.$inferSelect;
 export type InsertPartoRealizado = typeof partosRealizados.$inferInsert;
 
 /**
+ * Tabela de abortamentos registrados
+ * Registra quando uma gestante teve um abortamento em vez de simplesmente ser excluída do sistema
+ */
+export const abortamentos = mysqlTable("abortamentos", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  dataAbortamento: date("dataAbortamento").notNull(),
+  igSemanas: int("igSemanas"), // Idade gestacional no momento do abortamento
+  igDias: int("igDias"),
+  tipoAbortamento: mysqlEnum("tipoAbortamento", ["espontaneo", "retido", "incompleto", "inevitavel", "outro"]).default("espontaneo"),
+  observacoes: text("observacoes"),
+  nomeGestante: varchar("nomeGestante", { length: 255 }).notNull(), // Preservar nome para estatísticas
+  medicoId: int("medicoId"), // Médico responsável
+  planoSaudeId: int("planoSaudeId"), // Plano de saúde
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Abortamento = typeof abortamentos.$inferSelect;
+export type InsertAbortamento = typeof abortamentos.$inferInsert;
+
+/**
  * Tabela de medicamentos em uso durante a gestação
  */
 export const medicamentosGestacao = mysqlTable("medicamentosGestacao", {

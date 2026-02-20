@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `abortamentos` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `gestanteId` int NOT NULL,\n  `dataAbortamento` date NOT NULL,\n  `igSemanas` int,\n  `igDias` int,\n  `tipoAbortamento` enum('espontaneo','retido','incompleto','inevitavel','outro') DEFAULT 'espontaneo',\n  `observacoes` text,\n  `nomeGestante` varchar(255) NOT NULL,\n  `medicoId` int,\n  `planoSaudeId` int,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  `updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `abortamentos_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute CREATE TABLE IF NOT EXISTS `abortamentos` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `gestanteId` int NOT NULL,\n  `dataAbortamento` date NOT NULL,\n  `igSemanas` int,\n  `igDias` int,\n  `tipoAbortamento` enum('espontaneo','retido','incompleto','inevitavel','outro') DEFAULT 'espontaneo',\n  `observacoes` text,\n  `nomeGestante` varchar(255) NOT NULL,\n  `medicoId` int,\n  `planoSaudeId` int,\n  `createdAt` timestamp NOT NULL DEFAULT (now()),\n  `updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `abortamentos_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 219
+}
