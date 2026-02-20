@@ -17,7 +17,17 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, Baby, Check } from "lucide-react";
+import { ArrowLeft, Calendar, Baby, Check, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
@@ -50,7 +60,15 @@ export default function FormularioGestante({
     show: boolean;
     tipo: 'pre-termo' | 'pos-termo' | null;
     igNaData: { semanas: number; dias: number } | null;
-  }>({ show: false, tipo: null, igNaData: null });
+    acknowledged: boolean;
+  }>({ show: false, tipo: null, igNaData: null, acknowledged: false });
+  
+  // Estado para diálogo de confirmação de data pré-termo/pós-termo/passado
+  const [confirmacaoDataCesarea, setConfirmacaoDataCesarea] = useState<{
+    open: boolean;
+    tipo: 'pre-termo' | 'pos-termo' | 'passado' | null;
+    igNaData: { semanas: number; dias: number } | null;
+  }>({ open: false, tipo: null, igNaData: null });
   
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
@@ -273,23 +291,25 @@ export default function FormularioGestante({
           setAlertaDataCesarea({
             show: true,
             tipo: 'pre-termo',
-            igNaData: { semanas, dias }
+            igNaData: { semanas, dias },
+            acknowledged: false
           });
         } else if (semanas > 41) {
           setAlertaDataCesarea({
             show: true,
             tipo: 'pos-termo',
-            igNaData: { semanas, dias }
+            igNaData: { semanas, dias },
+            acknowledged: false
           });
         } else {
-          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
         }
       } catch (error) {
         console.error('Erro ao validar data de cesárea:', error);
-        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
       }
     } else {
-      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
     }
   }, [formData.dataPartoProgramado, formData.dum, tipoDUM]);
   
@@ -504,6 +524,14 @@ export default function FormularioGestante({
     if (!validateForm()) {
       return;
     }
+    
+    // Bloquear salvamento se houver alerta de data não reconhecido
+    if (alertaDataCesarea.show && !alertaDataCesarea.acknowledged) {
+      toast.error('Alerta de data de cesárea não reconhecido', {
+        description: 'Revise a data de parto programado ou reconheça o alerta antes de salvar.',
+      });
+      return;
+    }
 
     const data: any = {
       nome: formData.nome,
@@ -542,6 +570,7 @@ export default function FormularioGestante({
   };
 
   return (
+    <>
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button 
@@ -1024,6 +1053,23 @@ export default function FormularioGestante({
                     tipoPartoDesejado: novaData ? "cesariana" : formData.tipoPartoDesejado
                   });
                   
+                  // Verificar se a data está no passado
+                  if (novaData) {
+                    const hoje = new Date();
+                    hoje.setHours(0, 0, 0, 0);
+                    const dataSelecionada = new Date(novaData + 'T00:00:00');
+                    if (dataSelecionada < hoje) {
+                      setConfirmacaoDataCesarea({
+                        open: true,
+                        tipo: 'passado',
+                        igNaData: null
+                      });
+                      // Reverter a data
+                      setFormData(prev => ({ ...prev, dataPartoProgramado: '' }));
+                      return;
+                    }
+                  }
+                  
                   // Validar data da cesárea
                   if (novaData) {
                     let dataReferencia: Date | null = null;
@@ -1051,20 +1097,22 @@ export default function FormularioGestante({
                         setAlertaDataCesarea({
                           show: true,
                           tipo: 'pre-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes },
+                          acknowledged: false
                         });
                       } else if (igNaDataDias > 287) {
                         setAlertaDataCesarea({
                           show: true,
                           tipo: 'pos-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes },
+                          acknowledged: false
                         });
                       } else {
-                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
                       }
                     }
                   } else {
-                    setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                    setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
                   }
                 }}
               />
@@ -1077,7 +1125,9 @@ export default function FormularioGestante({
                     : 'bg-red-50 border-red-300 text-red-900'
                 }`}>
                   <div className="flex items-start gap-2">
-                    <span className="text-lg">⚠️</span>
+                    <AlertTriangle className={`h-5 w-5 mt-0.5 flex-shrink-0 ${
+                      alertaDataCesarea.tipo === 'pre-termo' ? 'text-orange-600' : 'text-red-600'
+                    }`} />
                     <div className="flex-1">
                       <p className="font-semibold text-sm">
                         {alertaDataCesarea.tipo === 'pre-termo' 
@@ -1092,6 +1142,25 @@ export default function FormularioGestante({
                           ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
                           : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
                       </p>
+                      {!alertaDataCesarea.acknowledged && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className={`mt-2 ${
+                            alertaDataCesarea.tipo === 'pre-termo' 
+                              ? 'border-orange-400 text-orange-700 hover:bg-orange-100' 
+                              : 'border-red-400 text-red-700 hover:bg-red-100'
+                          }`}
+                          onClick={() => setAlertaDataCesarea(prev => ({ ...prev, acknowledged: true }))}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Estou ciente, prosseguir
+                        </Button>
+                      )}
+                      {alertaDataCesarea.acknowledged && (
+                        <p className="text-xs mt-2 font-medium text-green-700">✓ Alerta reconhecido</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1431,5 +1500,25 @@ export default function FormularioGestante({
         </div>
       )}
     </div>
-  );
+    
+    {/* Diálogo de confirmação para data no passado */}
+    <AlertDialog open={confirmacaoDataCesarea.open} onOpenChange={(open) => {
+      if (!open) setConfirmacaoDataCesarea({ open: false, tipo: null, igNaData: null });
+    }}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-red-600" />
+            Data no passado!
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            A data selecionada já passou. Verifique se o ano está correto antes de prosseguir.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>);
 }

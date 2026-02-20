@@ -40,6 +40,16 @@ import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import MedicamentosManager from "@/components/MedicamentosManager";
 // ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { isAUAbnormal } from "@/lib/auReferenceData";
 import { isBPAbnormal } from "@/lib/bpValidation";
 import jsPDF from "jspdf";
@@ -129,6 +139,14 @@ export default function CartaoPrenatal() {
     tipo: 'pre-termo' | 'pos-termo' | null;
     igNaData: { semanas: number; dias: number } | null;
   }>({ show: false, tipo: null, igNaData: null });
+  
+  // Estado para diálogo de confirmação de data pré-termo/pós-termo
+  const [confirmacaoDataCesarea, setConfirmacaoDataCesarea] = useState<{
+    open: boolean;
+    tipo: 'pre-termo' | 'pos-termo' | 'passado' | null;
+    novaData: string;
+    igNaData: { semanas: number; dias: number } | null;
+  }>({ open: false, tipo: null, novaData: '', igNaData: null });
   
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
@@ -1920,6 +1938,7 @@ export default function CartaoPrenatal() {
   ];
 
   return (
+    <>
     <GestantesLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
@@ -2785,20 +2804,42 @@ export default function CartaoPrenatal() {
                     value={gestante.dataPartoProgramado || ""}
                     onChange={(e) => {
                       const novaData = e.target.value;
-                      updateGestanteMutation.mutate({
-                        id: gestanteSelecionada!,
-                        dataPartoProgramado: novaData,
-                        tipoPartoDesejado: novaData ? "cesariana" : (gestante.tipoPartoDesejado || undefined),
-                      });
                       
-                      if (novaData && gestante) {
+                      // Se a data foi limpa, salvar imediatamente
+                      if (!novaData) {
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          dataPartoProgramado: novaData,
+                        });
+                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                        return;
+                      }
+                      
+                      // Verificar se a data está no passado
+                      const hoje = new Date();
+                      hoje.setHours(0, 0, 0, 0);
+                      const dataSelecionada = new Date(novaData + 'T00:00:00');
+                      if (dataSelecionada < hoje) {
+                        setConfirmacaoDataCesarea({
+                          open: true,
+                          tipo: 'passado',
+                          novaData,
+                          igNaData: null
+                        });
+                        // Resetar o input para o valor anterior
+                        e.target.value = gestante.dataPartoProgramado || '';
+                        return;
+                      }
+                      
+                      // Calcular IG na data
+                      if (gestante) {
                         let dataReferencia: Date | null = null;
                         let igReferenciaDias: number = 0;
                         
                         if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
                           dataReferencia = new Date(gestante.dataUltrassom);
                           igReferenciaDias = gestante.igUltrassomSemanas * 7 + (gestante.igUltrassomDias || 0);
-                        } else if (gestante.dum) {
+                        } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
                           dataReferencia = new Date(gestante.dum);
                           igReferenciaDias = 0;
                         }
@@ -2812,24 +2853,39 @@ export default function CartaoPrenatal() {
                           const igNaDataDiasRestantes = igNaDataDias % 7;
                           
                           if (igNaDataDias < 259) {
-                            setAlertaDataCesarea({
-                              show: true,
+                            // Pré-termo: mostrar diálogo de confirmação ANTES de salvar
+                            setConfirmacaoDataCesarea({
+                              open: true,
                               tipo: 'pre-termo',
+                              novaData,
                               igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                             });
+                            // Resetar o input para o valor anterior
+                            e.target.value = gestante.dataPartoProgramado || '';
+                            return;
                           } else if (igNaDataDias > 287) {
-                            setAlertaDataCesarea({
-                              show: true,
+                            // Pós-termo: mostrar diálogo de confirmação ANTES de salvar
+                            setConfirmacaoDataCesarea({
+                              open: true,
                               tipo: 'pos-termo',
+                              novaData,
                               igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                             });
+                            // Resetar o input para o valor anterior
+                            e.target.value = gestante.dataPartoProgramado || '';
+                            return;
                           } else {
                             setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                           }
                         }
-                      } else {
-                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                       }
+                      
+                      // Data dentro do período normal: salvar imediatamente
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        dataPartoProgramado: novaData,
+                        tipoPartoDesejado: "cesariana",
+                      });
                     }}
                     className="max-w-xs"
                   />
@@ -3335,5 +3391,90 @@ export default function CartaoPrenatal() {
         )}
       </div>
     </GestantesLayout>
-  );
+    {/* Diálogo de confirmação para data de cesárea fora do período recomendado */}
+    <AlertDialog open={confirmacaoDataCesarea.open} onOpenChange={(open) => {
+      if (!open) setConfirmacaoDataCesarea({ open: false, tipo: null, novaData: '', igNaData: null });
+    }}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex items-center gap-2">
+            <AlertTriangle className={`h-5 w-5 ${
+              confirmacaoDataCesarea.tipo === 'passado' ? 'text-red-600' :
+              confirmacaoDataCesarea.tipo === 'pre-termo' ? 'text-orange-600' : 'text-red-600'
+            }`} />
+            {confirmacaoDataCesarea.tipo === 'passado' 
+              ? 'Data no passado!' 
+              : confirmacaoDataCesarea.tipo === 'pre-termo' 
+                ? 'Cesárea pré-termo!' 
+                : 'Cesárea pós-termo!'}
+          </AlertDialogTitle>
+          <AlertDialogDescription asChild>
+            <div className="space-y-3">
+              {confirmacaoDataCesarea.tipo === 'passado' ? (
+                <>
+                  <p className="text-red-700 font-medium">
+                    A data selecionada ({confirmacaoDataCesarea.novaData.split('-').reverse().join('/')}) já passou.
+                  </p>
+                  <p>Verifique se o ano está correto. Deseja realmente agendar para esta data?</p>
+                </>
+              ) : confirmacaoDataCesarea.tipo === 'pre-termo' ? (
+                <>
+                  <p className="text-orange-700 font-medium">
+                    A cesárea está agendada antes de 37 semanas (pré-termo).
+                  </p>
+                  {confirmacaoDataCesarea.igNaData && (
+                    <p>IG estimada na data: <strong>{confirmacaoDataCesarea.igNaData.semanas}s{confirmacaoDataCesarea.igNaData.dias}d</strong></p>
+                  )}
+                  <p>Cesáreas eletivas são recomendadas a partir de 37 semanas completas. Deseja confirmar esta data?</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-red-700 font-medium">
+                    A cesárea está agendada após 41 semanas (pós-termo).
+                  </p>
+                  {confirmacaoDataCesarea.igNaData && (
+                    <p>IG estimada na data: <strong>{confirmacaoDataCesarea.igNaData.semanas}s{confirmacaoDataCesarea.igNaData.dias}d</strong></p>
+                  )}
+                  <p>Gestações após 41 semanas requerem avaliação rigorosa. Deseja confirmar esta data?</p>
+                </>
+              )}
+            </div>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            className={`${
+              confirmacaoDataCesarea.tipo === 'passado' ? 'bg-red-600 hover:bg-red-700' :
+              confirmacaoDataCesarea.tipo === 'pre-termo' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-red-600 hover:bg-red-700'
+            }`}
+            onClick={() => {
+              // Salvar a data após confirmação
+              updateGestanteMutation.mutate({
+                id: gestanteSelecionada!,
+                dataPartoProgramado: confirmacaoDataCesarea.novaData,
+                tipoPartoDesejado: "cesariana",
+              });
+              // Mostrar o alerta persistente
+              if (confirmacaoDataCesarea.tipo !== 'passado' && confirmacaoDataCesarea.igNaData) {
+                setAlertaDataCesarea({
+                  show: true,
+                  tipo: confirmacaoDataCesarea.tipo as 'pre-termo' | 'pos-termo',
+                  igNaData: confirmacaoDataCesarea.igNaData
+                });
+              }
+              setConfirmacaoDataCesarea({ open: false, tipo: null, novaData: '', igNaData: null });
+              toast.warning('Data salva com aviso', {
+                description: confirmacaoDataCesarea.tipo === 'passado' 
+                  ? 'A data está no passado. Verifique se está correta.'
+                  : `Cesárea agendada fora do período recomendado (${confirmacaoDataCesarea.tipo}).`,
+              });
+            }}
+          >
+            Confirmar mesmo assim
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </>);
 }

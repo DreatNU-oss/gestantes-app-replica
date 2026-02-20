@@ -1346,3 +1346,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Identificar causa raiz — Relatório só mostrava último PDF (setRelatorioExtracao sobrescrevia)
 - [x] Corrigir: combinar relatórios de todos os PDFs (exames, estatísticas, avisos)
 - [x] Testar e verificar — Sem erros de TypeScript
+
+## Bug: Aviso de pré-termo some rapidamente no agendamento de cesárea (20/02/2026) — CORRIGIDO
+- [x] Investigar código do aviso de pré-termo no agendamento
+- [x] Corrigir para que o aviso permaneça visível até ser reconhecido pelo médico (botão 'Estou ciente')
+- [x] Bloquear salvamento enquanto alerta não for reconhecido
+- [x] Adicionar validação de data no passado (para pegar erros de ano) — em ambos os formulários
+- [x] Testar e verificar — 18 testes passando
