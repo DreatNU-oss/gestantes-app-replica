@@ -406,6 +406,21 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
     let combinedResultados: Record<string, string> = {};
     let successCount = 0;
     let errorCount = 0;
+    
+    // Acumular relatórios de todos os PDFs para combinar no final
+    let combinedRelatorio: {
+      examesEncontrados: { nome: string; valor: string; dataColeta?: string; trimestre?: number }[];
+      examesNaoPresentes: string[];
+      examesNaoEncontrados?: string[];
+      estatisticas: {
+        totalEncontradosNoPDF?: number;
+        totalCadastrados?: number;
+        totalEsperado: number;
+        totalEncontrado: number;
+        taxaSucesso: number;
+      };
+      avisos: string[];
+    } | null = null;
 
     // Marcar todos como processing
     setFiles(prev => prev.map(f => ({ ...f, status: 'processing' as const })));
@@ -422,15 +437,66 @@ export function InterpretarExamesModal({ open, onOpenChange, onResultados, dumGe
         const { resultados, relatorio } = await processFile(files[i], i);
         // Mesclar resultados (valores posteriores sobrescrevem anteriores)
         combinedResultados = { ...combinedResultados, ...resultados };
-        // Guardar o último relatório de extração
+        
+        // Combinar relatórios de todos os PDFs processados
         if (relatorio) {
-          setRelatorioExtracao(relatorio);
+          if (!combinedRelatorio) {
+            // Primeiro relatório - usar como base
+            combinedRelatorio = { ...relatorio, examesNaoPresentes: relatorio.examesNaoPresentes || [] };
+          } else {
+            // Mesclar com relatório anterior
+            // Adicionar exames encontrados (evitar duplicatas pelo nome)
+            const nomesExistentes = new Set(combinedRelatorio.examesEncontrados.map(e => e.nome));
+            for (const exame of relatorio.examesEncontrados) {
+              if (!nomesExistentes.has(exame.nome)) {
+                combinedRelatorio.examesEncontrados.push(exame);
+                nomesExistentes.add(exame.nome);
+              }
+            }
+            
+            // Atualizar exames não presentes: remover os que foram encontrados no novo PDF
+            const todosEncontrados = new Set(combinedRelatorio.examesEncontrados.map(e => e.nome));
+            combinedRelatorio.examesNaoPresentes = (combinedRelatorio.examesNaoPresentes || []).filter(
+              nome => !todosEncontrados.has(nome)
+            );
+            if (combinedRelatorio.examesNaoEncontrados) {
+              combinedRelatorio.examesNaoEncontrados = combinedRelatorio.examesNaoEncontrados.filter(
+                nome => !todosEncontrados.has(nome)
+              );
+            }
+            
+            // Atualizar estatísticas combinadas
+            const totalNoPDF = combinedRelatorio.examesEncontrados.length;
+            const totalCadastrados = combinedRelatorio.examesEncontrados.filter(e => e.valor && e.valor.trim() !== '').length;
+            combinedRelatorio.estatisticas = {
+              totalEncontradosNoPDF: totalNoPDF,
+              totalCadastrados: totalCadastrados,
+              totalEsperado: combinedRelatorio.estatisticas.totalEsperado,
+              totalEncontrado: totalNoPDF,
+              taxaSucesso: combinedRelatorio.estatisticas.totalEsperado > 0 
+                ? Math.round((totalNoPDF / combinedRelatorio.estatisticas.totalEsperado) * 100) 
+                : 0,
+            };
+            
+            // Mesclar avisos (sem duplicatas)
+            const avisosExistentes = new Set(combinedRelatorio.avisos);
+            for (const aviso of relatorio.avisos) {
+              if (!avisosExistentes.has(aviso)) {
+                combinedRelatorio.avisos.push(aviso);
+              }
+            }
+          }
         }
         successCount++;
       } catch (error) {
         errorCount++;
         console.error(`Erro ao processar ${files[i].file.name}:`, error);
       }
+    }
+    
+    // Definir o relatório combinado
+    if (combinedRelatorio) {
+      setRelatorioExtracao(combinedRelatorio);
     }
 
     setIsProcessing(false);

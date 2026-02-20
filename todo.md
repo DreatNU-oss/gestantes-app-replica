@@ -1339,3 +1339,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar componente GraficoAbortamentos para a página de Estatísticas
 - [x] Adicionar gráficos por tipo, por IG e evolução mensal
 - [x] Escrever testes vitest — 8 testes passando
+
+## Bug: Segundo PDF de exames não aparece para gestante Mariá (20/02/2026)
+- [x] Analisar os dois PDFs para entender o conteúdo de cada um
+- [x] Investigar o fluxo de interpretação da IA para múltiplos uploads
+- [x] Identificar causa raiz — Relatório só mostrava último PDF (setRelatorioExtracao sobrescrevia)
+- [x] Corrigir: combinar relatórios de todos os PDFs (exames, estatísticas, avisos)
+- [x] Testar e verificar — Sem erros de TypeScript
