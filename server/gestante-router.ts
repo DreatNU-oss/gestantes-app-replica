@@ -365,6 +365,67 @@ export const gestanteRouter = router({
       };
     }),
   
+  // POST /auth/login-com-senha (Apple App Store Review only)
+  loginComSenha: publicProcedure
+    .input(z.object({
+      email: z.string().email(),
+      senha: z.string(),
+      dispositivo: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      // Hardcoded credentials for Apple App Store Review test account
+      const APPLE_TEST_EMAIL = "dreatnu@yahoo.com";
+      const APPLE_TEST_PASSWORD = "MaisMulher2026!";
+      
+      if (input.email.toLowerCase() !== APPLE_TEST_EMAIL || input.senha !== APPLE_TEST_PASSWORD) {
+        return {
+          success: false as const,
+          error: "Email ou senha incorretos.",
+        };
+      }
+      
+      // Buscar gestante pelo email
+      const gestante = await gestanteDb.getGestanteByEmail(APPLE_TEST_EMAIL);
+      if (!gestante) {
+        return {
+          success: false as const,
+          error: "Email ou senha incorretos.",
+        };
+      }
+      
+      // Gerar token (mesmo formato do validarCodigo)
+      const token = generateToken();
+      const expiraEm = new Date();
+      expiraEm.setDate(expiraEm.getDate() + 30);
+      
+      // Criar sessão
+      await gestanteDb.createSession({
+        gestanteId: gestante.id,
+        token,
+        dispositivo: input.dispositivo || "Apple Review",
+        expiraEm,
+      });
+      
+      // Registrar log de acesso
+      await gestanteDb.createLogAcesso({
+        gestanteId: gestante.id,
+        acao: "login_password",
+      });
+      
+      console.log(`[Gestante Auth] Apple Review password login: ${APPLE_TEST_EMAIL}`);
+      
+      return {
+        success: true as const,
+        token,
+        gestante: {
+          id: gestante.id,
+          nome: gestante.nome,
+          email: gestante.email,
+        },
+        expiraEm: expiraEm.toISOString(),
+      };
+    }),
+
   // POST /auth/logout
   logout: publicProcedure
     .input(z.object({

@@ -1353,3 +1353,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Bloquear salvamento enquanto alerta não for reconhecido
 - [x] Adicionar validação de data no passado (para pegar erros de ano) — em ambos os formulários
 - [x] Testar e verificar — 18 testes passando
+
+## Endpoint gestante.loginComSenha para Apple App Store Review (23/02/2026) — CONCLUÍDO
+- [x] Analisar fluxo de autenticação existente (validarCodigo) para replicar formato do token
+- [x] Criar endpoint tRPC gestante.loginComSenha com credenciais hardcoded (SEM tabela de senhas, SEM bcrypt)
+- [x] Testar endpoint com curl — sucesso, senha errada e email errado todos funcionando
+- [x] Escrever testes vitest — 8 testes passando
