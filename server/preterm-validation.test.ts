@@ -1,53 +1,35 @@
 import { describe, it, expect } from 'vitest';
 
 /**
- * Tests for the cesarean date validation logic used in the "Agendar Cesárea" button workflow.
+ * Tests for the shared cesarean date validation utility (cesareanValidation.ts)
+ * and the "Agendar Cesárea" button workflow used in both CartaoPrenatal.tsx 
+ * and FormularioGestante.tsx.
  * 
- * The new workflow:
+ * The workflow:
  * 1. User selects a date in the input (stored locally, NOT auto-saved)
  * 2. User clicks "Agendar" (or "Reagendar") button
- * 3. Button click triggers validation:
- *    - Date in the past → confirmation dialog
- *    - IG < 37 weeks (259 days) → pre-term confirmation dialog
- *    - IG >= 40 weeks (280 days) → post-term confirmation dialog
- *    - Normal range (37-39 weeks) → save immediately
+ * 3. Button click calls validarDataCesarea() from shared utility:
+ *    - Date in the past → 'passado'
+ *    - IG < 37 weeks (259 days) → 'pre-termo'
+ *    - IG >= 40 weeks (280 days) → 'pos-termo'
+ *    - Normal range (37-39 weeks) → 'normal' → save immediately
  * 4. Only after confirming dialog does the date get saved and synced to admin system
  */
 
-function calcularIGNaData(
-  dumOrUsDate: string, 
-  igReferenciaDias: number, 
-  dataCesarea: string
-): { semanas: number; dias: number; totalDias: number } {
-  const refDate = new Date(dumOrUsDate + 'T00:00:00');
-  const cesDate = new Date(dataCesarea + 'T00:00:00');
-  const diffMs = cesDate.getTime() - refDate.getTime();
-  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const totalDias = igReferenciaDias + diffDias;
-  const semanas = Math.floor(totalDias / 7);
-  const dias = totalDias % 7;
-  return { semanas, dias, totalDias };
-}
-
-/**
- * Updated classification: post-term threshold is now >= 40 weeks (280 days)
- * instead of > 41 weeks (287 days)
- */
-function classificarData(totalDias: number): 'pre-termo' | 'pos-termo' | 'normal' {
-  if (totalDias < 259) return 'pre-termo'; // < 37 semanas
-  if (totalDias >= 280) return 'pos-termo'; // >= 40 semanas
-  return 'normal'; // 37s0d to 39s6d
-}
-
-function isDataNoPassado(data: string): boolean {
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
-  const dataSelecionada = new Date(data + 'T00:00:00');
-  return dataSelecionada < hoje;
-}
+// Import from the shared utility
+import {
+  calcularIGNaData,
+  classificarIG,
+  isDataNoPassado,
+  validarDataCesarea,
+  PRETERMIO_DIAS,
+  POSTERMO_DIAS,
+  type DadosReferencia,
+} from '../client/src/lib/cesareanValidation';
 
 /**
  * Simulates the button-based scheduling workflow state machine
+ * (mirrors the React state logic in both CartaoPrenatal and FormularioGestante)
  */
 type WorkflowState = {
   dataCesareaLocal: string;
@@ -77,8 +59,7 @@ function onDateInputChange(state: WorkflowState, newDate: string): WorkflowState
 
 function onAgendarClick(
   state: WorkflowState,
-  dumOrUsDate: string | null,
-  igReferenciaDias: number
+  dados: DadosReferencia
 ): WorkflowState {
   const novaData = state.dataCesareaLocal;
 
@@ -93,27 +74,15 @@ function onAgendarClick(
     };
   }
 
-  // Past date check
-  if (isDataNoPassado(novaData)) {
+  // Use shared utility for validation
+  const resultado = validarDataCesarea(novaData, dados);
+
+  if (resultado.classificacao !== 'normal') {
     return {
       ...state,
       dialogOpen: true,
-      dialogTipo: 'passado',
+      dialogTipo: resultado.classificacao,
     };
-  }
-
-  // IG validation
-  if (dumOrUsDate) {
-    const { totalDias } = calcularIGNaData(dumOrUsDate, igReferenciaDias, novaData);
-    const classificacao = classificarData(totalDias);
-    
-    if (classificacao !== 'normal') {
-      return {
-        ...state,
-        dialogOpen: true,
-        dialogTipo: classificacao,
-      };
-    }
   }
 
   // Normal: save immediately
@@ -144,59 +113,104 @@ function onDialogCancel(state: WorkflowState): WorkflowState {
   };
 }
 
-describe('Validação de data de cesárea (botão Agendar)', () => {
-  describe('Cálculo de IG na data da cesárea', () => {
+describe('Validação de data de cesárea (utilitário compartilhado)', () => {
+  describe('Constantes exportadas', () => {
+    it('PRETERMIO_DIAS deve ser 259 (37 * 7)', () => {
+      expect(PRETERMIO_DIAS).toBe(259);
+    });
+
+    it('POSTERMO_DIAS deve ser 280 (40 * 7)', () => {
+      expect(POSTERMO_DIAS).toBe(280);
+    });
+  });
+
+  describe('calcularIGNaData() - Cálculo de IG na data da cesárea', () => {
     it('deve calcular IG corretamente a partir da DUM', () => {
-      const result = calcularIGNaData('2025-06-01', 0, '2026-02-15');
-      expect(result.semanas).toBe(37);
-      expect(result.dias).toBe(0);
+      const result = calcularIGNaData('2026-02-15', { dum: '2025-06-01' });
+      expect(result).not.toBeNull();
+      expect(result!.igSemanasDias.semanas).toBe(37);
+      expect(result!.igSemanasDias.dias).toBe(0);
+      expect(result!.igTotalDias).toBe(259);
     });
 
     it('deve calcular IG corretamente a partir do ultrassom', () => {
       // US em 2025-10-01 com IG 20s3d = 143 dias, cesárea em 2026-02-15
       // Diff = 137 dias, total = 143 + 137 = 280 dias = 40s0d
-      const result = calcularIGNaData('2025-10-01', 143, '2026-02-15');
-      expect(result.semanas).toBe(40);
-      expect(result.dias).toBe(0);
+      const result = calcularIGNaData('2026-02-15', {
+        dataUltrassom: '2025-10-01',
+        igUltrassomSemanas: 20,
+        igUltrassomDias: 3,
+      });
+      expect(result).not.toBeNull();
+      expect(result!.igSemanasDias.semanas).toBe(40);
+      expect(result!.igSemanasDias.dias).toBe(0);
+      expect(result!.igTotalDias).toBe(280);
+    });
+
+    it('deve priorizar ultrassom sobre DUM quando ambos disponíveis', () => {
+      const result = calcularIGNaData('2026-02-15', {
+        dataUltrassom: '2025-10-01',
+        igUltrassomSemanas: 20,
+        igUltrassomDias: 3,
+        dum: '2025-06-01', // seria 37s0d pela DUM
+      });
+      expect(result).not.toBeNull();
+      expect(result!.igSemanasDias.semanas).toBe(40); // US prevalece
+    });
+
+    it('deve retornar null quando não há dados de referência', () => {
+      const result = calcularIGNaData('2026-02-15', {});
+      expect(result).toBeNull();
+    });
+
+    it('deve retornar null quando DUM é "Incerta"', () => {
+      const result = calcularIGNaData('2026-02-15', { dum: 'Incerta' });
+      expect(result).toBeNull();
+    });
+
+    it('deve retornar null quando DUM é "Incompatível com US"', () => {
+      const result = calcularIGNaData('2026-02-15', { dum: 'Incompatível com US' });
+      expect(result).toBeNull();
     });
 
     it('deve retornar dias negativos para data antes da DUM', () => {
-      const result = calcularIGNaData('2025-06-01', 0, '2025-05-01');
-      expect(result.totalDias).toBeLessThan(0);
+      const result = calcularIGNaData('2025-05-01', { dum: '2025-06-01' });
+      expect(result).not.toBeNull();
+      expect(result!.igTotalDias).toBeLessThan(0);
     });
   });
 
-  describe('Classificação pré-termo / pós-termo (limiar atualizado: >=40 semanas)', () => {
+  describe('classificarIG() - Classificação pré-termo / pós-termo', () => {
     it('deve classificar como pré-termo quando IG < 37 semanas (< 259 dias)', () => {
-      expect(classificarData(258)).toBe('pre-termo');
-      expect(classificarData(200)).toBe('pre-termo');
-      expect(classificarData(0)).toBe('pre-termo');
+      expect(classificarIG(258)).toBe('pre-termo');
+      expect(classificarIG(200)).toBe('pre-termo');
+      expect(classificarIG(0)).toBe('pre-termo');
     });
 
     it('deve classificar como normal quando IG entre 37s0d e 39s6d (259-279 dias)', () => {
-      expect(classificarData(259)).toBe('normal'); // 37s0d
-      expect(classificarData(266)).toBe('normal'); // 38s0d
-      expect(classificarData(273)).toBe('normal'); // 39s0d
-      expect(classificarData(279)).toBe('normal'); // 39s6d
+      expect(classificarIG(259)).toBe('normal'); // 37s0d
+      expect(classificarIG(266)).toBe('normal'); // 38s0d
+      expect(classificarIG(273)).toBe('normal'); // 39s0d
+      expect(classificarIG(279)).toBe('normal'); // 39s6d
     });
 
     it('deve classificar como pós-termo quando IG >= 40 semanas (>= 280 dias)', () => {
-      expect(classificarData(280)).toBe('pos-termo'); // 40s0d exato
-      expect(classificarData(281)).toBe('pos-termo'); // 40s1d
-      expect(classificarData(287)).toBe('pos-termo'); // 41s0d
-      expect(classificarData(294)).toBe('pos-termo'); // 42s0d
-      expect(classificarData(300)).toBe('pos-termo');
+      expect(classificarIG(280)).toBe('pos-termo'); // 40s0d exato
+      expect(classificarIG(281)).toBe('pos-termo'); // 40s1d
+      expect(classificarIG(287)).toBe('pos-termo'); // 41s0d
+      expect(classificarIG(294)).toBe('pos-termo'); // 42s0d
+      expect(classificarIG(300)).toBe('pos-termo');
     });
 
     it('deve classificar corretamente os limites exatos', () => {
-      expect(classificarData(258)).toBe('pre-termo'); // 36s6d → pré-termo
-      expect(classificarData(259)).toBe('normal');     // 37s0d → normal
-      expect(classificarData(279)).toBe('normal');     // 39s6d → normal
-      expect(classificarData(280)).toBe('pos-termo');  // 40s0d → pós-termo (NOVO LIMIAR)
+      expect(classificarIG(258)).toBe('pre-termo'); // 36s6d → pré-termo
+      expect(classificarIG(259)).toBe('normal');     // 37s0d → normal
+      expect(classificarIG(279)).toBe('normal');     // 39s6d → normal
+      expect(classificarIG(280)).toBe('pos-termo');  // 40s0d → pós-termo
     });
   });
 
-  describe('Validação de data no passado', () => {
+  describe('isDataNoPassado() - Validação de data no passado', () => {
     function toLocalDateStr(d: Date): string {
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
@@ -204,26 +218,71 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     it('deve detectar data de ontem como passado', () => {
       const ontem = new Date();
       ontem.setDate(ontem.getDate() - 1);
-      const dataStr = toLocalDateStr(ontem);
-      expect(isDataNoPassado(dataStr)).toBe(true);
+      expect(isDataNoPassado(toLocalDateStr(ontem))).toBe(true);
     });
 
     it('deve aceitar data de amanhã como futuro', () => {
       const amanha = new Date();
       amanha.setDate(amanha.getDate() + 1);
-      const dataStr = toLocalDateStr(amanha);
-      expect(isDataNoPassado(dataStr)).toBe(false);
+      expect(isDataNoPassado(toLocalDateStr(amanha))).toBe(false);
     });
 
     it('deve detectar data de 1 ano atrás como passado', () => {
       const umAnoAtras = new Date();
       umAnoAtras.setFullYear(umAnoAtras.getFullYear() - 1);
-      const dataStr = toLocalDateStr(umAnoAtras);
-      expect(isDataNoPassado(dataStr)).toBe(true);
+      expect(isDataNoPassado(toLocalDateStr(umAnoAtras))).toBe(true);
     });
   });
 
-  describe('Fluxo do botão Agendar (workflow state machine)', () => {
+  describe('validarDataCesarea() - Validação completa integrada', () => {
+    it('deve retornar "passado" para data no passado', () => {
+      const result = validarDataCesarea('2025-01-01', { dum: '2024-06-01' });
+      expect(result.classificacao).toBe('passado');
+    });
+
+    it('deve retornar "pre-termo" para IG < 37 semanas', () => {
+      // DUM = 2025-09-01, data = 2026-03-15 → ~195 dias = 27s6d
+      const result = validarDataCesarea('2026-03-15', { dum: '2025-09-01' });
+      expect(result.classificacao).toBe('pre-termo');
+      expect(result.igNaData).not.toBeNull();
+    });
+
+    it('deve retornar "pos-termo" para IG >= 40 semanas', () => {
+      // DUM = 2025-06-01, data = 2026-03-08 → 280 dias = 40s0d
+      const result = validarDataCesarea('2026-03-08', { dum: '2025-06-01' });
+      expect(result.classificacao).toBe('pos-termo');
+      expect(result.igNaData).not.toBeNull();
+      expect(result.igNaData!.semanas).toBe(40);
+      expect(result.igNaData!.dias).toBe(0);
+    });
+
+    it('deve retornar "normal" para IG entre 37-39 semanas', () => {
+      // DUM = 2025-07-01, data = 2026-04-01 → 274 dias = 39s1d
+      const result = validarDataCesarea('2026-04-01', { dum: '2025-07-01' });
+      expect(result.classificacao).toBe('normal');
+      expect(result.igNaData).not.toBeNull();
+    });
+
+    it('deve retornar "normal" sem dados de referência (sem DUM/US)', () => {
+      const result = validarDataCesarea('2026-05-01', {});
+      expect(result.classificacao).toBe('normal');
+      expect(result.igNaData).toBeNull();
+    });
+
+    it('deve funcionar com dados de ultrassom', () => {
+      // US em 2025-12-01 com IG 20s3d = 143 dias, cesárea em 2026-07-18
+      // Diff = 228 dias, total = 143 + 228 = 371 dias → pós-termo
+      const result = validarDataCesarea('2026-07-18', {
+        dataUltrassom: '2025-12-01',
+        igUltrassomSemanas: 20,
+        igUltrassomDias: 3,
+      });
+      expect(result.classificacao).toBe('pos-termo');
+      expect(result.igTotalDias).toBe(371);
+    });
+  });
+
+  describe('Fluxo do botão Agendar (workflow usando utilitário compartilhado)', () => {
     it('estado inicial deve ter dataCesareaModificada = false', () => {
       const state = createInitialState('');
       expect(state.dataCesareaModificada).toBe(false);
@@ -253,26 +312,20 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     });
 
     it('clicar Agendar com data normal deve salvar imediatamente', () => {
-      // DUM = 2025-06-01, data = 2026-02-22 → 38s1d (normal, future date)
-      let state = createInitialState('');
-      state = onDateInputChange(state, '2026-02-22');
-      // 2026-02-22 is in the past from sandbox perspective, use a guaranteed future date
-      // DUM = 2025-09-01, data = 2026-04-15 → ~32 weeks... let's use proper calc
       // DUM = 2025-07-01, data = 2026-04-01 → 274 dias = 39s1d (normal)
-      state = createInitialState('');
+      let state = createInitialState('');
       state = onDateInputChange(state, '2026-04-01');
-      state = onAgendarClick(state, '2025-07-01', 0);
+      state = onAgendarClick(state, { dum: '2025-07-01' });
       expect(state.savedDate).toBe('2026-04-01');
       expect(state.dataCesareaModificada).toBe(false);
       expect(state.dialogOpen).toBe(false);
     });
 
     it('clicar Agendar com data pré-termo deve abrir diálogo', () => {
-      // DUM = 2025-09-01, data = 2026-03-15 → ~28 semanas (pré-termo, future date)
-      // Actually: diff = 195 dias = 27s6d → pré-termo
+      // DUM = 2025-09-01, data = 2026-03-15 → ~195 dias (pré-termo)
       let state = createInitialState('');
       state = onDateInputChange(state, '2026-03-15');
-      state = onAgendarClick(state, '2025-09-01', 0);
+      state = onAgendarClick(state, { dum: '2025-09-01' });
       expect(state.dialogOpen).toBe(true);
       expect(state.dialogTipo).toBe('pre-termo');
       expect(state.savedDate).toBe(''); // NÃO salvou ainda
@@ -282,11 +335,14 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
       // DUM = 2025-06-01, data = 2026-03-08 → 40s0d (pós-termo)
       let state = createInitialState('');
       state = onDateInputChange(state, '2026-03-08');
-      const ig = calcularIGNaData('2025-06-01', 0, '2026-03-08');
-      expect(ig.semanas).toBe(40);
-      expect(ig.dias).toBe(0);
       
-      state = onAgendarClick(state, '2025-06-01', 0);
+      // Verify IG calculation via shared utility
+      const ig = calcularIGNaData('2026-03-08', { dum: '2025-06-01' });
+      expect(ig).not.toBeNull();
+      expect(ig!.igSemanasDias.semanas).toBe(40);
+      expect(ig!.igSemanasDias.dias).toBe(0);
+      
+      state = onAgendarClick(state, { dum: '2025-06-01' });
       expect(state.dialogOpen).toBe(true);
       expect(state.dialogTipo).toBe('pos-termo');
       expect(state.savedDate).toBe(''); // NÃO salvou ainda
@@ -299,17 +355,16 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
       
       let state = createInitialState('');
       state = onDateInputChange(state, dataStr);
-      state = onAgendarClick(state, '2025-06-01', 0);
+      state = onAgendarClick(state, { dum: '2025-06-01' });
       expect(state.dialogOpen).toBe(true);
       expect(state.dialogTipo).toBe('passado');
       expect(state.savedDate).toBe('');
     });
 
     it('confirmar diálogo deve salvar a data', () => {
-      // DUM = 2025-09-01, data = 2026-03-15 → pré-termo (future date)
       let state = createInitialState('');
       state = onDateInputChange(state, '2026-03-15');
-      state = onAgendarClick(state, '2025-09-01', 0);
+      state = onAgendarClick(state, { dum: '2025-09-01' });
       expect(state.dialogOpen).toBe(true);
       
       state = onDialogConfirm(state);
@@ -319,10 +374,9 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     });
 
     it('cancelar diálogo NÃO deve salvar a data', () => {
-      // DUM = 2025-09-01, data = 2026-03-15 → pré-termo (future date)
       let state = createInitialState('');
       state = onDateInputChange(state, '2026-03-15');
-      state = onAgendarClick(state, '2025-09-01', 0);
+      state = onAgendarClick(state, { dum: '2025-09-01' });
       expect(state.dialogOpen).toBe(true);
       
       state = onDialogCancel(state);
@@ -334,7 +388,7 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     it('limpar data e clicar Agendar deve remover agendamento', () => {
       let state = createInitialState('2026-04-15');
       state = onDateInputChange(state, '');
-      state = onAgendarClick(state, '2025-06-01', 0);
+      state = onAgendarClick(state, { dum: '2025-06-01' });
       expect(state.savedDate).toBe('');
       expect(state.dataCesareaModificada).toBe(false);
     });
@@ -342,19 +396,18 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     it('sem dados de IG (sem DUM/US), deve salvar diretamente sem validação de IG', () => {
       let state = createInitialState('');
       state = onDateInputChange(state, '2026-05-01');
-      state = onAgendarClick(state, null, 0);
+      state = onAgendarClick(state, {});
       expect(state.savedDate).toBe('2026-05-01');
       expect(state.dialogOpen).toBe(false);
     });
 
     it('reagendar: mudar data de agendamento existente', () => {
-      // Já tem data salva, muda para nova data
       let state = createInitialState('2026-04-15');
       state = onDateInputChange(state, '2026-04-20');
       expect(state.dataCesareaModificada).toBe(true);
       
       // DUM = 2025-07-01, nova data = 2026-04-20 → ~41s4d (pós-termo)
-      state = onAgendarClick(state, '2025-07-01', 0);
+      state = onAgendarClick(state, { dum: '2025-07-01' });
       expect(state.dialogOpen).toBe(true);
       expect(state.dialogTipo).toBe('pos-termo');
       
@@ -373,35 +426,38 @@ describe('Validação de data de cesárea (botão Agendar)', () => {
     });
 
     it('deve classificar como pré-termo quando data está muito antes', () => {
-      const result = calcularIGNaData('2025-06-15', 0, '2025-02-23');
-      expect(result.totalDias).toBeLessThan(0);
-      expect(classificarData(result.totalDias)).toBe('pre-termo');
+      const result = calcularIGNaData('2025-02-23', { dum: '2025-06-15' });
+      expect(result).not.toBeNull();
+      expect(result!.igTotalDias).toBeLessThan(0);
+      expect(classificarIG(result!.igTotalDias)).toBe('pre-termo');
     });
   });
 
   describe('Limiar de 39s6d vs 40s0d (boundary test)', () => {
     it('39s6d (279 dias) deve ser normal - sem alerta', () => {
-      expect(classificarData(279)).toBe('normal');
+      expect(classificarIG(279)).toBe('normal');
     });
 
     it('40s0d (280 dias) deve ser pós-termo - com alerta', () => {
-      expect(classificarData(280)).toBe('pos-termo');
+      expect(classificarIG(280)).toBe('pos-termo');
     });
 
     it('cenário real: DUM 2025-06-01, cesárea 2026-03-07 = 39s6d (normal)', () => {
-      const result = calcularIGNaData('2025-06-01', 0, '2026-03-07');
-      expect(result.totalDias).toBe(279);
-      expect(result.semanas).toBe(39);
-      expect(result.dias).toBe(6);
-      expect(classificarData(result.totalDias)).toBe('normal');
+      const result = calcularIGNaData('2026-03-07', { dum: '2025-06-01' });
+      expect(result).not.toBeNull();
+      expect(result!.igTotalDias).toBe(279);
+      expect(result!.igSemanasDias.semanas).toBe(39);
+      expect(result!.igSemanasDias.dias).toBe(6);
+      expect(classificarIG(result!.igTotalDias)).toBe('normal');
     });
 
     it('cenário real: DUM 2025-06-01, cesárea 2026-03-08 = 40s0d (pós-termo)', () => {
-      const result = calcularIGNaData('2025-06-01', 0, '2026-03-08');
-      expect(result.totalDias).toBe(280);
-      expect(result.semanas).toBe(40);
-      expect(result.dias).toBe(0);
-      expect(classificarData(result.totalDias)).toBe('pos-termo');
+      const result = calcularIGNaData('2026-03-08', { dum: '2025-06-01' });
+      expect(result).not.toBeNull();
+      expect(result!.igTotalDias).toBe(280);
+      expect(result!.igSemanasDias.semanas).toBe(40);
+      expect(result!.igSemanasDias.dias).toBe(0);
+      expect(classificarIG(result!.igTotalDias)).toBe('pos-termo');
     });
   });
 });

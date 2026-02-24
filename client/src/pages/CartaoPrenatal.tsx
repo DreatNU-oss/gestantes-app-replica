@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { isAUAbnormal } from "@/lib/auReferenceData";
 import { isBPAbnormal } from "@/lib/bpValidation";
+import { validarDataCesarea, type DadosReferencia } from "@/lib/cesareanValidation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -2837,65 +2838,27 @@ export default function CartaoPrenatal() {
                         return;
                       }
                       
-                      // Verificar se a data está no passado
-                      const hoje = new Date();
-                      hoje.setHours(0, 0, 0, 0);
-                      const dataSelecionada = new Date(novaData + 'T00:00:00');
-                      if (dataSelecionada < hoje) {
+                      // Usar utilitário compartilhado para validar
+                      const dadosRef: DadosReferencia = gestante ? {
+                        dataUltrassom: gestante.dataUltrassom,
+                        igUltrassomSemanas: gestante.igUltrassomSemanas,
+                        igUltrassomDias: gestante.igUltrassomDias,
+                        dum: gestante.dum,
+                      } : {};
+                      
+                      const resultado = validarDataCesarea(novaData, dadosRef);
+                      
+                      if (resultado.classificacao !== 'normal') {
                         setConfirmacaoDataCesarea({
                           open: true,
-                          tipo: 'passado',
+                          tipo: resultado.classificacao,
                           novaData,
-                          igNaData: null
+                          igNaData: resultado.igNaData
                         });
                         return;
                       }
                       
-                      // Calcular IG na data
-                      if (gestante) {
-                        let dataReferencia: Date | null = null;
-                        let igReferenciaDias: number = 0;
-                        
-                        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
-                          dataReferencia = new Date(gestante.dataUltrassom);
-                          igReferenciaDias = gestante.igUltrassomSemanas * 7 + (gestante.igUltrassomDias || 0);
-                        } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
-                          dataReferencia = new Date(gestante.dum);
-                          igReferenciaDias = 0;
-                        }
-                        
-                        if (dataReferencia) {
-                          const dataCesarea = new Date(novaData);
-                          const diffMs = dataCesarea.getTime() - dataReferencia.getTime();
-                          const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                          const igNaDataDias = igReferenciaDias + diffDias;
-                          const igNaDataSemanas = Math.floor(igNaDataDias / 7);
-                          const igNaDataDiasRestantes = igNaDataDias % 7;
-                          
-                          // Pré-termo: < 37 semanas (259 dias)
-                          if (igNaDataDias < 259) {
-                            setConfirmacaoDataCesarea({
-                              open: true,
-                              tipo: 'pre-termo',
-                              novaData,
-                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                            });
-                            return;
-                          }
-                          // Pós-termo: >= 40 semanas exatas (280 dias)
-                          if (igNaDataDias >= 280) {
-                            setConfirmacaoDataCesarea({
-                              open: true,
-                              tipo: 'pos-termo',
-                              novaData,
-                              igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                            });
-                            return;
-                          }
-                          
-                          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
-                        }
-                      }
+                      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                       
                       // Data dentro do período normal: salvar e enviar ao Mapa Cirúrgico
                       updateGestanteMutation.mutate({

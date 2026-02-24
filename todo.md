@@ -1375,3 +1375,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Alertar quando cesárea >= 40 semanas (pós-termo)
 - [x] Consistência com CartaoPrenatal.tsx
 - [x] Testar e verificar — 30 testes passando
+
+## Unificar lógica de validação de cesárea em utilitário compartilhado (23/02/2026) — CONCLUÍDO
+- [x] Criar módulo compartilhado com funções de cálculo de IG e classificação (cesareanValidation.ts)
+- [x] Refatorar CartaoPrenatal.tsx para usar utilitário compartilhado
+- [x] Refatorar FormularioGestante.tsx para usar utilitário compartilhado
+- [x] Atualizar testes para importar do utilitário compartilhado
+- [x] Verificar compilação e testes passando — 42 testes passando

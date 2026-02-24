@@ -32,6 +32,7 @@ import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
+import { validarDataCesarea, type DadosReferencia } from "@/lib/cesareanValidation";
 
 interface FormularioGestanteProps {
   gestanteId?: number | null;
@@ -1046,57 +1047,23 @@ export default function FormularioGestante({
                       return;
                     }
                     
-                    // Verificar se a data está no passado
-                    const hoje = new Date();
-                    hoje.setHours(0, 0, 0, 0);
-                    const dataSelecionada = new Date(novaData + 'T00:00:00');
-                    if (dataSelecionada < hoje) {
+                    // Usar utilitário compartilhado para validar
+                    const dadosRef: DadosReferencia = {
+                      dataUltrassom: formData.dataUltrassom || undefined,
+                      igUltrassomSemanas: formData.igUltrassomSemanas ? parseInt(formData.igUltrassomSemanas) : undefined,
+                      igUltrassomDias: formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : undefined,
+                      dum: tipoDUM === "data" ? (formData.dum || undefined) : undefined,
+                    };
+                    
+                    const resultado = validarDataCesarea(novaData, dadosRef);
+                    
+                    if (resultado.classificacao !== 'normal') {
                       setConfirmacaoDataCesarea({
                         open: true,
-                        tipo: 'passado',
-                        igNaData: null
+                        tipo: resultado.classificacao,
+                        igNaData: resultado.igNaData
                       });
                       return;
-                    }
-                    
-                    // Calcular IG na data
-                    let dataReferencia: Date | null = null;
-                    let igReferenciaDias: number = 0;
-                    
-                    if (formData.dataUltrassom && formData.igUltrassomSemanas) {
-                      dataReferencia = parseLocalDate(formData.dataUltrassom);
-                      igReferenciaDias = parseInt(formData.igUltrassomSemanas) * 7 + (formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : 0);
-                    } else if (formData.dum && tipoDUM === "data") {
-                      dataReferencia = parseLocalDate(formData.dum);
-                      igReferenciaDias = 0;
-                    }
-                    
-                    if (dataReferencia) {
-                      const dataCesarea = parseLocalDate(novaData);
-                      const diffMs = dataCesarea.getTime() - dataReferencia.getTime();
-                      const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                      const igNaDataDias = igReferenciaDias + diffDias;
-                      const igNaDataSemanas = Math.floor(igNaDataDias / 7);
-                      const igNaDataDiasRestantes = igNaDataDias % 7;
-                      
-                      // Pré-termo: < 37 semanas (259 dias)
-                      if (igNaDataDias < 259) {
-                        setConfirmacaoDataCesarea({
-                          open: true,
-                          tipo: 'pre-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                        });
-                        return;
-                      }
-                      // Pós-termo: >= 40 semanas (280 dias)
-                      if (igNaDataDias >= 280) {
-                        setConfirmacaoDataCesarea({
-                          open: true,
-                          tipo: 'pos-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
-                        });
-                        return;
-                      }
                     }
                     
                     // Data dentro do período normal: confirmar
