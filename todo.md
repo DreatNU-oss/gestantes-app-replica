@@ -1396,3 +1396,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar barra de navegação rápida com links âncora no topo
 - [x] Scroll suave ao clicar nos links
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Reduzir espaçamento vertical na seção Dados da Gestante (24/02/2026) — CONCLUÍDO
+- [x] Reduzir padding antes do título, entre título e nome, e após as DPPs

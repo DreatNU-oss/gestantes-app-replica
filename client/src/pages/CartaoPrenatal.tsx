@@ -2022,7 +2022,7 @@ export default function CartaoPrenatal() {
         {/* Informações da Gestante */}
         {gestante && (
           <Card id="dados-gestante">
-            <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+            <CardHeader className="flex flex-row items-center justify-between py-1.5 px-4">
               <CardTitle className="flex items-center gap-2 text-base">
                 <FileText className="h-4 w-4" />
                 Dados da Gestante
@@ -2037,15 +2037,15 @@ export default function CartaoPrenatal() {
                 Editar Cadastro
               </Button>
             </CardHeader>
-            <CardContent className="px-4 pb-3 pt-0">
-              <div className="flex items-center gap-2 mb-2">
+            <CardContent className="px-4 pb-1.5 pt-0">
+              <div className="flex items-center gap-2 mb-0.5">
                 <p className="font-semibold text-base">{gestante.nome}</p>
                 <span className="text-muted-foreground text-xs">|</span>
                 <span className="text-sm text-muted-foreground">
                   G{gestante.gesta || 0}P{gestante.para || 0}(PN{gestante.partosNormais || 0}PC{gestante.cesareas || 0})A{gestante.abortos || 0}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-0 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">DPP (DUM):</span>
                   <span className="font-medium">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</span>
