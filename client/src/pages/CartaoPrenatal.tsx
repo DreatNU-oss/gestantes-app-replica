@@ -2028,19 +2028,6 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
-        {/* Fatores de Risco */}
-        {gestanteSelecionada && gestante && (
-          <FatoresRiscoManager 
-            gestanteId={gestanteSelecionada} 
-            idadeGestante={gestante.calculado?.idade}
-          />
-        )}
-
-        {/* Medicamentos na Gestação */}
-        {gestanteSelecionada && (
-          <MedicamentosManager gestanteId={gestanteSelecionada} />
-        )}
-
         {/* Botão Nova Consulta */}
         {gestanteSelecionada && !mostrarFormulario && (
           <Button onClick={() => {
@@ -3144,6 +3131,19 @@ export default function CartaoPrenatal() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Fatores de Risco */}
+        {gestanteSelecionada && gestante && (
+          <FatoresRiscoManager 
+            gestanteId={gestanteSelecionada} 
+            idadeGestante={gestante.calculado?.idade}
+          />
+        )}
+
+        {/* Medicamentos na Gestação */}
+        {gestanteSelecionada && (
+          <MedicamentosManager gestanteId={gestanteSelecionada} />
         )}
 
         {/* Gráfico de Peso */}

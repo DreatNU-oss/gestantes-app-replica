@@ -1382,3 +1382,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Refatorar FormularioGestante.tsx para usar utilitário compartilhado
 - [x] Atualizar testes para importar do utilitário compartilhado
 - [x] Verificar compilação e testes passando — 42 testes passando
+
+## Reorganizar seções do Cartão de Pré-natal (24/02/2026) — CONCLUÍDO
+- [x] Mover Fatores de Risco para depois do formulário de consultas e consultas anteriores
+- [x] Mover Medicamentos em Uso para depois do formulário de consultas e consultas anteriores
+- [x] Verificar compilação e testes — sem erros TypeScript/LSP
