@@ -1399,3 +1399,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Reduzir espaçamento vertical na seção Dados da Gestante (24/02/2026) — CONCLUÍDO
 - [x] Reduzir padding antes do título, entre título e nome, e após as DPPs
+
+## Reduzir ainda mais espaçamento na seção Dados da Gestante (24/02/2026) — CONCLUÍDO
+- [x] Reduzir ainda mais padding antes do título, entre título e nome, e após DPPs

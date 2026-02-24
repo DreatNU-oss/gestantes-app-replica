@@ -2022,7 +2022,7 @@ export default function CartaoPrenatal() {
         {/* Informações da Gestante */}
         {gestante && (
           <Card id="dados-gestante">
-            <CardHeader className="flex flex-row items-center justify-between py-1.5 px-4">
+            <CardHeader className="flex flex-row items-center justify-between py-0.5 px-4">
               <CardTitle className="flex items-center gap-2 text-base">
                 <FileText className="h-4 w-4" />
                 Dados da Gestante
@@ -2037,8 +2037,8 @@ export default function CartaoPrenatal() {
                 Editar Cadastro
               </Button>
             </CardHeader>
-            <CardContent className="px-4 pb-1.5 pt-0">
-              <div className="flex items-center gap-2 mb-0.5">
+            <CardContent className="px-4 pb-0.5 pt-0">
+              <div className="flex items-center gap-2 mb-0">
                 <p className="font-semibold text-base">{gestante.nome}</p>
                 <span className="text-muted-foreground text-xs">|</span>
                 <span className="text-sm text-muted-foreground">
