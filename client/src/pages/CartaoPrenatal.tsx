@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -147,6 +147,10 @@ export default function CartaoPrenatal() {
     novaData: string;
     igNaData: { semanas: number; dias: number } | null;
   }>({ open: false, tipo: null, novaData: '', igNaData: null });
+  
+  // Estado local para data de cesárea pendente (só salva ao clicar "Agendar")
+  const [dataCesareaLocal, setDataCesareaLocal] = useState("");
+  const [dataCesareaModificada, setDataCesareaModificada] = useState(false);
   
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
@@ -330,6 +334,10 @@ export default function CartaoPrenatal() {
       
       // Inicializar estado local para motivo de cesárea "Outro"
       setMotivoCesareaOutroLocal(gestante.motivoCesareaOutro || "");
+      
+      // Inicializar estado local para data de cesárea
+      setDataCesareaLocal(gestante.dataPartoProgramado || "");
+      setDataCesareaModificada(false);
     }
   }, [gestante]);
   const { data: consultas, refetch: refetchConsultas } = trpc.consultasPrenatal.list.useQuery(
@@ -2801,17 +2809,31 @@ export default function CartaoPrenatal() {
                   <Input
                     id="dataPartoProgramado"
                     type="date"
-                    value={gestante.dataPartoProgramado || ""}
+                    value={dataCesareaLocal}
                     onChange={(e) => {
                       const novaData = e.target.value;
+                      setDataCesareaLocal(novaData);
+                      setDataCesareaModificada(novaData !== (gestante.dataPartoProgramado || ""));
+                      // Limpar alerta ao mudar data
+                      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                    }}
+                    className="max-w-xs"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      const novaData = dataCesareaLocal;
                       
-                      // Se a data foi limpa, salvar imediatamente
+                      // Se a data foi limpa, salvar imediatamente (remover agendamento)
                       if (!novaData) {
                         updateGestanteMutation.mutate({
                           id: gestanteSelecionada!,
                           dataPartoProgramado: novaData,
                         });
                         setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                        setDataCesareaModificada(false);
+                        toast.success('Agendamento de cesárea removido.');
                         return;
                       }
                       
@@ -2826,8 +2848,6 @@ export default function CartaoPrenatal() {
                           novaData,
                           igNaData: null
                         });
-                        // Resetar o input para o valor anterior
-                        e.target.value = gestante.dataPartoProgramado || '';
                         return;
                       }
                       
@@ -2852,75 +2872,63 @@ export default function CartaoPrenatal() {
                           const igNaDataSemanas = Math.floor(igNaDataDias / 7);
                           const igNaDataDiasRestantes = igNaDataDias % 7;
                           
+                          // Pré-termo: < 37 semanas (259 dias)
                           if (igNaDataDias < 259) {
-                            // Pré-termo: mostrar diálogo de confirmação ANTES de salvar
                             setConfirmacaoDataCesarea({
                               open: true,
                               tipo: 'pre-termo',
                               novaData,
                               igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                             });
-                            // Resetar o input para o valor anterior
-                            e.target.value = gestante.dataPartoProgramado || '';
                             return;
-                          } else if (igNaDataDias > 287) {
-                            // Pós-termo: mostrar diálogo de confirmação ANTES de salvar
+                          }
+                          // Pós-termo: >= 40 semanas exatas (280 dias)
+                          if (igNaDataDias >= 280) {
                             setConfirmacaoDataCesarea({
                               open: true,
                               tipo: 'pos-termo',
                               novaData,
                               igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                             });
-                            // Resetar o input para o valor anterior
-                            e.target.value = gestante.dataPartoProgramado || '';
                             return;
-                          } else {
-                            setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                           }
+                          
+                          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                         }
                       }
                       
-                      // Data dentro do período normal: salvar imediatamente
+                      // Data dentro do período normal: salvar e enviar ao Mapa Cirúrgico
                       updateGestanteMutation.mutate({
                         id: gestanteSelecionada!,
                         dataPartoProgramado: novaData,
                         tipoPartoDesejado: "cesariana",
                       });
+                      setDataCesareaModificada(false);
+                      toast.success('Cesárea agendada com sucesso!', {
+                        description: `Data: ${novaData.split('-').reverse().join('/')}. Enviado ao Mapa Cirúrgico.`,
+                      });
                     }}
-                    className="max-w-xs"
-                  />
+                    disabled={!dataCesareaModificada && dataCesareaLocal === (gestante.dataPartoProgramado || "")}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <CalendarCheck className="h-4 w-4 mr-1" />
+                    {gestante.dataPartoProgramado ? 'Reagendar' : 'Agendar'}
+                  </Button>
                 </div>
                 {gestante.dataPartoProgramado && (
                   <p className="text-sm text-muted-foreground">
-                    Data programada: {formatarData(gestante.dataPartoProgramado)}
+                    Data agendada atualmente: {formatarData(gestante.dataPartoProgramado)}
+                    {dataCesareaModificada && dataCesareaLocal && (
+                      <span className="ml-2 text-orange-600 font-medium">
+                        (clique em "{gestante.dataPartoProgramado ? 'Reagendar' : 'Agendar'}" para confirmar a nova data)
+                      </span>
+                    )}
                   </p>
                 )}
-                
-                {alertaDataCesarea.show && alertaDataCesarea.igNaData && (
-                  <div className={`mt-2 p-3 rounded-lg border ${
-                    alertaDataCesarea.tipo === 'pre-termo' 
-                      ? 'bg-orange-50 border-orange-300 text-orange-900' 
-                      : 'bg-red-50 border-red-300 text-red-900'
-                  }`}>
-                    <div className="flex items-start gap-2">
-                      <span className="text-lg">{"\u26A0\uFE0F"}</span>
-                      <div className="flex-1">
-                        <p className="font-semibold text-sm">
-                          {alertaDataCesarea.tipo === 'pre-termo' 
-                            ? 'Cesárea agendada antes de 37 semanas (pré-termo)' 
-                            : 'Cesárea agendada após 41 semanas (pós-termo)'}
-                        </p>
-                        <p className="text-xs mt-1">
-                          IG estimada na data: {alertaDataCesarea.igNaData.semanas}s{alertaDataCesarea.igNaData.dias}d
-                        </p>
-                        <p className="text-xs mt-1">
-                          {alertaDataCesarea.tipo === 'pre-termo' 
-                            ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
-                            : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                {!gestante.dataPartoProgramado && dataCesareaLocal && (
+                  <p className="text-sm text-orange-600 font-medium">
+                    Clique em "Agendar" para confirmar a data e enviar ao Mapa Cirúrgico.
+                  </p>
                 )}
               </div>
               
@@ -3430,12 +3438,12 @@ export default function CartaoPrenatal() {
               ) : (
                 <>
                   <p className="text-red-700 font-medium">
-                    A cesárea está agendada após 41 semanas (pós-termo).
+                    A cesárea está agendada com 40 semanas ou mais (pós-termo).
                   </p>
                   {confirmacaoDataCesarea.igNaData && (
                     <p>IG estimada na data: <strong>{confirmacaoDataCesarea.igNaData.semanas}s{confirmacaoDataCesarea.igNaData.dias}d</strong></p>
                   )}
-                  <p>Gestações após 41 semanas requerem avaliação rigorosa. Deseja confirmar esta data?</p>
+                  <p>Gestações com 40 semanas ou mais requerem avaliação rigorosa. Deseja confirmar esta data?</p>
                 </>
               )}
             </div>
@@ -3463,11 +3471,12 @@ export default function CartaoPrenatal() {
                   igNaData: confirmacaoDataCesarea.igNaData
                 });
               }
+              setDataCesareaModificada(false);
               setConfirmacaoDataCesarea({ open: false, tipo: null, novaData: '', igNaData: null });
-              toast.warning('Data salva com aviso', {
+              toast.warning('Cesárea agendada com aviso', {
                 description: confirmacaoDataCesarea.tipo === 'passado' 
-                  ? 'A data está no passado. Verifique se está correta.'
-                  : `Cesárea agendada fora do período recomendado (${confirmacaoDataCesarea.tipo}).`,
+                  ? `Data ${confirmacaoDataCesarea.novaData.split('-').reverse().join('/')} está no passado. Enviado ao Mapa Cirúrgico.`
+                  : `Cesárea agendada fora do período recomendado (${confirmacaoDataCesarea.tipo}). Enviado ao Mapa Cirúrgico.`,
               });
             }}
           >

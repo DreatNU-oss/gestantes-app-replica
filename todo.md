@@ -1359,3 +1359,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar endpoint tRPC gestante.loginComSenha com credenciais hardcoded (SEM tabela de senhas, SEM bcrypt)
 - [x] Testar endpoint com curl — sucesso, senha errada e email errado todos funcionando
 - [x] Escrever testes vitest — 8 testes passando
+
+## Refatorar agendamento de cesárea no Cartão de Pré-natal (23/02/2026) — CONCLUÍDO
+- [x] Adicionar botão "Agendar" na seção de cesárea (data só salva ao clicar no botão)
+- [x] Pop-up de alerta aparece apenas ao clicar em "Agendar" (não ao mudar a data)
+- [x] Alertar quando cesárea < 37 semanas (pré-termo)
+- [x] Alertar quando cesárea >= 40 semanas (pós-termo) — limiar atualizado de 41 para 40 semanas
+- [x] Envio ao Mapa Cirúrgico só após confirmar no pop-up
+- [x] Testar e verificar — 30 testes passando
