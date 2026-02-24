@@ -1390,3 +1390,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Ajustar posição de Fatores de Risco e Medicamentos (24/02/2026) — CONCLUÍDO
 - [x] Mover Fatores de Risco e Medicamentos para antes dos Marcos Importantes
+
+## Navegação rápida por âncoras no Cartão de Pré-natal (24/02/2026) — CONCLUÍDO
+- [x] Adicionar IDs a todas as seções principais do Cartão de Pré-natal
+- [x] Criar barra de navegação rápida com links âncora no topo
+- [x] Scroll suave ao clicar nos links
+- [x] Verificar compilação — sem erros TypeScript/LSP

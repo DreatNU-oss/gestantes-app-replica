@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -1988,9 +1988,40 @@ export default function CartaoPrenatal() {
           </CardContent>
         </Card>
 
+        {/* Barra de Navegação Rápida */}
+        {gestanteSelecionada && gestante && (
+          <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b py-2 px-1 -mx-1 rounded-lg">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {[
+                { id: 'dados-gestante', label: 'Dados', icon: FileText },
+                { id: 'nova-consulta', label: 'Consulta', icon: Stethoscope },
+                { id: 'historico-consultas', label: 'Histórico', icon: ClipboardList },
+                { id: 'cesarea', label: 'Cesárea', icon: Calendar },
+                { id: 'dados-bebe', label: 'Bebê', icon: Baby },
+                { id: 'fatores-risco', label: 'Fatores de Risco', icon: Heart },
+                { id: 'medicamentos', label: 'Medicamentos', icon: Pill },
+                { id: 'marcos-importantes', label: 'Marcos', icon: Milestone },
+                { id: 'graficos', label: 'Gráficos', icon: ChartLine },
+              ].map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => {
+                    const el = document.getElementById(id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-full border bg-card hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Informações da Gestante */}
         {gestante && (
-          <Card>
+          <Card id="dados-gestante">
             <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
               <CardTitle className="flex items-center gap-2 text-base">
                 <FileText className="h-4 w-4" />
@@ -2029,6 +2060,7 @@ export default function CartaoPrenatal() {
         )}
 
         {/* Botão Nova Consulta */}
+        <div id="nova-consulta">
         {gestanteSelecionada && !mostrarFormulario && (
           <Button onClick={() => {
             setMostrarFormulario(true);
@@ -2037,6 +2069,7 @@ export default function CartaoPrenatal() {
             Nova Consulta
           </Button>
         )}
+        </div>
 
         {/* Formulário de Consulta */}
         {mostrarFormulario && (
@@ -2620,7 +2653,7 @@ export default function CartaoPrenatal() {
 
         {/* Histórico de Consultas */}
         {gestanteSelecionada && consultas && consultas.length > 0 && (
-          <Card>
+          <Card id="historico-consultas">
             <CardHeader>
               <CardTitle>Histórico de Consultas</CardTitle>
             </CardHeader>
@@ -2783,7 +2816,7 @@ export default function CartaoPrenatal() {
 
         {/* Data Planejada para a Cesárea */}
         {gestanteSelecionada && gestante && (
-          <Card>
+          <Card id="cesarea">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
@@ -2975,7 +3008,7 @@ export default function CartaoPrenatal() {
 
         {/* Dados do Bebê */}
         {gestanteSelecionada && gestante && (
-          <Card className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
+          <Card id="dados-bebe" className={gestante.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400" : gestante.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400" : ""}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {gestante.sexoBebe === "masculino" ? (
@@ -3060,6 +3093,7 @@ export default function CartaoPrenatal() {
         )}
 
         {/* Fatores de Risco */}
+        <div id="fatores-risco">
         {gestanteSelecionada && gestante && (
           <FatoresRiscoManager 
             gestanteId={gestanteSelecionada} 
@@ -3067,10 +3101,14 @@ export default function CartaoPrenatal() {
           />
         )}
 
+        </div>
+
         {/* Medicamentos na Gestação */}
+        <div id="medicamentos">
         {gestanteSelecionada && (
           <MedicamentosManager gestanteId={gestanteSelecionada} />
         )}
+        </div>
 
         {/* Marcos Importantes da Gestação */}
         {gestante && (gestante.dataUltrassom || gestante.dum) && (
@@ -3147,6 +3185,7 @@ export default function CartaoPrenatal() {
         )}
 
         {/* Gráfico de Peso */}
+        <div id="graficos">
         {gestante && consultas && consultas.length > 0 && gestante.altura && gestante.pesoInicial && (
           <Card>
             <CardHeader>
@@ -3212,6 +3251,8 @@ export default function CartaoPrenatal() {
             </CardContent>
           </Card>
         )}
+
+        </div>
 
         {/* Botão Gerar Cartão */}
         {gestante && (
