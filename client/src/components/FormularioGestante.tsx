@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, Baby, Check, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, Baby, Check, AlertTriangle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,6 +69,10 @@ export default function FormularioGestante({
     tipo: 'pre-termo' | 'pos-termo' | 'passado' | null;
     igNaData: { semanas: number; dias: number } | null;
   }>({ open: false, tipo: null, igNaData: null });
+  
+  // Estado local para data de cesárea pendente (só confirma ao clicar "Agendar")
+  const [dataCesareaLocal, setDataCesareaLocal] = useState("");
+  const [dataCesareaConfirmada, setDataCesareaConfirmada] = useState(false);
   
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
@@ -273,45 +277,7 @@ export default function FormularioGestante({
     }
   }, [formData.dum, formData.dataUltrassom, formData.igUltrassomSemanas, formData.igUltrassomDias, tipoDUM]);
   
-  // Validar data de cesárea
-  useEffect(() => {
-    if (formData.dataPartoProgramado && formData.dum && tipoDUM === "data") {
-      try {
-        const dumDate = parseLocalDate(formData.dum);
-        const dataCesarea = parseLocalDate(formData.dataPartoProgramado);
-        
-        // Calcular IG na data da cesárea
-        const diffMs = dataCesarea.getTime() - dumDate.getTime();
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        const semanas = Math.floor(diffDays / 7);
-        const dias = diffDays % 7;
-        
-        // Validar se está fora do período recomendado (37-41 semanas)
-        if (semanas < 37) {
-          setAlertaDataCesarea({
-            show: true,
-            tipo: 'pre-termo',
-            igNaData: { semanas, dias },
-            acknowledged: false
-          });
-        } else if (semanas > 41) {
-          setAlertaDataCesarea({
-            show: true,
-            tipo: 'pos-termo',
-            igNaData: { semanas, dias },
-            acknowledged: false
-          });
-        } else {
-          setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
-        }
-      } catch (error) {
-        console.error('Erro ao validar data de cesárea:', error);
-        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
-      }
-    } else {
-      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
-    }
-  }, [formData.dataPartoProgramado, formData.dum, tipoDUM]);
+  // Validação de data de cesárea agora é feita no botão "Agendar" (não mais automática)
   
   // Validar altura e peso
   useEffect(() => {
@@ -439,6 +405,11 @@ export default function FormularioGestante({
       
       // Inicializar estado local para motivo de cesárea "Outro"
       setMotivoCesareaOutroLocal(gestante.motivoCesareaOutro || "");
+      
+      // Inicializar estado local para data de cesárea
+      const dataExistente = gestante.dataPartoProgramado ? (typeof gestante.dataPartoProgramado === 'string' ? gestante.dataPartoProgramado : (gestante.dataPartoProgramado as Date).toISOString().split('T')[0]) : "";
+      setDataCesareaLocal(dataExistente);
+      setDataCesareaConfirmada(!!dataExistente);
     }
   }, [gestante]);
 
@@ -525,10 +496,10 @@ export default function FormularioGestante({
       return;
     }
     
-    // Bloquear salvamento se houver alerta de data não reconhecido
-    if (alertaDataCesarea.show && !alertaDataCesarea.acknowledged) {
-      toast.error('Alerta de data de cesárea não reconhecido', {
-        description: 'Revise a data de parto programado ou reconheça o alerta antes de salvar.',
+    // Bloquear salvamento se data de cesárea foi preenchida mas não confirmada com o botão Agendar
+    if (dataCesareaLocal && !dataCesareaConfirmada) {
+      toast.error('Data de cesárea não confirmada', {
+        description: 'Clique no botão "Agendar" para confirmar a data da cesárea antes de salvar.',
       });
       return;
     }
@@ -1033,28 +1004,49 @@ export default function FormularioGestante({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="dataPartoProgramado">Data Planejada para a Cesárea</Label>
-                {formData.dataPartoProgramado && formData.tipoPartoDesejado === "cesariana" && (
+                {dataCesareaConfirmada && formData.dataPartoProgramado && (
                   <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
                     <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-                    Sincroniza com Mapa Cirúrgico
+                    Sincronizará com Mapa Cirúrgico ao salvar
                   </span>
                 )}
               </div>
-              <Input
-                id="dataPartoProgramado"
-                type="date"
-                value={formData.dataPartoProgramado}
-                onChange={(e) => {
-                  const novaData = e.target.value;
-                  setFormData({ 
-                    ...formData, 
-                    dataPartoProgramado: novaData,
-                    // Automaticamente mudar para cesárea quando data for cadastrada
-                    tipoPartoDesejado: novaData ? "cesariana" : formData.tipoPartoDesejado
-                  });
-                  
-                  // Verificar se a data está no passado
-                  if (novaData) {
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="dataPartoProgramado"
+                  type="date"
+                  value={dataCesareaLocal}
+                  onChange={(e) => {
+                    const novaData = e.target.value;
+                    setDataCesareaLocal(novaData);
+                    // Se a data mudou, marcar como não confirmada
+                    if (novaData !== formData.dataPartoProgramado) {
+                      setDataCesareaConfirmada(false);
+                    }
+                    // Limpar alerta ao mudar data
+                    setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
+                  }}
+                  className="max-w-xs"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    const novaData = dataCesareaLocal;
+                    
+                    // Se a data foi limpa, remover agendamento
+                    if (!novaData) {
+                      setFormData(prev => ({
+                        ...prev,
+                        dataPartoProgramado: '',
+                      }));
+                      setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
+                      setDataCesareaConfirmada(false);
+                      toast.success('Agendamento de cesárea removido.');
+                      return;
+                    }
+                    
+                    // Verificar se a data está no passado
                     const hoje = new Date();
                     hoje.setHours(0, 0, 0, 0);
                     const dataSelecionada = new Date(novaData + 'T00:00:00');
@@ -1064,24 +1056,19 @@ export default function FormularioGestante({
                         tipo: 'passado',
                         igNaData: null
                       });
-                      // Reverter a data
-                      setFormData(prev => ({ ...prev, dataPartoProgramado: '' }));
                       return;
                     }
-                  }
-                  
-                  // Validar data da cesárea
-                  if (novaData) {
+                    
+                    // Calcular IG na data
                     let dataReferencia: Date | null = null;
                     let igReferenciaDias: number = 0;
                     
-                    // Priorizar ultrassom se disponível
                     if (formData.dataUltrassom && formData.igUltrassomSemanas) {
                       dataReferencia = parseLocalDate(formData.dataUltrassom);
                       igReferenciaDias = parseInt(formData.igUltrassomSemanas) * 7 + (formData.igUltrassomDias ? parseInt(formData.igUltrassomDias) : 0);
                     } else if (formData.dum && tipoDUM === "data") {
                       dataReferencia = parseLocalDate(formData.dum);
-                      igReferenciaDias = 0; // IG na DUM é 0
+                      igReferenciaDias = 0;
                     }
                     
                     if (dataReferencia) {
@@ -1092,31 +1079,61 @@ export default function FormularioGestante({
                       const igNaDataSemanas = Math.floor(igNaDataDias / 7);
                       const igNaDataDiasRestantes = igNaDataDias % 7;
                       
-                      // Verificar se está antes de 37 semanas (259 dias) ou após 41 semanas (287 dias)
+                      // Pré-termo: < 37 semanas (259 dias)
                       if (igNaDataDias < 259) {
-                        setAlertaDataCesarea({
-                          show: true,
+                        setConfirmacaoDataCesarea({
+                          open: true,
                           tipo: 'pre-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes },
-                          acknowledged: false
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                         });
-                      } else if (igNaDataDias > 287) {
-                        setAlertaDataCesarea({
-                          show: true,
+                        return;
+                      }
+                      // Pós-termo: >= 40 semanas (280 dias)
+                      if (igNaDataDias >= 280) {
+                        setConfirmacaoDataCesarea({
+                          open: true,
                           tipo: 'pos-termo',
-                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes },
-                          acknowledged: false
+                          igNaData: { semanas: igNaDataSemanas, dias: igNaDataDiasRestantes }
                         });
-                      } else {
-                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
+                        return;
                       }
                     }
-                  } else {
+                    
+                    // Data dentro do período normal: confirmar
+                    setFormData(prev => ({
+                      ...prev,
+                      dataPartoProgramado: novaData,
+                      tipoPartoDesejado: "cesariana",
+                    }));
+                    setDataCesareaConfirmada(true);
                     setAlertaDataCesarea({ show: false, tipo: null, igNaData: null, acknowledged: false });
-                  }
-                }}
-              />
+                    toast.success('Cesárea agendada!', {
+                      description: `Data: ${novaData.split('-').reverse().join('/')}. Será sincronizada com o Mapa Cirúrgico ao salvar.`,
+                    });
+                  }}
+                  disabled={dataCesareaConfirmada && dataCesareaLocal === formData.dataPartoProgramado}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <CalendarCheck className="h-4 w-4 mr-1" />
+                  {formData.dataPartoProgramado && dataCesareaConfirmada ? 'Reagendar' : 'Agendar'}
+                </Button>
+              </div>
               <p className="text-sm text-muted-foreground">Para cesáreas eletivas ou partos programados</p>
+              {dataCesareaConfirmada && formData.dataPartoProgramado && (
+                <p className="text-sm text-muted-foreground">
+                  Data agendada: {formData.dataPartoProgramado.split('-').reverse().join('/')}
+                  {dataCesareaLocal !== formData.dataPartoProgramado && dataCesareaLocal && (
+                    <span className="ml-2 text-orange-600 font-medium">
+                      (clique em "Reagendar" para confirmar a nova data)
+                    </span>
+                  )}
+                </p>
+              )}
+              {!dataCesareaConfirmada && dataCesareaLocal && (
+                <p className="text-sm text-orange-600 font-medium">
+                  Clique em "Agendar" para confirmar a data da cesárea.
+                </p>
+              )}
               
               {alertaDataCesarea.show && alertaDataCesarea.igNaData && (
                 <div className={`mt-2 p-3 rounded-lg border ${
@@ -1132,7 +1149,7 @@ export default function FormularioGestante({
                       <p className="font-semibold text-sm">
                         {alertaDataCesarea.tipo === 'pre-termo' 
                           ? 'Cesárea agendada antes de 37 semanas (pré-termo)' 
-                          : 'Cesárea agendada após 41 semanas (pós-termo)'}
+                          : 'Cesárea agendada com 40 semanas ou mais (pós-termo)'}
                       </p>
                       <p className="text-xs mt-1">
                         IG estimada na data: {alertaDataCesarea.igNaData.semanas}s{alertaDataCesarea.igNaData.dias}d
@@ -1140,34 +1157,15 @@ export default function FormularioGestante({
                       <p className="text-xs mt-1">
                         {alertaDataCesarea.tipo === 'pre-termo' 
                           ? 'Cesáreas eletivas são recomendadas a partir de 37 semanas completas.' 
-                          : 'Gestações após 41 semanas requerem avaliação rigorosa e monitoramento intensivo.'}
+                          : 'Gestações com 40 semanas ou mais requerem avaliação rigorosa e monitoramento intensivo.'}
                       </p>
-                      {!alertaDataCesarea.acknowledged && (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          className={`mt-2 ${
-                            alertaDataCesarea.tipo === 'pre-termo' 
-                              ? 'border-orange-400 text-orange-700 hover:bg-orange-100' 
-                              : 'border-red-400 text-red-700 hover:bg-red-100'
-                          }`}
-                          onClick={() => setAlertaDataCesarea(prev => ({ ...prev, acknowledged: true }))}
-                        >
-                          <Check className="h-4 w-4 mr-1" />
-                          Estou ciente, prosseguir
-                        </Button>
-                      )}
-                      {alertaDataCesarea.acknowledged && (
-                        <p className="text-xs mt-2 font-medium text-green-700">✓ Alerta reconhecido</p>
-                      )}
                     </div>
                   </div>
                 </div>
               )}
             </div>
             
-            {formData.dataPartoProgramado && (
+            {dataCesareaConfirmada && formData.dataPartoProgramado && (
               <div className="space-y-2">
                 <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
                 <Select
@@ -1501,22 +1499,90 @@ export default function FormularioGestante({
       )}
     </div>
     
-    {/* Diálogo de confirmação para data no passado */}
+    {/* Diálogo de confirmação para data de cesárea fora do período recomendado */}
     <AlertDialog open={confirmacaoDataCesarea.open} onOpenChange={(open) => {
       if (!open) setConfirmacaoDataCesarea({ open: false, tipo: null, igNaData: null });
     }}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            Data no passado!
+            <AlertTriangle className={`h-5 w-5 ${
+              confirmacaoDataCesarea.tipo === 'passado' ? 'text-red-600' :
+              confirmacaoDataCesarea.tipo === 'pre-termo' ? 'text-orange-600' : 'text-red-600'
+            }`} />
+            {confirmacaoDataCesarea.tipo === 'passado' 
+              ? 'Data no passado!' 
+              : confirmacaoDataCesarea.tipo === 'pre-termo' 
+                ? 'Cesárea pré-termo!' 
+                : 'Cesárea pós-termo!'}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            A data selecionada já passou. Verifique se o ano está correto antes de prosseguir.
+          <AlertDialogDescription asChild>
+            <div className="space-y-3">
+              {confirmacaoDataCesarea.tipo === 'passado' ? (
+                <>
+                  <p className="text-red-700 font-medium">
+                    A data selecionada ({dataCesareaLocal.split('-').reverse().join('/')}) já passou.
+                  </p>
+                  <p>Verifique se o ano está correto. Deseja realmente agendar para esta data?</p>
+                </>
+              ) : confirmacaoDataCesarea.tipo === 'pre-termo' ? (
+                <>
+                  <p className="text-orange-700 font-medium">
+                    A cesárea está agendada antes de 37 semanas (pré-termo).
+                  </p>
+                  {confirmacaoDataCesarea.igNaData && (
+                    <p>IG estimada na data: <strong>{confirmacaoDataCesarea.igNaData.semanas}s{confirmacaoDataCesarea.igNaData.dias}d</strong></p>
+                  )}
+                  <p>Cesáreas eletivas são recomendadas a partir de 37 semanas completas. Deseja confirmar esta data?</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-red-700 font-medium">
+                    A cesárea está agendada com 40 semanas ou mais (pós-termo).
+                  </p>
+                  {confirmacaoDataCesarea.igNaData && (
+                    <p>IG estimada na data: <strong>{confirmacaoDataCesarea.igNaData.semanas}s{confirmacaoDataCesarea.igNaData.dias}d</strong></p>
+                  )}
+                  <p>Gestações com 40 semanas ou mais requerem avaliação rigorosa. Deseja confirmar esta data?</p>
+                </>
+              )}
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            className={`${
+              confirmacaoDataCesarea.tipo === 'passado' ? 'bg-red-600 hover:bg-red-700' :
+              confirmacaoDataCesarea.tipo === 'pre-termo' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-red-600 hover:bg-red-700'
+            }`}
+            onClick={() => {
+              // Salvar a data após confirmação
+              setFormData(prev => ({
+                ...prev,
+                dataPartoProgramado: dataCesareaLocal,
+                tipoPartoDesejado: "cesariana",
+              }));
+              setDataCesareaConfirmada(true);
+              // Mostrar alerta persistente
+              if (confirmacaoDataCesarea.tipo !== 'passado' && confirmacaoDataCesarea.igNaData) {
+                setAlertaDataCesarea({
+                  show: true,
+                  tipo: confirmacaoDataCesarea.tipo as 'pre-termo' | 'pos-termo',
+                  igNaData: confirmacaoDataCesarea.igNaData,
+                  acknowledged: true
+                });
+              }
+              setConfirmacaoDataCesarea({ open: false, tipo: null, igNaData: null });
+              toast.warning('Cesárea agendada com aviso', {
+                description: confirmacaoDataCesarea.tipo === 'passado' 
+                  ? `Data ${dataCesareaLocal.split('-').reverse().join('/')} está no passado. Será sincronizada ao salvar.`
+                  : `Cesárea agendada fora do período recomendado (${confirmacaoDataCesarea.tipo}). Será sincronizada ao salvar.`,
+              });
+            }}
+          >
+            Confirmar mesmo assim
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
