@@ -1387,3 +1387,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Mover Fatores de Risco para depois do formulário de consultas e consultas anteriores
 - [x] Mover Medicamentos em Uso para depois do formulário de consultas e consultas anteriores
 - [x] Verificar compilação e testes — sem erros TypeScript/LSP
+
+## Ajustar posição de Fatores de Risco e Medicamentos (24/02/2026) — CONCLUÍDO
+- [x] Mover Fatores de Risco e Medicamentos para antes dos Marcos Importantes

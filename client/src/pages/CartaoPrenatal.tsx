@@ -3059,6 +3059,19 @@ export default function CartaoPrenatal() {
           </Card>
         )}
 
+        {/* Fatores de Risco */}
+        {gestanteSelecionada && gestante && (
+          <FatoresRiscoManager 
+            gestanteId={gestanteSelecionada} 
+            idadeGestante={gestante.calculado?.idade}
+          />
+        )}
+
+        {/* Medicamentos na Gestação */}
+        {gestanteSelecionada && (
+          <MedicamentosManager gestanteId={gestanteSelecionada} />
+        )}
+
         {/* Marcos Importantes da Gestação */}
         {gestante && (gestante.dataUltrassom || gestante.dum) && (
           <Card id="marcos-importantes">
@@ -3131,19 +3144,6 @@ export default function CartaoPrenatal() {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Fatores de Risco */}
-        {gestanteSelecionada && gestante && (
-          <FatoresRiscoManager 
-            gestanteId={gestanteSelecionada} 
-            idadeGestante={gestante.calculado?.idade}
-          />
-        )}
-
-        {/* Medicamentos na Gestação */}
-        {gestanteSelecionada && (
-          <MedicamentosManager gestanteId={gestanteSelecionada} />
         )}
 
         {/* Gráfico de Peso */}
