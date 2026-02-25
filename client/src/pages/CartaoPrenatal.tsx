@@ -1656,6 +1656,17 @@ export default function CartaoPrenatal() {
     const textoGerado = gerarTextoPEP();
     setTextoPEP(textoGerado);
 
+    // Salvar queixas personalizadas para rastreamento de frequência
+    if (formData.queixas && formData.queixas.trim()) {
+      const queixasArray = formData.queixas.split(/[/,]/).map(q => q.trim()).filter(q => q.length > 0);
+      queixasArray.forEach(queixa => {
+        // Apenas queixas que não são sugestões estáticas
+        if (!SUGESTOES_QUEIXAS.includes(queixa)) {
+          upsertQueixaMutation.mutate({ texto: queixa });
+        }
+      });
+    }
+
     // Calcular IG pela DUM e pelo Ultrassom
     const igDUM = calcularIG(formData.dataConsulta);
     const igUS = calcularIGPorUS(formData.dataConsulta);
@@ -2214,18 +2225,7 @@ export default function CartaoPrenatal() {
                     ) : (
                       <AutocompleteInput
                         value={formData.queixas}
-                        onChange={(val) => {
-                          setFormData({ ...formData, queixas: val });
-                          // Salvar queixas personalizadas quando o usuário digita
-                          if (val && val.trim()) {
-                            const queixasArray = val.split(/[/,]/).map(q => q.trim()).filter(q => q.length > 0);
-                            queixasArray.forEach(queixa => {
-                              if (!SUGESTOES_QUEIXAS.includes(queixa) && !queixasPersonalizadas?.some((q: any) => q.texto === queixa)) {
-                                upsertQueixaMutation.mutate({ texto: queixa });
-                              }
-                            });
-                          }
-                        }}
+                        onChange={(val) => setFormData({ ...formData, queixas: val })}
                         suggestions={sugestoesQueixasCombinadas}
                         placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                       />

@@ -1408,3 +1408,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar tracking de frequência de uso no AutocompleteInput
 - [x] Ordenar sugestões por frequência (mais usados primeiro)
 - [x] Verificar compilação e testar — sem erros TypeScript/LSP
+
+## Corrigir ordenação por frequência no campo Queixas (24/02/2026) — CONCLUÍDO
+- [x] Investigar por que está ordenando alfabeticamente em vez de por usageCount
+- [x] Corrigir a query ou lógica de ordenação — movido upsert para handleSubmit
+- [x] Testar e verificar — sem erros TypeScript/LSP

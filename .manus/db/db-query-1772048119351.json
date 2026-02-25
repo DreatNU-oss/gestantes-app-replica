@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, texto, usageCount, ativo, createdAt FROM queixasPersonalizadas ORDER BY usageCount DESC, createdAt DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, texto, usageCount, ativo, createdAt FROM queixasPersonalizadas ORDER BY usageCount DESC, createdAt DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "2",
+      "texto": "Ansiedade.",
+      "usageCount": "5",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:57"
+    },
+    {
+      "id": "19",
+      "texto": "Ansiedade. Já está",
+      "usageCount": "4",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:39:00"
+    },
+    {
+      "id": "14",
+      "texto": "Ansiedade. Já",
+      "usageCount": "4",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:59"
+    },
+    {
+      "id": "56",
+      "texto": "02 episódios de migrânia",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:43"
+    },
+    {
+      "id": "45",
+      "texto": "02 episódios",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:41"
+    },
+    {
+      "id": "47",
+      "texto": "02 episódios de",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:41"
+    },
+    {
+      "id": "35",
+      "texto": "02",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:39"
+    },
+    {
+      "id": "30",
+      "texto": "Migrâ",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:36"
+    },
+    {
+      "id": "31",
+      "texto": "Migrân",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:36"
+    },
+    {
+      "id": "32",
+      "texto": "Migrâni",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:36"
+    },
+    {
+      "id": "25",
+      "texto": "M",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:35"
+    },
+    {
+      "id": "28",
+      "texto": "Migr",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:35"
+    },
+    {
+      "id": "26",
+      "texto": "Mig",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:35"
+    },
+    {
+      "id": "27",
+      "texto": "Mi",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 17:53:35"
+    },
+    {
+      "id": "20",
+      "texto": "Ansiedade. Já está e",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:39:01"
+    },
+    {
+      "id": "17",
+      "texto": "Ansiedade. Já est",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:39:00"
+    },
+    {
+      "id": "12",
+      "texto": "Ansiedade. J",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:59"
+    },
+    {
+      "id": "15",
+      "texto": "Ansiedade. Já e",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:59"
+    },
+    {
+      "id": "16",
+      "texto": "Ansiedade. Já es",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:59"
+    },
+    {
+      "id": "1",
+      "texto": "Ansiedade..",
+      "usageCount": "2",
+      "ativo": "1",
+      "createdAt": "2026-02-25 16:38:57"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttexto\tusageCount\tativo\tcreatedAt\n2\tAnsiedade.\t5\t1\t2026-02-25 16:38:57\n19\tAnsiedade. Já está\t4\t1\t2026-02-25 16:39:00\n14\tAnsiedade. Já\t4\t1\t2026-02-25 16:38:59\n56\t02 episódios de migrânia\t2\t1\t2026-02-25 17:53:43\n45\t02 episódios\t2\t1\t2026-02-25 17:53:41\n47\t02 episódios de\t2\t1\t2026-02-25 17:53:41\n35\t02\t2\t1\t2026-02-25 17:53:39\n30\tMigrâ\t2\t1\t2026-02-25 17:53:36\n31\tMigrân\t2\t1\t2026-02-25 17:53:36\n32\tMigrâni\t2\t1\t2026-02-25 17:53:36\n25\tM\t2\t1\t2026-02-25 17:53:35\n28\tMigr\t2\t1\t2026-02-25 17:53:35\n26\tMig\t2\t1\t2026-02-25 17:53:35\n27\tMi\t2\t1\t2026-02-25 17:53:35\n20\tAnsiedade. Já está e\t2\t1\t2026-02-25 16:39:01\n17\tAnsiedade. Já est\t2\t1\t2026-02-25 16:39:00\n12\tAnsiedade. J\t2\t1\t2026-02-25 16:38:59\n15\tAnsiedade. Já e\t2\t1\t2026-02-25 16:38:59\n16\tAnsiedade. Já es\t2\t1\t2026-02-25 16:38:59\n1\tAnsiedade..\t2\t1\t2026-02-25 16:38:57\n",
+  "stderr": "",
+  "execution_time_ms": 104
+}
