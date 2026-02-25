@@ -33,6 +33,9 @@ import {
   condutasPersonalizadas,
   InsertCondutaPersonalizada,
   CondutaPersonalizada,
+  queixasPersonalizadas,
+  InsertQueixaPersonalizada,
+  QueixaPersonalizada,
   partosRealizados,
   fatoresRisco,
   InsertFatorRisco,
@@ -718,6 +721,50 @@ export async function deleteCondutaPersonalizada(id: number): Promise<void> {
   
   // Soft delete - apenas marca como inativo
   await db.update(condutasPersonalizadas).set({ ativo: 0 }).where(eq(condutasPersonalizadas.id, id));
+}
+
+// ============ QUEIXAS PERSONALIZADAS ============
+
+export async function getQueixasPersonalizadas(): Promise<QueixaPersonalizada[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(queixasPersonalizadas)
+    .where(eq(queixasPersonalizadas.ativo, 1))
+    .orderBy(desc(queixasPersonalizadas.usageCount), desc(queixasPersonalizadas.createdAt));
+}
+
+export async function upsertQueixaPersonalizada(texto: string): Promise<QueixaPersonalizada> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Tentar encontrar queixa existente
+  const existing = await db.select().from(queixasPersonalizadas)
+    .where(eq(queixasPersonalizadas.texto, texto))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    // Incrementar contador de uso
+    const updated = await db.update(queixasPersonalizadas)
+      .set({ 
+        usageCount: existing[0].usageCount + 1,
+        ativo: 1 // Reativar se estava inativo
+      })
+      .where(eq(queixasPersonalizadas.id, existing[0].id));
+    
+    const result = await db.select().from(queixasPersonalizadas)
+      .where(eq(queixasPersonalizadas.id, existing[0].id))
+      .limit(1);
+    return result[0] as QueixaPersonalizada;
+  } else {
+    // Criar nova queixa
+    const result = await db.insert(queixasPersonalizadas).values({ texto, usageCount: 1 });
+    const insertedId = Number(result[0].insertId);
+    const inserted = await db.select().from(queixasPersonalizadas)
+      .where(eq(queixasPersonalizadas.id, insertedId))
+      .limit(1);
+    return inserted[0] as QueixaPersonalizada;
+  }
 }
 
 // ============ FATORES DE RISCO ============

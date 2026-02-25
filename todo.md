@@ -1402,3 +1402,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Reduzir ainda mais espaçamento na seção Dados da Gestante (24/02/2026) — CONCLUÍDO
 - [x] Reduzir ainda mais padding antes do título, entre título e nome, e após DPPs
+
+## Ordenação por frequência no AutocompleteInput (24/02/2026) — CONCLUÍDO
+- [x] Analisar lógica de ordenação por frequência na janela de Conduta
+- [x] Implementar tracking de frequência de uso no AutocompleteInput
+- [x] Ordenar sugestões por frequência (mais usados primeiro)
+- [x] Verificar compilação e testar — sem erros TypeScript/LSP

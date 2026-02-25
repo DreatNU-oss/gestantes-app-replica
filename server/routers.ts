@@ -54,6 +54,8 @@ import {
   createCondutaPersonalizada,
   updateCondutaPersonalizada,
   deleteCondutaPersonalizada,
+  getQueixasPersonalizadas,
+  upsertQueixaPersonalizada,
   getFatoresRiscoByGestanteId,
   createFatorRisco,
   updateFatorRisco,
@@ -2383,6 +2385,18 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deleteCondutaPersonalizada(input.id)),
+  }),
+
+  // Queixas personalizadas
+  queixas: router({
+    list: protectedProcedure
+      .query(() => getQueixasPersonalizadas()),
+    
+    upsert: protectedProcedure
+      .input(z.object({
+        texto: z.string().min(1),
+      }))
+      .mutation(({ input }) => upsertQueixaPersonalizada(input.texto)),
   }),
 
   // Histórico de interpretações de IA

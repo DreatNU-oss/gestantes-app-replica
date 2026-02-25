@@ -401,6 +401,16 @@ export default function CartaoPrenatal() {
       toast.error("Erro ao adicionar conduta: " + error.message);
     },
   });
+
+  // Buscar queixas personalizadas
+  const { data: queixasPersonalizadas } = trpc.queixas.list.useQuery();
+  const upsertQueixaMutation = trpc.queixas.upsert.useMutation();
+
+  // Combinar sugestões estáticas com queixas personalizadas ordenadas por frequência
+  const sugestoesQueixasCombinadas = [
+    ...(queixasPersonalizadas?.map((q: any) => q.texto) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s))
+  ];
   const deleteCondutaMutation = trpc.condutas.delete.useMutation({
     onSuccess: () => {
       toast.success("Conduta removida!");
@@ -2204,8 +2214,19 @@ export default function CartaoPrenatal() {
                     ) : (
                       <AutocompleteInput
                         value={formData.queixas}
-                        onChange={(val) => setFormData({ ...formData, queixas: val })}
-                        suggestions={SUGESTOES_QUEIXAS}
+                        onChange={(val) => {
+                          setFormData({ ...formData, queixas: val });
+                          // Salvar queixas personalizadas quando o usuário digita
+                          if (val && val.trim()) {
+                            const queixasArray = val.split(/[/,]/).map(q => q.trim()).filter(q => q.length > 0);
+                            queixasArray.forEach(queixa => {
+                              if (!SUGESTOES_QUEIXAS.includes(queixa) && !queixasPersonalizadas?.some((q: any) => q.texto === queixa)) {
+                                upsertQueixaMutation.mutate({ texto: queixa });
+                              }
+                            });
+                          }
+                        }}
+                        suggestions={sugestoesQueixasCombinadas}
                         placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                       />
                     )}
