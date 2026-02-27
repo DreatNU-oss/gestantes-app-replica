@@ -1450,3 +1450,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Revisar ConsultaUrgencia.tsx — sem salvamento próprio, usa TextareaComAutocomplete
 - [x] Limpar entradas duplicadas/parciais no banco de dados
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Botão para salvar frase como sugestão favorita (27/02/2026) — CONCLUÍDO
+- [x] Adicionar botão BookmarkPlus no TextareaComAutocomplete (Observações, Conduta)
+- [x] Adicionar botão BookmarkPlus no AutocompleteInput (Queixas)
+- [x] Salvar a frase atual do campo como sugestão com um clique
+- [x] Feedback visual ao salvar (toast + mudança de cor verde)
+- [x] Verificar compilação e testes — 42 testes passando, sem erros TypeScript/LSP

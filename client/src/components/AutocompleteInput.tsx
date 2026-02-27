@@ -2,9 +2,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { HelpCircle, Star, X } from "lucide-react";
+import { HelpCircle, Star, X, BookmarkPlus } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
+import { toast } from "sonner";
 
 interface AutocompleteInputProps {
   value: string;
@@ -29,11 +30,14 @@ export function AutocompleteInput({
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [filteredIds, setFilteredIds] = useState<(number | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [justSaved, setJustSaved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   const deleteQueixaMutation = trpc.queixas.delete.useMutation();
+  const upsertQueixaMutation = trpc.queixas.upsert.useMutation();
+  const { refetch: refetchQueixas } = trpc.queixas.list.useQuery(undefined, { enabled: false });
 
   // Extrair o último segmento digitado (após / ou ,) para usar no highlight
   const getLastSegment = (): string => {
@@ -113,12 +117,71 @@ export function AutocompleteInput({
     e.stopPropagation();
     const id = filteredIds[index];
     if (id != null) {
-      deleteQueixaMutation.mutate({ id });
+      deleteQueixaMutation.mutate({ id }, {
+        onSuccess: () => refetchQueixas(),
+      });
       // Remover localmente da lista imediatamente
       setFilteredSuggestions(prev => prev.filter((_, i) => i !== index));
       setFilteredIds(prev => prev.filter((_, i) => i !== index));
     }
-  }, [filteredIds, deleteQueixaMutation]);
+  }, [filteredIds, deleteQueixaMutation, refetchQueixas]);
+
+  // Salvar frase atual como sugestão favorita com um clique
+  const salvarComoFavorita = useCallback(() => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue || trimmedValue.length < 3) {
+      toast.error("Digite uma frase com pelo menos 3 caracteres para salvar");
+      return;
+    }
+
+    // Extrair todas as frases separadas por / ou ,
+    const separators = /[/,]/;
+    const frases = trimmedValue.split(separators).map(f => f.trim()).filter(f => f.length >= 3);
+
+    if (frases.length === 0) {
+      toast.error("Digite uma frase com pelo menos 3 caracteres para salvar");
+      return;
+    }
+
+    let savedCount = 0;
+    let alreadyExistCount = 0;
+
+    frases.forEach(frase => {
+      // Verifica se já é uma sugestão estática
+      if (SUGESTOES_QUEIXAS.includes(frase)) {
+        alreadyExistCount++;
+        return;
+      }
+
+      // Verifica se já existe nas sugestões personalizadas
+      const jaExiste = suggestions.some(s => s.toLowerCase() === frase.toLowerCase() && !SUGESTOES_QUEIXAS.includes(s));
+      if (jaExiste) {
+        alreadyExistCount++;
+        return;
+      }
+
+      upsertQueixaMutation.mutate(
+        { texto: frase },
+        {
+          onSuccess: () => {
+            savedCount++;
+            if (savedCount === 1) {
+              refetchQueixas();
+            }
+          },
+        }
+      );
+      savedCount++;
+    });
+
+    if (savedCount > 0) {
+      toast.success(savedCount === 1 ? "Frase salva como sugestão!" : `${savedCount} frases salvas como sugestões!`);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
+    } else if (alreadyExistCount > 0) {
+      toast.info("Todas as frases já estão salvas nas sugestões");
+    }
+  }, [value, suggestions, upsertQueixaMutation, refetchQueixas]);
 
   // Scroll the selected item into view
   useEffect(() => {
@@ -172,6 +235,7 @@ export function AutocompleteInput({
   };
 
   const lastSegment = getLastSegment();
+  const hasText = value.trim().length >= 3;
 
   return (
     <div ref={containerRef} className="relative">
@@ -190,6 +254,31 @@ export function AutocompleteInput({
           className={className}
           autoComplete="off"
         />
+        {/* Botão salvar como favorita */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className={`transition-colors ${
+                justSaved
+                  ? "text-green-500"
+                  : hasText
+                    ? "text-amber-500 hover:text-amber-600"
+                    : "text-muted-foreground/40 cursor-not-allowed"
+              }`}
+              tabIndex={-1}
+              onClick={salvarComoFavorita}
+              disabled={!hasText}
+            >
+              <BookmarkPlus className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="max-w-xs">
+            <div className="text-xs">
+              Salvar frase como sugestão favorita
+            </div>
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -206,6 +295,7 @@ export function AutocompleteInput({
               <div><strong>↑ ↓</strong> - Navegar sugestões</div>
               <div><strong>Enter</strong> - Selecionar</div>
               <div><strong>Esc</strong> - Fechar</div>
+              <div><strong>Bookmark</strong> - Salvar frase atual</div>
             </div>
           </TooltipContent>
         </Tooltip>

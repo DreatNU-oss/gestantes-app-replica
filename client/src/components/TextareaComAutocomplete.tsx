@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Loader2, HelpCircle, Star, X } from "lucide-react";
+import { Loader2, HelpCircle, Star, X, BookmarkPlus } from "lucide-react";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 interface TextareaComAutocompleteProps {
   value: string;
@@ -32,6 +33,8 @@ export function TextareaComAutocomplete({
   const [selectedFromSuggestion, setSelectedFromSuggestion] = useState(false);
   // Track the value when the field was focused to detect real changes
   const valueOnFocusRef = useRef<string>("");
+  // Track if phrase was just saved to show feedback
+  const [justSaved, setJustSaved] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +44,9 @@ export function TextareaComAutocomplete({
   });
 
   // Mutation para registrar uso
-  const registrarUsoMutation = trpc.historicoTextos.registrarUso.useMutation();
+  const registrarUsoMutation = trpc.historicoTextos.registrarUso.useMutation({
+    onSuccess: () => refetchSugestoes(),
+  });
 
   // Mutation para deletar sugestão
   const deletarMutation = trpc.historicoTextos.deletar.useMutation({
@@ -149,6 +154,33 @@ export function TextareaComAutocomplete({
     setSugestoesFiltradas(prev => prev.filter(s => s.id !== sugestao.id));
   }, [deletarMutation]);
 
+  // Salvar frase atual como sugestão favorita com um clique
+  const salvarComoFavorita = useCallback(() => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue || trimmedValue.length < 3) {
+      toast.error("Digite uma frase com pelo menos 3 caracteres para salvar");
+      return;
+    }
+
+    // Verifica se já existe nas sugestões
+    const jaExiste = sugestoes?.some(s => s.texto.toLowerCase() === trimmedValue.toLowerCase());
+    if (jaExiste) {
+      toast.info("Essa frase já está salva nas sugestões");
+      return;
+    }
+
+    registrarUsoMutation.mutate(
+      { tipo, texto: trimmedValue },
+      {
+        onSuccess: () => {
+          toast.success("Frase salva como sugestão!");
+          setJustSaved(true);
+          setTimeout(() => setJustSaved(false), 2000);
+        },
+      }
+    );
+  }, [value, tipo, sugestoes, registrarUsoMutation]);
+
   // Registrar uso APENAS ao perder foco (blur) — quando o usuário terminou de digitar
   // Não grava se: o texto é muito curto, não mudou desde o foco, ou veio de seleção de sugestão
   const handleBlur = () => {
@@ -201,6 +233,8 @@ export function TextareaComAutocomplete({
       setMostrarSugestoes(true);
     }
   }, [onChange, mostrarSugestoes]);
+
+  const hasText = value.trim().length >= 3;
 
   return (
     <div className="space-y-1">
@@ -275,6 +309,31 @@ export function TextareaComAutocomplete({
             </div>
           )}
         </div>
+        {/* Botão salvar como favorita */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className={`transition-colors mt-2 ${
+                justSaved
+                  ? "text-green-500"
+                  : hasText
+                    ? "text-amber-500 hover:text-amber-600"
+                    : "text-muted-foreground/40 cursor-not-allowed"
+              }`}
+              tabIndex={-1}
+              onClick={salvarComoFavorita}
+              disabled={!hasText}
+            >
+              <BookmarkPlus className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="max-w-xs">
+            <div className="text-xs">
+              Salvar frase como sugestão favorita
+            </div>
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -291,6 +350,7 @@ export function TextareaComAutocomplete({
               <div><strong>↑ ↓</strong> - Navegar sugestões</div>
               <div><strong>Enter</strong> - Selecionar</div>
               <div><strong>Esc</strong> - Fechar</div>
+              <div><strong>Bookmark</strong> - Salvar frase atual</div>
             </div>
           </TooltipContent>
         </Tooltip>
