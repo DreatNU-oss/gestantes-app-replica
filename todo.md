@@ -1413,3 +1413,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigar por que está ordenando alfabeticamente em vez de por usageCount
 - [x] Corrigir a query ou lógica de ordenação — movido upsert para handleSubmit
 - [x] Testar e verificar — sem erros TypeScript/LSP
+
+## Sistema de sugestões por frequência no campo Observações (27/02/2026) — CONCLUÍDO
+- [x] Criar tabela observacoesPersonalizadas no schema (e no banco via SQL)
+- [x] Adicionar funções CRUD no db.ts
+- [x] Adicionar router tRPC para observações personalizadas
+- [x] Campo Observações já usa TextareaComAutocomplete com tipo="observacao" e historicoTextos
+- [x] Contador incrementado automaticamente ao selecionar sugestão ou ao perder foco
+- [x] Verificar compilação — sem erros TypeScript/LSP, 4 registros já no banco

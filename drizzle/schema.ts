@@ -434,6 +434,21 @@ export type QueixaPersonalizada = typeof queixasPersonalizadas.$inferSelect;
 export type InsertQueixaPersonalizada = typeof queixasPersonalizadas.$inferInsert;
 
 /**
+ * Tabela de observações personalizadas com rastreamento de frequência de uso
+ */
+export const observacoesPersonalizadas = mysqlTable("observacoesPersonalizadas", {
+  id: int("id").autoincrement().primaryKey(),
+  texto: varchar("texto", { length: 1000 }).notNull().unique(),
+  usageCount: int("usageCount").default(1).notNull(), // Contador de uso
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ObservacaoPersonalizada = typeof observacoesPersonalizadas.$inferSelect;
+export type InsertObservacaoPersonalizada = typeof observacoesPersonalizadas.$inferInsert;
+
+/**
  * Tabela de histórico de interpretações de IA
  */
 export const historicoInterpretacoes = mysqlTable("historicoInterpretacoes", {

@@ -1,0 +1,60 @@
+{
+  "query": "SELECT tipo, COUNT(*) as total, MAX(contadorUso) as maxUso FROM historicoTextos GROUP BY tipo ORDER BY tipo;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipo, COUNT(*) as total, MAX(contadorUso) as maxUso FROM historicoTextos GROUP BY tipo ORDER BY tipo;",
+  "rows": [
+    {
+      "tipo": "observacao",
+      "total": "4",
+      "maxUso": "15"
+    },
+    {
+      "tipo": "conduta_complementacao",
+      "total": "41",
+      "maxUso": "13"
+    },
+    {
+      "tipo": "historia_patologica",
+      "total": "2",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "historia_social",
+      "total": "1",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "historia_familiar",
+      "total": "1",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "hipotese_diagnostica",
+      "total": "3",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "detalhamento_queixa_urgencia",
+      "total": "2",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "usg_hoje",
+      "total": "2",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "auf_urgencia",
+      "total": "2",
+      "maxUso": "1"
+    },
+    {
+      "tipo": "outra_conduta_urgencia",
+      "total": "1",
+      "maxUso": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipo\ttotal\tmaxUso\nobservacao\t4\t15\nconduta_complementacao\t41\t13\nhistoria_patologica\t2\t1\nhistoria_social\t1\t1\nhistoria_familiar\t1\t1\nhipotese_diagnostica\t3\t1\ndetalhamento_queixa_urgencia\t2\t1\nusg_hoje\t2\t1\nauf_urgencia\t2\t1\noutra_conduta_urgencia\t1\t1\n",
+  "stderr": "",
+  "execution_time_ms": 133
+}

@@ -56,7 +56,10 @@ import {
   OpcaoMedicamento,
   lembretesConduta,
   InsertLembreteConduta,
-  LembreteConduta
+  LembreteConduta,
+  observacoesPersonalizadas,
+  InsertObservacaoPersonalizada,
+  ObservacaoPersonalizada
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -764,6 +767,50 @@ export async function upsertQueixaPersonalizada(texto: string): Promise<QueixaPe
       .where(eq(queixasPersonalizadas.id, insertedId))
       .limit(1);
     return inserted[0] as QueixaPersonalizada;
+  }
+}
+
+// ============ OBSERVAÇÕES PERSONALIZADAS ============
+
+export async function getObservacoesPersonalizadas(): Promise<ObservacaoPersonalizada[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(observacoesPersonalizadas)
+    .where(eq(observacoesPersonalizadas.ativo, 1))
+    .orderBy(desc(observacoesPersonalizadas.usageCount), desc(observacoesPersonalizadas.createdAt));
+}
+
+export async function upsertObservacaoPersonalizada(texto: string): Promise<ObservacaoPersonalizada> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Tentar encontrar observação existente
+  const existing = await db.select().from(observacoesPersonalizadas)
+    .where(eq(observacoesPersonalizadas.texto, texto))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    // Incrementar contador de uso
+    await db.update(observacoesPersonalizadas)
+      .set({ 
+        usageCount: existing[0].usageCount + 1,
+        ativo: 1 // Reativar se estava inativo
+      })
+      .where(eq(observacoesPersonalizadas.id, existing[0].id));
+    
+    const result = await db.select().from(observacoesPersonalizadas)
+      .where(eq(observacoesPersonalizadas.id, existing[0].id))
+      .limit(1);
+    return result[0] as ObservacaoPersonalizada;
+  } else {
+    // Criar nova observação
+    const result = await db.insert(observacoesPersonalizadas).values({ texto, usageCount: 1 });
+    const insertedId = Number(result[0].insertId);
+    const inserted = await db.select().from(observacoesPersonalizadas)
+      .where(eq(observacoesPersonalizadas.id, insertedId))
+      .limit(1);
+    return inserted[0] as ObservacaoPersonalizada;
   }
 }
 

@@ -1,0 +1,34 @@
+{
+  "query": "SELECT tipo, texto, contadorUso, ultimoUso FROM historicoTextos WHERE tipo = 'observacao' ORDER BY contadorUso DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipo, texto, contadorUso, ultimoUso FROM historicoTextos WHERE tipo = 'observacao' ORDER BY contadorUso DESC LIMIT 10;",
+  "rows": [
+    {
+      "tipo": "observacao",
+      "texto": "CTG hoje padrão tranquilizador / Categoria 1.",
+      "contadorUso": "15",
+      "ultimoUso": "2026-02-25 14:36:42"
+    },
+    {
+      "tipo": "observacao",
+      "texto": "CTG hoje padrão tranquilizador / Ctegoria 1.",
+      "contadorUso": "2",
+      "ultimoUso": "2026-02-11 16:52:31"
+    },
+    {
+      "tipo": "observacao",
+      "texto": "Rotina",
+      "contadorUso": "1",
+      "ultimoUso": "2026-01-21 19:47:16"
+    },
+    {
+      "tipo": "observacao",
+      "texto": "Dor em baixo ventre: colo grosso, fechado, sem perdas vaginais.",
+      "contadorUso": "1",
+      "ultimoUso": "2026-02-02 16:35:43"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipo\ttexto\tcontadorUso\tultimoUso\nobservacao\tCTG hoje padrão tranquilizador / Categoria 1.\t15\t2026-02-25 14:36:42\nobservacao\tCTG hoje padrão tranquilizador / Ctegoria 1.\t2\t2026-02-11 16:52:31\nobservacao\tRotina\t1\t2026-01-21 19:47:16\nobservacao\tDor em baixo ventre: colo grosso, fechado, sem perdas vaginais.\t1\t2026-02-02 16:35:43\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}
