@@ -1428,3 +1428,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar botão X no AutocompleteInput (Queixas) — aparece ao hover, só para sugestões personalizadas
 - [x] Adicionar botão X no TextareaComAutocomplete (Observações e Conduta) — aparece ao hover
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Botão X nas sugestões do formulário de Primeira Consulta (27/02/2026) — CONCLUÍDO
+- [x] Localizar o formulário de Primeira Consulta (WizardPrimeiraConsulta.tsx)
+- [x] Verificar componentes: já usava AutocompleteInput e TextareaComAutocomplete
+- [x] Corrigir campo Queixas: adicionado query de queixasPersonalizadas e suggestionIds
+- [x] Campos Observações, Conduta, História Patológica, Social e Familiar já têm X via TextareaComAutocomplete
+- [x] Verificar compilação — sem erros TypeScript/LSP

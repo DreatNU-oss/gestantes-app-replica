@@ -131,6 +131,17 @@ export default function WizardPrimeiraConsulta({
 
   const createConsulta = trpc.consultasPrenatal.create.useMutation();
 
+  // Queixas personalizadas com ordenação por frequência
+  const { data: queixasPersonalizadas, refetch: refetchQueixas } = trpc.queixas.list.useQuery();
+  const sugestoesQueixasCombinadas = [
+    ...(queixasPersonalizadas?.map((q: any) => q.texto) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s))
+  ];
+  const sugestoesQueixasIds: (number | null)[] = [
+    ...(queixasPersonalizadas?.map((q: any) => q.id as number) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => null)
+  ];
+
   // Calcular IG pela DUM
   const igDum = useMemo(() => {
     if (!gestante.dum || gestante.dum === 'Incerta' || gestante.dum === 'Incompatível com US') {
@@ -578,7 +589,8 @@ export default function WizardPrimeiraConsulta({
                 <AutocompleteInput
                   value={exameFisico.queixas}
                   onChange={(val) => setExameFisico({ ...exameFisico, queixas: val })}
-                  suggestions={SUGESTOES_QUEIXAS}
+                  suggestions={sugestoesQueixasCombinadas}
+                  suggestionIds={sugestoesQueixasIds}
                   placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                 />
               </div>
