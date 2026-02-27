@@ -2,7 +2,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { HelpCircle, Star } from "lucide-react";
+import { HelpCircle, Star, X } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 
 interface AutocompleteInputProps {
   value: string;
@@ -10,6 +12,8 @@ interface AutocompleteInputProps {
   suggestions: string[];
   placeholder?: string;
   className?: string;
+  /** IDs das sugestões personalizadas (na mesma ordem que suggestions) */
+  suggestionIds?: (number | null)[];
 }
 
 export function AutocompleteInput({
@@ -18,14 +22,18 @@ export function AutocompleteInput({
   suggestions,
   placeholder,
   className,
+  suggestionIds,
 }: AutocompleteInputProps) {
   const value = rawValue || "";
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [filteredIds, setFilteredIds] = useState<(number | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const deleteQueixaMutation = trpc.queixas.delete.useMutation();
 
   // Extrair o último segmento digitado (após / ou ,) para usar no highlight
   const getLastSegment = (): string => {
@@ -36,32 +44,33 @@ export function AutocompleteInput({
   };
 
   useEffect(() => {
-    if (!value.trim()) {
-      setFilteredSuggestions(suggestions);
-      return;
-    }
-
     const separators = /[/,]/;
     const parts = value.split(separators);
     const lastPart = parts[parts.length - 1].trim().toLowerCase();
-
-    if (!lastPart) {
-      setFilteredSuggestions(suggestions);
-      return;
-    }
 
     const alreadyUsed = parts
       .slice(0, -1)
       .map((p) => p.trim().toLowerCase());
 
-    const filtered = suggestions.filter(
-      (s) =>
-        s.toLowerCase().includes(lastPart) &&
-        !alreadyUsed.includes(s.toLowerCase())
-    );
+    let filtered: string[];
+    let filtIds: (number | null)[];
+
+    if (!value.trim() || !lastPart) {
+      filtered = suggestions;
+      filtIds = suggestionIds || suggestions.map(() => null);
+    } else {
+      const indices: number[] = [];
+      filtered = suggestions.filter((s, i) => {
+        const match = s.toLowerCase().includes(lastPart) && !alreadyUsed.includes(s.toLowerCase());
+        if (match) indices.push(i);
+        return match;
+      });
+      filtIds = indices.map(i => suggestionIds ? suggestionIds[i] ?? null : null);
+    }
 
     setFilteredSuggestions(filtered);
-  }, [value, suggestions]);
+    setFilteredIds(filtIds);
+  }, [value, suggestions, suggestionIds]);
 
   // Reset selected index when filtered suggestions change
   useEffect(() => {
@@ -87,19 +96,29 @@ export function AutocompleteInput({
     const parts = value.split(separators);
 
     if (parts.length > 1) {
-      // Há múltiplos segmentos: substituir o último segmento pela sugestão
       const separator = value.includes("/") ? " / " : ", ";
       const prefix = parts.slice(0, -1).join(separator).trim();
       onChange(`${prefix}${separator}${suggestion}`);
     } else {
-      // Segmento único: substituir completamente pelo texto sugerido
       onChange(suggestion);
     }
 
     setShowSuggestions(false);
     setSelectedIndex(-1);
     inputRef.current?.focus();
-  }, [value, suggestions, onChange]);
+  }, [value, onChange]);
+
+  const handleDeleteSuggestion = useCallback((e: React.MouseEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = filteredIds[index];
+    if (id != null) {
+      deleteQueixaMutation.mutate({ id });
+      // Remover localmente da lista imediatamente
+      setFilteredSuggestions(prev => prev.filter((_, i) => i !== index));
+      setFilteredIds(prev => prev.filter((_, i) => i !== index));
+    }
+  }, [filteredIds, deleteQueixaMutation]);
 
   // Scroll the selected item into view
   useEffect(() => {
@@ -143,7 +162,6 @@ export function AutocompleteInput({
         break;
 
       case "Tab":
-        // Accept the selected suggestion, or the first one if none is selected
         if (filteredSuggestions.length > 0) {
           e.preventDefault();
           const idx = selectedIndex >= 0 ? selectedIndex : 0;
@@ -197,30 +215,48 @@ export function AutocompleteInput({
           ref={listRef}
           className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
         >
-          {filteredSuggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              type="button"
-              data-suggestion-item
-              className={`w-full text-left px-3 py-2 text-sm cursor-pointer transition-colors ${
-                index === selectedIndex
-                  ? "bg-accent text-accent-foreground"
-                  : "hover:bg-accent hover:text-accent-foreground"
-              }`}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleSelectSuggestion(suggestion);
-              }}
-              onMouseEnter={() => setSelectedIndex(index)}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="flex-1">{highlightMatch(suggestion, lastSegment)}</span>
-                {index === 0 && (
-                  <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 shrink-0" />
+          {filteredSuggestions.map((suggestion, index) => {
+            const isCustom = !SUGESTOES_QUEIXAS.includes(suggestion);
+            const id = filteredIds[index];
+            return (
+              <div
+                key={index}
+                data-suggestion-item
+                className={`group flex items-center w-full text-sm transition-colors ${
+                  index === selectedIndex
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground"
+                }`}
+                onMouseEnter={() => setSelectedIndex(index)}
+              >
+                <button
+                  type="button"
+                  className="flex-1 text-left px-3 py-2"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelectSuggestion(suggestion);
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="flex-1">{highlightMatch(suggestion, lastSegment)}</span>
+                    {index === 0 && (
+                      <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 shrink-0" />
+                    )}
+                  </div>
+                </button>
+                {isCustom && id != null && (
+                  <button
+                    type="button"
+                    title="Remover sugestão"
+                    className="px-2 py-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                    onMouseDown={(e) => handleDeleteSuggestion(e, index)}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
                 )}
               </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -403,13 +403,21 @@ export default function CartaoPrenatal() {
   });
 
   // Buscar queixas personalizadas
-  const { data: queixasPersonalizadas } = trpc.queixas.list.useQuery();
+  const { data: queixasPersonalizadas, refetch: refetchQueixas } = trpc.queixas.list.useQuery();
   const upsertQueixaMutation = trpc.queixas.upsert.useMutation();
+  const deleteQueixaMutation = trpc.queixas.delete.useMutation({
+    onSuccess: () => refetchQueixas(),
+  });
 
   // Combinar sugestões estáticas com queixas personalizadas ordenadas por frequência
   const sugestoesQueixasCombinadas = [
     ...(queixasPersonalizadas?.map((q: any) => q.texto) || []),
     ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s))
+  ];
+  // IDs correspondentes: personalizadas têm ID, estáticas têm null
+  const sugestoesQueixasIds: (number | null)[] = [
+    ...(queixasPersonalizadas?.map((q: any) => q.id as number) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => null)
   ];
   const deleteCondutaMutation = trpc.condutas.delete.useMutation({
     onSuccess: () => {
@@ -2223,12 +2231,13 @@ export default function CartaoPrenatal() {
                         </div>
                       </div>
                     ) : (
-                      <AutocompleteInput
-                        value={formData.queixas}
-                        onChange={(val) => setFormData({ ...formData, queixas: val })}
-                        suggestions={sugestoesQueixasCombinadas}
-                        placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
-                      />
+                       <AutocompleteInput
+                         value={formData.queixas}
+                         onChange={(val) => setFormData({ ...formData, queixas: val })}
+                         suggestions={sugestoesQueixasCombinadas}
+                         suggestionIds={sugestoesQueixasIds}
+                         placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
+                       />
                     )}
                   </div>
                   <div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Textarea } from "./ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Loader2, HelpCircle, Star } from "lucide-react";
+import { Loader2, HelpCircle, Star, X } from "lucide-react";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
@@ -32,12 +32,17 @@ export function TextareaComAutocomplete({
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
   // Buscar sugestões do histórico (ordenadas por contadorUso desc, ultimoUso desc)
-  const { data: sugestoes, isLoading } = trpc.historicoTextos.getSugestoes.useQuery({
+  const { data: sugestoes, isLoading, refetch: refetchSugestoes } = trpc.historicoTextos.getSugestoes.useQuery({
     tipo,
   });
 
   // Mutation para registrar uso
   const registrarUsoMutation = trpc.historicoTextos.registrarUso.useMutation();
+
+  // Mutation para deletar sugestão
+  const deletarMutation = trpc.historicoTextos.deletar.useMutation({
+    onSuccess: () => refetchSugestoes(),
+  });
 
   // Filtrar sugestões baseado no texto digitado
   useEffect(() => {
@@ -62,7 +67,6 @@ export function TextareaComAutocomplete({
   }, [value, sugestoes]);
 
   // Mostrar sugestões quando o campo está focado e há sugestões disponíveis
-  // Isso resolve o caso onde onFocus é chamado antes dos dados serem carregados
   useEffect(() => {
     if (isFocused && sugestoesFiltradas.length > 0 && !dismissedByEscape) {
       setMostrarSugestoes(true);
@@ -110,7 +114,6 @@ export function TextareaComAutocomplete({
       e.preventDefault();
       selecionarSugestao(sugestoesFiltradas[indiceSelecionado]);
     } else if (e.key === "Tab") {
-      // Accept the selected suggestion, or the first one if none is selected
       if (sugestoesFiltradas.length > 0) {
         e.preventDefault();
         const idx = indiceSelecionado >= 0 ? indiceSelecionado : 0;
@@ -131,6 +134,15 @@ export function TextareaComAutocomplete({
       texto: sugestao.texto,
     });
   };
+
+  // Deletar uma sugestão
+  const deletarSugestao = useCallback((e: React.MouseEvent, sugestao: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deletarMutation.mutate({ id: sugestao.id });
+    // Remover localmente imediatamente
+    setSugestoesFiltradas(prev => prev.filter(s => s.id !== sugestao.id));
+  }, [deletarMutation]);
 
   // Registrar uso ao perder foco (blur) se houver texto
   const handleBlur = () => {
@@ -170,7 +182,6 @@ export function TextareaComAutocomplete({
             onFocus={() => {
               setIsFocused(true);
               setDismissedByEscape(false);
-              // Mostrar sugestões ao focar, mesmo sem texto
               if (sugestoesFiltradas.length > 0) {
                 setMostrarSugestoes(true);
               }
@@ -194,31 +205,43 @@ export function TextareaComAutocomplete({
               ) : (
                 <div className="py-1">
                   {sugestoesFiltradas.map((sugestao, index) => (
-                    <button
+                    <div
                       key={sugestao.id}
-                      type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        selecionarSugestao(sugestao);
-                      }}
-                      className={`w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors ${
-                        index === indiceSelecionado ? "bg-muted" : ""
+                      className={`group flex items-center w-full text-sm transition-colors ${
+                        index === indiceSelecionado ? "bg-muted" : "hover:bg-muted"
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="flex-1 line-clamp-2">
-                          {highlightMatch(sugestao.texto, value)}
-                        </span>
-                        <div className="flex items-center gap-1 shrink-0">
-                          {index === 0 && (
-                            <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                          )}
-                          <span className="text-xs text-muted-foreground">
-                            {sugestao.contadorUso}x
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          selecionarSugestao(sugestao);
+                        }}
+                        className="flex-1 text-left px-3 py-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="flex-1 line-clamp-2">
+                            {highlightMatch(sugestao.texto, value)}
                           </span>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {index === 0 && (
+                              <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                            )}
+                            <span className="text-xs text-muted-foreground">
+                              {sugestao.contadorUso}x
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </button>
+                      </button>
+                      <button
+                        type="button"
+                        title="Remover sugestão"
+                        className="px-2 py-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                        onMouseDown={(e) => deletarSugestao(e, sugestao)}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}

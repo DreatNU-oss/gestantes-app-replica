@@ -1421,3 +1421,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Campo Observações já usa TextareaComAutocomplete com tipo="observacao" e historicoTextos
 - [x] Contador incrementado automaticamente ao selecionar sugestão ou ao perder foco
 - [x] Verificar compilação — sem erros TypeScript/LSP, 4 registros já no banco
+
+## Botão X para remover sugestões (27/02/2026) — CONCLUÍDO
+- [x] Adicionar endpoint de deleção para queixas personalizadas (router queixas)
+- [x] Adicionar endpoint de deleção para historicoTextos (router historicoTextos)
+- [x] Adicionar botão X no AutocompleteInput (Queixas) — aparece ao hover, só para sugestões personalizadas
+- [x] Adicionar botão X no TextareaComAutocomplete (Observações e Conduta) — aparece ao hover
+- [x] Verificar compilação — sem erros TypeScript/LSP

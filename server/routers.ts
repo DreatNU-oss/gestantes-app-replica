@@ -2399,6 +2399,16 @@ export const appRouter = router({
         texto: z.string().min(1),
       }))
       .mutation(({ input }) => upsertQueixaPersonalizada(input.texto)),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        const { queixasPersonalizadas: tbl } = await import('../drizzle/schema');
+        await db.delete(tbl).where(eq(tbl.id, input.id));
+        return { success: true };
+      }),
   }),
 
   // Observações personalizadas
@@ -2844,6 +2854,17 @@ export const appRouter = router({
         return resultados;
       }),
     
+    // Deletar sugestão do histórico
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+        const { historicoTextos } = await import('../drizzle/schema');
+        await db.delete(historicoTextos).where(eq(historicoTextos.id, input.id));
+        return { success: true };
+      }),
+
     // Registrar uso de texto (incrementar contador ou criar novo)
     registrarUso: protectedProcedure
       .input(z.object({
