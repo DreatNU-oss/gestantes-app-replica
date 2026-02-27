@@ -1435,3 +1435,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir campo Queixas: adicionado query de queixasPersonalizadas e suggestionIds
 - [x] Campos Observações, Conduta, História Patológica, Social e Familiar já têm X via TextareaComAutocomplete
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Botão X nas sugestões da Consulta de Urgência (27/02/2026) — CONCLUÍDO
+- [x] Localizar o formulário de Consulta de Urgência (ConsultaUrgencia.tsx)
+- [x] Todos os 7 campos já usam TextareaComAutocomplete com tipo configurado
+- [x] Nenhuma alteração necessária — botão X já disponível em todos os campos
+- [x] Tipos: detalhamento_queixa_urgencia, auf_urgencia, toque_vaginal, usg_hoje, hipotese_diagnostica, outra_conduta_urgencia, conduta_complementacao
