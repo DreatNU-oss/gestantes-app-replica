@@ -1,0 +1,50 @@
+{
+  "query": "SELECT id, texto, usageCount FROM queixasPersonalizadas ORDER BY texto;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, texto, usageCount FROM queixasPersonalizadas ORDER BY texto;",
+  "rows": [
+    {
+      "id": "56",
+      "texto": "02 episódios de migrânia",
+      "usageCount": "2"
+    },
+    {
+      "id": "65",
+      "texto": "02 episódios de migrânia recentes.",
+      "usageCount": "1"
+    },
+    {
+      "id": "2",
+      "texto": "Ansiedade.",
+      "usageCount": "5"
+    },
+    {
+      "id": "30096",
+      "texto": "Dores em abdo + contrações uterinas de intensidade média. Nega perda vaginais líquidas.",
+      "usageCount": "1"
+    },
+    {
+      "id": "30098",
+      "texto": "Dores em abdome + contrações uterinas de intensidade média. Nega perda vaginais líquidas.",
+      "usageCount": "1"
+    },
+    {
+      "id": "30089",
+      "texto": "Dores pélvicas + contrações uterinas de intensidade média. Nega perda vaginais líquidas.",
+      "usageCount": "2"
+    },
+    {
+      "id": "24",
+      "texto": "Sem queixas hoje.",
+      "usageCount": "5"
+    },
+    {
+      "id": "60001",
+      "texto": "Sintomas de resfriado leve.",
+      "usageCount": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttexto\tusageCount\n56\t02 episódios de migrânia\t2\n65\t02 episódios de migrânia recentes.\t1\n2\tAnsiedade.\t5\n30096\tDores em abdo + contrações uterinas de intensidade média. Nega perda vaginais líquidas.\t1\n30098\tDores em abdome + contrações uterinas de intensidade média. Nega perda vaginais líquidas.\t1\n30089\tDores pélvicas + contrações uterinas de intensidade média. Nega perda vaginais líquidas.\t2\n24\tSem queixas hoje.\t5\n60001\tSintomas de resfriado leve.\t1\n",
+  "stderr": "",
+  "execution_time_ms": 92
+}

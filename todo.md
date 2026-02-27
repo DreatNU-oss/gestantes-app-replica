@@ -1441,3 +1441,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Todos os 7 campos já usam TextareaComAutocomplete com tipo configurado
 - [x] Nenhuma alteração necessária — botão X já disponível em todos os campos
 - [x] Tipos: detalhamento_queixa_urgencia, auf_urgencia, toque_vaginal, usg_hoje, hipotese_diagnostica, outra_conduta_urgencia, conduta_complementacao
+
+## Corrigir gravação de frases nos autocompletes (27/02/2026) — CONCLUÍDO
+- [x] TextareaComAutocomplete: gravar frase apenas no blur (quando texto mudou e não veio de seleção)
+- [x] AutocompleteInput (Queixas): já correto — salva apenas no handleSubmit
+- [x] Revisar CartaoPrenatal.tsx — campo Queixas salva apenas no submit
+- [x] Revisar WizardPrimeiraConsulta.tsx — sem salvamento próprio, usa TextareaComAutocomplete
+- [x] Revisar ConsultaUrgencia.tsx — sem salvamento próprio, usa TextareaComAutocomplete
+- [x] Limpar entradas duplicadas/parciais no banco de dados
+- [x] Verificar compilação — sem erros TypeScript/LSP

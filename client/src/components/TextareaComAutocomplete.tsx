@@ -28,6 +28,10 @@ export function TextareaComAutocomplete({
   const [indiceSelecionado, setIndiceSelecionado] = useState(-1);
   const [isFocused, setIsFocused] = useState(false);
   const [dismissedByEscape, setDismissedByEscape] = useState(false);
+  // Track whether the user selected a suggestion (already saved) or typed manually
+  const [selectedFromSuggestion, setSelectedFromSuggestion] = useState(false);
+  // Track the value when the field was focused to detect real changes
+  const valueOnFocusRef = useRef<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
@@ -127,8 +131,9 @@ export function TextareaComAutocomplete({
     onChange(sugestao.texto);
     setMostrarSugestoes(false);
     setIndiceSelecionado(-1);
+    setSelectedFromSuggestion(true);
 
-    // Registrar uso da sugestão
+    // Registrar uso da sugestão selecionada (incrementa contador)
     registrarUsoMutation.mutate({
       tipo,
       texto: sugestao.texto,
@@ -144,25 +149,53 @@ export function TextareaComAutocomplete({
     setSugestoesFiltradas(prev => prev.filter(s => s.id !== sugestao.id));
   }, [deletarMutation]);
 
-  // Registrar uso ao perder foco (blur) se houver texto
+  // Registrar uso APENAS ao perder foco (blur) — quando o usuário terminou de digitar
+  // Não grava se: o texto é muito curto, não mudou desde o foco, ou veio de seleção de sugestão
   const handleBlur = () => {
     setIsFocused(false);
     setDismissedByEscape(false);
-    // Delay para permitir clique em sugestão
+
+    const trimmedValue = value.trim();
+
+    // Delay para permitir clique em sugestão antes de fechar
     setTimeout(() => {
-      if (value.trim() && value.length >= 5) {
+      // Só salva se:
+      // 1. Tem texto com pelo menos 5 caracteres
+      // 2. O texto mudou desde que o campo foi focado
+      // 3. Não veio de uma seleção de sugestão (já foi salvo no selecionarSugestao)
+      if (
+        trimmedValue &&
+        trimmedValue.length >= 5 &&
+        trimmedValue !== valueOnFocusRef.current.trim() &&
+        !selectedFromSuggestion
+      ) {
         registrarUsoMutation.mutate({
           tipo,
-          texto: value.trim(),
+          texto: trimmedValue,
         });
       }
+      // Reset flag
+      setSelectedFromSuggestion(false);
     }, 200);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    setDismissedByEscape(false);
+    setSelectedFromSuggestion(false);
+    // Captura o valor atual ao focar para comparar no blur
+    valueOnFocusRef.current = value;
+    if (sugestoesFiltradas.length > 0) {
+      setMostrarSugestoes(true);
+    }
   };
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
     // Reset escape dismiss when user types
     setDismissedByEscape(false);
+    // Reset suggestion selection flag since user is typing manually
+    setSelectedFromSuggestion(false);
     // Mostrar sugestões ao digitar
     if (!mostrarSugestoes) {
       setMostrarSugestoes(true);
@@ -179,13 +212,7 @@ export function TextareaComAutocomplete({
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            onFocus={() => {
-              setIsFocused(true);
-              setDismissedByEscape(false);
-              if (sugestoesFiltradas.length > 0) {
-                setMostrarSugestoes(true);
-              }
-            }}
+            onFocus={handleFocus}
             placeholder={placeholder}
             rows={rows}
             className={className}

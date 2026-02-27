@@ -1,0 +1,80 @@
+{
+  "query": "SELECT id, tipo, texto, contadorUso, LENGTH(texto) as len FROM historicoTextos WHERE LENGTH(texto) < 15 ORDER BY len ASC LIMIT 30;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipo, texto, contadorUso, LENGTH(texto) as len FROM historicoTextos WHERE LENGTH(texto) < 15 ORDER BY len ASC LIMIT 30;",
+  "rows": [
+    {
+      "id": "1",
+      "tipo": "observacao",
+      "texto": "Rotina",
+      "contadorUso": "1",
+      "len": "6"
+    },
+    {
+      "id": "720001",
+      "tipo": "conduta_complementacao",
+      "texto": "Inilok",
+      "contadorUso": "1",
+      "len": "6"
+    },
+    {
+      "id": "540006",
+      "tipo": "conduta_complementacao",
+      "texto": "Trivagel-N",
+      "contadorUso": "1",
+      "len": "10"
+    },
+    {
+      "id": "540002",
+      "tipo": "historia_social",
+      "texto": "Tabagista.",
+      "contadorUso": "1",
+      "len": "10"
+    },
+    {
+      "id": "450002",
+      "tipo": "conduta_complementacao",
+      "texto": "Aguardo exs",
+      "contadorUso": "1",
+      "len": "11"
+    },
+    {
+      "id": "660001",
+      "tipo": "conduta_complementacao",
+      "texto": "US tireóide",
+      "contadorUso": "1",
+      "len": "12"
+    },
+    {
+      "id": "240001",
+      "tipo": "conduta_complementacao",
+      "texto": "Nutricionista",
+      "contadorUso": "1",
+      "len": "13"
+    },
+    {
+      "id": "90001",
+      "tipo": "conduta_complementacao",
+      "texto": "Puran 37,5mcg",
+      "contadorUso": "1",
+      "len": "13"
+    },
+    {
+      "id": "570001",
+      "tipo": "detalhamento_queixa_urgencia",
+      "texto": "Dor abdominal",
+      "contadorUso": "1",
+      "len": "13"
+    },
+    {
+      "id": "30001",
+      "tipo": "conduta_complementacao",
+      "texto": "Ferropurum EV",
+      "contadorUso": "4",
+      "len": "13"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipo\ttexto\tcontadorUso\tlen\n1\tobservacao\tRotina\t1\t6\n720001\tconduta_complementacao\tInilok\t1\t6\n540006\tconduta_complementacao\tTrivagel-N\t1\t10\n540002\thistoria_social\tTabagista.\t1\t10\n450002\tconduta_complementacao\tAguardo exs\t1\t11\n660001\tconduta_complementacao\tUS tireóide\t1\t12\n240001\tconduta_complementacao\tNutricionista\t1\t13\n90001\tconduta_complementacao\tPuran 37,5mcg\t1\t13\n570001\tdetalhamento_queixa_urgencia\tDor abdominal\t1\t13\n30001\tconduta_complementacao\tFerropurum EV\t4\t13\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

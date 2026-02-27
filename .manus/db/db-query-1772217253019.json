@@ -1,0 +1,46 @@
+{
+  "query": "SELECT COUNT(*) as total FROM historicoTextos; SELECT tipo, COUNT(*) as qtd FROM historicoTextos GROUP BY tipo ORDER BY qtd DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as total FROM historicoTextos; SELECT tipo, COUNT(*) as qtd FROM historicoTextos GROUP BY tipo ORDER BY qtd DESC;",
+  "rows": [
+    {
+      "total": "59"
+    },
+    {
+      "total": "tipo\tqtd"
+    },
+    {
+      "total": "conduta_complementacao\t41"
+    },
+    {
+      "total": "observacao\t4"
+    },
+    {
+      "total": "hipotese_diagnostica\t3"
+    },
+    {
+      "total": "auf_urgencia\t2"
+    },
+    {
+      "total": "detalhamento_queixa_urgencia\t2"
+    },
+    {
+      "total": "usg_hoje\t2"
+    },
+    {
+      "total": "historia_patologica\t2"
+    },
+    {
+      "total": "historia_social\t1"
+    },
+    {
+      "total": "outra_conduta_urgencia\t1"
+    },
+    {
+      "total": "historia_familiar\t1"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\n59\ntipo\tqtd\nconduta_complementacao\t41\nobservacao\t4\nhipotese_diagnostica\t3\nauf_urgencia\t2\ndetalhamento_queixa_urgencia\t2\nusg_hoje\t2\nhistoria_patologica\t2\nhistoria_social\t1\noutra_conduta_urgencia\t1\nhistoria_familiar\t1\n",
+  "stderr": "",
+  "execution_time_ms": 66
+}

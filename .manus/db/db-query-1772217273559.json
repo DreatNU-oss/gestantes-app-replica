@@ -1,0 +1,46 @@
+{
+  "query": "SELECT a.id, a.tipo, a.texto as texto_curto, b.texto as texto_longo FROM historicoTextos a JOIN historicoTextos b ON a.tipo = b.tipo AND b.texto LIKE CONCAT(a.texto, '%') AND a.id != b.id AND LENGTH(a.texto) < LENGTH(b.texto) LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT a.id, a.tipo, a.texto as texto_curto, b.texto as texto_longo FROM historicoTextos a JOIN historicoTextos b ON a.tipo = b.tipo AND b.texto LIKE CONCAT(a.texto, '%') AND a.id != b.id AND LENGTH(a.texto) < LENGTH(b.texto) LIMIT 20;",
+  "rows": [
+    {
+      "id": "30001",
+      "tipo": "conduta_complementacao",
+      "texto_curto": "Ferropurum EV",
+      "texto_longo": "Ferropurum EV + urocultura de controle"
+    },
+    {
+      "id": "30001",
+      "tipo": "conduta_complementacao",
+      "texto_curto": "Ferropurum EV",
+      "texto_longo": "Ferropurum EV + Dozemast"
+    },
+    {
+      "id": "450002",
+      "tipo": "conduta_complementacao",
+      "texto_curto": "Aguardo exs",
+      "texto_longo": "Aguardo exs lab que não ficaram prontos ainda"
+    },
+    {
+      "id": "450002",
+      "tipo": "conduta_complementacao",
+      "texto_curto": "Aguardo exs",
+      "texto_longo": "Aguardo exs. lab"
+    },
+    {
+      "id": "540001",
+      "tipo": "historia_patologica",
+      "texto_curto": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.",
+      "texto_longo": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais)."
+    },
+    {
+      "id": "660001",
+      "tipo": "conduta_complementacao",
+      "texto_curto": "US tireóide",
+      "texto_longo": "US tireóide / exs lab"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipo\ttexto_curto\ttexto_longo\n30001\tconduta_complementacao\tFerropurum EV\tFerropurum EV + urocultura de controle\n30001\tconduta_complementacao\tFerropurum EV\tFerropurum EV + Dozemast\n450002\tconduta_complementacao\tAguardo exs\tAguardo exs lab que não ficaram prontos ainda\n450002\tconduta_complementacao\tAguardo exs\tAguardo exs. lab\n540001\thistoria_patologica\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais).\n660001\tconduta_complementacao\tUS tireóide\tUS tireóide / exs lab\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

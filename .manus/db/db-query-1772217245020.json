@@ -1,0 +1,360 @@
+{
+  "query": "SELECT id, tipo, texto, contadorUso, LENGTH(texto) as len FROM historicoTextos ORDER BY tipo, texto LIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipo, texto, contadorUso, LENGTH(texto) as len FROM historicoTextos ORDER BY tipo, texto LIMIT 50;",
+  "rows": [
+    {
+      "id": "510001",
+      "tipo": "observacao",
+      "texto": "CTG hoje padrão tranquilizador / Categoria 1.",
+      "contadorUso": "15",
+      "len": "46"
+    },
+    {
+      "id": "480002",
+      "tipo": "observacao",
+      "texto": "CTG hoje padrão tranquilizador / Ctegoria 1.",
+      "contadorUso": "2",
+      "len": "45"
+    },
+    {
+      "id": "300001",
+      "tipo": "observacao",
+      "texto": "Dor em baixo ventre: colo grosso, fechado, sem perdas vaginais.",
+      "contadorUso": "1",
+      "len": "63"
+    },
+    {
+      "id": "1",
+      "tipo": "observacao",
+      "texto": "Rotina",
+      "contadorUso": "1",
+      "len": "6"
+    },
+    {
+      "id": "990001",
+      "tipo": "conduta_complementacao",
+      "texto": "Acompanhamento semanal com ultrassom",
+      "contadorUso": "1",
+      "len": "36"
+    },
+    {
+      "id": "1080001",
+      "tipo": "conduta_complementacao",
+      "texto": "Agendo cesariana para amanhã por Fase Latente Prolongada de Trabalho de Parto.",
+      "contadorUso": "1",
+      "len": "79"
+    },
+    {
+      "id": "240002",
+      "tipo": "conduta_complementacao",
+      "texto": "Aguardo exames laboratoriais.",
+      "contadorUso": "1",
+      "len": "29"
+    },
+    {
+      "id": "450002",
+      "tipo": "conduta_complementacao",
+      "texto": "Aguardo exs",
+      "contadorUso": "1",
+      "len": "11"
+    },
+    {
+      "id": "120001",
+      "tipo": "conduta_complementacao",
+      "texto": "Aguardo exs lab que não ficaram prontos ainda",
+      "contadorUso": "1",
+      "len": "46"
+    },
+    {
+      "id": "30002",
+      "tipo": "conduta_complementacao",
+      "texto": "Aguardo exs. lab",
+      "contadorUso": "4",
+      "len": "16"
+    },
+    {
+      "id": "510002",
+      "tipo": "conduta_complementacao",
+      "texto": "Associo anlodipino 10mg cedo além de metildopa e apresolina.",
+      "contadorUso": "1",
+      "len": "61"
+    },
+    {
+      "id": "150001",
+      "tipo": "conduta_complementacao",
+      "texto": "ATB para ITU + ferropurum EV",
+      "contadorUso": "1",
+      "len": "28"
+    },
+    {
+      "id": "60001",
+      "tipo": "conduta_complementacao",
+      "texto": "ATB para Sludge",
+      "contadorUso": "3",
+      "len": "15"
+    },
+    {
+      "id": "900001",
+      "tipo": "conduta_complementacao",
+      "texto": "Controle de Pressão Arterial 2x/dia.",
+      "contadorUso": "5",
+      "len": "37"
+    },
+    {
+      "id": "1020001",
+      "tipo": "conduta_complementacao",
+      "texto": "Coombs indireto; tipo sanguíneo do pai atual; tipo sangüíneo da 1a filha",
+      "contadorUso": "1",
+      "len": "75"
+    },
+    {
+      "id": "180001",
+      "tipo": "conduta_complementacao",
+      "texto": "Eletroforese de Hemoglobina",
+      "contadorUso": "1",
+      "len": "27"
+    },
+    {
+      "id": "210001",
+      "tipo": "conduta_complementacao",
+      "texto": "Encaminho ao Hospital São Sebastião",
+      "contadorUso": "1",
+      "len": "37"
+    },
+    {
+      "id": "810001",
+      "tipo": "conduta_complementacao",
+      "texto": "Encaminho para maternidade por alteração no ritmo de crescimento fetal e alterações no Doppler fetal.",
+      "contadorUso": "1",
+      "len": "105"
+    },
+    {
+      "id": "960001",
+      "tipo": "conduta_complementacao",
+      "texto": "Encaminho para nutricionista (Diabetes Gestacional).",
+      "contadorUso": "1",
+      "len": "52"
+    },
+    {
+      "id": "390001",
+      "tipo": "conduta_complementacao",
+      "texto": "Ferro venoso + reposição de B12",
+      "contadorUso": "2",
+      "len": "33"
+    },
+    {
+      "id": "30001",
+      "tipo": "conduta_complementacao",
+      "texto": "Ferropurum EV",
+      "contadorUso": "4",
+      "len": "13"
+    },
+    {
+      "id": "330002",
+      "tipo": "conduta_complementacao",
+      "texto": "Ferropurum EV + Dozemast",
+      "contadorUso": "1",
+      "len": "24"
+    },
+    {
+      "id": "450001",
+      "tipo": "conduta_complementacao",
+      "texto": "Ferropurum EV + urocultura de controle",
+      "contadorUso": "1",
+      "len": "38"
+    },
+    {
+      "id": "600001",
+      "tipo": "conduta_complementacao",
+      "texto": "Guia para cesárea",
+      "contadorUso": "1",
+      "len": "18"
+    },
+    {
+      "id": "630005",
+      "tipo": "conduta_complementacao",
+      "texto": "Indico cesariana - deseja hoje e concordo com a data.",
+      "contadorUso": "1",
+      "len": "53"
+    },
+    {
+      "id": "330001",
+      "tipo": "conduta_complementacao",
+      "texto": "Indico cesariana por Feto Pélvico",
+      "contadorUso": "1",
+      "len": "34"
+    },
+    {
+      "id": "720001",
+      "tipo": "conduta_complementacao",
+      "texto": "Inilok",
+      "contadorUso": "1",
+      "len": "6"
+    },
+    {
+      "id": "270001",
+      "tipo": "conduta_complementacao",
+      "texto": "Mantenho Duphaston devido ao hematoma.",
+      "contadorUso": "1",
+      "len": "38"
+    },
+    {
+      "id": "240003",
+      "tipo": "conduta_complementacao",
+      "texto": "Manter acompanhamento conjunto com hematologista.",
+      "contadorUso": "1",
+      "len": "49"
+    },
+    {
+      "id": "240001",
+      "tipo": "conduta_complementacao",
+      "texto": "Nutricionista",
+      "contadorUso": "1",
+      "len": "13"
+    },
+    {
+      "id": "690001",
+      "tipo": "conduta_complementacao",
+      "texto": "Orientações relativas à internação para cesariana.",
+      "contadorUso": "13",
+      "len": "55"
+    },
+    {
+      "id": "240004",
+      "tipo": "conduta_complementacao",
+      "texto": "Orientações sobre os cuidados pré-operatórios, como jejum, depilação, horário de internação e documentos necessários para a internação para cesariana.",
+      "contadorUso": "1",
+      "len": "162"
+    },
+    {
+      "id": "360001",
+      "tipo": "conduta_complementacao",
+      "texto": "Orientações sobre sintomas do 3º trimestre.",
+      "contadorUso": "1",
+      "len": "46"
+    },
+    {
+      "id": "870001",
+      "tipo": "conduta_complementacao",
+      "texto": "Oriento mais atividade física.",
+      "contadorUso": "1",
+      "len": "31"
+    },
+    {
+      "id": "930001",
+      "tipo": "conduta_complementacao",
+      "texto": "Predsim para IVAS.",
+      "contadorUso": "1",
+      "len": "18"
+    },
+    {
+      "id": "90001",
+      "tipo": "conduta_complementacao",
+      "texto": "Puran 37,5mcg",
+      "contadorUso": "1",
+      "len": "13"
+    },
+    {
+      "id": "1050001",
+      "tipo": "conduta_complementacao",
+      "texto": "Realizado Descolamento da bolsa ao toque vaginal hoje.",
+      "contadorUso": "1",
+      "len": "54"
+    },
+    {
+      "id": "480001",
+      "tipo": "conduta_complementacao",
+      "texto": "Retiro a Cerclagem Uterina hoje.",
+      "contadorUso": "1",
+      "len": "32"
+    },
+    {
+      "id": "390002",
+      "tipo": "conduta_complementacao",
+      "texto": "Rotina lab DHEG",
+      "contadorUso": "1",
+      "len": "15"
+    },
+    {
+      "id": "420001",
+      "tipo": "conduta_complementacao",
+      "texto": "Suspendo alguns psicotrópicos",
+      "contadorUso": "1",
+      "len": "30"
+    },
+    {
+      "id": "540006",
+      "tipo": "conduta_complementacao",
+      "texto": "Trivagel-N",
+      "contadorUso": "1",
+      "len": "10"
+    },
+    {
+      "id": "540005",
+      "tipo": "conduta_complementacao",
+      "texto": "Ultrassom em 3 semanas pois BCF não é audível hoje.",
+      "contadorUso": "1",
+      "len": "54"
+    },
+    {
+      "id": "840001",
+      "tipo": "conduta_complementacao",
+      "texto": "US de 2/2 semanas para controle do comprimento do colo uterino",
+      "contadorUso": "1",
+      "len": "62"
+    },
+    {
+      "id": "660001",
+      "tipo": "conduta_complementacao",
+      "texto": "US tireóide",
+      "contadorUso": "1",
+      "len": "12"
+    },
+    {
+      "id": "660002",
+      "tipo": "conduta_complementacao",
+      "texto": "US tireóide / exs lab",
+      "contadorUso": "1",
+      "len": "22"
+    },
+    {
+      "id": "540001",
+      "tipo": "historia_patologica",
+      "texto": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.",
+      "contadorUso": "1",
+      "len": "90"
+    },
+    {
+      "id": "540003",
+      "tipo": "historia_patologica",
+      "texto": "Diabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais).",
+      "contadorUso": "1",
+      "len": "151"
+    },
+    {
+      "id": "540002",
+      "tipo": "historia_social",
+      "texto": "Tabagista.",
+      "contadorUso": "1",
+      "len": "10"
+    },
+    {
+      "id": "540004",
+      "tipo": "historia_familiar",
+      "texto": "Nega DHEG materna.",
+      "contadorUso": "1",
+      "len": "18"
+    },
+    {
+      "id": "780002",
+      "tipo": "hipotese_diagnostica",
+      "texto": "Aborto Inevitável / Aborto Incompleto",
+      "contadorUso": "1",
+      "len": "38"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipo\ttexto\tcontadorUso\tlen\n510001\tobservacao\tCTG hoje padrão tranquilizador / Categoria 1.\t15\t46\n480002\tobservacao\tCTG hoje padrão tranquilizador / Ctegoria 1.\t2\t45\n300001\tobservacao\tDor em baixo ventre: colo grosso, fechado, sem perdas vaginais.\t1\t63\n1\tobservacao\tRotina\t1\t6\n990001\tconduta_complementacao\tAcompanhamento semanal com ultrassom\t1\t36\n1080001\tconduta_complementacao\tAgendo cesariana para amanhã por Fase Latente Prolongada de Trabalho de Parto.\t1\t79\n240002\tconduta_complementacao\tAguardo exames laboratoriais.\t1\t29\n450002\tconduta_complementacao\tAguardo exs\t1\t11\n120001\tconduta_complementacao\tAguardo exs lab que não ficaram prontos ainda\t1\t46\n30002\tconduta_complementacao\tAguardo exs. lab\t4\t16\n510002\tconduta_complementacao\tAssocio anlodipino 10mg cedo além de metildopa e apresolina.\t1\t61\n150001\tconduta_complementacao\tATB para ITU + ferropurum EV\t1\t28\n60001\tconduta_complementacao\tATB para Sludge\t3\t15\n900001\tconduta_complementacao\tControle de Pressão Arterial 2x/dia.\t5\t37\n1020001\tconduta_complementacao\tCoombs indireto; tipo sanguíneo do pai atual; tipo sangüíneo da 1a filha\t1\t75\n180001\tconduta_complementacao\tEletroforese de Hemoglobina\t1\t27\n210001\tconduta_complementacao\tEncaminho ao Hospital São Sebastião\t1\t37\n810001\tconduta_complementacao\tEncaminho para maternidade por alteração no ritmo de crescimento fetal e alterações no Doppler fetal.\t1\t105\n960001\tconduta_complementacao\tEncaminho para nutricionista (Diabetes Gestacional).\t1\t52\n390001\tconduta_complementacao\tFerro venoso + reposição de B12\t2\t33\n30001\tconduta_complementacao\tFerropurum EV\t4\t13\n330002\tconduta_complementacao\tFerropurum EV + Dozemast\t1\t24\n450001\tconduta_complementacao\tFerropurum EV + urocultura de controle\t1\t38\n600001\tconduta_complementacao\tGuia para cesárea\t1\t18\n630005\tconduta_complementacao\tIndico cesariana - deseja hoje e concordo com a data.\t1\t53\n330001\tconduta_complementacao\tIndico cesariana por Feto Pélvico\t1\t34\n720001\tconduta_complementacao\tInilok\t1\t6\n270001\tconduta_complementacao\tMantenho Duphaston devido ao hematoma.\t1\t38\n240003\tconduta_complementacao\tManter acompanhamento conjunto com hematologista.\t1\t49\n240001\tconduta_complementacao\tNutricionista\t1\t13\n690001\tconduta_complementacao\tOrientações relativas à internação para cesariana.\t13\t55\n240004\tconduta_complementacao\tOrientações sobre os cuidados pré-operatórios, como jejum, depilação, horário de internação e documentos necessários para a internação para cesariana.\t1\t162\n360001\tconduta_complementacao\tOrientações sobre sintomas do 3º trimestre.\t1\t46\n870001\tconduta_complementacao\tOriento mais atividade física.\t1\t31\n930001\tconduta_complementacao\tPredsim para IVAS.\t1\t18\n90001\tconduta_complementacao\tPuran 37,5mcg\t1\t13\n1050001\tconduta_complementacao\tRealizado Descolamento da bolsa ao toque vaginal hoje.\t1\t54\n480001\tconduta_complementacao\tRetiro a Cerclagem Uterina hoje.\t1\t32\n390002\tconduta_complementacao\tRotina lab DHEG\t1\t15\n420001\tconduta_complementacao\tSuspendo alguns psicotrópicos\t1\t30\n540006\tconduta_complementacao\tTrivagel-N\t1\t10\n540005\tconduta_complementacao\tUltrassom em 3 semanas pois BCF não é audível hoje.\t1\t54\n840001\tconduta_complementacao\tUS de 2/2 semanas para controle do comprimento do colo uterino\t1\t62\n660001\tconduta_complementacao\tUS tireóide\t1\t12\n660002\tconduta_complementacao\tUS tireóide / exs lab\t1\t22\n540001\thistoria_patologica\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas.\t1\t90\n540003\thistoria_patologica\tDiabética tipo 2 + HAS + Hipotireoidismo. Nega cirurgias abdominais além das cesarianas. Nega passado de eventos trombóticos (venosos ou arteriais).\t1\t151\n540002\thistoria_social\tTabagista.\t1\t10\n540004\thistoria_familiar\tNega DHEG materna.\t1\t18\n780002\thipotese_diagnostica\tAborto Inevitável / Aborto Incompleto\t1\t38\n",
+  "stderr": "",
+  "execution_time_ms": 111
+}
