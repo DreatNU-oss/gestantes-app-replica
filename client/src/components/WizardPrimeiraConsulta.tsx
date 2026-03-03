@@ -599,11 +599,16 @@ export default function WizardPrimeiraConsulta({
                 <div>
                   <Label className="text-sm font-semibold">Peso (kg)</Label>
                   <Input
-                    type="number"
-                    step="0.1"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="Ex: 68.5"
                     value={exameFisico.peso}
-                    onChange={(e) => setExameFisico({ ...exameFisico, peso: e.target.value })}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(",", ".");
+                      if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
+                        setExameFisico({ ...exameFisico, peso: v });
+                      }
+                    }}
                     className="mt-1"
                   />
                 </div>

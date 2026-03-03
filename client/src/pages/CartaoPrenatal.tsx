@@ -2243,10 +2243,15 @@ export default function CartaoPrenatal() {
                   <div>
                     <Label>Peso (kg)</Label>
                     <Input
-                      type="number"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={formData.peso}
-                      onChange={(e) => setFormData({ ...formData, peso: e.target.value })}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(",", ".");
+                        if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
+                          setFormData({ ...formData, peso: v });
+                        }
+                      }}
                       placeholder="Ex: 65.5"
                     />
                   </div>

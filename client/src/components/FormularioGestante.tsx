@@ -877,13 +877,16 @@ export default function FormularioGestante({
                   <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
                   <Input
                     id="pesoInicial"
-                    type="number"
-                    step="0.1"
-                    min="30"
-                    max="200"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="Ex: 65.5"
                     value={formData.pesoInicial}
-                    onChange={(e) => setFormData({ ...formData, pesoInicial: e.target.value })}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(",", ".");
+                      if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
+                        setFormData({ ...formData, pesoInicial: v });
+                      }
+                    }}
                     className={alertaPeso.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
                   />
                   {alertaPeso.show ? (

@@ -1464,3 +1464,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] GraficoPeso.tsx já usa toFixed(1) para exibir e comparar com precisão decimal
 - [x] WizardPrimeiraConsulta e FormularioGestante já usavam parseFloat
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Validação de 1 casa decimal no campo de peso (03/03/2026) — CONCLUÍDO
+- [x] Localizar todos os inputs de peso: CartaoPrenatal, WizardPrimeiraConsulta, FormularioGestante (ConsultaUrgencia não tem campo de peso)
+- [x] Adicionar validação inline: type=text, inputMode=decimal, regex /^\d{0,3}(\.\d{0,1})?$/
+- [x] Suporte a vírgula (convertida automaticamente para ponto)
+- [x] Verificar compilação — sem erros TypeScript/LSP
