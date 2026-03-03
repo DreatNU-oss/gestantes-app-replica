@@ -1470,3 +1470,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar validação inline: type=text, inputMode=decimal, regex /^\d{0,3}(\.\d{0,1})?$/
 - [x] Suporte a vírgula (convertida automaticamente para ponto)
 - [x] Verificar compilação — sem erros TypeScript/LSP
+
+## Análise de pesos históricos (03/03/2026) — CONCLUÍDO
+- [x] Analisar estrutura do banco para identificar onde o peso texto original está armazenado
+- [x] Resultado: peso é armazenado apenas como int em gramas, sem campo texto separado
+- [x] Análise: 462 consultas com peso, 416 múltiplos exatos de 1000, 46 com decimal preservado
+- [x] Dados recentes (após fix): 350 consultas, 7 com decimal — confirma que profissionais geralmente registram pesos inteiros
+- [x] Conclusão: impossível distinguir dados corrompidos de pesos genuinamente inteiros — correção automática não é viável
+- [x] Fix de parseFloat já aplicado e funcionando para novos registros
+- [x] Validação de 1 casa decimal já aplicada em todos os formulários

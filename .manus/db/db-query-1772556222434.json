@@ -1,0 +1,250 @@
+{
+  "query": "SELECT id, gestanteId, peso, peso/1000 as pesoKg, peso % 1000 as resto, dataConsulta FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id LIMIT 30;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, peso, peso/1000 as pesoKg, peso % 1000 as resto, dataConsulta FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id LIMIT 30;",
+  "rows": [
+    {
+      "id": "1770002",
+      "gestanteId": "660001",
+      "peso": "61200",
+      "pesoKg": "61.2000",
+      "resto": "200",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770003",
+      "gestanteId": "330095",
+      "peso": "66800",
+      "pesoKg": "66.8000",
+      "resto": "800",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770004",
+      "gestanteId": "330076",
+      "peso": "62000",
+      "pesoKg": "62.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770005",
+      "gestanteId": "690018",
+      "peso": "65000",
+      "pesoKg": "65.0000",
+      "resto": "0",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770006",
+      "gestanteId": "720002",
+      "peso": "66900",
+      "pesoKg": "66.9000",
+      "resto": "900",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770007",
+      "gestanteId": "330083",
+      "peso": "70100",
+      "pesoKg": "70.1000",
+      "resto": "100",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770008",
+      "gestanteId": "330067",
+      "peso": "89000",
+      "pesoKg": "89.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770009",
+      "gestanteId": "300004",
+      "peso": "81700",
+      "pesoKg": "81.7000",
+      "resto": "700",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770010",
+      "gestanteId": "330031",
+      "peso": "77200",
+      "pesoKg": "77.2000",
+      "resto": "200",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770011",
+      "gestanteId": "300006",
+      "peso": "89000",
+      "pesoKg": "89.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770012",
+      "gestanteId": "780001",
+      "peso": "87100",
+      "pesoKg": "87.1000",
+      "resto": "100",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770013",
+      "gestanteId": "330039",
+      "peso": "90500",
+      "pesoKg": "90.5000",
+      "resto": "500",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770014",
+      "gestanteId": "330029",
+      "peso": "74000",
+      "pesoKg": "74.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770015",
+      "gestanteId": "330096",
+      "peso": "81200",
+      "pesoKg": "81.2000",
+      "resto": "200",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770016",
+      "gestanteId": "330082",
+      "peso": "78000",
+      "pesoKg": "78.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770017",
+      "gestanteId": "330041",
+      "peso": "90000",
+      "pesoKg": "90.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770018",
+      "gestanteId": "300005",
+      "peso": "75700",
+      "pesoKg": "75.7000",
+      "resto": "700",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770019",
+      "gestanteId": "810001",
+      "peso": "87500",
+      "pesoKg": "87.5000",
+      "resto": "500",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770020",
+      "gestanteId": "330018",
+      "peso": "69000",
+      "pesoKg": "69.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770021",
+      "gestanteId": "330090",
+      "peso": "58700",
+      "pesoKg": "58.7000",
+      "resto": "700",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770022",
+      "gestanteId": "330084",
+      "peso": "97000",
+      "pesoKg": "97.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770023",
+      "gestanteId": "330073",
+      "peso": "81200",
+      "pesoKg": "81.2000",
+      "resto": "200",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770024",
+      "gestanteId": "330045",
+      "peso": "99100",
+      "pesoKg": "99.1000",
+      "resto": "100",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770025",
+      "gestanteId": "330002",
+      "peso": "91100",
+      "pesoKg": "91.1000",
+      "resto": "100",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770026",
+      "gestanteId": "330006",
+      "peso": "60000",
+      "pesoKg": "60.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-08"
+    },
+    {
+      "id": "1770027",
+      "gestanteId": "330086",
+      "peso": "63000",
+      "pesoKg": "63.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-08"
+    },
+    {
+      "id": "1770028",
+      "gestanteId": "330093",
+      "peso": "69000",
+      "pesoKg": "69.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-08"
+    },
+    {
+      "id": "1770029",
+      "gestanteId": "330077",
+      "peso": "64000",
+      "pesoKg": "64.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-08"
+    },
+    {
+      "id": "1770030",
+      "gestanteId": "330024",
+      "peso": "66000",
+      "pesoKg": "66.0000",
+      "resto": "0",
+      "dataConsulta": "2025-12-08"
+    },
+    {
+      "id": "1770031",
+      "gestanteId": "330050",
+      "peso": "76700",
+      "pesoKg": "76.7000",
+      "resto": "700",
+      "dataConsulta": "2025-12-08"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tpeso\tpesoKg\tresto\tdataConsulta\n1770002\t660001\t61200\t61.2000\t200\t2025-11-30\n1770003\t330095\t66800\t66.8000\t800\t2025-11-30\n1770004\t330076\t62000\t62.0000\t0\t2025-12-01\n1770005\t690018\t65000\t65.0000\t0\t2025-11-30\n1770006\t720002\t66900\t66.9000\t900\t2025-12-01\n1770007\t330083\t70100\t70.1000\t100\t2025-12-01\n1770008\t330067\t89000\t89.0000\t0\t2025-12-01\n1770009\t300004\t81700\t81.7000\t700\t2025-12-01\n1770010\t330031\t77200\t77.2000\t200\t2025-12-01\n1770011\t300006\t89000\t89.0000\t0\t2025-12-02\n1770012\t780001\t87100\t87.1000\t100\t2025-12-02\n1770013\t330039\t90500\t90.5000\t500\t2025-12-02\n1770014\t330029\t74000\t74.0000\t0\t2025-12-02\n1770015\t330096\t81200\t81.2000\t200\t2025-12-02\n1770016\t330082\t78000\t78.0000\t0\t2025-12-02\n1770017\t330041\t90000\t90.0000\t0\t2025-12-03\n1770018\t300005\t75700\t75.7000\t700\t2025-12-03\n1770019\t810001\t87500\t87.5000\t500\t2025-12-03\n1770020\t330018\t69000\t69.0000\t0\t2025-12-03\n1770021\t330090\t58700\t58.7000\t700\t2025-12-03\n1770022\t330084\t97000\t97.0000\t0\t2025-12-03\n1770023\t330073\t81200\t81.2000\t200\t2025-12-03\n1770024\t330045\t99100\t99.1000\t100\t2025-12-03\n1770025\t330002\t91100\t91.1000\t100\t2025-12-03\n1770026\t330006\t60000\t60.0000\t0\t2025-12-08\n1770027\t330086\t63000\t63.0000\t0\t2025-12-08\n1770028\t330093\t69000\t69.0000\t0\t2025-12-08\n1770029\t330077\t64000\t64.0000\t0\t2025-12-08\n1770030\t330024\t66000\t66.0000\t0\t2025-12-08\n1770031\t330050\t76700\t76.7000\t700\t2025-12-08\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

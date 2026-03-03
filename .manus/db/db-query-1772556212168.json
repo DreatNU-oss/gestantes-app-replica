@@ -1,0 +1,130 @@
+{
+  "query": "SELECT id, gestanteId, peso, dataConsulta FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, peso, dataConsulta FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id LIMIT 20;",
+  "rows": [
+    {
+      "id": "1770002",
+      "gestanteId": "660001",
+      "peso": "61200",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770003",
+      "gestanteId": "330095",
+      "peso": "66800",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770004",
+      "gestanteId": "330076",
+      "peso": "62000",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770005",
+      "gestanteId": "690018",
+      "peso": "65000",
+      "dataConsulta": "2025-11-30"
+    },
+    {
+      "id": "1770006",
+      "gestanteId": "720002",
+      "peso": "66900",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770007",
+      "gestanteId": "330083",
+      "peso": "70100",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770008",
+      "gestanteId": "330067",
+      "peso": "89000",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770009",
+      "gestanteId": "300004",
+      "peso": "81700",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770010",
+      "gestanteId": "330031",
+      "peso": "77200",
+      "dataConsulta": "2025-12-01"
+    },
+    {
+      "id": "1770011",
+      "gestanteId": "300006",
+      "peso": "89000",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770012",
+      "gestanteId": "780001",
+      "peso": "87100",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770013",
+      "gestanteId": "330039",
+      "peso": "90500",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770014",
+      "gestanteId": "330029",
+      "peso": "74000",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770015",
+      "gestanteId": "330096",
+      "peso": "81200",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770016",
+      "gestanteId": "330082",
+      "peso": "78000",
+      "dataConsulta": "2025-12-02"
+    },
+    {
+      "id": "1770017",
+      "gestanteId": "330041",
+      "peso": "90000",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770018",
+      "gestanteId": "300005",
+      "peso": "75700",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770019",
+      "gestanteId": "810001",
+      "peso": "87500",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770020",
+      "gestanteId": "330018",
+      "peso": "69000",
+      "dataConsulta": "2025-12-03"
+    },
+    {
+      "id": "1770021",
+      "gestanteId": "330090",
+      "peso": "58700",
+      "dataConsulta": "2025-12-03"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tpeso\tdataConsulta\n1770002\t660001\t61200\t2025-11-30\n1770003\t330095\t66800\t2025-11-30\n1770004\t330076\t62000\t2025-12-01\n1770005\t690018\t65000\t2025-11-30\n1770006\t720002\t66900\t2025-12-01\n1770007\t330083\t70100\t2025-12-01\n1770008\t330067\t89000\t2025-12-01\n1770009\t300004\t81700\t2025-12-01\n1770010\t330031\t77200\t2025-12-01\n1770011\t300006\t89000\t2025-12-02\n1770012\t780001\t87100\t2025-12-02\n1770013\t330039\t90500\t2025-12-02\n1770014\t330029\t74000\t2025-12-02\n1770015\t330096\t81200\t2025-12-02\n1770016\t330082\t78000\t2025-12-02\n1770017\t330041\t90000\t2025-12-03\n1770018\t300005\t75700\t2025-12-03\n1770019\t810001\t87500\t2025-12-03\n1770020\t330018\t69000\t2025-12-03\n1770021\t330090\t58700\t2025-12-03\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}
