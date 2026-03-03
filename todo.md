@@ -1457,3 +1457,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Salvar a frase atual do campo como sugestão com um clique
 - [x] Feedback visual ao salvar (toast + mudança de cor verde)
 - [x] Verificar compilação e testes — 42 testes passando, sem erros TypeScript/LSP
+
+## Corrigir precisão decimal no gráfico de peso (03/03/2026) — CONCLUÍDO
+- [x] Identificar onde a precisão decimal é perdida — parseInt no CartaoPrenatal.tsx
+- [x] Corrigir parseInt para Math.round(parseFloat() * 1000) na conversão kg → gramas
+- [x] GraficoPeso.tsx já usa toFixed(1) para exibir e comparar com precisão decimal
+- [x] WizardPrimeiraConsulta e FormularioGestante já usavam parseFloat
+- [x] Verificar compilação — sem erros TypeScript/LSP

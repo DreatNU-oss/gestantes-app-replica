@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, gestanteId, peso, peso / 1000 as pesoKg, peso % 1000 as resto FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, peso, peso / 1000 as pesoKg, peso % 1000 as resto FROM consultasPrenatal WHERE peso IS NOT NULL ORDER BY id DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "7230006",
+      "gestanteId": "1620002",
+      "peso": "60000",
+      "pesoKg": "60.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7230005",
+      "gestanteId": "1890002",
+      "peso": "90000",
+      "pesoKg": "90.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7230004",
+      "gestanteId": "330073",
+      "peso": "85000",
+      "pesoKg": "85.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7230003",
+      "gestanteId": "330046",
+      "peso": "66000",
+      "pesoKg": "66.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7230002",
+      "gestanteId": "330055",
+      "peso": "79000",
+      "pesoKg": "79.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7200006",
+      "gestanteId": "1530002",
+      "peso": "65000",
+      "pesoKg": "65.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7200005",
+      "gestanteId": "330070",
+      "peso": "113000",
+      "pesoKg": "113.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7200004",
+      "gestanteId": "330084",
+      "peso": "100000",
+      "pesoKg": "100.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7200003",
+      "gestanteId": "660001",
+      "peso": "65000",
+      "pesoKg": "65.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7200002",
+      "gestanteId": "1350002",
+      "peso": "62000",
+      "pesoKg": "62.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7170002",
+      "gestanteId": "330008",
+      "peso": "74000",
+      "pesoKg": "74.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7140002",
+      "gestanteId": "330048",
+      "peso": "58000",
+      "pesoKg": "58.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7110003",
+      "gestanteId": "330007",
+      "peso": "73000",
+      "pesoKg": "73.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7110002",
+      "gestanteId": "330023",
+      "peso": "69000",
+      "pesoKg": "69.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7080003",
+      "gestanteId": "1260002",
+      "peso": "108000",
+      "pesoKg": "108.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7080002",
+      "gestanteId": "330093",
+      "peso": "77000",
+      "pesoKg": "77.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7050007",
+      "gestanteId": "330022",
+      "peso": "75000",
+      "pesoKg": "75.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7050006",
+      "gestanteId": "720001",
+      "peso": "66000",
+      "pesoKg": "66.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7050005",
+      "gestanteId": "330100",
+      "peso": "67000",
+      "pesoKg": "67.0000",
+      "resto": "0"
+    },
+    {
+      "id": "7050004",
+      "gestanteId": "840001",
+      "peso": "83000",
+      "pesoKg": "83.0000",
+      "resto": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tpeso\tpesoKg\tresto\n7230006\t1620002\t60000\t60.0000\t0\n7230005\t1890002\t90000\t90.0000\t0\n7230004\t330073\t85000\t85.0000\t0\n7230003\t330046\t66000\t66.0000\t0\n7230002\t330055\t79000\t79.0000\t0\n7200006\t1530002\t65000\t65.0000\t0\n7200005\t330070\t113000\t113.0000\t0\n7200004\t330084\t100000\t100.0000\t0\n7200003\t660001\t65000\t65.0000\t0\n7200002\t1350002\t62000\t62.0000\t0\n7170002\t330008\t74000\t74.0000\t0\n7140002\t330048\t58000\t58.0000\t0\n7110003\t330007\t73000\t73.0000\t0\n7110002\t330023\t69000\t69.0000\t0\n7080003\t1260002\t108000\t108.0000\t0\n7080002\t330093\t77000\t77.0000\t0\n7050007\t330022\t75000\t75.0000\t0\n7050006\t720001\t66000\t66.0000\t0\n7050005\t330100\t67000\t67.0000\t0\n7050004\t840001\t83000\t83.0000\t0\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

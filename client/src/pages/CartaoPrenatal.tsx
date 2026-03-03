@@ -1682,7 +1682,7 @@ export default function CartaoPrenatal() {
     const data = {
       gestanteId: gestanteSelecionada,
       dataConsulta: formData.dataConsulta,
-      peso: formData.peso ? parseInt(formData.peso) * 1000 : undefined, // converter kg para gramas
+      peso: formData.peso ? Math.round(parseFloat(formData.peso) * 1000) : undefined, // converter kg para gramas (preserva 1 casa decimal)
       pressaoArterial: formData.pressaoArterial || undefined,
       alturaUterina: formData.alturaUterina === "nao_palpavel" ? -1 : (formData.alturaUterina ? parseInt(formData.alturaUterina) * 10 : undefined), // -1 = não palpável, converter cm para mm
       bcf: formData.bcf ? parseInt(formData.bcf) : undefined,

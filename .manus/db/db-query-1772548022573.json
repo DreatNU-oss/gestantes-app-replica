@@ -1,0 +1,60 @@
+{
+  "query": "SELECT id, peso, peso % 1000 as resto FROM consultasPrenatal WHERE peso IS NOT NULL AND peso % 1000 != 0 LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, peso, peso % 1000 as resto FROM consultasPrenatal WHERE peso IS NOT NULL AND peso % 1000 != 0 LIMIT 10;",
+  "rows": [
+    {
+      "id": "1770002",
+      "peso": "61200",
+      "resto": "200"
+    },
+    {
+      "id": "1770003",
+      "peso": "66800",
+      "resto": "800"
+    },
+    {
+      "id": "1770006",
+      "peso": "66900",
+      "resto": "900"
+    },
+    {
+      "id": "1770007",
+      "peso": "70100",
+      "resto": "100"
+    },
+    {
+      "id": "1770009",
+      "peso": "81700",
+      "resto": "700"
+    },
+    {
+      "id": "1770010",
+      "peso": "77200",
+      "resto": "200"
+    },
+    {
+      "id": "1770012",
+      "peso": "87100",
+      "resto": "100"
+    },
+    {
+      "id": "1770013",
+      "peso": "90500",
+      "resto": "500"
+    },
+    {
+      "id": "1770015",
+      "peso": "81200",
+      "resto": "200"
+    },
+    {
+      "id": "1770018",
+      "peso": "75700",
+      "resto": "700"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpeso\tresto\n1770002\t61200\t200\n1770003\t66800\t800\n1770006\t66900\t900\n1770007\t70100\t100\n1770009\t81700\t700\n1770010\t77200\t200\n1770012\t87100\t100\n1770013\t90500\t500\n1770015\t81200\t200\n1770018\t75700\t700\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}
