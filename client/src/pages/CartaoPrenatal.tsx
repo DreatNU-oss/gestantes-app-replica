@@ -2240,6 +2240,9 @@ export default function CartaoPrenatal() {
                        />
                     )}
                   </div>
+                  {/* Campos de exame físico - ocultos na consulta de urgência (redundantes com campos específicos abaixo) */}
+                  {!isUrgencia && (
+                    <>
                   <div>
                     <Label>Peso (kg)</Label>
                     <Input
@@ -2255,7 +2258,9 @@ export default function CartaoPrenatal() {
                       placeholder="Ex: 65.5"
                     />
                   </div>
-                  <div>
+                    </>
+                  )}
+                  <div className={isUrgencia ? "col-span-2" : ""}>
                     <Label>Pressão Arterial</Label>
                     <Input
                       type="text"
@@ -2264,6 +2269,8 @@ export default function CartaoPrenatal() {
                       placeholder="Ex: 120/80 ou 120x80"
                     />
                   </div>
+                  {!isUrgencia && (
+                    <>
                   <div>
                     <Label>Altura Uterina (cm)</Label>
                     <select
@@ -2317,6 +2324,8 @@ export default function CartaoPrenatal() {
                       <option value="4">++++ (Generalizado)</option>
                     </select>
                   </div>
+                    </>
+                  )}
                 </div>
                 
                 {/* Seção de Lembretes Pendentes */}

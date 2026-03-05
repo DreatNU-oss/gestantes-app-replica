@@ -1479,3 +1479,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Conclusão: impossível distinguir dados corrompidos de pesos genuinamente inteiros — correção automática não é viável
 - [x] Fix de parseFloat já aplicado e funcionando para novos registros
 - [x] Validação de 1 casa decimal já aplicada em todos os formulários
+
+## Remover campos duplicados na Consulta de Urgência (05/03/2026)
+- [x] Investigar formulário de Consulta de Urgência para identificar todos os campos duplicados
+- [x] Remover campos redundantes de cima (Peso, AU dropdown, BCF, MF, Edema), mantendo apenas os de baixo
+- [x] Pressão Arterial mantida visível (relevante para urgência e sem equivalente na seção de urgência)
+- [x] Verificar compilação e testar — sem erros TypeScript, formulário funcional
