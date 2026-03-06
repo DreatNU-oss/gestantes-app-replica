@@ -263,6 +263,7 @@ export function GraficoDistribuicaoPartos({ gestantes }: GraficoDistribuicaoPart
             <Bar 
               dataKey="quantidade" 
               radius={[8, 8, 0, 0]}
+              activeBar={true}
               onClick={handleBarClick}
               style={{ cursor: "pointer" }}
             >

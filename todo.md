@@ -1485,3 +1485,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover campos redundantes de cima (Peso, AU dropdown, BCF, MF, Edema), mantendo apenas os de baixo
 - [x] Pressão Arterial mantida visível (relevante para urgência e sem equivalente na seção de urgência)
 - [x] Verificar compilação e testar — sem erros TypeScript, formulário funcional
+
+## Restaurar funcionalidade de clique nos gráficos de Estatísticas (06/03/2026)
+- [x] Investigar código atual da página Estatísticas para identificar o que foi removido
+- [x] Causa: Recharts 2.15 requer `activeBar={true}` para habilitar eventos de mouse nas barras
+- [x] Adicionado `activeBar={true}` em GraficoDistribuicaoPartos e GraficoMorfologicos
+- [x] Gráficos de pizza (Chart.js) já funcionavam corretamente
+- [x] Verificar compilação e testar — todos os gráficos com clique funcionando

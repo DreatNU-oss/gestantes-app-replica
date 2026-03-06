@@ -259,6 +259,7 @@ export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
               stackId="a" 
               fill="#10b981" 
               radius={[0, 0, 0, 0]}
+              activeBar={true}
               onClick={(data) => handleBarClick(data, "1º Trimestre")}
               style={{ cursor: "pointer" }}
             >
@@ -274,6 +275,7 @@ export function GraficoMorfologicos({ gestantes }: GraficoMorfologicosProps) {
               stackId="a" 
               fill="#3b82f6" 
               radius={[8, 8, 0, 0]}
+              activeBar={true}
               onClick={(data) => handleBarClick(data, "2º Trimestre")}
               style={{ cursor: "pointer" }}
             >
