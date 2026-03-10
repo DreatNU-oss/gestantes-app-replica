@@ -1547,3 +1547,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover secao "Queixas por Consulta" do htmlToPdf.ts
 - [x] Remover secao "Condutas Detalhadas" do htmlToPdf.ts
 - [x] TypeScript 0 errors
+
+## Corrigir Marcos Importantes no PDF (10/03/2026)
+- [x] Analisar logica de marcos no gestantesapp.com (frontend)
+- [x] Comparar com o que aparece no PDF e listar discrepancias ao usuario
+- [x] Vacina dTpa: corrigido de range 27-36s para data fixa 27s
+- [x] Adicionado: Concepcao (2s), 13 Semanas (13s), Vacina Bronquiolite (32-36s)
+- [x] Removido: Termo de Gestacao generico. Substituido por Termo Precoce (37s), Termo Completo (39s), DPP 40s
+- [x] Morfologicos com dias precisos (1o Tri: 11s5d-13s3d, 2o Tri: 20s0d-24s6d)
+- [x] Suporte a dataFim para marcos com range de datas
+- [x] Alteracoes aplicadas em routers.ts, gestante-router.ts, htmlToPdf.ts e pdfTemplateCompleto.ts
+- [x] TypeScript 0 errors

@@ -47,6 +47,7 @@ interface DadosPdf {
   marcos: Array<{
     titulo: string;
     data: string;
+    dataFim?: string;
     periodo: string;
   }>;
   ultrassons: Array<{
@@ -843,7 +844,13 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       const tituloWidth = doc.getTextWidth(tituloText);
       doc.text(tituloText, margin + 2, y);
       doc.setFont('helvetica', 'normal');
-      const complemento = sanitizeForPdf(` - ${formatarData(marco.data)} (${marco.periodo})`);
+      let dataTexto: string;
+      if (marco.dataFim) {
+        dataTexto = `${formatarData(marco.data)} a ${formatarData(marco.dataFim)}`;
+      } else {
+        dataTexto = formatarData(marco.data);
+      }
+      const complemento = sanitizeForPdf(` - ${dataTexto} (${marco.periodo})`);
       doc.text(complemento, margin + 2 + tituloWidth + 1, y);
       y += 6;
     });

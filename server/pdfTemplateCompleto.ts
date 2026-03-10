@@ -43,6 +43,7 @@ export interface DadosPdfCompleto {
   marcos: Array<{
     titulo: string;
     data: string;
+    dataFim?: string;
     periodo: string;
   }>;
   ultrassons: Array<{

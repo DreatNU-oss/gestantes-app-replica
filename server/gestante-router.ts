@@ -756,25 +756,43 @@ export const gestanteRouter = router({
       }
       
       if (dataBase) {
-        const marcosDefinidos = [
-          { titulo: '1º Ultrassom', semanaInicio: 6, semanaFim: 9 },
-          { titulo: 'Morfológico 1º Tri', semanaInicio: 11, semanaFim: 14 },
-          { titulo: 'Morfológico 2º Tri', semanaInicio: 20, semanaFim: 24 },
+        const marcosDefinidos: Array<{ titulo: string; semanaInicio: number; semanaFim: number | null; diasInicio?: number; diasFim?: number }> = [
+          { titulo: 'Concepcao', semanaInicio: 2, semanaFim: null, diasInicio: 0 },
+          { titulo: '1o Ultrassom', semanaInicio: 6, semanaFim: 9 },
+          { titulo: 'Morfologico 1o Tri', semanaInicio: 11, semanaFim: 14, diasInicio: 5, diasFim: 3 },
+          { titulo: '13 Semanas', semanaInicio: 13, semanaFim: null, diasInicio: 0 },
+          { titulo: 'Morfologico 2o Tri', semanaInicio: 20, semanaFim: 24, diasInicio: 0, diasFim: 6 },
           { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
           { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
-          { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: 36 },
+          { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: null, diasInicio: 0 },
+          { titulo: 'Vacina Bronquiolite', semanaInicio: 32, semanaFim: 36 },
           { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
-          { titulo: 'Termo de Gestação', semanaInicio: 37, semanaFim: 42 },
+          { titulo: 'Termo Precoce', semanaInicio: 37, semanaFim: null, diasInicio: 0 },
+          { titulo: 'Termo Completo', semanaInicio: 39, semanaFim: null, diasInicio: 0 },
+          { titulo: 'DPP (40 semanas)', semanaInicio: 40, semanaFim: null, diasInicio: 0 },
         ];
         
         marcos = marcosDefinidos.map(m => {
-          const diasAteSemanaInicio = ((m.semanaInicio - igBaseSemanas) * 7) - igBaseDias;
+          const diasInicioOffset = m.diasInicio || 0;
+          const diasAteSemanaInicio = ((m.semanaInicio - igBaseSemanas) * 7) - igBaseDias + diasInicioOffset;
           const dataEstimada = new Date(dataBase!.getTime() + (diasAteSemanaInicio * 24 * 60 * 60 * 1000));
-          return {
-            titulo: m.titulo,
-            data: dataEstimada.toISOString().split('T')[0],
-            periodo: `${m.semanaInicio}-${m.semanaFim}s`
-          };
+          if (m.semanaFim === null) {
+            return {
+              titulo: m.titulo,
+              data: dataEstimada.toISOString().split('T')[0],
+              periodo: `${m.semanaInicio}s`
+            };
+          } else {
+            const diasFimOffset = m.diasFim || 0;
+            const diasAteSemanaFim = ((m.semanaFim - igBaseSemanas) * 7) - igBaseDias + diasFimOffset;
+            const dataFim = new Date(dataBase!.getTime() + (diasAteSemanaFim * 24 * 60 * 60 * 1000));
+            return {
+              titulo: m.titulo,
+              data: dataEstimada.toISOString().split('T')[0],
+              dataFim: dataFim.toISOString().split('T')[0],
+              periodo: `${m.semanaInicio}-${m.semanaFim}s`
+            };
+          }
         });
       }
       
