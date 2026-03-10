@@ -57,6 +57,12 @@ export interface DadosPdfCompleto {
   }>;
   fatoresRisco: Array<{ tipo: string }>;
   medicamentos: Array<{ tipo: string; especificacao?: string }>;
+  // Dados brutos para gráficos nativos jsPDF (sem dependência de fontes do sistema)
+  dadosGraficos?: {
+    peso?: Array<{ igSemanas: number; valor: number }>;
+    au?: Array<{ igSemanas: number; valor: number }>;
+    pa?: Array<{ igSemanas: number; sistolica: number; diastolica: number }>;
+  };
 }
 
 /**

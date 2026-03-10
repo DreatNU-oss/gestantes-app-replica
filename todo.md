@@ -1492,3 +1492,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionado `activeBar={true}` em GraficoDistribuicaoPartos e GraficoMorfologicos
 - [x] Gráficos de pizza (Chart.js) já funcionavam corretamente
 - [x] Verificar compilação e testar — todos os gráficos com clique funcionando
+
+## Aplicar pacote de correção de PDF do projeto APP mobile (10/03/2026)
+- [x] Substituir htmlToPdf.ts pelo htmlToPdf_FINAL.ts do APP (gráficos nativos jsPDF)
+- [x] Atualizar interface DadosPdfCompleto em pdfTemplateCompleto.ts com campo dadosGraficos
+- [x] Modificar rota gerarPdfCartao em gestante-router.ts para passar dados brutos dos gráficos
+- [x] Logo embutida como base64 em logoBase64.ts (compatível com esbuild bundle/deploy)
+- [x] Também aplicar mesma alteração na rota pdf.gerarCartaoPrenatal em routers.ts (versão web)
+- [x] Verificar compilação e testar — TypeScript 0 errors, servidor rodando sem erros

@@ -2238,6 +2238,19 @@ export const appRouter = router({
 
         const graficosGerados = await gerarTodosGraficos(dadosConsultasGraficos);
 
+        // Preparar dados brutos para gráficos nativos jsPDF (sem dependência de fontes)
+        const dadosGraficosNativos = {
+          peso: dadosConsultasGraficos
+            .filter(c => c.peso !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, valor: c.peso! })),
+          au: dadosConsultasGraficos
+            .filter(c => c.au !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, valor: c.au! })),
+          pa: dadosConsultasGraficos
+            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, sistolica: c.paSistolica!, diastolica: c.paDiastolica! })),
+        };
+
         // Agrupar exames por trimestre
         const examesAgrupados: any[] = [];
         const examesPorNome = new Map<string, any>();
@@ -2302,6 +2315,8 @@ export const appRouter = router({
             au: graficosGerados.graficoAU || undefined,
             pa: graficosGerados.graficoPA || undefined,
           },
+          // Dados brutos para gráficos nativos jsPDF
+          dadosGraficos: dadosGraficosNativos,
           gestante: {
             nome: gestante.nome,
             idade: idade,
