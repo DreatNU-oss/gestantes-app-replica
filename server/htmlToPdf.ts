@@ -38,6 +38,7 @@ interface DadosPdf {
     au: number | null;
     bcf: number | null;
     mf: number | null;
+    edema: string | null;
     conduta: string | null;
     condutaComplementacao: string | null;
     observacoes: string | null;
@@ -741,8 +742,8 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(40);
     drawSectionTitle('Historico de Consultas');
     
-    const colWidths = [22, 18, 18, 18, 18, 18, 68];
-    const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'Conduta'];
+    const colWidths = [22, 18, 18, 18, 18, 14, 16, 56];
+    const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'Edema', 'Conduta'];
     
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -797,6 +798,8 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         }
       }
       
+      const edemaFormatado = consulta.edema || '-';
+      
       const rowData = [
         formatarData(consulta.dataConsulta),
         consulta.igDUM || '-',
@@ -804,6 +807,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         consulta.pa || '-',
         auFormatado,
         bcfFormatado,
+        edemaFormatado,
         condutaFormatada,
       ];
       

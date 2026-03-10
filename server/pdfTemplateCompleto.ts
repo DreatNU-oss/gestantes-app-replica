@@ -34,6 +34,7 @@ export interface DadosPdfCompleto {
     au: number | null;
     bcf: number | null;
     mf: number | null;
+    edema: string | null;
     conduta: string | null;
     condutaComplementacao: string | null;
     observacoes: string | null;

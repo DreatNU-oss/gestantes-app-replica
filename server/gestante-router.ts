@@ -854,6 +854,7 @@ export const gestanteRouter = router({
           au: c.alturaUterina,
           bcf: c.bcf,
           mf: c.movimentosFetais ? 1 : null,
+          edema: c.edema || null,
           conduta: c.conduta,
           condutaComplementacao: c.condutaComplementacao,
           observacoes: c.observacoes,

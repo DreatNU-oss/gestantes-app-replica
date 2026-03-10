@@ -1535,3 +1535,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigido para usar smtp_email e smtp_senha (mesmas chaves do email.ts de lembretes)
 - [x] Template de e-mail mantido identico
 - [x] Teste de envio para dreatnu@yahoo.com: SUCESSO (Message ID confirmado, resposta 250 OK)
+
+## Adicionar campo edema na tabela de consultas do PDF (10/03/2026)
+- [x] Verificar estrutura da tabela atual e dados de edema disponiveis (varchar: ausencia, +, ++, +++, ++++)
+- [x] Adicionar coluna Edema na tabela de consultas do PDF (entre BCF e Conduta)
+- [x] Adicionar campo edema na interface DadosPdf, DadosPdfCompleto e mapeamentos (routers.ts e gestante-router.ts)
+- [x] Ajustar larguras das colunas: 8 colunas (Data, IG, Peso, PA, AU, BCF, Edema, Conduta)
+- [x] TypeScript 0 errors
