@@ -1508,3 +1508,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir valores com underscore por labels legíveis (Fatores de Risco, Ultrassons, Medicamentos)
 - [x] Corrigir sobreposição de textos nas seções Marcos Importantes e Ultrassons (espaçamento aumentado)
 - [x] Verificar todas as seções do PDF para problemas similares
+
+## Adicionar seção Condutas Detalhadas ao PDF (10/03/2026)
+- [x] Analisar dados disponíveis das consultas (conduta, complementação, observações)
+- [x] Implementar seção "Condutas Detalhadas" no htmlToPdf.ts após Exames Laboratoriais
+- [x] Cada consulta mostra: data+IG, condutas (JSON expandido), complementação, observações
+- [x] Texto longo com quebra automática de linha (splitTextToSize)
+- [x] Verificar compilação — TypeScript 0 errors

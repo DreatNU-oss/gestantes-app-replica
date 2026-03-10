@@ -997,6 +997,139 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     });
   }
 
+  // ===== CONDUTAS DETALHADAS =====
+  const consultasComConduta = dados.consultas.filter(
+    c => c.conduta || c.condutaComplementacao || c.observacoes
+  );
+  if (consultasComConduta.length > 0) {
+    checkNewPage(30);
+    drawSectionTitle('Condutas Detalhadas');
+    
+    consultasComConduta.forEach((consulta, index) => {
+      // Calcular espaço necessário para esta consulta
+      let alturaEstimada = 8; // cabeçalho da data
+      if (consulta.conduta) alturaEstimada += 6;
+      if (consulta.condutaComplementacao) alturaEstimada += 6;
+      if (consulta.observacoes) alturaEstimada += 6;
+      checkNewPage(alturaEstimada + 5);
+      
+      // Linha separadora entre consultas
+      if (index > 0) {
+        doc.setDrawColor(220, 220, 220);
+        doc.line(margin, y - 1, margin + contentWidth, y - 1);
+        y += 2;
+      }
+      
+      // Data e IG da consulta
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
+      const igInfo = consulta.igDUM ? ` (IG: ${consulta.igDUM})` : '';
+      doc.text(`${formatarData(consulta.dataConsulta)}${igInfo}`, margin + 2, y);
+      doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+      y += 5;
+      
+      // Condutas (JSON array)
+      if (consulta.conduta) {
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Condutas:', margin + 4, y);
+        doc.setFont('helvetica', 'normal');
+        try {
+          const condutas = JSON.parse(consulta.conduta);
+          if (Array.isArray(condutas) && condutas.length > 0) {
+            const condutaTexto = condutas.join(', ');
+            const condutaLabelWidth = doc.getTextWidth('Condutas: ');
+            const maxCondutaWidth = contentWidth - 6 - condutaLabelWidth;
+            const linhasConduta = doc.splitTextToSize(condutaTexto, maxCondutaWidth);
+            if (linhasConduta.length === 1) {
+              doc.text(condutaTexto, margin + 4 + condutaLabelWidth, y);
+              y += 5;
+            } else {
+              y += 4;
+              linhasConduta.forEach((linha: string) => {
+                checkNewPage(5);
+                doc.text(linha, margin + 6, y);
+                y += 4;
+              });
+              y += 1;
+            }
+          } else {
+            y += 5;
+          }
+        } catch {
+          // Se não for JSON, exibir como texto
+          const condutaLabelWidth = doc.getTextWidth('Condutas: ');
+          const maxWidth = contentWidth - 6 - condutaLabelWidth;
+          const linhas = doc.splitTextToSize(consulta.conduta, maxWidth);
+          if (linhas.length === 1) {
+            doc.text(consulta.conduta, margin + 4 + condutaLabelWidth, y);
+            y += 5;
+          } else {
+            y += 4;
+            linhas.forEach((linha: string) => {
+              checkNewPage(5);
+              doc.text(linha, margin + 6, y);
+              y += 4;
+            });
+            y += 1;
+          }
+        }
+      }
+      
+      // Complementação da conduta
+      if (consulta.condutaComplementacao) {
+        checkNewPage(8);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Complementação:', margin + 4, y);
+        doc.setFont('helvetica', 'normal');
+        const compLabelWidth = doc.getTextWidth('Complementação: ');
+        const maxCompWidth = contentWidth - 6 - compLabelWidth;
+        const linhasComp = doc.splitTextToSize(consulta.condutaComplementacao, maxCompWidth);
+        if (linhasComp.length === 1) {
+          doc.text(consulta.condutaComplementacao, margin + 4 + compLabelWidth, y);
+          y += 5;
+        } else {
+          y += 4;
+          linhasComp.forEach((linha: string) => {
+            checkNewPage(5);
+            doc.text(linha, margin + 6, y);
+            y += 4;
+          });
+          y += 1;
+        }
+      }
+      
+      // Observações
+      if (consulta.observacoes) {
+        checkNewPage(8);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Observações:', margin + 4, y);
+        doc.setFont('helvetica', 'normal');
+        const obsLabelWidth = doc.getTextWidth('Observações: ');
+        const maxObsWidth = contentWidth - 6 - obsLabelWidth;
+        const linhasObs = doc.splitTextToSize(consulta.observacoes, maxObsWidth);
+        if (linhasObs.length === 1) {
+          doc.text(consulta.observacoes, margin + 4 + obsLabelWidth, y);
+          y += 5;
+        } else {
+          y += 4;
+          linhasObs.forEach((linha: string) => {
+            checkNewPage(5);
+            doc.text(linha, margin + 6, y);
+            y += 4;
+          });
+          y += 1;
+        }
+      }
+      
+      y += 2;
+    });
+    y += 3;
+  }
+
   // ===== RODAPÉ =====
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
