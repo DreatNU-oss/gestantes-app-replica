@@ -857,6 +857,7 @@ export const gestanteRouter = router({
           conduta: c.conduta,
           condutaComplementacao: c.condutaComplementacao,
           observacoes: c.observacoes,
+          queixas: c.queixas || null,
         })),
         marcos: marcos,
         ultrassons: ultrassons.map((u: any) => {

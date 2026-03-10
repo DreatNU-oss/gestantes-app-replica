@@ -41,6 +41,7 @@ interface DadosPdf {
     conduta: string | null;
     condutaComplementacao: string | null;
     observacoes: string | null;
+    queixas: string | null;
   }>;
   marcos: Array<{
     titulo: string;
@@ -939,6 +940,51 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       });
       y += 5;
     });
+  }
+
+  // ===== QUEIXAS =====
+  const consultasComQueixas = dados.consultas.filter(
+    c => c.queixas && c.queixas.trim() !== ''
+  );
+  if (consultasComQueixas.length > 0) {
+    checkNewPage(30);
+    drawSectionTitle('Queixas por Consulta');
+    
+    consultasComQueixas.forEach((consulta, index) => {
+      // Calcular espaco necessario
+      const queixaTexto = sanitizeForPdf(consulta.queixas || '');
+      const linhasQueixa = doc.splitTextToSize(queixaTexto, contentWidth - 8);
+      const alturaEstimada = 8 + (linhasQueixa.length * 4);
+      checkNewPage(alturaEstimada + 5);
+      
+      // Linha separadora entre consultas
+      if (index > 0) {
+        doc.setDrawColor(220, 220, 220);
+        doc.line(margin, y - 1, margin + contentWidth, y - 1);
+        y += 2;
+      }
+      
+      // Data e IG da consulta
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
+      const igInfo = consulta.igDUM ? ` (IG: ${consulta.igDUM})` : '';
+      doc.text(sanitizeForPdf(`${formatarData(consulta.dataConsulta)}${igInfo}`), margin + 2, y);
+      doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+      y += 5;
+      
+      // Texto da queixa
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      linhasQueixa.forEach((linha: string) => {
+        checkNewPage(5);
+        doc.text(sanitizeForPdf(linha), margin + 4, y);
+        y += 4;
+      });
+      
+      y += 2;
+    });
+    y += 3;
   }
 
   // ===== CONDUTAS DETALHADAS =====

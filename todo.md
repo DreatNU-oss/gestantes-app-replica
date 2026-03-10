@@ -1523,9 +1523,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] TypeScript 0 errors, servidor rodando
 
 ## Adicionar secao Queixas ao PDF do cartao (10/03/2026)
-- [ ] Analisar campo de queixas nas consultas (estrutura de dados)
-- [ ] Implementar secao "Queixas" no htmlToPdf.ts
-- [ ] Verificar compilacao e testar
+- [x] Analisar campo de queixas nas consultas (campo texto em consultasPrenatal)
+- [x] Adicionar campo queixas a interface DadosPdf, DadosPdfCompleto e mapeamentos nas rotas
+- [x] Implementar secao "Queixas por Consulta" no htmlToPdf.ts (antes de Condutas Detalhadas)
+- [x] Cada consulta mostra data+IG e texto completo da queixa com quebra de linha
+- [x] TypeScript 0 errors
 
 ## Migrar envio de codigo de verificacao do Resend para Gmail SMTP (10/03/2026)
 - [x] Localizar funcao que envia codigo de verificacao no endpoint do app movel (email-service.ts)

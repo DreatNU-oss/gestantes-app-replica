@@ -37,6 +37,7 @@ export interface DadosPdfCompleto {
     conduta: string | null;
     condutaComplementacao: string | null;
     observacoes: string | null;
+    queixas: string | null;
   }>;
   marcos: Array<{
     titulo: string;
