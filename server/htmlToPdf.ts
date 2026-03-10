@@ -551,7 +551,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         logoWidth,
         logoHeight
       );
-      y += logoHeight + 2;
+      y += logoHeight + 6;
     } catch (e) {
       console.error('[htmlToPdf] Erro ao adicionar logo:', e);
       doc.setFontSize(14);

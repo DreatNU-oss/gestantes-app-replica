@@ -1500,3 +1500,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Logo embutida como base64 em logoBase64.ts (compatível com esbuild bundle/deploy)
 - [x] Também aplicar mesma alteração na rota pdf.gerarCartaoPrenatal em routers.ts (versão web)
 - [x] Verificar compilação e testar — TypeScript 0 errors, servidor rodando sem erros
+
+## Ajustar espaçamento vertical entre logo e título no PDF (10/03/2026)
+- [x] Aumentar distância vertical entre a logo da clínica e o texto "Cartão de Pré-Natal" (de +2 para +6)
