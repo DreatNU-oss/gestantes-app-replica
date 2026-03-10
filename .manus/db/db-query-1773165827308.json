@@ -1,0 +1,20 @@
+{
+  "query": "SELECT chave, valor, descricao FROM configuracoesEmail WHERE chave IN ('EMAIL_USER', 'EMAIL_PASS', 'smtp_email', 'smtp_senha') ORDER BY chave;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT chave, valor, descricao FROM configuracoesEmail WHERE chave IN ('EMAIL_USER', 'EMAIL_PASS', 'smtp_email', 'smtp_senha') ORDER BY chave;",
+  "rows": [
+    {
+      "chave": "smtp_email",
+      "valor": "prenatalmaismulher@gmail.com",
+      "descricao": "E-mail do remetente"
+    },
+    {
+      "chave": "smtp_senha",
+      "valor": "tydi xodz fgmi ylxx",
+      "descricao": "Senha de App do Gmail"
+    }
+  ],
+  "messages": [],
+  "stdout": "chave\tvalor\tdescricao\nsmtp_email\tprenatalmaismulher@gmail.com\tE-mail do remetente\nsmtp_senha\ttydi xodz fgmi ylxx\tSenha de App do Gmail\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

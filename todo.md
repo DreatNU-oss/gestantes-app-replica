@@ -1521,3 +1521,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Todos os doc.text() com dados dinamicos agora passam por sanitizeForPdf()
 - [x] Acentos, cedilha, ordinais e caracteres especiais removidos de todo o PDF
 - [x] TypeScript 0 errors, servidor rodando
+
+## Adicionar secao Queixas ao PDF do cartao (10/03/2026)
+- [ ] Analisar campo de queixas nas consultas (estrutura de dados)
+- [ ] Implementar secao "Queixas" no htmlToPdf.ts
+- [ ] Verificar compilacao e testar
+
+## Migrar envio de codigo de verificacao do Resend para Gmail SMTP (10/03/2026)
+- [x] Localizar funcao que envia codigo de verificacao no endpoint do app movel (email-service.ts)
+- [x] Causa raiz: chaves de config erradas (gmail_user/gmail_app_password vs smtp_email/smtp_senha)
+- [x] Corrigido para usar smtp_email e smtp_senha (mesmas chaves do email.ts de lembretes)
+- [x] Template de e-mail mantido identico
+- [x] Teste de envio para dreatnu@yahoo.com: SUCESSO (Message ID confirmado, resposta 250 OK)

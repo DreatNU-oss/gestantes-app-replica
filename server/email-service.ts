@@ -24,24 +24,24 @@ export async function sendVerificationCode({
   const greeting = gestanteNome ? `Olá ${gestanteNome}` : "Olá";
 
   try {
-    const gmailUser = await getConfig('gmail_user');
-    const gmailPass = await getConfig('gmail_app_password');
+    const smtpEmail = await getConfig('smtp_email');
+    const smtpSenha = await getConfig('smtp_senha');
     
-    if (!gmailUser || !gmailPass) {
-      console.warn("[Email] Gmail não configurado - credenciais não definidas");
+    if (!smtpEmail || !smtpSenha) {
+      console.warn("[Email] Gmail SMTP nao configurado - smtp_email ou smtp_senha nao definidos");
       return { success: false, error: "Email service not configured" };
     }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: gmailUser,
-        pass: gmailPass,
+        user: smtpEmail,
+        pass: smtpSenha,
       },
     });
 
     const result = await transporter.sendMail({
-      from: `"Clínica Mais Mulher" <${gmailUser}>`,
+      from: `"Clinica Mais Mulher" <${smtpEmail}>`,
       to: to,
       subject: `${code} - Código de Verificação | Mais Mulher`,
       html: `
@@ -104,24 +104,24 @@ export async function sendPasswordResetEmail({
   const resetUrl = `${baseUrl}/redefinir-senha?token=${token}`;
 
   try {
-    const gmailUser = await getConfig('gmail_user');
-    const gmailPass = await getConfig('gmail_app_password');
+    const smtpEmail = await getConfig('smtp_email');
+    const smtpSenha = await getConfig('smtp_senha');
     
-    if (!gmailUser || !gmailPass) {
-      console.warn("[Email] Gmail não configurado - credenciais não definidas");
+    if (!smtpEmail || !smtpSenha) {
+      console.warn("[Email] Gmail SMTP nao configurado - smtp_email ou smtp_senha nao definidos");
       return { success: false, error: "Email service not configured" };
     }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: gmailUser,
-        pass: gmailPass,
+        user: smtpEmail,
+        pass: smtpSenha,
       },
     });
 
     const result = await transporter.sendMail({
-      from: `"Clínica Mais Mulher" <${gmailUser}>`,
+      from: `"Clinica Mais Mulher" <${smtpEmail}>`,
       to: to,
       subject: `Redefinição de Senha | Mais Mulher`,
       html: `
