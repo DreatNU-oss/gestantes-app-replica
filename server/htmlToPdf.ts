@@ -1,65 +1,9 @@
 import { jsPDF } from 'jspdf';
 import { LOGO_MAIS_MULHER_BASE64 } from './logoBase64';
+import { FATORES_RISCO_LABELS, TIPO_ULTRASSOM_LABELS, MEDICAMENTO_LABELS, formatarLabel, sanitizeForPdf } from './htmlToPdf_labels';
 
-// Logo base64 embutida diretamente no código (compatível com esbuild bundle)
+// Logo base64 embutida diretamente no codigo (compativel com esbuild bundle)
 const LOGO_BASE64: string = LOGO_MAIS_MULHER_BASE64;
-
-// Mapeamentos de labels para valores enum do banco de dados
-const FATORES_RISCO_LABELS: Record<string, string> = {
-  alergia_medicamentos: 'Alergia a medicamentos',
-  alteracoes_morfologicas_fetais: 'Alterações morfológicas fetais',
-  anemia_falciforme: 'Anemia Falciforme',
-  cirurgia_uterina_previa: 'Cirurgia Uterina Prévia',
-  diabetes_gestacional: 'Diabetes Gestacional',
-  diabetes_tipo_1: 'Diabetes Tipo 1',
-  diabetes_tipo2: 'Diabetes Tipo 2',
-  dpoc_asma: 'DPOC/Asma',
-  epilepsia: 'Epilepsia',
-  fator_preditivo_dheg: 'Fator Preditivo para DHEG',
-  fator_rh_negativo: 'Fator Rh Negativo',
-  fiv_nesta_gestacao: 'FIV nesta gestação',
-  gemelar: 'Gemelar',
-  hipertensao: 'Hipertensão',
-  hipotireoidismo: 'Hipotireoidismo',
-  historico_familiar_dheg: 'Histórico familiar de DHEG',
-  idade_avancada: 'Idade ≥ 35 anos',
-  incompetencia_istmo_cervical: 'Incompetência Istmo-cervical',
-  mal_passado_obstetrico: 'Mal Passado Obstétrico',
-  malformacoes_mullerianas: 'Malformações Müllerianas',
-  outro: 'Outro',
-  sobrepeso_obesidade: 'Sobrepeso/Obesidade',
-  trombofilia: 'Trombofilia',
-};
-
-const TIPO_ULTRASSOM_LABELS: Record<string, string> = {
-  primeiro_ultrassom: '1º Ultrassom',
-  morfologico_1tri: 'Morfológico 1º Trimestre',
-  ultrassom_obstetrico: 'Ultrassom Obstétrico',
-  morfologico_2tri: 'Morfológico 2º Trimestre',
-  ecocardiograma_fetal: 'Ecocardiograma Fetal',
-  ultrassom_seguimento: 'Ultrassom de Seguimento',
-};
-
-const MEDICAMENTO_LABELS: Record<string, string> = {
-  aas: 'AAS',
-  anti_hipertensivos: 'Anti-hipertensivos',
-  calcio: 'Cálcio',
-  enoxaparina: 'Enoxaparina',
-  insulina: 'Insulina',
-  levotiroxina: 'Levotiroxina',
-  medicamentos_inalatorios: 'Medicamentos Inalatórios',
-  polivitaminicos: 'Polivitamínicos',
-  progestagenos: 'Progestágenos',
-  psicotropicos: 'Psicotrópicos',
-  outros: 'Outros',
-};
-
-/** Converte enum com underscore para label legível */
-function formatarLabel(valor: string, mapa: Record<string, string>): string {
-  if (mapa[valor]) return mapa[valor];
-  // Fallback genérico: substituir underscores por espaços e capitalizar
-  return valor.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-}
 
 /**
  * Interface para os dados do PDF
@@ -569,27 +513,27 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     return false;
   };
 
-  // Função para desenhar título de seção
+  // Funcao para desenhar titulo de secao
   const drawSectionTitle = (title: string) => {
     checkNewPage(15);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-    doc.text(title, margin, y);
+    doc.text(sanitizeForPdf(title), margin, y);
     y += 8;
     doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
     doc.setFont('helvetica', 'normal');
   };
 
-  // Função para desenhar linha de dados
+  // Funcao para desenhar linha de dados
   const drawDataLine = (label: string, value: string) => {
     checkNewPage(8);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text(label + ':', margin, y);
+    doc.text(sanitizeForPdf(label) + ':', margin, y);
     doc.setFont('helvetica', 'normal');
-    const labelWidth = doc.getTextWidth(label + ': ');
-    doc.text(value || '-', margin + labelWidth, y);
+    const labelWidth = doc.getTextWidth(sanitizeForPdf(label) + ': ');
+    doc.text(sanitizeForPdf(value || '-'), margin + labelWidth, y);
     y += 6;
   };
 
@@ -614,14 +558,14 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-      doc.text('Clínica Mais Mulher', pageWidth / 2, y, { align: 'center' });
+      doc.text('Clinica Mais Mulher', pageWidth / 2, y, { align: 'center' });
       y += 8;
     }
   } else {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-    doc.text('Clínica Mais Mulher', pageWidth / 2, y, { align: 'center' });
+    doc.text('Clinica Mais Mulher', pageWidth / 2, y, { align: 'center' });
     y += 8;
   }
 
@@ -629,7 +573,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-  doc.text('Cartão de Pré-Natal', pageWidth / 2, y, { align: 'center' });
+  doc.text(sanitizeForPdf('Cartao de Pre-Natal'), pageWidth / 2, y, { align: 'center' });
   y += 6;
 
   // Linha separadora
@@ -644,7 +588,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
-  doc.text(dados.gestante.nome, margin, y);
+  doc.text(sanitizeForPdf(dados.gestante.nome), margin, y);
   y += 6;
   
   doc.setFontSize(10);
@@ -686,7 +630,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     dados.fatoresRisco.forEach(f => {
       checkNewPage(6);
       doc.setFontSize(10);
-      doc.text(`• ${formatarLabel(f.tipo, FATORES_RISCO_LABELS)}`, margin + 2, y);
+      doc.text(sanitizeForPdf(`- ${formatarLabel(f.tipo, FATORES_RISCO_LABELS)}`), margin + 2, y);
       y += 5;
     });
     y += 3;
@@ -700,7 +644,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setFontSize(10);
       const tipoLabel = formatarLabel(m.tipo, MEDICAMENTO_LABELS);
       const texto = m.especificacao ? `${tipoLabel}: ${m.especificacao}` : tipoLabel;
-      doc.text(`• ${texto}`, margin + 2, y);
+      doc.text(sanitizeForPdf(`- ${texto}`), margin + 2, y);
       y += 5;
     });
     y += 3;
@@ -794,7 +738,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
   // ===== HISTÓRICO DE CONSULTAS =====
   if (dados.consultas.length > 0) {
     checkNewPage(40);
-    drawSectionTitle('Histórico de Consultas');
+    drawSectionTitle('Historico de Consultas');
     
     const colWidths = [22, 18, 18, 18, 18, 18, 68];
     const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'Conduta'];
@@ -873,7 +817,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
           }
           text += '...';
         }
-        doc.text(text, x + 1, y);
+        doc.text(sanitizeForPdf(text), x + 1, y);
         x += colWidths[i];
       });
       y += 5;
@@ -890,11 +834,11 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       checkNewPage(8);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      const tituloText = marco.titulo;
+      const tituloText = sanitizeForPdf(marco.titulo);
       const tituloWidth = doc.getTextWidth(tituloText);
       doc.text(tituloText, margin + 2, y);
       doc.setFont('helvetica', 'normal');
-      const complemento = ` - ${formatarData(marco.data)} (${marco.periodo})`;
+      const complemento = sanitizeForPdf(` - ${formatarData(marco.data)} (${marco.periodo})`);
       doc.text(complemento, margin + 2 + tituloWidth + 1, y);
       y += 6;
     });
@@ -910,17 +854,17 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       checkNewPage(12);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      const tipoLabel = formatarLabel(us.tipo, TIPO_ULTRASSOM_LABELS);
+      const tipoLabel = sanitizeForPdf(formatarLabel(us.tipo, TIPO_ULTRASSOM_LABELS));
       const tipoWidth = doc.getTextWidth(tipoLabel);
       doc.text(tipoLabel, margin + 2, y);
       doc.setFont('helvetica', 'normal');
-      const complemento = ` - ${formatarData(us.data)} (${us.ig})`;
+      const complemento = sanitizeForPdf(` - ${formatarData(us.data)} (${us.ig})`);
       doc.text(complemento, margin + 2 + tipoWidth + 1, y);
       y += 5;
       if (us.observacoes) {
         doc.setFontSize(8);
         doc.setTextColor(corCinza[0], corCinza[1], corCinza[2]);
-        doc.text(`   ${us.observacoes}`, margin + 4, y);
+        doc.text(sanitizeForPdf(`   ${us.observacoes}`), margin + 4, y);
         doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
         y += 5;
       }
@@ -934,7 +878,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawSectionTitle('Exames Laboratoriais');
     
     const exameColWidths = [50, 40, 40, 40];
-    const exameHeaders = ['Exame', '1º Tri', '2º Tri', '3º Tri'];
+    const exameHeaders = ['Exame', '1o Tri', '2o Tri', '3o Tri'];
     
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -990,7 +934,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
           }
           text += '...';
         }
-        doc.text(text, x + 1, y);
+        doc.text(sanitizeForPdf(text), x + 1, y);
         x += exameColWidths[i];
       });
       y += 5;
@@ -1025,7 +969,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
       const igInfo = consulta.igDUM ? ` (IG: ${consulta.igDUM})` : '';
-      doc.text(`${formatarData(consulta.dataConsulta)}${igInfo}`, margin + 2, y);
+      doc.text(sanitizeForPdf(`${formatarData(consulta.dataConsulta)}${igInfo}`), margin + 2, y);
       doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
       y += 5;
       
@@ -1038,7 +982,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         try {
           const condutas = JSON.parse(consulta.conduta);
           if (Array.isArray(condutas) && condutas.length > 0) {
-            const condutaTexto = condutas.join(', ');
+            const condutaTexto = sanitizeForPdf(condutas.join(', '));
             const condutaLabelWidth = doc.getTextWidth('Condutas: ');
             const maxCondutaWidth = contentWidth - 6 - condutaLabelWidth;
             const linhasConduta = doc.splitTextToSize(condutaTexto, maxCondutaWidth);
@@ -1049,7 +993,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
               y += 4;
               linhasConduta.forEach((linha: string) => {
                 checkNewPage(5);
-                doc.text(linha, margin + 6, y);
+                doc.text(sanitizeForPdf(linha), margin + 6, y);
                 y += 4;
               });
               y += 1;
@@ -1058,18 +1002,18 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
             y += 5;
           }
         } catch {
-          // Se não for JSON, exibir como texto
+          // Se nao for JSON, exibir como texto
           const condutaLabelWidth = doc.getTextWidth('Condutas: ');
           const maxWidth = contentWidth - 6 - condutaLabelWidth;
-          const linhas = doc.splitTextToSize(consulta.conduta, maxWidth);
+          const linhas = doc.splitTextToSize(sanitizeForPdf(consulta.conduta), maxWidth);
           if (linhas.length === 1) {
-            doc.text(consulta.conduta, margin + 4 + condutaLabelWidth, y);
+            doc.text(sanitizeForPdf(consulta.conduta), margin + 4 + condutaLabelWidth, y);
             y += 5;
           } else {
             y += 4;
             linhas.forEach((linha: string) => {
               checkNewPage(5);
-              doc.text(linha, margin + 6, y);
+              doc.text(sanitizeForPdf(linha), margin + 6, y);
               y += 4;
             });
             y += 1;
@@ -1077,48 +1021,48 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         }
       }
       
-      // Complementação da conduta
+      // Complementacao da conduta
       if (consulta.condutaComplementacao) {
         checkNewPage(8);
         doc.setFontSize(8);
         doc.setFont('helvetica', 'bold');
-        doc.text('Complementação:', margin + 4, y);
+        doc.text('Complementacao:', margin + 4, y);
         doc.setFont('helvetica', 'normal');
-        const compLabelWidth = doc.getTextWidth('Complementação: ');
+        const compLabelWidth = doc.getTextWidth('Complementacao: ');
         const maxCompWidth = contentWidth - 6 - compLabelWidth;
-        const linhasComp = doc.splitTextToSize(consulta.condutaComplementacao, maxCompWidth);
+        const linhasComp = doc.splitTextToSize(sanitizeForPdf(consulta.condutaComplementacao), maxCompWidth);
         if (linhasComp.length === 1) {
-          doc.text(consulta.condutaComplementacao, margin + 4 + compLabelWidth, y);
+          doc.text(sanitizeForPdf(consulta.condutaComplementacao), margin + 4 + compLabelWidth, y);
           y += 5;
         } else {
           y += 4;
           linhasComp.forEach((linha: string) => {
             checkNewPage(5);
-            doc.text(linha, margin + 6, y);
+            doc.text(sanitizeForPdf(linha), margin + 6, y);
             y += 4;
           });
           y += 1;
         }
       }
       
-      // Observações
+      // Observacoes
       if (consulta.observacoes) {
         checkNewPage(8);
         doc.setFontSize(8);
         doc.setFont('helvetica', 'bold');
-        doc.text('Observações:', margin + 4, y);
+        doc.text('Observacoes:', margin + 4, y);
         doc.setFont('helvetica', 'normal');
-        const obsLabelWidth = doc.getTextWidth('Observações: ');
+        const obsLabelWidth = doc.getTextWidth('Observacoes: ');
         const maxObsWidth = contentWidth - 6 - obsLabelWidth;
-        const linhasObs = doc.splitTextToSize(consulta.observacoes, maxObsWidth);
+        const linhasObs = doc.splitTextToSize(sanitizeForPdf(consulta.observacoes), maxObsWidth);
         if (linhasObs.length === 1) {
-          doc.text(consulta.observacoes, margin + 4 + obsLabelWidth, y);
+          doc.text(sanitizeForPdf(consulta.observacoes), margin + 4 + obsLabelWidth, y);
           y += 5;
         } else {
           y += 4;
           linhasObs.forEach((linha: string) => {
             checkNewPage(5);
-            doc.text(linha, margin + 6, y);
+            doc.text(sanitizeForPdf(linha), margin + 6, y);
             y += 4;
           });
           y += 1;
@@ -1137,7 +1081,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     doc.setFontSize(8);
     doc.setTextColor(corCinza[0], corCinza[1], corCinza[2]);
     doc.text(
-      `Gerado em ${new Date().toLocaleDateString('pt-BR')} - Página ${i} de ${totalPages}`,
+      sanitizeForPdf(`Gerado em ${new Date().toLocaleDateString('pt-BR')} - Pagina ${i} de ${totalPages}`),
       pageWidth / 2,
       pageHeight - 10,
       { align: 'center' }

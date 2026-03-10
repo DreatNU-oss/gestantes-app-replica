@@ -1515,3 +1515,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Cada consulta mostra: data+IG, condutas (JSON expandido), complementação, observações
 - [x] Texto longo com quebra automática de linha (splitTextToSize)
 - [x] Verificar compilação — TypeScript 0 errors
+
+## Corrigir caracteres especiais nos labels do PDF (10/03/2026)- [x] Criado htmlToPdf_labels.ts com labels ASCII-only e funcao sanitizeForPdf()
+- [x] Idade >= 35 anos alterado para 'Idade superior a 35 anos'
+- [x] Todos os doc.text() com dados dinamicos agora passam por sanitizeForPdf()
+- [x] Acentos, cedilha, ordinais e caracteres especiais removidos de todo o PDF
+- [x] TypeScript 0 errors, servidor rodando
