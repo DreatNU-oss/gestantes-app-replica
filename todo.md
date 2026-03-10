@@ -1542,3 +1542,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar campo edema na interface DadosPdf, DadosPdfCompleto e mapeamentos (routers.ts e gestante-router.ts)
 - [x] Ajustar larguras das colunas: 8 colunas (Data, IG, Peso, PA, AU, BCF, Edema, Conduta)
 - [x] TypeScript 0 errors
+
+## Remover secoes Queixas e Condutas Detalhadas do PDF (10/03/2026)
+- [x] Remover secao "Queixas por Consulta" do htmlToPdf.ts
+- [x] Remover secao "Condutas Detalhadas" do htmlToPdf.ts
+- [x] TypeScript 0 errors
