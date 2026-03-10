@@ -4,6 +4,63 @@ import { LOGO_MAIS_MULHER_BASE64 } from './logoBase64';
 // Logo base64 embutida diretamente no código (compatível com esbuild bundle)
 const LOGO_BASE64: string = LOGO_MAIS_MULHER_BASE64;
 
+// Mapeamentos de labels para valores enum do banco de dados
+const FATORES_RISCO_LABELS: Record<string, string> = {
+  alergia_medicamentos: 'Alergia a medicamentos',
+  alteracoes_morfologicas_fetais: 'Alterações morfológicas fetais',
+  anemia_falciforme: 'Anemia Falciforme',
+  cirurgia_uterina_previa: 'Cirurgia Uterina Prévia',
+  diabetes_gestacional: 'Diabetes Gestacional',
+  diabetes_tipo_1: 'Diabetes Tipo 1',
+  diabetes_tipo2: 'Diabetes Tipo 2',
+  dpoc_asma: 'DPOC/Asma',
+  epilepsia: 'Epilepsia',
+  fator_preditivo_dheg: 'Fator Preditivo para DHEG',
+  fator_rh_negativo: 'Fator Rh Negativo',
+  fiv_nesta_gestacao: 'FIV nesta gestação',
+  gemelar: 'Gemelar',
+  hipertensao: 'Hipertensão',
+  hipotireoidismo: 'Hipotireoidismo',
+  historico_familiar_dheg: 'Histórico familiar de DHEG',
+  idade_avancada: 'Idade ≥ 35 anos',
+  incompetencia_istmo_cervical: 'Incompetência Istmo-cervical',
+  mal_passado_obstetrico: 'Mal Passado Obstétrico',
+  malformacoes_mullerianas: 'Malformações Müllerianas',
+  outro: 'Outro',
+  sobrepeso_obesidade: 'Sobrepeso/Obesidade',
+  trombofilia: 'Trombofilia',
+};
+
+const TIPO_ULTRASSOM_LABELS: Record<string, string> = {
+  primeiro_ultrassom: '1º Ultrassom',
+  morfologico_1tri: 'Morfológico 1º Trimestre',
+  ultrassom_obstetrico: 'Ultrassom Obstétrico',
+  morfologico_2tri: 'Morfológico 2º Trimestre',
+  ecocardiograma_fetal: 'Ecocardiograma Fetal',
+  ultrassom_seguimento: 'Ultrassom de Seguimento',
+};
+
+const MEDICAMENTO_LABELS: Record<string, string> = {
+  aas: 'AAS',
+  anti_hipertensivos: 'Anti-hipertensivos',
+  calcio: 'Cálcio',
+  enoxaparina: 'Enoxaparina',
+  insulina: 'Insulina',
+  levotiroxina: 'Levotiroxina',
+  medicamentos_inalatorios: 'Medicamentos Inalatórios',
+  polivitaminicos: 'Polivitamínicos',
+  progestagenos: 'Progestágenos',
+  psicotropicos: 'Psicotrópicos',
+  outros: 'Outros',
+};
+
+/** Converte enum com underscore para label legível */
+function formatarLabel(valor: string, mapa: Record<string, string>): string {
+  if (mapa[valor]) return mapa[valor];
+  // Fallback genérico: substituir underscores por espaços e capitalizar
+  return valor.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 /**
  * Interface para os dados do PDF
  */
@@ -629,7 +686,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     dados.fatoresRisco.forEach(f => {
       checkNewPage(6);
       doc.setFontSize(10);
-      doc.text(`• ${f.tipo}`, margin + 2, y);
+      doc.text(`• ${formatarLabel(f.tipo, FATORES_RISCO_LABELS)}`, margin + 2, y);
       y += 5;
     });
     y += 3;
@@ -641,7 +698,8 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     dados.medicamentos.forEach(m => {
       checkNewPage(6);
       doc.setFontSize(10);
-      const texto = m.especificacao ? `${m.tipo}: ${m.especificacao}` : m.tipo;
+      const tipoLabel = formatarLabel(m.tipo, MEDICAMENTO_LABELS);
+      const texto = m.especificacao ? `${tipoLabel}: ${m.especificacao}` : tipoLabel;
       doc.text(`• ${texto}`, margin + 2, y);
       y += 5;
     });
@@ -832,10 +890,13 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       checkNewPage(8);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${marco.titulo}`, margin + 2, y);
+      const tituloText = marco.titulo;
+      const tituloWidth = doc.getTextWidth(tituloText);
+      doc.text(tituloText, margin + 2, y);
       doc.setFont('helvetica', 'normal');
-      doc.text(` - ${formatarData(marco.data)} (${marco.periodo})`, margin + 2 + doc.getTextWidth(marco.titulo), y);
-      y += 5;
+      const complemento = ` - ${formatarData(marco.data)} (${marco.periodo})`;
+      doc.text(complemento, margin + 2 + tituloWidth + 1, y);
+      y += 6;
     });
     y += 3;
   }
@@ -846,19 +907,22 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawSectionTitle('Ultrassons Realizados');
     
     dados.ultrassons.forEach(us => {
-      checkNewPage(10);
+      checkNewPage(12);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${us.tipo}`, margin + 2, y);
+      const tipoLabel = formatarLabel(us.tipo, TIPO_ULTRASSOM_LABELS);
+      const tipoWidth = doc.getTextWidth(tipoLabel);
+      doc.text(tipoLabel, margin + 2, y);
       doc.setFont('helvetica', 'normal');
-      doc.text(` - ${formatarData(us.data)} (${us.ig})`, margin + 2 + doc.getTextWidth(us.tipo), y);
-      y += 4;
+      const complemento = ` - ${formatarData(us.data)} (${us.ig})`;
+      doc.text(complemento, margin + 2 + tipoWidth + 1, y);
+      y += 5;
       if (us.observacoes) {
         doc.setFontSize(8);
         doc.setTextColor(corCinza[0], corCinza[1], corCinza[2]);
-        doc.text(`   ${us.observacoes}`, margin + 2, y);
+        doc.text(`   ${us.observacoes}`, margin + 4, y);
         doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
-        y += 4;
+        y += 5;
       }
     });
     y += 3;

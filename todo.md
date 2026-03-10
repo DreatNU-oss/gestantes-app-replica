@@ -1503,3 +1503,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Ajustar espaçamento vertical entre logo e título no PDF (10/03/2026)
 - [x] Aumentar distância vertical entre a logo da clínica e o texto "Cartão de Pré-Natal" (de +2 para +6)
+
+## Corrigir problemas no PDF do cartão (10/03/2026)
+- [x] Substituir valores com underscore por labels legíveis (Fatores de Risco, Ultrassons, Medicamentos)
+- [x] Corrigir sobreposição de textos nas seções Marcos Importantes e Ultrassons (espaçamento aumentado)
+- [x] Verificar todas as seções do PDF para problemas similares
