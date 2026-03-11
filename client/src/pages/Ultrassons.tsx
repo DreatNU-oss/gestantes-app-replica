@@ -169,7 +169,6 @@ export default function Ultrassons() {
     pesoFetal: '',
     placentaLocalizacao: '',
     placentaGrau: '',
-    placentaDistanciaOI: '',
     liquidoAmniotico: '',
     coloUterino: '',
     avaliacaoAnatomica: '',
@@ -917,12 +916,12 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Distância ao OI</Label>
+                  <Label>Colo Uterino</Label>
                   <Input
-                    placeholder="Ex: 5 cm ou Longe do OI"
-                    className={getInputClassName('morfologico_2tri', 'placentaDistanciaOI')}
-                    value={morfo2Tri.placentaDistanciaOI}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'placentaDistanciaOI'); setMorfo2Tri({ ...morfo2Tri, placentaDistanciaOI: e.target.value }); }}
+                    placeholder="Ex: 35 mm, OI fechado"
+                    className={getInputClassName('morfologico_2tri', 'coloUterino')}
+                    value={morfo2Tri.coloUterino || ''}
+                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'coloUterino'); setMorfo2Tri({ ...morfo2Tri, coloUterino: e.target.value }); }}
                   />
                 </div>
               </div>

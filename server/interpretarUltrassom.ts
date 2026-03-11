@@ -65,7 +65,6 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
     { nome: "pesoFetal", descricao: "Peso fetal estimado", exemplo: "480 g", regra: "Procure por 'peso fetal estimado', 'peso estimado', 'PFE'. Mantenha a unidade." },
     { nome: "placentaLocalizacao", descricao: "Localização da placenta", exemplo: "Anterior", regra: "Procure por 'placenta' seguido de localização." },
     { nome: "placentaGrau", descricao: "Grau de maturidade da placenta", exemplo: "0", regra: "Procure por 'grau' perto de 'placenta'." },
-    { nome: "placentaDistanciaOI", descricao: "Distância da placenta ao orifício interno", exemplo: "5 cm", regra: "Procure por 'distância ao OI', 'orifício interno'." },
     { nome: "liquidoAmniotico", descricao: "Avaliação do líquido amniótico (ILA ou maior bolsão)", exemplo: "Normal, ILA: 12 cm", regra: "Procure por 'líquido amniótico', 'ILA', 'maior bolsão'." },
     { nome: "avaliacaoAnatomica", descricao: "Resultado da avaliação anatômica fetal", exemplo: "Normal, sem alterações identificadas", regra: "Resuma os achados anatômicos. Se tudo normal, retorne 'Normal, sem alterações identificadas'. Se houver alterações, descreva-as." },
     { nome: "dopplers", descricao: "Avaliação dos Dopplers (umbilical, cerebral, uterinas)", exemplo: "Normais. IP umbilical: 1.2, IP ACM: 1.8", regra: "Procure por 'Doppler', 'IP', 'índice de pulsatilidade', 'artéria umbilical', 'ACM', 'artérias uterinas'." },

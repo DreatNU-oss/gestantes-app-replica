@@ -1635,3 +1635,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir campo placentaDistanciaOI (Distância ao OI) por coloUterino (Colo Uterino) no frontend
 - [x] Atualizar extração IA do ultrassom_seguimento: trocar placentaDistanciaOI por coloUterino
 - [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)
+
+## Trocar Distância ao OI por Colo Uterino no Morfo 2º Tri (11/03/2026)
+- [x] Substituir campo placentaDistanciaOI (Distância ao OI) por coloUterino (Colo Uterino) no frontend do Morfo 2ºTri
+- [x] Remover placentaDistanciaOI da extração IA do morfologico_2tri (coloUterino já existia)
+- [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)
