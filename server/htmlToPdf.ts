@@ -533,9 +533,11 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(8);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text(sanitizeForPdf(label) + ':', margin, y);
+    const labelText = sanitizeForPdf(label) + ': ';
+    doc.text(labelText, margin, y);
+    // Measure width while still in bold font for accurate positioning
+    const labelWidth = doc.getTextWidth(labelText);
     doc.setFont('helvetica', 'normal');
-    const labelWidth = doc.getTextWidth(sanitizeForPdf(label) + ': ');
     doc.text(sanitizeForPdf(value || '-'), margin + labelWidth, y);
     y += 6;
   };
@@ -561,14 +563,14 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-      doc.text('Clinica Mais Mulher', pageWidth / 2, y, { align: 'center' });
+      doc.text('Clínica Mais Mulher', pageWidth / 2, y, { align: 'center' });
       y += 8;
     }
   } else {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-    doc.text('Clinica Mais Mulher', pageWidth / 2, y, { align: 'center' });
+    doc.text('Clínica Mais Mulher', pageWidth / 2, y, { align: 'center' });
     y += 8;
   }
 
@@ -576,7 +578,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
-  doc.text(sanitizeForPdf('Cartao de Pre-Natal'), pageWidth / 2, y, { align: 'center' });
+  doc.text('Cartão de Pré-Natal', pageWidth / 2, y, { align: 'center' });
   y += 6;
 
   // Linha separadora
@@ -614,12 +616,12 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     y += 6;
   }
   
-  // Data 1o US e DPP US na mesma linha
+  // Data 1º US e DPP US na mesma linha
   if (dados.gestante.dataUltrassom || dados.gestante.dppUS) {
     checkNewPage(8);
     doc.setFontSize(10);
     const parts: string[] = [];
-    if (dados.gestante.dataUltrassom) parts.push(`Data 1o US: ${formatarData(dados.gestante.dataUltrassom)}`);
+    if (dados.gestante.dataUltrassom) parts.push(`Data 1º US: ${formatarData(dados.gestante.dataUltrassom)}`);
     if (dados.gestante.dppUS) parts.push(`DPP (US): ${formatarData(dados.gestante.dppUS)}`);
     const lineText = sanitizeForPdf(parts.join('     '));
     doc.setFont('helvetica', 'normal');
@@ -627,12 +629,12 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     y += 6;
   }
   
-  // Historia Obstetrica (sem "GO")
+  // História Obstétrica (sem "GO")
   const ho = `G${dados.gestante.gesta || 0}P${dados.gestante.para || 0}A${dados.gestante.abortos || 0}`;
-  drawDataLine('Historia Obstetrica', ho);
+  drawDataLine('História Obstétrica', ho);
   
   if (dados.gestante.cesareas) {
-    drawDataLine(sanitizeForPdf('Cesareas'), `${dados.gestante.cesareas}`);
+    drawDataLine('Cesáreas', `${dados.gestante.cesareas}`);
   }
   
   y += 5;
@@ -751,7 +753,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
   // ===== HISTÓRICO DE CONSULTAS =====
   if (dados.consultas.length > 0) {
     checkNewPage(40);
-    drawSectionTitle('Historico de Consultas');
+    drawSectionTitle('Histórico de Consultas');
     
     const colWidths = [22, 16, 16, 16, 16, 14, 12, 14, 54];
     const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'MF', 'Edema', 'Conduta'];
@@ -907,7 +909,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawSectionTitle('Exames Laboratoriais');
     
     const exameColWidths = [50, 40, 40, 40];
-    const exameHeaders = ['Exame', '1o Tri', '2o Tri', '3o Tri'];
+    const exameHeaders = ['Exame', '1º Tri', '2º Tri', '3º Tri'];
     
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -978,7 +980,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     doc.setFontSize(8);
     doc.setTextColor(corCinza[0], corCinza[1], corCinza[2]);
     doc.text(
-      sanitizeForPdf(`Gerado em ${new Date().toLocaleDateString('pt-BR')} - Pagina ${i} de ${totalPages}`),
+      `Gerado em ${new Date().toLocaleDateString('pt-BR')} - Página ${i} de ${totalPages}`,
       pageWidth / 2,
       pageHeight - 10,
       { align: 'center' }

@@ -1574,3 +1574,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Larguras ajustadas para 9 colunas (Data, IG, Peso, PA, AU, BCF, MF, Edema, Conduta)
 - [x] MF exibido como + (presente) ou - (ausente)
 - [x] TypeScript 0 errors
+
+## Corrigir acentos e sobreposicao no PDF (11/03/2026)
+- [x] Restaurar acentos no PDF (Cartao -> Cartão, Historia -> História, Morfologico -> Morfológico)
+- [x] Corrigir sanitizeForPdf para preservar caracteres Latin-1 (acentos portugueses)
+- [x] Corrigir sobreposicao do texto G1P0A0 sobre "História Obstétrica" (medição de largura em bold)
+- [x] Verificar titulo "Cartão de Pré-Natal" corrigido
+- [x] Verificar compilacao e testar PDF (TypeScript 0 errors, 12 testes passando)
