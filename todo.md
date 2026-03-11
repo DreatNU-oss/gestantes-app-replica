@@ -1621,3 +1621,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar frontend: select obrigatório de Procedimento com opções pré-definidas + "Outra" com texto livre
 - [x] Incluir campo procedimento no payload de integração com APP Administrativo
 - [x] Verificar compilação e testar (11 testes cesareanSync passando, 0 erros TypeScript)
+
+## Remover campos redundantes Colo Uterino / Canal Cervical (11/03/2026)
+- [x] Analisar PDF da Crislayne para entender o contexto
+- [x] Mapear todos os campos de colo/canal em cada tipo de US (frontend + IA)
+- [x] US Obstétrico: unificado coloUterinoTV + coloUterinoMedida em "Colo Uterino", renomeado Canal Cervical para "Distância ao OI"
+- [x] Morfo 2º Tri: renomeado "Canal Cervical" para "Distância ao OI"
+- [x] US Seguimento: renomeado "Canal Cervical" para "Distância ao OI"
+- [x] Cartão Pré-Natal Impressão: ajustados labels correspondentes
+- [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)

@@ -804,9 +804,9 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Canal Cervical</Label>
+                  <Label>Distância ao OI</Label>
                   <Input
-                    placeholder="Ex: 5cm"
+                    placeholder="Ex: 5 cm ou Longe do OI"
                     className={getInputClassName('ultrassom_obstetrico', 'placentaDistanciaOI')}
                     value={usObstetrico.placentaDistanciaOI}
                     onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaDistanciaOI'); setUsObstetrico({ ...usObstetrico, placentaDistanciaOI: e.target.value }); }}
@@ -816,18 +816,9 @@ export default function Ultrassons() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Colo Uterino (TV)</Label>
+                  <Label>Colo Uterino</Label>
                   <Input
-                    placeholder="Sim/Não"
-                    className={getInputClassName('ultrassom_obstetrico', 'coloUterinoTV')}
-                    value={usObstetrico.coloUterinoTV}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'coloUterinoTV'); setUsObstetrico({ ...usObstetrico, coloUterinoTV: e.target.value }); }}
-                  />
-                </div>
-                <div>
-                  <Label>Medida em mm</Label>
-                  <Input
-                    placeholder="Ex: 35mm"
+                    placeholder="Ex: 35 mm, OI fechado"
                     className={getInputClassName('ultrassom_obstetrico', 'coloUterinoMedida')}
                     value={usObstetrico.coloUterinoMedida}
                     onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'coloUterinoMedida'); setUsObstetrico({ ...usObstetrico, coloUterinoMedida: e.target.value }); }}
@@ -926,9 +917,9 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Canal Cervical</Label>
+                  <Label>Distância ao OI</Label>
                   <Input
-                    placeholder="Ex: 5cm"
+                    placeholder="Ex: 5 cm ou Longe do OI"
                     className={getInputClassName('morfologico_2tri', 'placentaDistanciaOI')}
                     value={morfo2Tri.placentaDistanciaOI}
                     onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'placentaDistanciaOI'); setMorfo2Tri({ ...morfo2Tri, placentaDistanciaOI: e.target.value }); }}
@@ -1151,9 +1142,9 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Canal Cervical</Label>
+                  <Label>Distância ao OI</Label>
                   <Input
-                    placeholder="Ex: 5cm"
+                    placeholder="Ex: 5 cm ou Longe do OI"
                     className={getInputClassName('ultrassom_seguimento', 'placentaDistanciaOI')}
                     value={usSeguimento.placentaDistanciaOI}
                     onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'placentaDistanciaOI'); setUsSeguimento({ ...usSeguimento, placentaDistanciaOI: e.target.value }); }}
