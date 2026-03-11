@@ -87,7 +87,7 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
     { nome: "liquidoAmniotico", descricao: "Avaliação do líquido amniótico", exemplo: "Normal, ILA: 14 cm", regra: "Procure por 'líquido amniótico', 'ILA', 'maior bolsão'." },
     { nome: "placentaLocalizacao", descricao: "Localização da placenta", exemplo: "Posterior", regra: "Procure por 'placenta' seguido de localização." },
     { nome: "placentaGrau", descricao: "Grau de maturidade da placenta", exemplo: "II", regra: "Procure por 'grau' perto de 'placenta'." },
-    { nome: "placentaDistanciaOI", descricao: "Distância da placenta ao orifício interno", exemplo: "Longe do OI", regra: "Procure por 'distância ao OI', 'orifício interno'." },
+    { nome: "coloUterino", descricao: "Medida do colo uterino (canal cervical / cervical length) em mm ou cm", exemplo: "35 mm, OI fechado", regra: "Procure por 'colo uterino', 'colo medindo', 'cervicometria', 'canal cervical', 'comprimento cervical'. Inclua se o orifício interno está aberto ou fechado, se mencionado." },
     { nome: "movimentosFetais", descricao: "Movimentos fetais observados", exemplo: "Presentes", regra: "Procure por 'movimentos fetais', 'movimentação'. Se mencionado como ativo, retorne 'Presentes'." },
     { nome: "apresentacaoFetal", descricao: "Apresentação fetal", exemplo: "Cefálica", regra: "Procure por 'apresentação', 'cefálica', 'pélvica', 'transversa', 'córmica'." },
     { nome: "dopplers", descricao: "Avaliação dos Dopplers com valores de IP", exemplo: "IP umbilical: 0.95, IP ACM: 1.8, IP uterinas: 0.8", regra: "Procure por 'Doppler', 'IP', 'índice de pulsatilidade'. Extraia TODOS os valores de IP encontrados." },

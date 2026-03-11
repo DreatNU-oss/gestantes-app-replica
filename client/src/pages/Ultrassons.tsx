@@ -191,7 +191,7 @@ export default function Ultrassons() {
     liquidoAmniotico: '',
     placentaLocalizacao: '',
     placentaGrau: '',
-    placentaDistanciaOI: '',
+    coloUterino: '',
     movimentosFetais: '',
     apresentacaoFetal: '',
     dopplers: '',
@@ -1142,12 +1142,12 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Distância ao OI</Label>
+                  <Label>Colo Uterino</Label>
                   <Input
-                    placeholder="Ex: 5 cm ou Longe do OI"
-                    className={getInputClassName('ultrassom_seguimento', 'placentaDistanciaOI')}
-                    value={usSeguimento.placentaDistanciaOI}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'placentaDistanciaOI'); setUsSeguimento({ ...usSeguimento, placentaDistanciaOI: e.target.value }); }}
+                    placeholder="Ex: 35 mm, OI fechado"
+                    className={getInputClassName('ultrassom_seguimento', 'coloUterino')}
+                    value={usSeguimento.coloUterino || ''}
+                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'coloUterino'); setUsSeguimento({ ...usSeguimento, coloUterino: e.target.value }); }}
                   />
                 </div>
               </div>
