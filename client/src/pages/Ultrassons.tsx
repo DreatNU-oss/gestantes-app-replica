@@ -926,15 +926,6 @@ export default function Ultrassons() {
                     onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'liquidoAmniotico'); setMorfo2Tri({ ...morfo2Tri, liquidoAmniotico: e.target.value }); }}
                   />
                 </div>
-                <div>
-                  <Label>Colo Uterino</Label>
-                  <Input
-                    placeholder="Ex: 35 mm, OI fechado"
-                    className={getInputClassName('morfologico_2tri', 'coloUterino')}
-                    value={morfo2Tri.coloUterino}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'coloUterino'); setMorfo2Tri({ ...morfo2Tri, coloUterino: e.target.value }); }}
-                  />
-                </div>
               </div>
               
               <div>

@@ -1646,3 +1646,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover placentaDistanciaOI da extração IA do ultrassom_obstetrico
 - [x] Remover placentaDistanciaOI do estado usObstetrico
 - [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)
+
+## Bug: Colo Uterino duplicado no Morfo 2º Tri (11/03/2026)
+- [x] Remover campo duplicado de Colo Uterino no formulário de Morfo 2º Tri
