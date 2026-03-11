@@ -157,8 +157,6 @@ export default function Ultrassons() {
     pesoFetal: '',
     placentaLocalizacao: '',
     placentaGrau: '',
-    placentaDistanciaOI: '',
-    coloUterinoTV: '',
     coloUterinoMedida: '',
   });
   
@@ -802,15 +800,7 @@ export default function Ultrassons() {
                     onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaGrau'); setUsObstetrico({ ...usObstetrico, placentaGrau: e.target.value }); }}
                   />
                 </div>
-                <div>
-                  <Label>Distância ao OI</Label>
-                  <Input
-                    placeholder="Ex: 5 cm ou Longe do OI"
-                    className={getInputClassName('ultrassom_obstetrico', 'placentaDistanciaOI')}
-                    value={usObstetrico.placentaDistanciaOI}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaDistanciaOI'); setUsObstetrico({ ...usObstetrico, placentaDistanciaOI: e.target.value }); }}
-                  />
-                </div>
+
               </div>
               
               <div className="grid grid-cols-2 gap-4">

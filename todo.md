@@ -1640,3 +1640,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir campo placentaDistanciaOI (Distância ao OI) por coloUterino (Colo Uterino) no frontend do Morfo 2ºTri
 - [x] Remover placentaDistanciaOI da extração IA do morfologico_2tri (coloUterino já existia)
 - [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)
+
+## Remover Distância ao OI do US Obstétrico, manter apenas Colo Uterino (11/03/2026)
+- [x] Remover campo placentaDistanciaOI do frontend do US Obstétrico
+- [x] Remover placentaDistanciaOI da extração IA do ultrassom_obstetrico
+- [x] Remover placentaDistanciaOI do estado usObstetrico
+- [x] Verificar compilação e testar (19 testes passando, 0 erros TypeScript)
