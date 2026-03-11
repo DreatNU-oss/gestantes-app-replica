@@ -1581,3 +1581,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir sobreposicao do texto G1P0A0 sobre "História Obstétrica" (medição de largura em bold)
 - [x] Verificar titulo "Cartão de Pré-Natal" corrigido
 - [x] Verificar compilacao e testar PDF (TypeScript 0 errors, 12 testes passando)
+
+## Corrigir extração IA de ultrassons - todos os tipos (11/03/2026)
+- [x] Investigar código de interpretação de ultrassom (prompts e parsing)
+- [x] Corrigir extração de Data do Exame para todos os tipos de US
+- [x] Corrigir extração de DPP para todos os tipos de US
+- [x] Corrigir extração de Hematoma (ausência = Não) para todos os tipos
+- [x] Revisar prompts de todos os tipos: 1o US, Morfo 1tri, Morfo 2tri, Obstétrico, Seguimento, Ecocardiograma
+- [x] Verificar compilação e testar (TypeScript 0 errors, 7 testes de US + 12 testes de labels passando)
