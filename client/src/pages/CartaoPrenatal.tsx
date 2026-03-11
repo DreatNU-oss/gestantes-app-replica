@@ -156,6 +156,11 @@ export default function CartaoPrenatal() {
   // Estado local para motivo de cesárea "Outro" (evitar auto-save)
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
   
+  // Estado local para convênio e procedimento de cirurgia
+  const [convenioCirurgiaLocal, setConvenioCirurgiaLocal] = useState("Unimed");
+  const [procedimentoCirurgiaLocal, setProcedimentoCirurgiaLocal] = useState("Cesárea sem DIU");
+  const [procedimentoOutroTexto, setProcedimentoOutroTexto] = useState("");
+  
   // Estado para modal de texto PEP
   const [showPEPModal, setShowPEPModal] = useState(false);
   const [textoPEP, setTextoPEP] = useState("");
@@ -339,6 +344,19 @@ export default function CartaoPrenatal() {
       // Inicializar estado local para data de cesárea
       setDataCesareaLocal(gestante.dataPartoProgramado || "");
       setDataCesareaModificada(false);
+      
+      // Inicializar estado local para convênio e procedimento
+      setConvenioCirurgiaLocal(gestante.convenioCirurgia || "Unimed");
+      // Para procedimento: se começa com uma das opções pré-definidas, usar ela; caso contrário, é "Outra"
+      const procedimentoSalvo = gestante.procedimentoCirurgia || "Cesárea sem DIU";
+      const opcoesPredefinidas = ["Cesárea sem DIU", "Cesárea + DIU", "Cesárea + LTB", "Histerec aberta", "Histerec vídeo", "Curetagem Uterina"];
+      if (opcoesPredefinidas.includes(procedimentoSalvo)) {
+        setProcedimentoCirurgiaLocal(procedimentoSalvo);
+        setProcedimentoOutroTexto("");
+      } else if (procedimentoSalvo) {
+        setProcedimentoCirurgiaLocal("Outra");
+        setProcedimentoOutroTexto(procedimentoSalvo);
+      }
     }
   }, [gestante]);
   const { data: consultas, refetch: refetchConsultas } = trpc.consultasPrenatal.list.useQuery(
@@ -2864,13 +2882,14 @@ export default function CartaoPrenatal() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Data Planejada para a Cesárea
+                Agendamento de Cirurgia
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="dataPartoProgramado">Selecione a data programada</Label>
-                <div className="flex gap-2 items-center">
+              <div className="space-y-4">
+                {/* Data da Cirurgia */}
+                <div className="space-y-2">
+                  <Label htmlFor="dataPartoProgramado">Data da Cirurgia</Label>
                   <Input
                     id="dataPartoProgramado"
                     type="date"
@@ -2879,16 +2898,146 @@ export default function CartaoPrenatal() {
                       const novaData = e.target.value;
                       setDataCesareaLocal(novaData);
                       setDataCesareaModificada(novaData !== (gestante.dataPartoProgramado || ""));
-                      // Limpar alerta ao mudar data
                       setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                     }}
                     className="max-w-xs"
                   />
+                </div>
+
+                {/* Convênio - Obrigatório */}
+                <div className="space-y-2">
+                  <Label htmlFor="convenioCirurgia">
+                    Convênio <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    value={convenioCirurgiaLocal}
+                    onValueChange={(value) => {
+                      setConvenioCirurgiaLocal(value);
+                      setDataCesareaModificada(true);
+                      // Se já tem agendamento, salvar imediatamente
+                      if (gestante.dataPartoProgramado) {
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          convenioCirurgia: value as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
+                        });
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="convenioCirurgia" className="max-w-md">
+                      <SelectValue placeholder="Selecione o convênio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Unimed">Unimed</SelectItem>
+                      <SelectItem value="Particular">Particular</SelectItem>
+                      <SelectItem value="Cortesia">Cortesia</SelectItem>
+                      <SelectItem value="FUSEX">FUSEX</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Procedimento - Obrigatório */}
+                <div className="space-y-2">
+                  <Label htmlFor="procedimentoCirurgia">
+                    Procedimento <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    value={procedimentoCirurgiaLocal}
+                    onValueChange={(value) => {
+                      setProcedimentoCirurgiaLocal(value);
+                      setDataCesareaModificada(true);
+                      // Se não é "Outra" e já tem agendamento, salvar imediatamente
+                      if (value !== "Outra" && gestante.dataPartoProgramado) {
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          procedimentoCirurgia: value,
+                        });
+                        setProcedimentoOutroTexto("");
+                      }
+                      if (value !== "Outra") {
+                        setProcedimentoOutroTexto("");
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="procedimentoCirurgia" className="max-w-md">
+                      <SelectValue placeholder="Selecione o procedimento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cesárea sem DIU">Cesárea sem DIU</SelectItem>
+                      <SelectItem value="Cesárea + DIU">Cesárea + DIU</SelectItem>
+                      <SelectItem value="Cesárea + LTB">Cesárea + LTB</SelectItem>
+                      <SelectItem value="Histerec aberta">Histerec aberta</SelectItem>
+                      <SelectItem value="Histerec vídeo">Histerec vídeo</SelectItem>
+                      <SelectItem value="Curetagem Uterina">Curetagem Uterina</SelectItem>
+                      <SelectItem value="Outra">Outra</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {procedimentoCirurgiaLocal === "Outra" && (
+                    <div className="mt-2 space-y-2">
+                      <Label htmlFor="procedimentoOutro">
+                        Descreva o procedimento <span className="text-red-500">*</span>
+                      </Label>
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          id="procedimentoOutro"
+                          type="text"
+                          placeholder="Ex: Laparoscopia diagnóstica"
+                          value={procedimentoOutroTexto}
+                          onChange={(e) => setProcedimentoOutroTexto(e.target.value)}
+                          className="max-w-md"
+                        />
+                        {gestante.dataPartoProgramado && procedimentoOutroTexto.trim() && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              updateGestanteMutation.mutate({
+                                id: gestanteSelecionada!,
+                                procedimentoCirurgia: procedimentoOutroTexto.trim(),
+                              });
+                              toast.success('Procedimento salvo.');
+                            }}
+                            className="h-8"
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            Salvar
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Botão de Agendar */}
+                <div className="flex gap-2 items-center pt-2">
                   <Button
                     type="button"
                     size="sm"
                     onClick={() => {
                       const novaData = dataCesareaLocal;
+                      
+                      // Validar campos obrigatórios
+                      if (!novaData) {
+                        toast.error('Selecione a data da cirurgia.');
+                        return;
+                      }
+                      if (!convenioCirurgiaLocal) {
+                        toast.error('Selecione o convênio.');
+                        return;
+                      }
+                      if (!procedimentoCirurgiaLocal) {
+                        toast.error('Selecione o procedimento.');
+                        return;
+                      }
+                      if (procedimentoCirurgiaLocal === "Outra" && !procedimentoOutroTexto.trim()) {
+                        toast.error('Descreva o procedimento.');
+                        return;
+                      }
+                      
+                      // Determinar o valor final do procedimento
+                      const procedimentoFinal = procedimentoCirurgiaLocal === "Outra" 
+                        ? procedimentoOutroTexto.trim() 
+                        : procedimentoCirurgiaLocal;
                       
                       // Se a data foi limpa, salvar imediatamente (remover agendamento)
                       if (!novaData) {
@@ -2898,7 +3047,7 @@ export default function CartaoPrenatal() {
                         });
                         setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                         setDataCesareaModificada(false);
-                        toast.success('Agendamento de cesárea removido.');
+                        toast.success('Agendamento removido.');
                         return;
                       }
                       
@@ -2924,44 +3073,63 @@ export default function CartaoPrenatal() {
                       
                       setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
                       
-                      // Data dentro do período normal: salvar e enviar ao Mapa Cirúrgico
+                      // Salvar todos os campos e enviar ao Mapa Cirúrgico
                       updateGestanteMutation.mutate({
                         id: gestanteSelecionada!,
                         dataPartoProgramado: novaData,
                         tipoPartoDesejado: "cesariana",
+                        convenioCirurgia: convenioCirurgiaLocal as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
+                        procedimentoCirurgia: procedimentoFinal,
                       });
                       setDataCesareaModificada(false);
-                      toast.success('Cesárea agendada com sucesso!', {
-                        description: `Data: ${novaData.split('-').reverse().join('/')}. Enviado ao Mapa Cirúrgico.`,
+                      toast.success('Cirurgia agendada com sucesso!', {
+                        description: `${procedimentoFinal} | ${convenioCirurgiaLocal} | ${novaData.split('-').reverse().join('/')}. Enviado ao Mapa Cirúrgico.`,
                       });
                     }}
-                    disabled={!dataCesareaModificada && dataCesareaLocal === (gestante.dataPartoProgramado || "")}
+                    disabled={!dataCesareaLocal}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white"
                   >
                     <CalendarCheck className="h-4 w-4 mr-1" />
                     {gestante.dataPartoProgramado ? 'Reagendar' : 'Agendar'}
                   </Button>
+                  {gestante.dataPartoProgramado && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        updateGestanteMutation.mutate({
+                          id: gestanteSelecionada!,
+                          dataPartoProgramado: "",
+                        });
+                        setDataCesareaLocal("");
+                        setAlertaDataCesarea({ show: false, tipo: null, igNaData: null });
+                        setDataCesareaModificada(false);
+                        toast.success('Agendamento de cirurgia removido.');
+                      }}
+                      className="text-red-600 border-red-300 hover:bg-red-50"
+                    >
+                      Remover Agendamento
+                    </Button>
+                  )}
                 </div>
                 {gestante.dataPartoProgramado && (
                   <p className="text-sm text-muted-foreground">
-                    Data agendada atualmente: {formatarData(gestante.dataPartoProgramado)}
-                    {dataCesareaModificada && dataCesareaLocal && (
-                      <span className="ml-2 text-orange-600 font-medium">
-                        (clique em "{gestante.dataPartoProgramado ? 'Reagendar' : 'Agendar'}" para confirmar a nova data)
-                      </span>
-                    )}
+                    Agendamento atual: {formatarData(gestante.dataPartoProgramado)}
+                    {gestante.convenioCirurgia && ` | ${gestante.convenioCirurgia}`}
+                    {gestante.procedimentoCirurgia && ` | ${gestante.procedimentoCirurgia}`}
                   </p>
                 )}
                 {!gestante.dataPartoProgramado && dataCesareaLocal && (
                   <p className="text-sm text-orange-600 font-medium">
-                    Clique em "Agendar" para confirmar a data e enviar ao Mapa Cirúrgico.
+                    Preencha todos os campos e clique em "Agendar" para confirmar e enviar ao Mapa Cirúrgico.
                   </p>
                 )}
               </div>
               
               {gestante.dataPartoProgramado && (
                 <div className="space-y-2 mt-4">
-                  <Label htmlFor="motivoCesarea">Motivo da Indicação da Cesárea</Label>
+                  <Label htmlFor="motivoCesarea">Motivo da Indicação da Cirurgia</Label>
                   <Select
                     value={gestante.motivoCesarea || ""}
                     onValueChange={(value) => {
@@ -2991,7 +3159,7 @@ export default function CartaoPrenatal() {
                       <SelectItem value="Outro">Outro motivo</SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cesárea</p>
+                  <p className="text-sm text-muted-foreground">Selecione a indicação médica para a cirurgia</p>
                   
                   {gestante.motivoCesarea === "Outro" && (
                     <div className="mt-4 space-y-2">
@@ -3027,7 +3195,7 @@ export default function CartaoPrenatal() {
 
               {/* Hospital do Parto */}
               <div className="space-y-2 mt-4">
-                <Label htmlFor="hospitalParto">Hospital do Parto</Label>
+                <Label htmlFor="hospitalParto">Hospital</Label>
                 <Select
                   value={gestante.hospitalParto || "hospital_unimed"}
                   onValueChange={(value) => {
@@ -3505,11 +3673,17 @@ export default function CartaoPrenatal() {
               confirmacaoDataCesarea.tipo === 'pre-termo' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-red-600 hover:bg-red-700'
             }`}
             onClick={() => {
-              // Salvar a data após confirmação
+              // Determinar o valor final do procedimento
+              const procedimentoFinal = procedimentoCirurgiaLocal === "Outra" 
+                ? procedimentoOutroTexto.trim() 
+                : procedimentoCirurgiaLocal;
+              // Salvar a data após confirmação com convênio e procedimento
               updateGestanteMutation.mutate({
                 id: gestanteSelecionada!,
                 dataPartoProgramado: confirmacaoDataCesarea.novaData,
                 tipoPartoDesejado: "cesariana",
+                convenioCirurgia: convenioCirurgiaLocal as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
+                procedimentoCirurgia: procedimentoFinal,
               });
               // Mostrar o alerta persistente
               if (confirmacaoDataCesarea.tipo !== 'passado' && confirmacaoDataCesarea.igNaData) {

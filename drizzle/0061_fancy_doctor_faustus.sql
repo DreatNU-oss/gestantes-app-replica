@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` ADD `procedimentoCirurgia` varchar(255);

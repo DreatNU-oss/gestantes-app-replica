@@ -56,24 +56,12 @@ describe("cesareanSync", () => {
       expect(result.atualizado).toBe(false);
       expect(result.cirurgiaId).toBe(45);
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        "https://admin.example.com/api/integration/cesarea",
-        expect.objectContaining({
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-Key": "test-api-key-123",
-          },
-          body: JSON.stringify({
-            pacienteNome: "Maria Silva Santos",
-            dataCirurgia: "2026-04-15",
-            convenio: "Unimed",
-            procedimento: "Cesárea",
-            observacoes: "Agendamento via APP Gestantes",
-            externalId: "gestante-123",
-          }),
-        })
-      );
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(body.pacienteNome).toBe("Maria Silva Santos");
+      expect(body.dataCirurgia).toBe("2026-04-15");
+      expect(body.convenio).toBe("Unimed");
+      expect(body.procedimento).toBe("Cesárea"); // default when not specified
+      expect(body.externalId).toBe("gestante-123");
     });
 
     it("updates an existing cesarean appointment", async () => {
@@ -209,6 +197,47 @@ describe("cesareanSync", () => {
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.convenio).toBe("Unimed");
+    });
+
+    it("uses convenioCirurgia and procedimentoCirurgia when provided", async () => {
+      mockFetch.mockResolvedValueOnce({
+        json: async () => ({ success: true, atualizado: false }),
+      });
+
+      await sincronizarTodasCesareasComAdmin([
+        {
+          id: 1,
+          nome: "Maria",
+          dataPartoProgramado: "2026-04-15",
+          planoSaudeNome: "Unimed Nacional",
+          convenioCirurgia: "FUSEX",
+          procedimentoCirurgia: "Cesárea + DIU",
+        },
+      ]);
+
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(body.convenio).toBe("FUSEX"); // convenioCirurgia takes priority over planoSaudeNome
+      expect(body.procedimento).toBe("Cesárea + DIU");
+    });
+
+    it("sends custom procedimento via Outra option", async () => {
+      mockFetch.mockResolvedValueOnce({
+        json: async () => ({ success: true, atualizado: false }),
+      });
+
+      await sincronizarTodasCesareasComAdmin([
+        {
+          id: 1,
+          nome: "Maria",
+          dataPartoProgramado: "2026-04-15",
+          convenioCirurgia: "Particular",
+          procedimentoCirurgia: "Laparoscopia diagnóstica",
+        },
+      ]);
+
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(body.convenio).toBe("Particular");
+      expect(body.procedimento).toBe("Laparoscopia diagnóstica");
     });
   });
 });

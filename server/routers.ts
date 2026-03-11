@@ -541,6 +541,8 @@ export const appRouter = router({
         motivoCesarea: z.string().optional(),
         motivoCesareaOutro: z.string().optional(),
         hospitalParto: z.enum(["hospital_unimed", "hospital_sao_sebastiao"]).optional(),
+        convenioCirurgia: z.enum(["Particular", "Cortesia", "Unimed", "FUSEX"]).optional(),
+        procedimentoCirurgia: z.string().optional(),
         altura: z.number().optional(),
         pesoInicial: z.number().optional(),
         nomeBebe: z.string().optional(),
@@ -570,6 +572,8 @@ export const appRouter = router({
           dataPartoProgramado: input.dataPartoProgramado ? parseLocalDate(input.dataPartoProgramado) : null,
           motivoCesarea: input.motivoCesarea || null,
           hospitalParto: input.hospitalParto || 'hospital_unimed',
+          convenioCirurgia: input.convenioCirurgia || 'Unimed',
+          procedimentoCirurgia: input.procedimentoCirurgia || null,
           altura: input.altura || null,
           pesoInicial: input.pesoInicial || null,
           nomeBebe: input.nomeBebe || null,
@@ -597,7 +601,9 @@ export const appRouter = router({
             id: novaGestante.id,
             nomeCompleto: novaGestante.nome,
             dataCesarea: input.dataPartoProgramado,
+            convenio: input.convenioCirurgia || 'Unimed',
             hospital: mapearHospital(input.hospitalParto),
+            procedimento: input.procedimentoCirurgia || 'Cesárea',
           }).catch(err => console.error('[Integração] Erro na sincronização:', err));
         }
         
@@ -666,6 +672,8 @@ export const appRouter = router({
         motivoCesarea: z.string().optional(),
         motivoCesareaOutro: z.string().optional(),
         hospitalParto: z.enum(["hospital_unimed", "hospital_sao_sebastiao"]).optional(),
+        convenioCirurgia: z.enum(["Particular", "Cortesia", "Unimed", "FUSEX"]).optional(),
+        procedimentoCirurgia: z.string().optional(),
         nomeBebe: z.string().optional(),
         sexoBebe: z.enum(["masculino", "feminino", "nao_informado"]).optional(),
         observacoes: z.string().optional(),
@@ -706,7 +714,9 @@ export const appRouter = router({
             id: gestante.id,
             nomeCompleto: gestante.nome,
             dataCesarea: dataPartoProgramadoDepois,
+            convenio: gestante.convenioCirurgia || 'Unimed',
             hospital: mapearHospital(gestante.hospitalParto),
+            procedimento: gestante.procedimentoCirurgia || 'Cesárea',
           }).catch(err => console.error('[Integração] Erro na sincronização:', err));
         } else if (tinhaDataCesarea && !temDataCesarea) {
           // Data foi removida ou tipo de parto mudou - deletar agendamento
@@ -2986,6 +2996,8 @@ export const appRouter = router({
             tipoPartoDesejado: gestantes.tipoPartoDesejado,
             planoSaudeId: gestantes.planoSaudeId,
             hospitalParto: gestantes.hospitalParto,
+            convenioCirurgia: gestantes.convenioCirurgia,
+            procedimentoCirurgia: gestantes.procedimentoCirurgia,
           })
           .from(gestantes)
           .where(
@@ -3010,6 +3022,8 @@ export const appRouter = router({
           dataPartoProgramado: String(g.dataPartoProgramado),
           planoSaudeNome: g.planoSaudeId ? planosMap.get(g.planoSaudeId) || undefined : undefined,
           hospitalParto: g.hospitalParto,
+          convenioCirurgia: g.convenioCirurgia,
+          procedimentoCirurgia: g.procedimentoCirurgia,
         }));
         
         const resultado = await sincronizarTodasCesareasComAdmin(gestantesParaSync);

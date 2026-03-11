@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` ADD `convenioCirurgia` enum('Particular','Cortesia','Unimed','FUSEX') DEFAULT 'Unimed';

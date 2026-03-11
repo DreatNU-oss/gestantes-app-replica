@@ -1610,3 +1610,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigar por que Data do Exame e DPP não são extraídos em produção (formato dd/mm/yyyy vs yyyy-MM-dd)
 - [x] Testar no dev server com PDF da Helena - todos os campos preenchidos corretamente
 - [x] Corrigir o problema (função normalizeDadosDatas converte datas automaticamente)
+
+## Adicionar campos Convênio e Procedimento ao agendamento de cirurgias (11/03/2026)
+- [x] Adicionar enum/campo convenioCirurgia ao schema do banco (Particular, Cortesia, Unimed, FUSEX) - default Unimed
+- [x] Adicionar campo convenioCirurgia ao router create e update de gestantes
+- [x] Incluir campo convenio no payload de sincronização com APP Administrativo (create + update)
+- [x] Adicionar campo procedimentoCirurgia ao schema do banco (varchar para flexibilidade)
+- [x] Atualizar routers para aceitar e salvar procedimentoCirurgia
+- [x] Atualizar frontend: select obrigatório de Convênio (default Unimed)
+- [x] Atualizar frontend: select obrigatório de Procedimento com opções pré-definidas + "Outra" com texto livre
+- [x] Incluir campo procedimento no payload de integração com APP Administrativo
+- [x] Verificar compilação e testar (11 testes cesareanSync passando, 0 erros TypeScript)

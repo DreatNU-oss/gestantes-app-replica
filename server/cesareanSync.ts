@@ -15,6 +15,7 @@ interface SyncCesareaParams {
   nomeCompleto: string;
   dataCesarea: string | null; // YYYY-MM-DD ou null se cancelada/removida
   convenio?: string;
+  procedimento?: string;
   hospital?: string;
   observacoes?: string;
 }
@@ -63,7 +64,7 @@ export async function sincronizarCesareaComAdmin(params: SyncCesareaParams): Pro
           pacienteNome: params.nomeCompleto,
           dataCirurgia: params.dataCesarea,
           convenio: params.convenio || 'Particular',
-          procedimento: 'Cesárea',
+          procedimento: params.procedimento || 'Cesárea',
           hospital: params.hospital || 'Hospital Unimed',
           observacoes: params.observacoes || 'Agendamento via APP Gestantes',
           externalId: `gestante-${params.id}`,
@@ -118,6 +119,8 @@ export async function sincronizarTodasCesareasComAdmin(
     dataPartoProgramado: string;
     planoSaudeNome?: string;
     hospitalParto?: string | null;
+    convenioCirurgia?: string | null;
+    procedimentoCirurgia?: string | null;
   }>,
   onProgress?: (current: number, total: number, nome: string) => void
 ): Promise<{ sucesso: number; falhas: number; total: number; detalhes: Array<{ nome: string; status: 'sucesso' | 'falha'; mensagem: string }> }> {
@@ -140,7 +143,8 @@ export async function sincronizarTodasCesareasComAdmin(
       id: gestante.id,
       nomeCompleto: gestante.nome,
       dataCesarea: gestante.dataPartoProgramado,
-      convenio: mapearConvenio(gestante.planoSaudeNome),
+      convenio: gestante.convenioCirurgia || mapearConvenio(gestante.planoSaudeNome),
+      procedimento: gestante.procedimentoCirurgia || 'Cesárea',
       hospital: mapearHospital(gestante.hospitalParto),
       observacoes: 'Sincronização em lote - APP Gestantes',
     });
