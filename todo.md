@@ -1605,3 +1605,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar campo ao formulário frontend do Morfo 2º Tri (adicionado)
 - [x] Atualizar testes (19 testes passando)
 - [x] Renomear label "Distância do OI" para "Canal Cervical" em US Obstétrico, Morfo 2º Tri, Seguimento e Cartão Pré-Natal
+
+## Bug: Extração IA de datas não funciona em produção (11/03/2026)
+- [x] Investigar por que Data do Exame e DPP não são extraídos em produção (formato dd/mm/yyyy vs yyyy-MM-dd)
+- [x] Testar no dev server com PDF da Helena - todos os campos preenchidos corretamente
+- [x] Corrigir o problema (função normalizeDadosDatas converte datas automaticamente)

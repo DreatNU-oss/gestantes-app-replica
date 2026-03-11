@@ -17,6 +17,7 @@ import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
 import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
+import { normalizeDadosDatas } from '@shared/dateNormalization';
 
 
 export default function Ultrassons() {
@@ -291,8 +292,11 @@ export default function Ultrassons() {
   
   // Função para preencher dados extraídos pela IA
   const handleDadosExtraidos = (tipo: string, dados: Record<string, string>, arquivosProcessados: number = 1) => {
+    // Normalizar datas antes de aplicar
+    const dadosNormalizados = normalizeDadosDatas(dados);
+    
     // Marcar campos que foram preenchidos pela IA para destaque visual
-    const camposPreenchidos = new Set(Object.keys(dados).filter(key => dados[key] && dados[key].trim() !== ''));
+    const camposPreenchidos = new Set(Object.keys(dadosNormalizados).filter(key => dadosNormalizados[key] && dadosNormalizados[key].trim() !== ''));
     setCamposPreenchidosIA(prev => ({
       ...prev,
       [tipo]: camposPreenchidos,
@@ -300,22 +304,22 @@ export default function Ultrassons() {
     
     switch (tipo) {
       case 'primeiro_ultrassom':
-        setPrimeiroUS(prev => ({ ...prev, ...dados }));
+        setPrimeiroUS(prev => ({ ...prev, ...dadosNormalizados }));
         break;
       case 'morfologico_1tri':
-        setMorfo1Tri(prev => ({ ...prev, ...dados }));
+        setMorfo1Tri(prev => ({ ...prev, ...dadosNormalizados }));
         break;
       case 'ultrassom_obstetrico':
-        setUsObstetrico(prev => ({ ...prev, ...dados }));
+        setUsObstetrico(prev => ({ ...prev, ...dadosNormalizados }));
         break;
       case 'morfologico_2tri':
-        setMorfo2Tri(prev => ({ ...prev, ...dados }));
+        setMorfo2Tri(prev => ({ ...prev, ...dadosNormalizados }));
         break;
       case 'ecocardiograma':
-        setEcocardiograma(prev => ({ ...prev, ...dados }));
+        setEcocardiograma(prev => ({ ...prev, ...dadosNormalizados }));
         break;
       case 'ultrassom_seguimento':
-        setUsSeguimento(prev => ({ ...prev, ...dados }));
+        setUsSeguimento(prev => ({ ...prev, ...dadosNormalizados }));
         break;
     }
     
