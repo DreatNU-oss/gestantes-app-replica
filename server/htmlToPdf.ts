@@ -753,8 +753,8 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(40);
     drawSectionTitle('Historico de Consultas');
     
-    const colWidths = [22, 18, 18, 18, 18, 14, 16, 56];
-    const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'Edema', 'Conduta'];
+    const colWidths = [22, 16, 16, 16, 16, 14, 12, 14, 54];
+    const headers = ['Data', 'IG', 'Peso', 'PA', 'AU', 'BCF', 'MF', 'Edema', 'Conduta'];
     
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -810,6 +810,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       }
       
       const edemaFormatado = consulta.edema || '-';
+      const mfFormatado = consulta.mf === 1 ? '+' : consulta.mf === 0 ? '-' : '-';
       
       const rowData = [
         formatarData(consulta.dataConsulta),
@@ -818,6 +819,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         consulta.pa || '-',
         auFormatado,
         bcfFormatado,
+        mfFormatado,
         edemaFormatado,
         condutaFormatada,
       ];

@@ -1567,3 +1567,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Ultrassons em ordem cronologica (primeiro ao mais recente)
 - [x] CANCELADO: tipo sanguineo e fator Rh (campo nao existe no banco, usuario nao quer criar)
 - [x] TypeScript 0 errors
+
+## Adicionar coluna MF (Movimentos Fetais) na tabela do PDF (11/03/2026)
+- [x] Campo mf ja existia na interface DadosPdf e nos mapeamentos das rotas
+- [x] Coluna MF adicionada entre BCF e Edema no cabecalho e dados da tabela
+- [x] Larguras ajustadas para 9 colunas (Data, IG, Peso, PA, AU, BCF, MF, Edema, Conduta)
+- [x] MF exibido como + (presente) ou - (ausente)
+- [x] TypeScript 0 errors
