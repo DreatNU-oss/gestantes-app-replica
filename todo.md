@@ -1589,3 +1589,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir extração de Hematoma (ausência = Não) para todos os tipos
 - [x] Revisar prompts de todos os tipos: 1o US, Morfo 1tri, Morfo 2tri, Obstétrico, Seguimento, Ecocardiograma
 - [x] Verificar compilação e testar (TypeScript 0 errors, 7 testes de US + 12 testes de labels passando)
+
+## Adicionar campo Colo Uterino ao 1º Ultrassom (11/03/2026)
+- [x] Adicionar campo coloUterino à extração IA do primeiro_ultrassom
+- [x] Adicionar campo ao formulário frontend do 1º Ultrassom
+- [x] Campo salvo via JSON no campo dados (sem migração necessária)
+- [x] Atualizar testes (7 testes passando, incluindo assertiva de coloUterino)

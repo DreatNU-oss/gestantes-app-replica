@@ -32,6 +32,7 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
     { nome: "sacoVitelino", descricao: "Presença e aspecto do saco/vesícula vitelino(a)", exemplo: "Presente, regular, 3.6 mm", regra: "Procure por 'vesícula vitelínica', 'saco vitelino'. Inclua diâmetro se mencionado." },
     { nome: "hematoma", descricao: "Presença de hematoma subcoriônico ou coleções", exemplo: "Não", regra: "Se o laudo NÃO menciona hematoma, coleção ou sangramento, retorne 'Não'. Só retorne 'Sim' se explicitamente descrito." },
     { nome: "corpoLuteo", descricao: "Identificação do corpo lúteo e localização", exemplo: "Presente em ovário esquerdo", regra: "Procure por 'corpo lúteo' e indique em qual ovário." },
+    { nome: "coloUterino", descricao: "Medida do colo uterino (cervical length) em cm ou mm", exemplo: "3.9 cm", regra: "Procure por 'colo uterino', 'colo medindo', 'cervicometria'. Inclua se o orifício interno está aberto ou fechado, se mencionado." },
     { nome: "dpp", descricao: "Data Provável do Parto calculada pelo ultrassom", exemplo: "14/05/2026", formato: "DD/MM/AAAA", regra: "IMPORTANTE. Procure por 'DPP:', 'Data Provável do Parto', 'data provável de parto'. Geralmente aparece na hipótese diagnóstica ou conclusão." },
   ],
   morfologico_1tri: [

@@ -72,6 +72,10 @@ describe('Interpretação de Ultrassons com IA', () => {
     expect(resultado.corpoLuteo).toBeDefined();
     expect(resultado.corpoLuteo?.toLowerCase()).toMatch(/esquerda|esquerdo/);
     
+    // Colo Uterino - novo campo
+    expect(resultado.coloUterino).toBeDefined();
+    expect(resultado.coloUterino).toMatch(/3[,.]9\s*cm/i);
+    
     // DPP - campo crítico que estava faltando
     expect(resultado.dpp).toBeDefined();
     expect(resultado.dpp).toContain('14/05/2026');

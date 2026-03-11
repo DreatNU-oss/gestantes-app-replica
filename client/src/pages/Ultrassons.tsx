@@ -134,6 +134,7 @@ export default function Ultrassons() {
     sacoVitelino: '',
     hematoma: '',
     corpoLuteo: '',
+    coloUterino: '',
     dpp: '',
   });
   
@@ -574,6 +575,18 @@ export default function Ultrassons() {
                     onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'corpoLuteo'); setPrimeiroUS({ ...primeiroUS, corpoLuteo: e.target.value }); }}
                   />
                 </div>
+                <div>
+                  <Label>Colo Uterino</Label>
+                  <Input
+                    placeholder="Ex: 3.9 cm, OI fechado"
+                    className={getInputClassName('primeiro_ultrassom', 'coloUterino')}
+                    value={primeiroUS.coloUterino}
+                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'coloUterino'); setPrimeiroUS({ ...primeiroUS, coloUterino: e.target.value }); }}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data Provável do Parto (DPP)</Label>
                   <Input
