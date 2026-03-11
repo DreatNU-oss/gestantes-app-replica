@@ -170,6 +170,7 @@ export default function Ultrassons() {
     placentaGrau: '',
     placentaDistanciaOI: '',
     liquidoAmniotico: '',
+    coloUterino: '',
     avaliacaoAnatomica: '',
     dopplers: '',
     sexoFetal: '',
@@ -799,7 +800,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Distância do OI</Label>
+                  <Label>Canal Cervical</Label>
                   <Input
                     placeholder="Ex: 5cm"
                     className={getInputClassName('ultrassom_obstetrico', 'placentaDistanciaOI')}
@@ -921,7 +922,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Distância do OI</Label>
+                  <Label>Canal Cervical</Label>
                   <Input
                     placeholder="Ex: 5cm"
                     className={getInputClassName('morfologico_2tri', 'placentaDistanciaOI')}
@@ -931,14 +932,25 @@ export default function Ultrassons() {
                 </div>
               </div>
               
-              <div>
-                <Label>Líquido Amniótico (ILA)</Label>
-                <Input
-                  placeholder="Ex: 12cm"
-                  className={getInputClassName('morfologico_2tri', 'liquidoAmniotico')}
-                  value={morfo2Tri.liquidoAmniotico}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'liquidoAmniotico'); setMorfo2Tri({ ...morfo2Tri, liquidoAmniotico: e.target.value }); }}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Líquido Amniótico (ILA)</Label>
+                  <Input
+                    placeholder="Ex: 12cm"
+                    className={getInputClassName('morfologico_2tri', 'liquidoAmniotico')}
+                    value={morfo2Tri.liquidoAmniotico}
+                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'liquidoAmniotico'); setMorfo2Tri({ ...morfo2Tri, liquidoAmniotico: e.target.value }); }}
+                  />
+                </div>
+                <div>
+                  <Label>Colo Uterino</Label>
+                  <Input
+                    placeholder="Ex: 35 mm, OI fechado"
+                    className={getInputClassName('morfologico_2tri', 'coloUterino')}
+                    value={morfo2Tri.coloUterino}
+                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'coloUterino'); setMorfo2Tri({ ...morfo2Tri, coloUterino: e.target.value }); }}
+                  />
+                </div>
               </div>
               
               <div>
@@ -1135,7 +1147,7 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
-                  <Label>Distância do OI</Label>
+                  <Label>Canal Cervical</Label>
                   <Input
                     placeholder="Ex: 5cm"
                     className={getInputClassName('ultrassom_seguimento', 'placentaDistanciaOI')}

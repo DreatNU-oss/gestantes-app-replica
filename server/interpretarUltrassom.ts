@@ -72,6 +72,7 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
     { nome: "dopplers", descricao: "Avaliação dos Dopplers (umbilical, cerebral, uterinas)", exemplo: "Normais. IP umbilical: 1.2, IP ACM: 1.8", regra: "Procure por 'Doppler', 'IP', 'índice de pulsatilidade', 'artéria umbilical', 'ACM', 'artérias uterinas'." },
     { nome: "sexoFetal", descricao: "Sexo fetal identificado", exemplo: "Masculino", regra: "Procure por 'sexo', 'masculino', 'feminino', 'genitália'." },
     { nome: "observacoes", descricao: "Observações adicionais relevantes", exemplo: "Sem alterações", regra: "Inclua qualquer informação relevante não coberta pelos campos acima." },
+    { nome: "coloUterino", descricao: "Medida do colo uterino (canal cervical / cervical length) em mm ou cm", exemplo: "35 mm, OI fechado", regra: "Procure por 'colo uterino', 'colo medindo', 'cervicometria', 'canal cervical', 'comprimento do colo'. Inclua se o orifício interno está aberto ou fechado, se mencionado." },
     { nome: "dpp", descricao: "Data Provável do Parto calculada pelo ultrassom", exemplo: "20/08/2026", formato: "DD/MM/AAAA", regra: "IMPORTANTE. Procure por 'DPP:', 'Data Provável do Parto'." },
   ],
   ecocardiograma: [

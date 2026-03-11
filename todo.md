@@ -1595,3 +1595,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar campo ao formulário frontend do 1º Ultrassom
 - [x] Campo salvo via JSON no campo dados (sem migração necessária)
 - [x] Atualizar testes (7 testes passando, incluindo assertiva de coloUterino)
+
+## Adicionar campo Canal Cervical ao US Obstétrico, Morfo 1ºTri e Morfo 2ºTri (11/03/2026)
+- [x] Adicionar campo coloUterino à extração IA do ultrassom_obstetrico (já existia)
+- [x] Adicionar campo coloUterino à extração IA do morfologico_1tri (já existia como 'colo')
+- [x] Adicionar campo coloUterino à extração IA do morfologico_2tri (adicionado)
+- [x] Adicionar campo ao formulário frontend do US Obstétrico (já existia)
+- [x] Adicionar campo ao formulário frontend do Morfo 1º Tri (já existia)
+- [x] Adicionar campo ao formulário frontend do Morfo 2º Tri (adicionado)
+- [x] Atualizar testes (19 testes passando)
+- [x] Renomear label "Distância do OI" para "Canal Cervical" em US Obstétrico, Morfo 2º Tri, Seguimento e Cartão Pré-Natal
