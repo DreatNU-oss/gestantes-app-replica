@@ -1,0 +1,9 @@
+{
+  "query": "SELECT DISTINCT pe.nomeParametro FROM parametrosExames pe WHERE pe.nomeParametro LIKE '%sang%' OR pe.nomeParametro LIKE '%tipo%' OR pe.nomeParametro LIKE '%Rh%' OR pe.nomeParametro LIKE '%ABO%' OR pe.nomeParametro LIKE '%grupo%' LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT DISTINCT pe.nomeParametro FROM parametrosExames pe WHERE pe.nomeParametro LIKE '%sang%' OR pe.nomeParametro LIKE '%tipo%' OR pe.nomeParametro LIKE '%Rh%' OR pe.nomeParametro LIKE '%ABO%' OR pe.nomeParametro LIKE '%grupo%' LIMIT 20;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 56
+}

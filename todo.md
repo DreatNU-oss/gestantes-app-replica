@@ -1558,3 +1558,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Suporte a dataFim para marcos com range de datas
 - [x] Alteracoes aplicadas em routers.ts, gestante-router.ts, htmlToPdf.ts e pdfTemplateCompleto.ts
 - [x] TypeScript 0 errors
+
+## Ajustes de layout no PDF - Dados da Gestante e Ultrassons (10/03/2026)
+- [x] DUM e DPP(DUM) na mesma linha
+- [x] Data 1o US e DPP US na mesma linha, remover "IG no US"
+- [x] Trocar "Data US" por "Data 1o US"
+- [x] Trocar "GO:" por "Historia Obstetrica: G1P0A0"
+- [x] Ultrassons em ordem cronologica (primeiro ao mais recente)
+- [x] CANCELADO: tipo sanguineo e fator Rh (campo nao existe no banco, usuario nao quer criar)
+- [x] TypeScript 0 errors

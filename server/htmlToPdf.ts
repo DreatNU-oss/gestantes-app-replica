@@ -601,28 +601,38 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawDataLine('Idade', `${dados.gestante.idade} anos`);
   }
   
-  if (dados.gestante.dum) {
-    drawDataLine('DUM', formatarData(dados.gestante.dum));
-  }
-  if (dados.gestante.dppDUM) {
-    drawDataLine('DPP (DUM)', formatarData(dados.gestante.dppDUM));
-  }
-  if (dados.gestante.dppUS) {
-    drawDataLine('DPP (US)', formatarData(dados.gestante.dppUS));
-  }
-  
-  if (dados.gestante.dataUltrassom) {
-    drawDataLine('Data US', formatarData(dados.gestante.dataUltrassom));
-    if (dados.gestante.igUltrassomSemanas !== null) {
-      drawDataLine('IG no US', `${dados.gestante.igUltrassomSemanas}s ${dados.gestante.igUltrassomDias || 0}d`);
-    }
+  // DUM e DPP(DUM) na mesma linha
+  if (dados.gestante.dum || dados.gestante.dppDUM) {
+    checkNewPage(8);
+    doc.setFontSize(10);
+    const parts: string[] = [];
+    if (dados.gestante.dum) parts.push(`DUM: ${formatarData(dados.gestante.dum)}`);
+    if (dados.gestante.dppDUM) parts.push(`DPP (DUM): ${formatarData(dados.gestante.dppDUM)}`);
+    const lineText = sanitizeForPdf(parts.join('     '));
+    doc.setFont('helvetica', 'normal');
+    doc.text(lineText, margin, y);
+    y += 6;
   }
   
-  const go = `G${dados.gestante.gesta || 0}P${dados.gestante.para || 0}A${dados.gestante.abortos || 0}`;
-  drawDataLine('GO', go);
+  // Data 1o US e DPP US na mesma linha
+  if (dados.gestante.dataUltrassom || dados.gestante.dppUS) {
+    checkNewPage(8);
+    doc.setFontSize(10);
+    const parts: string[] = [];
+    if (dados.gestante.dataUltrassom) parts.push(`Data 1o US: ${formatarData(dados.gestante.dataUltrassom)}`);
+    if (dados.gestante.dppUS) parts.push(`DPP (US): ${formatarData(dados.gestante.dppUS)}`);
+    const lineText = sanitizeForPdf(parts.join('     '));
+    doc.setFont('helvetica', 'normal');
+    doc.text(lineText, margin, y);
+    y += 6;
+  }
+  
+  // Historia Obstetrica (sem "GO")
+  const ho = `G${dados.gestante.gesta || 0}P${dados.gestante.para || 0}A${dados.gestante.abortos || 0}`;
+  drawDataLine('Historia Obstetrica', ho);
   
   if (dados.gestante.cesareas) {
-    drawDataLine('Cesáreas', `${dados.gestante.cesareas}`);
+    drawDataLine(sanitizeForPdf('Cesareas'), `${dados.gestante.cesareas}`);
   }
   
   y += 5;
@@ -862,7 +872,12 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(30);
     drawSectionTitle('Ultrassons Realizados');
     
-    dados.ultrassons.forEach(us => {
+    // Ordenar cronologicamente (do primeiro ao mais recente)
+    const ultrassonsCronologicos = [...dados.ultrassons].sort((a, b) => {
+      return new Date(a.data).getTime() - new Date(b.data).getTime();
+    });
+    
+    ultrassonsCronologicos.forEach(us => {
       checkNewPage(12);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
