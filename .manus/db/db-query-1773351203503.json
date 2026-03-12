@@ -1,0 +1,22 @@
+{
+  "query": "SELECT codigo, nome, logoUrl, corFundo FROM clinicas ORDER BY codigo",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT codigo, nome, logoUrl, corFundo FROM clinicas ORDER BY codigo",
+  "rows": [
+    {
+      "codigo": "00001",
+      "nome": "Clínica Mais Mulher",
+      "logoUrl": "NULL",
+      "corFundo": "#FFF5F0"
+    },
+    {
+      "codigo": "00002",
+      "nome": "Clínica Teste 00002",
+      "logoUrl": "NULL",
+      "corFundo": "#F5FFFF"
+    }
+  ],
+  "messages": [],
+  "stdout": "codigo\tnome\tlogoUrl\tcorFundo\n00001\tClínica Mais Mulher\tNULL\t#FFF5F0\n00002\tClínica Teste 00002\tNULL\t#F5FFFF\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

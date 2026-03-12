@@ -211,19 +211,41 @@ export default function Login() {
     ? { background: 'linear-gradient(135deg, #FDF8F5, #F5E6E0)' }
     : { background: `linear-gradient(135deg, ${bgColor}, ${bgColor}dd)` };
 
-  // Determine logo to show
-  const logoSrc = (step !== 'clinica' && clinicaLogoUrl) ? clinicaLogoUrl : '/logo-vertical.png';
+  // Determine logo to show:
+  // - Step 'clinica': always show default app logo
+  // - Other steps: show clinic logo if available, or placeholder message
+  const showDefaultLogo = step === 'clinica';
+  const showClinicLogo = step !== 'clinica' && clinicaLogoUrl;
+  const showLogoPlaceholder = step !== 'clinica' && !clinicaLogoUrl;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-500" style={bgStyle}>
       <Card className="w-full max-w-md shadow-xl border-0 bg-white/90 backdrop-blur">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
-            <img 
-              src={logoSrc}
-              alt={clinicaNome || "APP Gestantes"}
-              className="h-28 w-auto object-contain"
-            />
+            {showDefaultLogo && (
+              <img 
+                src="/logo-vertical.png"
+                alt="APP Gestantes"
+                className="h-28 w-auto object-contain"
+              />
+            )}
+            {showClinicLogo && (
+              <img 
+                src={clinicaLogoUrl!}
+                alt={clinicaNome || "Clínica"}
+                className="h-28 w-auto object-contain"
+              />
+            )}
+            {showLogoPlaceholder && (
+              <div className="h-28 flex flex-col items-center justify-center text-center px-4">
+                <Building2 className="h-12 w-12 text-gray-300 mb-2" />
+                <p className="text-xs text-gray-400 leading-tight">
+                  Logo não cadastrada.<br />
+                  O administrador pode configurar a logo em <strong>Configurações → Dados da Clínica</strong>.
+                </p>
+              </div>
+            )}
           </div>
           <CardTitle className="text-2xl font-bold text-[#722F37]">
             {step !== 'clinica' && clinicaNome ? clinicaNome : 'APP Gestantes'}

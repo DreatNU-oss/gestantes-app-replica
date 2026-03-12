@@ -1794,3 +1794,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Admin: acesso total incluindo Configurações (1 por clínica)
 - [x] Superadmin (você): acesso total a tudo + Admin Clínicas
 - [x] Escrever testes unitários para controle de acesso (15 testes passando)
+
+## BUG: Logo da Clínica 00001 aparece na página de login para todas as clínicas
+- [x] Investigar como a logo é exibida na página de login
+- [x] Manter logo padrão (Mais Mulher) na tela inicial e tela de código da clínica
+- [x] A partir da tela de email: exibir logo da clínica se cadastrada, ou placeholder orientando cadastrar logo
