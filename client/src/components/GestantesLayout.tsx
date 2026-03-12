@@ -18,7 +18,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getLoginUrl } from "@/const";
 import { 
   LayoutDashboard, 
   LogOut, 
@@ -146,7 +145,7 @@ export default function GestantesLayout({
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = getLoginUrl();
+      window.location.href = "/login";
     }
   }, [loading, user]);
 
@@ -160,7 +159,7 @@ export default function GestantesLayout({
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
-    window.location.href = getLoginUrl();
+    window.location.href = "/login";
   };
 
   return (

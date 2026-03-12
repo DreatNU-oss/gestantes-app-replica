@@ -1720,3 +1720,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ### Testes
 - [x] Testes de ownerProcedure (acesso restrito)
 - [x] Testes de CRUD de clínicas
+
+## Correções de Fluxo de Login/Logout - 12/03/2026
+
+- [x] Corrigir logout para redirecionar para /login ao invés do OAuth Manus
+- [x] Corrigir Home page para redirecionar para /login ao invés do OAuth Manus
+- [x] Garantir que o fluxo padrão de todos os usuários seja login com código da clínica + email + senha
