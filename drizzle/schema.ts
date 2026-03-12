@@ -145,7 +145,7 @@ export const gestantes = mysqlTable("gestantes", {
   motivoCesarea: text("motivoCesarea"), // Motivo da indicação da cesárea
   motivoCesareaOutro: text("motivoCesareaOutro"), // Descrição quando "Outro motivo" é selecionado
   hospitalParto: varchar("hospitalParto", { length: 255 }),
-  convenioCirurgia: mysqlEnum("convenioCirurgia", ["Particular", "Cortesia", "Unimed", "FUSEX"]).default("Unimed"), // Convênio para o agendamento de cirurgia
+  convenioCirurgia: varchar("convenioCirurgia", { length: 255 }), // Convênio para o agendamento de cirurgia (dinâmico por clínica)
   procedimentoCirurgia: varchar("procedimentoCirurgia", { length: 255 }), // Tipo de cirurgia (Cesárea sem DIU, Cesárea + DIU, etc. ou texto livre)
   
   // Dados antropométricos

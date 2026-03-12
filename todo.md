@@ -1751,3 +1751,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir por dropdown com hospitais cadastrados pela clínica
 - [x] Garantir que o dropdown use a lista de hospitais ativos da clínica
 - [x] Testar a alteração
+
+## Dropdown de Convênio no Formulário de Cesárea
+- [x] Identificar campo de convênio de cirurgia no formulário de cesárea
+- [x] Criar componente ConvenioSelect reutilizável
+- [x] Substituir campo de texto por dropdown com convênios cadastrados pela clínica
+- [x] Atualizar schema (enum para varchar)
+- [x] Testar a alteração

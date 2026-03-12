@@ -470,6 +470,13 @@
       "when": 1773332942127,
       "tag": "0066_serious_squadron_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "5",
+      "when": 1773333450628,
+      "tag": "0067_chemical_vindicator",
+      "breakpoints": true
     }
   ]
 }

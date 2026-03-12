@@ -38,6 +38,7 @@ import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import { HospitalSelect } from "@/components/HospitalSelect";
+import { ConvenioSelect } from "@/components/ConvenioSelect";
 import MedicamentosManager from "@/components/MedicamentosManager";
 // ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
@@ -158,7 +159,7 @@ export default function CartaoPrenatal() {
   const [motivoCesareaOutroLocal, setMotivoCesareaOutroLocal] = useState("");
   
   // Estado local para convênio e procedimento de cirurgia
-  const [convenioCirurgiaLocal, setConvenioCirurgiaLocal] = useState("Unimed");
+  const [convenioCirurgiaLocal, setConvenioCirurgiaLocal] = useState("");
   const [procedimentoCirurgiaLocal, setProcedimentoCirurgiaLocal] = useState("Cesárea sem DIU");
   const [procedimentoOutroTexto, setProcedimentoOutroTexto] = useState("");
   
@@ -347,7 +348,7 @@ export default function CartaoPrenatal() {
       setDataCesareaModificada(false);
       
       // Inicializar estado local para convênio e procedimento
-      setConvenioCirurgiaLocal(gestante.convenioCirurgia || "Unimed");
+      setConvenioCirurgiaLocal(gestante.convenioCirurgia || "");
       // Para procedimento: se começa com uma das opções pré-definidas, usar ela; caso contrário, é "Outra"
       const procedimentoSalvo = gestante.procedimentoCirurgia || "Cesárea sem DIU";
       const opcoesPredefinidas = ["Cesárea sem DIU", "Cesárea + DIU", "Cesárea + LTB", "Histerec aberta", "Histerec vídeo", "Curetagem Uterina"];
@@ -2906,35 +2907,22 @@ export default function CartaoPrenatal() {
                 </div>
 
                 {/* Convênio - Obrigatório */}
-                <div className="space-y-2">
-                  <Label htmlFor="convenioCirurgia">
-                    Convênio <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={convenioCirurgiaLocal}
-                    onValueChange={(value) => {
-                      setConvenioCirurgiaLocal(value);
-                      setDataCesareaModificada(true);
-                      // Se já tem agendamento, salvar imediatamente
-                      if (gestante.dataPartoProgramado) {
-                        updateGestanteMutation.mutate({
-                          id: gestanteSelecionada!,
-                          convenioCirurgia: value as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
-                        });
-                      }
-                    }}
-                  >
-                    <SelectTrigger id="convenioCirurgia" className="max-w-md">
-                      <SelectValue placeholder="Selecione o convênio" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Unimed">Unimed</SelectItem>
-                      <SelectItem value="Particular">Particular</SelectItem>
-                      <SelectItem value="Cortesia">Cortesia</SelectItem>
-                      <SelectItem value="FUSEX">FUSEX</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <ConvenioSelect
+                  value={convenioCirurgiaLocal}
+                  onValueChange={(value: string) => {
+                    setConvenioCirurgiaLocal(value);
+                    setDataCesareaModificada(true);
+                    // Se já tem agendamento, salvar imediatamente
+                    if (gestante.dataPartoProgramado) {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        convenioCirurgia: value,
+                      });
+                    }
+                  }}
+                  label="Convênio"
+                  required
+                />
 
                 {/* Procedimento - Obrigatório */}
                 <div className="space-y-2">
@@ -3079,7 +3067,7 @@ export default function CartaoPrenatal() {
                         id: gestanteSelecionada!,
                         dataPartoProgramado: novaData,
                         tipoPartoDesejado: "cesariana",
-                        convenioCirurgia: convenioCirurgiaLocal as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
+                        convenioCirurgia: convenioCirurgiaLocal,
                         procedimentoCirurgia: procedimentoFinal,
                       });
                       setDataCesareaModificada(false);
@@ -3672,7 +3660,7 @@ export default function CartaoPrenatal() {
                 id: gestanteSelecionada!,
                 dataPartoProgramado: confirmacaoDataCesarea.novaData,
                 tipoPartoDesejado: "cesariana",
-                convenioCirurgia: convenioCirurgiaLocal as "Particular" | "Cortesia" | "Unimed" | "FUSEX",
+                convenioCirurgia: convenioCirurgiaLocal,
                 procedimentoCirurgia: procedimentoFinal,
               });
               // Mostrar o alerta persistente

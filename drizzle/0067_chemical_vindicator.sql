@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` MODIFY COLUMN `convenioCirurgia` varchar(255);
