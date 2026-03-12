@@ -30,9 +30,8 @@ export const protectedProcedure = t.procedure.use(requireUser);
 export const ownerProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
-    const { ENV } = await import('./env');
 
-    if (!ctx.user || !ENV.ownerOpenId || ctx.user.openId !== ENV.ownerOpenId) {
+    if (!ctx.user || !(ctx.user as any).isSystemOwner) {
       throw new TRPCError({ code: "FORBIDDEN", message: "Acesso restrito ao proprietário do sistema." });
     }
 

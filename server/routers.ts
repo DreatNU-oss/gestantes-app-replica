@@ -189,9 +189,8 @@ export const appRouter = router({
     me: publicProcedure.query(async (opts) => {
       const user = opts.ctx.user;
       if (!user) return null;
-      // Adicionar código da clínica ao retorno
-      const { ENV } = await import('./_core/env');
-      const isOwner = !!(ENV.ownerOpenId && user.openId === ENV.ownerOpenId);
+      // Verificar se é owner do sistema pelo campo isSystemOwner no banco
+      const isOwner = !!(user as any).isSystemOwner;
       if (user.clinicaId) {
         const { getClinicaById } = await import('./db');
         const clinica = await getClinicaById(user.clinicaId);
@@ -3244,8 +3243,7 @@ export const appRouter = router({
 
     // Verificar se usuário é owner
     isOwner: protectedProcedure.query(async ({ ctx }) => {
-      const { ENV } = await import('./_core/env');
-      return { isOwner: !!(ENV.ownerOpenId && ctx.user.openId === ENV.ownerOpenId) };
+      return { isOwner: !!(ctx.user as any).isSystemOwner };
     }),
   }),
 });

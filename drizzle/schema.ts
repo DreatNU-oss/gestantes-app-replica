@@ -29,6 +29,7 @@ export const users = mysqlTable("users", {
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   clinicaId: int("clinicaId"), // FK para clinicas.id - identifica a qual clínica o usuário pertence
+  isSystemOwner: int("isSystemOwner").default(0).notNull(), // 1 = proprietário do sistema (pode gerenciar clínicas)
   // Campos para autenticação por senha
   passwordHash: text("passwordHash"),
   passwordResetToken: varchar("passwordResetToken", { length: 128 }),
