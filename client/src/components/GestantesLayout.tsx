@@ -53,16 +53,18 @@ import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
 import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
 
 
-const menuItems = [
-  { icon: Users, label: "Gestantes", path: "/dashboard" },
-  { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal" },
-  { icon: FileText, label: "Exames Laboratoriais", path: "/exames" },
-  { icon: FileText, label: "Ultrassons", path: "/ultrassons" },
-  { icon: Calendar, label: "Marcos Importantes", path: "/marcos" },
-  { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos" },
-  { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas" },
-  { icon: Baby, label: "Partos Realizados", path: "/partos-realizados" },
-  { icon: BarChart3, label: "Estatísticas", path: "/estatisticas" },
+// Definição de menus com controle de acesso por role
+// roles: quais roles podem ver este item. Se vazio/undefined, todos podem ver.
+const allMenuItems = [
+  { icon: Users, label: "Gestantes", path: "/dashboard", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
+  { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: FileText, label: "Exames Laboratoriais", path: "/exames", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: FileText, label: "Ultrassons", path: "/ultrassons", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: Calendar, label: "Marcos Importantes", path: "/marcos", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
+  { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
+  { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
+  { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
 ];
 
 const allConfigMenuItems = [
@@ -78,6 +80,9 @@ const allConfigMenuItems = [
   { label: "Integrações", path: "/integracoes", clinicaOnly: "00001" },
 ];
 
+// Helper para verificar se o usuário tem acesso a Configurações
+const canAccessConfig = (role: string) => ['superadmin', 'admin'].includes(role);
+
 export default function GestantesLayout({
   children,
 }: {
@@ -85,13 +90,21 @@ export default function GestantesLayout({
 }) {
   const { loading, user } = useAuth();
   
-  // Filtrar itens de configuração baseado na clínica do usuário
-  const configMenuItems = allConfigMenuItems.filter(item => {
+  const userRole = (user as any)?.role || 'obstetra';
+  
+  // Filtrar menus principais baseado no role do usuário
+  const menuItems = allMenuItems.filter(item => {
+    return item.roles.includes(userRole);
+  });
+  
+  // Filtrar itens de configuração baseado na clínica do usuário (só admin/superadmin)
+  const showConfigMenu = canAccessConfig(userRole);
+  const configMenuItems = showConfigMenu ? allConfigMenuItems.filter(item => {
     if ('clinicaOnly' in item && item.clinicaOnly) {
       return (user as any)?.clinicaCodigo === item.clinicaOnly;
     }
     return true;
-  });
+  }) : [];
   const [location, setLocation] = useLocation();
   const logoutMutation = trpc.auth.logout.useMutation();
   const [configOpen, setConfigOpen] = useState(false);
@@ -199,63 +212,71 @@ export default function GestantesLayout({
                       {gestanteAtiva.nome}
                     </p>
                     <div className="grid grid-cols-2 gap-1.5">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => setLocation('/cartao-prenatal')}
-                        title="Ver Cartão de Pré-natal"
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        Cartão
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        title="Nova Consulta"
-                        onClick={() => {
-                          const g = gestanteAtivaCompleta || gestanteAtiva;
-                          setGestanteParaConsulta({
-                            id: gestanteAtiva.id,
-                            nome: gestanteAtiva.nome,
-                            dum: (g as any).dum || undefined,
-                            tipoDum: (g as any).tipoDum || undefined,
-                            dataUltrassom: (g as any).dataUltrassom || undefined,
-                            igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
-                            igUltrassomDias: (g as any).igUltrassomDias || undefined,
-                            gesta: (g as any).gesta || undefined,
-                            para: (g as any).para || undefined,
-                            partosNormais: (g as any).partosNormais || undefined,
-                            cesareas: (g as any).cesareas || undefined,
-                            abortos: (g as any).abortos || undefined,
-                          });
-                          setShowConsultaDialog(true);
-                        }}
-                      >
-                        <Plus className="h-3 w-3 mr-1" />
-                        Consulta
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => setLocation('/exames')}
-                        title="Exames Laboratoriais"
-                      >
-                        <TestTube className="h-3 w-3 mr-1" />
-                        Exames
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
-                        onClick={() => setLocation('/ultrassons')}
-                        title="Ultrassons"
-                      >
-                        <Scan className="h-3 w-3 mr-1" />
-                        Ultrassons
-                      </Button>
+                      {userRole !== 'secretaria' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs"
+                          onClick={() => setLocation('/cartao-prenatal')}
+                          title="Ver Cartão de Pré-natal"
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Cartão
+                        </Button>
+                      )}
+                      {userRole !== 'secretaria' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs"
+                          title="Nova Consulta"
+                          onClick={() => {
+                            const g = gestanteAtivaCompleta || gestanteAtiva;
+                            setGestanteParaConsulta({
+                              id: gestanteAtiva.id,
+                              nome: gestanteAtiva.nome,
+                              dum: (g as any).dum || undefined,
+                              tipoDum: (g as any).tipoDum || undefined,
+                              dataUltrassom: (g as any).dataUltrassom || undefined,
+                              igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
+                              igUltrassomDias: (g as any).igUltrassomDias || undefined,
+                              gesta: (g as any).gesta || undefined,
+                              para: (g as any).para || undefined,
+                              partosNormais: (g as any).partosNormais || undefined,
+                              cesareas: (g as any).cesareas || undefined,
+                              abortos: (g as any).abortos || undefined,
+                            });
+                            setShowConsultaDialog(true);
+                          }}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Consulta
+                        </Button>
+                      )}
+                      {userRole !== 'secretaria' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs"
+                          onClick={() => setLocation('/exames')}
+                          title="Exames Laboratoriais"
+                        >
+                          <TestTube className="h-3 w-3 mr-1" />
+                          Exames
+                        </Button>
+                      )}
+                      {userRole !== 'secretaria' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 text-xs"
+                          onClick={() => setLocation('/ultrassons')}
+                          title="Ultrassons"
+                        >
+                          <Scan className="h-3 w-3 mr-1" />
+                          Ultrassons
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -305,33 +326,37 @@ export default function GestantesLayout({
                 </SidebarMenuItem>
               ))}
               
-              {/* Submenu Configurações */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setConfigOpen(!configOpen)}
-                  isActive={configMenuItems.some(item => location === item.path)}
-                >
-                  <Settings className="h-4 w-4" />
-                  <span>Configurações</span>
-                  {configOpen ? (
-                    <ChevronDown className="ml-auto h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="ml-auto h-4 w-4" />
-                  )}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              {/* Subitens de Configurações */}
-              {configOpen && configMenuItems.map((item) => (
-                <SidebarMenuItem key={item.path} className="pl-6">
-                  <SidebarMenuButton
-                    onClick={() => setLocation(item.path)}
-                    isActive={location === item.path}
-                  >
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {/* Submenu Configurações - apenas admin/superadmin */}
+              {showConfigMenu && (
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => setConfigOpen(!configOpen)}
+                      isActive={configMenuItems.some(item => location === item.path)}
+                    >
+                      <Settings className="h-4 w-4" />
+                      <span>Configurações</span>
+                      {configOpen ? (
+                        <ChevronDown className="ml-auto h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="ml-auto h-4 w-4" />
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  {/* Subitens de Configurações */}
+                  {configOpen && configMenuItems.map((item) => (
+                    <SidebarMenuItem key={item.path} className="pl-6">
+                      <SidebarMenuButton
+                        onClick={() => setLocation(item.path)}
+                        isActive={location === item.path}
+                      >
+                        <span>{item.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </>
+              )}
               {/* Link Admin - apenas para owner */}
               {(user as any)?.isOwner && (
                 <SidebarMenuItem>
@@ -358,7 +383,19 @@ export default function GestantesLayout({
                   </Avatar>
                   <div className="flex flex-col items-start text-left">
                     <span className="font-medium">{user.name || "Usuário"}</span>
-                    <span className="text-xs text-muted-foreground">{user.email}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-muted-foreground">{user.email}</span>
+                    </div>
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                      userRole === 'superadmin' ? 'bg-red-100 text-red-700' :
+                      userRole === 'admin' ? 'bg-purple-100 text-purple-700' :
+                      userRole === 'obstetra' ? 'bg-blue-100 text-blue-700' :
+                      'bg-amber-100 text-amber-700'
+                    }`}>
+                      {userRole === 'superadmin' ? 'Super Admin' :
+                       userRole === 'admin' ? 'Administrador' :
+                       userRole === 'obstetra' ? 'Obstetra' : 'Secretária'}
+                    </span>
                   </div>
                 </button>
               </DropdownMenuTrigger>

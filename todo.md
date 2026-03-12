@@ -1779,3 +1779,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar rota no App.tsx
 - [x] Migrar dados existentes e semear procedimentos padrão para todas as clínicas
 - [x] Escrever testes unitários (17 testes passando)
+
+## Sistema de 4 Tipos de Usuários (Roles)
+- [x] Atualizar enum de roles no schema: superadmin, admin, obstetra, secretaria
+- [x] Migrar campo role na tabela users
+- [x] Atualizar tabela emailsAutorizados para incluir campo 'role'
+- [x] Atualizar backend: procedures protegidas por role (admin, obstetra, secretaria)
+- [x] Atualizar página EmailsAutorizados para classificar tipo de usuário
+- [x] Implementar controle de menu no GestantesLayout baseado em role
+- [x] Proteger rotas no frontend por role (RoleGuard)
+- [x] Secretária: acesso a Gestantes, Marcos, Previsão de Parto, Agendamento, Estatísticas e cadastro de gestante
+- [x] Secretária: bloquear acesso a Cartão de Pré-natal, Exames, Ultrassons, Partos Realizados
+- [x] Obstetra: acesso total exceto Configurações
+- [x] Admin: acesso total incluindo Configurações (1 por clínica)
+- [x] Superadmin (você): acesso total a tudo + Admin Clínicas
+- [x] Escrever testes unitários para controle de acesso (15 testes passando)

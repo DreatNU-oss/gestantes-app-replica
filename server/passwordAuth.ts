@@ -282,7 +282,7 @@ export async function listAuthorizedEmails(clinicaId?: number | null) {
   return emailsComStatus;
 }
 
-export async function addAuthorizedEmail(email: string, addedBy?: number, clinicaId?: number | null): Promise<boolean> {
+export async function addAuthorizedEmail(email: string, addedBy?: number, clinicaId?: number | null, role?: 'admin' | 'obstetra' | 'secretaria'): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
   try {
@@ -290,16 +290,32 @@ export async function addAuthorizedEmail(email: string, addedBy?: number, clinic
       email: email.toLowerCase(),
       adicionadoPor: addedBy || null,
       clinicaId: clinicaId ?? null,
+      role: role || 'obstetra',
       ativo: 1,
     });
     return true;
   } catch (error: any) {
     if (error.code === 'ER_DUP_ENTRY') {
-      await db.update(emailsAutorizados).set({ ativo: 1 }).where(eq(emailsAutorizados.email, email.toLowerCase()));
+      const updateData: Record<string, any> = { ativo: 1 };
+      if (role) updateData.role = role;
+      await db.update(emailsAutorizados).set(updateData).where(eq(emailsAutorizados.email, email.toLowerCase()));
       return true;
     }
     throw error;
   }
+}
+
+// Atualizar role de um email autorizado
+export async function updateEmailAutorizadoRole(email: string, role: 'admin' | 'obstetra' | 'secretaria'): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  await db.update(emailsAutorizados).set({ role }).where(eq(emailsAutorizados.email, email.toLowerCase()));
+  // Atualizar role do usuário correspondente se existir
+  const user = await getUserByEmail(email);
+  if (user) {
+    await db.update(users).set({ role }).where(eq(users.id, user.id));
+  }
+  return true;
 }
 
 export async function removeAuthorizedEmail(email: string): Promise<boolean> {
@@ -400,6 +416,10 @@ export async function createUserWithPassword(email: string, password: string, na
     }
   }
   
+  // Buscar role do email autorizado
+  const emailAuth = await db.select().from(emailsAutorizados).where(eq(emailsAutorizados.email, email.toLowerCase())).limit(1);
+  const roleFromEmail = emailAuth.length > 0 ? emailAuth[0].role : 'obstetra';
+  
   // Criar novo usuário
   const hash = await hashPassword(password);
   const openId = `local_${crypto.randomBytes(16).toString('hex')}`;
@@ -410,7 +430,7 @@ export async function createUserWithPassword(email: string, password: string, na
     name: name || email.split('@')[0],
     loginMethod: 'password',
     passwordHash: hash,
-    role: 'user',
+    role: roleFromEmail,
     clinicaId: clinicaId,
     lastSignedIn: new Date(),
     passwordChangedAt: new Date()

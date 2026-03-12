@@ -22,6 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Loader2, 
   Mail, 
@@ -34,14 +41,39 @@ import {
   Lock,
   Unlock,
   AlertTriangle,
-  User
+  User,
+  Shield,
+  Stethoscope,
+  ClipboardList
 } from "lucide-react";
 import { toast } from "sonner";
+
+const ROLE_LABELS: Record<string, { label: string; icon: React.ReactNode; color: string; bgColor: string }> = {
+  admin: { 
+    label: "Administrador", 
+    icon: <Shield className="h-3 w-3" />, 
+    color: "text-purple-700", 
+    bgColor: "bg-purple-100" 
+  },
+  obstetra: { 
+    label: "Obstetra", 
+    icon: <Stethoscope className="h-3 w-3" />, 
+    color: "text-blue-700", 
+    bgColor: "bg-blue-100" 
+  },
+  secretaria: { 
+    label: "Secretária", 
+    icon: <ClipboardList className="h-3 w-3" />, 
+    color: "text-amber-700", 
+    bgColor: "bg-amber-100" 
+  },
+};
 
 export default function EmailsAutorizados() {
   const [, setLocation] = useLocation();
   const { user, loading: authLoading } = useAuth();
   const [novoEmail, setNovoEmail] = useState("");
+  const [novoRole, setNovoRole] = useState<"admin" | "obstetra" | "secretaria">("obstetra");
   const [emailParaRemover, setEmailParaRemover] = useState<string | null>(null);
   const [emailParaDesbloquear, setEmailParaDesbloquear] = useState<string | null>(null);
   const [erro, setErro] = useState("");
@@ -52,10 +84,21 @@ export default function EmailsAutorizados() {
     onSuccess: () => {
       toast.success("Email autorizado com sucesso!");
       setNovoEmail("");
+      setNovoRole("obstetra");
       refetch();
     },
     onError: (error) => {
       toast.error(error.message || "Erro ao adicionar email");
+    },
+  });
+
+  const atualizarRoleMutation = trpc.auth.atualizarRoleEmail.useMutation({
+    onSuccess: () => {
+      toast.success("Tipo de usuário atualizado!");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Erro ao atualizar tipo de usuário");
     },
   });
 
@@ -96,7 +139,7 @@ export default function EmailsAutorizados() {
       setErro("Email inválido");
       return;
     }
-    adicionarMutation.mutate({ email: novoEmail });
+    adicionarMutation.mutate({ email: novoEmail, role: novoRole });
   };
 
   const handleRemover = () => {
@@ -109,6 +152,10 @@ export default function EmailsAutorizados() {
     if (emailParaDesbloquear) {
       desbloquearMutation.mutate({ email: emailParaDesbloquear });
     }
+  };
+
+  const handleRoleChange = (email: string, newRole: "admin" | "obstetra" | "secretaria") => {
+    atualizarRoleMutation.mutate({ email, role: newRole });
   };
 
   if (authLoading) {
@@ -130,7 +177,7 @@ export default function EmailsAutorizados() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FDF8F5] to-[#F5E6E0] p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <Button
@@ -147,10 +194,42 @@ export default function EmailsAutorizados() {
               Emails Autorizados
             </h1>
             <p className="text-gray-600 text-sm">
-              Gerencie quem pode acessar o sistema
+              Gerencie quem pode acessar o sistema e defina o tipo de cada usuário
             </p>
           </div>
         </div>
+
+        {/* Legenda de Tipos */}
+        <Card className="mb-6 shadow-lg border-0 bg-white/90">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm text-gray-600">Tipos de Usuário</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-purple-50 border border-purple-200">
+                <Shield className="h-5 w-5 text-purple-700 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-medium text-purple-700">Administrador</p>
+                  <p className="text-xs text-purple-600">Acesso total incluindo Configurações. 1 por clínica.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                <Stethoscope className="h-5 w-5 text-blue-700 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-medium text-blue-700">Obstetra</p>
+                  <p className="text-xs text-blue-600">Acesso total exceto Configurações.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                <ClipboardList className="h-5 w-5 text-amber-700 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-medium text-amber-700">Secretária</p>
+                  <p className="text-xs text-amber-600">Gestantes, Marcos, Previsão de Parto, Agendamento, Estatísticas e cadastro.</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Alerta de Contas Bloqueadas */}
         {emailsBloqueados.length > 0 && (
@@ -206,12 +285,12 @@ export default function EmailsAutorizados() {
               Adicionar Novo Email
             </CardTitle>
             <CardDescription>
-              Adicione um email para permitir acesso ao sistema. O usuário precisará criar uma senha no primeiro acesso.
+              Adicione um email e defina o tipo de acesso. O usuário precisará criar uma senha no primeiro acesso.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleAdicionar} className="flex gap-3">
-              <div className="flex-1">
+            <form onSubmit={handleAdicionar} className="flex gap-3 flex-wrap md:flex-nowrap">
+              <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
@@ -228,6 +307,31 @@ export default function EmailsAutorizados() {
                 </div>
                 {erro && <p className="text-red-500 text-sm mt-1">{erro}</p>}
               </div>
+              <Select value={novoRole} onValueChange={(v) => setNovoRole(v as any)}>
+                <SelectTrigger className="w-[180px] border-[#E8D5D0]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">
+                    <span className="flex items-center gap-2">
+                      <Shield className="h-3 w-3 text-purple-700" />
+                      Administrador
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="obstetra">
+                    <span className="flex items-center gap-2">
+                      <Stethoscope className="h-3 w-3 text-blue-700" />
+                      Obstetra
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="secretaria">
+                    <span className="flex items-center gap-2">
+                      <ClipboardList className="h-3 w-3 text-amber-700" />
+                      Secretária
+                    </span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 type="submit"
                 className="bg-[#722F37] hover:bg-[#5a252c]"
@@ -273,72 +377,112 @@ export default function EmailsAutorizados() {
                   <TableRow>
                     <TableHead>Email</TableHead>
                     <TableHead>Usuário</TableHead>
+                    <TableHead>Tipo</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Data de Cadastro</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {emailsAtivos.map((email) => (
-                    <TableRow key={email.id} className={email.isLocked ? "bg-orange-50" : ""}>
-                      <TableCell className="font-medium">{email.email}</TableCell>
-                      <TableCell className="text-gray-500">
-                        {email.userExists ? (
-                          <span className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            {email.userName || "Sem nome"}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400 italic">Não cadastrado</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {email.isLocked ? (
-                          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
-                            <Lock className="h-3 w-3 mr-1" />
-                            Bloqueado
-                          </Badge>
-                        ) : email.failedAttempts && email.failedAttempts > 0 ? (
-                          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-                            <AlertTriangle className="h-3 w-3 mr-1" />
-                            {email.failedAttempts} tentativa(s)
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Ativo
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-gray-500">
-                        {email.createdAt ? new Date(email.createdAt).toLocaleDateString('pt-BR') : '-'}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          {email.isLocked && (
+                  {emailsAtivos.map((email) => {
+                    const roleInfo = ROLE_LABELS[(email as any).role || 'obstetra'] || ROLE_LABELS.obstetra;
+                    return (
+                      <TableRow key={email.id} className={email.isLocked ? "bg-orange-50" : ""}>
+                        <TableCell className="font-medium">{email.email}</TableCell>
+                        <TableCell className="text-gray-500">
+                          {email.userExists ? (
+                            <span className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              {email.userName || "Sem nome"}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400 italic">Não cadastrado</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Select 
+                            value={(email as any).role || 'obstetra'} 
+                            onValueChange={(v) => handleRoleChange(email.email, v as any)}
+                            disabled={atualizarRoleMutation.isPending}
+                          >
+                            <SelectTrigger className="w-[160px] h-8 text-xs border-gray-200">
+                              <SelectValue>
+                                <span className={`flex items-center gap-1.5 ${roleInfo.color}`}>
+                                  {roleInfo.icon}
+                                  {roleInfo.label}
+                                </span>
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="admin">
+                                <span className="flex items-center gap-2 text-purple-700">
+                                  <Shield className="h-3 w-3" />
+                                  Administrador
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="obstetra">
+                                <span className="flex items-center gap-2 text-blue-700">
+                                  <Stethoscope className="h-3 w-3" />
+                                  Obstetra
+                                </span>
+                              </SelectItem>
+                              <SelectItem value="secretaria">
+                                <span className="flex items-center gap-2 text-amber-700">
+                                  <ClipboardList className="h-3 w-3" />
+                                  Secretária
+                                </span>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          {email.isLocked ? (
+                            <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
+                              <Lock className="h-3 w-3 mr-1" />
+                              Bloqueado
+                            </Badge>
+                          ) : email.failedAttempts && email.failedAttempts > 0 ? (
+                            <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+                              <AlertTriangle className="h-3 w-3 mr-1" />
+                              {email.failedAttempts} tentativa(s)
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Ativo
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-gray-500">
+                          {email.createdAt ? new Date(email.createdAt).toLocaleDateString('pt-BR') : '-'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            {email.isLocked && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setEmailParaDesbloquear(email.email)}
+                                className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                                title="Desbloquear conta"
+                              >
+                                <Unlock className="h-4 w-4" />
+                              </Button>
+                            )}
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => setEmailParaDesbloquear(email.email)}
-                              className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                              title="Desbloquear conta"
+                              onClick={() => setEmailParaRemover(email.email)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="Remover acesso"
                             >
-                              <Unlock className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setEmailParaRemover(email.email)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            title="Remover acesso"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}

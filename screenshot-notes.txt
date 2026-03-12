@@ -1,0 +1,6 @@
+Screenshot shows:
+- Sidebar has all menus including Configurações (user is superadmin/admin)
+- Role badge "Administrador" shows correctly in sidebar footer
+- Admin Clínicas link visible (owner)
+- All menu items visible for admin role
+- 0 TypeScript errors

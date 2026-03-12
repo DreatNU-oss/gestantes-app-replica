@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, ownerProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
-import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount } from "./passwordAuth";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount, updateEmailAutorizadoRole } from "./passwordAuth";
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
@@ -292,9 +292,24 @@ export const appRouter = router({
     
     // Adicionar email autorizado (admin)
     adicionarEmailAutorizado: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().email(), role: z.enum(['admin', 'obstetra', 'secretaria']).optional() }))
       .mutation(async ({ input, ctx }) => {
-        await addAuthorizedEmail(input.email, ctx.user?.id, ctx.user.clinicaId);
+        // Apenas admin/superadmin podem adicionar emails
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas administradores podem gerenciar emails autorizados.' });
+        }
+        await addAuthorizedEmail(input.email, ctx.user?.id, ctx.user.clinicaId, input.role || 'obstetra');
+        return { success: true };
+      }),
+    
+    // Atualizar role de email autorizado (admin)
+    atualizarRoleEmail: protectedProcedure
+      .input(z.object({ email: z.string().email(), role: z.enum(['admin', 'obstetra', 'secretaria']) }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas administradores podem alterar tipos de usuário.' });
+        }
+        await updateEmailAutorizadoRole(input.email, input.role);
         return { success: true };
       }),
     
@@ -364,8 +379,8 @@ export const appRouter = router({
     desbloquearConta: protectedProcedure
       .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input, ctx }) => {
-        // Verificar se é admin
-        if (ctx.user.role !== 'admin') {
+        // Verificar se é admin ou superadmin
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
           return { success: false, error: 'Apenas administradores podem desbloquear contas.' };
         }
         const success = await unlockAccount(input.email);

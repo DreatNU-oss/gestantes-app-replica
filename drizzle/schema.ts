@@ -28,7 +28,7 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["superadmin", "admin", "obstetra", "secretaria"]).default("obstetra").notNull(),
   clinicaId: int("clinicaId"), // FK para clinicas.id - identifica a qual clínica o usuário pertence
   isSystemOwner: int("isSystemOwner").default(0).notNull(), // 1 = proprietário do sistema (pode gerenciar clínicas)
   // Campos para autenticação por senha
@@ -797,6 +797,7 @@ export const emailsAutorizados = mysqlTable("emailsAutorizados", {
   id: int("id").autoincrement().primaryKey(),
   clinicaId: int("clinicaId"), // FK para clinicas.id
   email: varchar("email", { length: 320 }).notNull().unique(),
+  role: mysqlEnum("role", ["admin", "obstetra", "secretaria"]).default("obstetra").notNull(), // Tipo de usuário pré-definido
   adicionadoPor: int("adicionadoPor"), // ID do usuário que adicionou (null se foi o sistema)
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
   createdAt: timestamp("createdAt").defaultNow().notNull(),

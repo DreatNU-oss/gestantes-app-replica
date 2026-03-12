@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, email, role, isSystemOwner FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, email, role, isSystemOwner FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "email": "DreatNU@yahoo.com",
+      "role": "superadmin",
+      "isSystemOwner": "1"
+    },
+    {
+      "id": "930027",
+      "email": "crislaineluciano256@gmail.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    },
+    {
+      "id": "2160015",
+      "email": "allinemiguelreis@hotmail.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    },
+    {
+      "id": "2790001",
+      "email": "jenifertc@hotmail.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    },
+    {
+      "id": "10650236",
+      "email": "Brunna.avellino@gmail.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    },
+    {
+      "id": "12600357",
+      "email": "brunna.avellino@icloud.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    },
+    {
+      "id": "29460025",
+      "email": "teste@clinica002.com",
+      "role": "obstetra",
+      "isSystemOwner": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\trole\tisSystemOwner\n1\tDreatNU@yahoo.com\tsuperadmin\t1\n930027\tcrislaineluciano256@gmail.com\tobstetra\t0\n2160015\tallinemiguelreis@hotmail.com\tobstetra\t0\n2790001\tjenifertc@hotmail.com\tobstetra\t0\n10650236\tBrunna.avellino@gmail.com\tobstetra\t0\n12600357\tbrunna.avellino@icloud.com\tobstetra\t0\n29460025\tteste@clinica002.com\tobstetra\t0\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

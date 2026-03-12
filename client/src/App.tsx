@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { GestanteAtivaProvider } from "./contexts/GestanteAtivaContext";
+import RoleGuard from "./components/RoleGuard";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import MarcosImportantes from "./pages/MarcosImportantes";
@@ -35,38 +36,93 @@ import AdminClinicas from "./pages/AdminClinicas";
 import GerenciarHospitais from "./pages/GerenciarHospitais";
 import GerenciarProcedimentos from "./pages/GerenciarProcedimentos";
 
+// Roles que podem acessar conteúdo clínico (cartão, exames, ultrassons, partos)
+const CLINICAL_ROLES = ["superadmin", "admin", "obstetra"] as const;
+// Roles que podem acessar configurações
+const CONFIG_ROLES = ["superadmin", "admin"] as const;
+
 function Router() {
   return (
     <Switch>
+      {/* Rotas públicas */}
       <Route path={"/"} component={Home} />
-      <Route path={"/dashboard"} component={Dashboard} />
-      <Route path={"/marcos"} component={MarcosImportantes} />
-      <Route path={"/previsao-partos"} component={PrevisaoPartos} />
-      <Route path={"/exames"} component={ExamesLaboratoriais} />
-      <Route path={"/ultrassons"} component={Ultrassons} />
-      <Route path={"/cartao-prenatal"} component={CartaoPrenatal} />
-      <Route path={"/cartao-prenatal-impressao/:gestanteId"} component={CartaoPrenatalImpressao} />
-      <Route path={"/estatisticas"} component={Estatisticas} />
-      <Route path={"/gerenciar-planos"} component={GerenciarPlanos} />
-      <Route path={"/gerenciar-hospitais"} component={GerenciarHospitais} />
-      <Route path={"/gerenciar-medicos"} component={GerenciarMedicos} />
-      <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
-      <Route path={"/gerenciar-emails"} component={GerenciarEmails} />
-      <Route path={"/logs-emails"} component={LogsEmails} />
-      <Route path={"/monitoramento-emails"} component={MonitoramentoEmails} />
-      <Route path={"/partos-realizados"} component={PartosRealizados} />
-      <Route path={"/estatisticas-partos"} component={EstatisticasPartos} />
-      <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
-      <Route path={"/gerenciar-fatores-risco"} component={GerenciarFatoresRisco} />
-      <Route path={"/gerenciar-medicamentos"} component={GerenciarMedicamentosConfig} />
-      <Route path={"/gerenciar-procedimentos"} component={GerenciarProcedimentos} />
       <Route path={"/login"} component={Login} />
       <Route path={"/esqueci-senha"} component={EsqueciSenha} />
       <Route path={"/redefinir-senha"} component={RedefinirSenha} />
-      <Route path={"/emails-autorizados"} component={EmailsAutorizados} />
+      <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
+
+      {/* Rotas acessíveis a todos os roles autenticados */}
+      <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/marcos"} component={MarcosImportantes} />
+      <Route path={"/previsao-partos"} component={PrevisaoPartos} />
+      <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
+      <Route path={"/estatisticas"} component={Estatisticas} />
+
+      {/* Rotas clínicas - apenas superadmin, admin, obstetra */}
+      <Route path={"/cartao-prenatal"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><CartaoPrenatal /></RoleGuard>
+      </Route>
+      <Route path={"/cartao-prenatal-impressao/:gestanteId"}>
+        {(params: any) => (
+          <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><CartaoPrenatalImpressao {...params} /></RoleGuard>
+        )}
+      </Route>
+      <Route path={"/exames"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><ExamesLaboratoriais /></RoleGuard>
+      </Route>
+      <Route path={"/ultrassons"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><Ultrassons /></RoleGuard>
+      </Route>
+      <Route path={"/partos-realizados"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><PartosRealizados /></RoleGuard>
+      </Route>
+      <Route path={"/estatisticas-partos"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><EstatisticasPartos /></RoleGuard>
+      </Route>
+
+      {/* Rotas de configuração - apenas superadmin e admin */}
+      <Route path={"/gerenciar-planos"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarPlanos /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-hospitais"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarHospitais /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-procedimentos"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarProcedimentos /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-medicos"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarMedicos /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-fatores-risco"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarFatoresRisco /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-medicamentos"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarMedicamentosConfig /></RoleGuard>
+      </Route>
+      <Route path={"/emails-autorizados"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><EmailsAutorizados /></RoleGuard>
+      </Route>
+      <Route path={"/gerenciar-emails"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarEmails /></RoleGuard>
+      </Route>
+      <Route path={"/logs-emails"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><LogsEmails /></RoleGuard>
+      </Route>
+      <Route path={"/monitoramento-emails"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><MonitoramentoEmails /></RoleGuard>
+      </Route>
+      <Route path={"/integracoes"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><Integracoes /></RoleGuard>
+      </Route>
+      
+      {/* Alterar senha - acessível a todos os autenticados */}
       <Route path={"/alterar-senha"} component={AlterarSenha} />
-      <Route path={"/integracoes"} component={Integracoes} />
-      <Route path={"/admin/clinicas"} component={AdminClinicas} />
+
+      {/* Admin Clínicas - apenas superadmin (owner) */}
+      <Route path={"/admin/clinicas"}>
+        <RoleGuard allowedRoles={["superadmin"]}><AdminClinicas /></RoleGuard>
+      </Route>
+
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
