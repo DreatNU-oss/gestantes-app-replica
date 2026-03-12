@@ -241,8 +241,7 @@ export default function Login() {
               <div className="h-28 flex flex-col items-center justify-center text-center px-4">
                 <Building2 className="h-12 w-12 text-gray-300 mb-2" />
                 <p className="text-xs text-gray-400 leading-tight">
-                  Logo não cadastrada.<br />
-                  O administrador pode configurar a logo em <strong>Configurações → Dados da Clínica</strong>.
+                  Logo não cadastrada.
                 </p>
               </div>
             )}
