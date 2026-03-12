@@ -1,0 +1,15 @@
+{
+  "query": "SELECT codigo, nome, logoUrl FROM clinicas WHERE codigo = '00001'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT codigo, nome, logoUrl FROM clinicas WHERE codigo = '00001'",
+  "rows": [
+    {
+      "codigo": "00001",
+      "nome": "Clínica Mais Mulher",
+      "logoUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "codigo\tnome\tlogoUrl\n00001\tClínica Mais Mulher\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

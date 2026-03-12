@@ -1799,3 +1799,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigar como a logo é exibida na página de login
 - [x] Manter logo padrão (Mais Mulher) na tela inicial e tela de código da clínica
 - [x] A partir da tela de email: exibir logo da clínica se cadastrada, ou placeholder orientando cadastrar logo
+
+## Configurar logo da Clínica 00001
+- [x] Fazer upload da logo existente para S3 e atualizar logoUrl no banco (URL: https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png)
