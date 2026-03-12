@@ -1649,3 +1649,53 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug: Colo Uterino duplicado no Morfo 2º Tri (11/03/2026)
 - [x] Remover campo duplicado de Colo Uterino no formulário de Morfo 2º Tri
+
+## BUG CRÍTICO: Emails de verificação enviados para email errado (11/03/2026)
+- [ ] Investigar código de envio de email (FROM_EMAIL usando onboarding@resend.dev)
+- [ ] Verificar status do domínio gestantesapp.com no Resend
+- [ ] Alterar FROM_EMAIL para usar domínio verificado (ex: noreply@gestantesapp.com)
+- [ ] Testar envio de email para confirmar que gestantes recebem o código
+
+## Futuro: Incluir arquivo de desobfuscação no App Bundle Android
+- [ ] Ao gerar o App Bundle de release, incluir o arquivo mapping.txt (R8/ProGuard) no upload para o Google Play Console
+- Motivo: Facilita a leitura de stack traces de crashes no Google Play Console
+- Referência: Warning exibido no Google Play Console ao criar release 1.3.8 (11/03/2026)
+- Como resolver: No build.gradle do módulo app, garantir que `minifyEnabled true` gere o mapping.txt e fazer upload junto com o .aab
+
+## Sistema Multi-Clínica (Multi-Tenant) - 12/03/2026
+
+### Fase 1: Schema e Banco de Dados
+- [x] Criar tabela `clinicas` (id, codigo 5 dígitos, nome, logoUrl, integracaoApiAtiva, ativa)
+- [x] Adicionar coluna `clinicaId` na tabela `users`
+- [x] Adicionar coluna `clinicaId` na tabela `gestantes`
+- [x] Adicionar coluna `clinicaId` nas tabelas de configuração por clínica
+- [x] Migrar todos os dados existentes para clinicaId da clínica 00001
+- [x] Criar clínica 00001 (Clínica Mais Mulher) com integracaoApiAtiva=true
+
+### Fase 2: Login com Código da Clínica
+- [x] Adicionar campo "Código da Clínica" (5 dígitos) na tela de login
+- [x] Validar código da clínica antes de verificar email
+- [x] Armazenar clinicaId na sessão/contexto do usuário
+- [x] Vincular emailsAutorizados à clínica
+
+### Fase 3: Isolamento de Dados (Tenant Isolation)
+- [x] Filtrar gestantes por clinicaId em todas as queries
+- [x] Filtrar médicos, planos, emails autorizados por clinicaId
+- [x] Filtrar condutas, queixas, observações personalizadas por clinicaId
+- [x] Filtrar opções de fatores de risco e medicamentos por clinicaId
+- [x] Filtrar histórico de textos, partos, abortamentos por clinicaId
+- [x] Filtrar estatísticas, previsão de partos, agendamentos por clinicaId
+
+### Fase 4: Integração API Condicional
+- [x] Verificar flag integracaoApiAtiva antes de enviar para Mapa Cirúrgico
+- [x] Manter formulário de cesárea para todas as clínicas (salvar localmente)
+
+### Fase 5: Menu e UI Condicional
+- [x] Ocultar submenu "Integrações" para clínicas que não são 00001
+- [x] Exibir logotipo e nome da clínica no sidebar/header
+- [ ] Usar logotipo da clínica na tela de login e no PDF (parcial - sidebar/header feito, PDF pendente)
+
+### Fase 6: Testes
+- [x] Testes de isolamento de dados entre clínicas
+- [x] Testes de login com código de clínica
+- [x] Testes de integração API condicional

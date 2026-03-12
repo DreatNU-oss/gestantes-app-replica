@@ -1,0 +1,100 @@
+{
+  "query": "SELECT ca.gestanteId, g.nome, g.email, ca.tipo, ca.destino, ca.createdAt, ca.usado \nFROM codigosAcessoGestante ca \nJOIN gestantes g ON g.id = ca.gestanteId \nORDER BY ca.createdAt DESC \nLIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT ca.gestanteId, g.nome, g.email, ca.tipo, ca.destino, ca.createdAt, ca.usado \nFROM codigosAcessoGestante ca \nJOIN gestantes g ON g.id = ca.gestanteId \nORDER BY ca.createdAt DESC \nLIMIT 10;",
+  "rows": [
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:53:18",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:52:15",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:51:37",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:51:15",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:50:25",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 18:50:06",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "tipo": "email",
+      "destino": "dreatnu@yahoo.com",
+      "createdAt": "2026-03-11 10:55:07",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "330052",
+      "nome": "Helena Resende Andrade",
+      "email": "helenaresende2309@gmail.com",
+      "tipo": "email",
+      "destino": "helenaresende2309@gmail.com",
+      "createdAt": "2026-03-10 18:06:17",
+      "usado": "0"
+    },
+    {
+      "gestanteId": "330052",
+      "nome": "Helena Resende Andrade",
+      "email": "helenaresende2309@gmail.com",
+      "tipo": "email",
+      "destino": "helenaresende2309@gmail.com",
+      "createdAt": "2026-03-10 18:05:28",
+      "usado": "1"
+    },
+    {
+      "gestanteId": "330052",
+      "nome": "Helena Resende Andrade",
+      "email": "helenaresende2309@gmail.com",
+      "tipo": "email",
+      "destino": "helenaresende2309@gmail.com",
+      "createdAt": "2026-03-10 17:32:44",
+      "usado": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "gestanteId\tnome\temail\ttipo\tdestino\tcreatedAt\tusado\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:53:18\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:52:15\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:51:37\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:51:15\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:50:25\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 18:50:06\t0\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\temail\tdreatnu@yahoo.com\t2026-03-11 10:55:07\t0\n330052\tHelena Resende Andrade\thelenaresende2309@gmail.com\temail\thelenaresende2309@gmail.com\t2026-03-10 18:06:17\t0\n330052\tHelena Resende Andrade\thelenaresende2309@gmail.com\temail\thelenaresende2309@gmail.com\t2026-03-10 18:05:28\t1\n330052\tHelena Resende Andrade\thelenaresende2309@gmail.com\temail\thelenaresende2309@gmail.com\t2026-03-10 17:32:44\t0\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

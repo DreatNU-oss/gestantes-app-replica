@@ -435,6 +435,13 @@
       "when": 1773234219775,
       "tag": "0061_fancy_doctor_faustus",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "5",
+      "when": 1773315664200,
+      "tag": "0062_cool_maddog",
+      "breakpoints": true
     }
   ]
 }

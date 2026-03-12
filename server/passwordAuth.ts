@@ -20,9 +20,26 @@ export function generateResetToken(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
-export async function isEmailAuthorized(email: string): Promise<boolean> {
+export async function isEmailAuthorized(email: string, clinicaId?: number | null): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
+  const conditions = [
+    eq(emailsAutorizados.email, email.toLowerCase()),
+    eq(emailsAutorizados.ativo, 1)
+  ];
+  if (clinicaId) conditions.push(eq(emailsAutorizados.clinicaId, clinicaId));
+  const result = await db
+    .select()
+    .from(emailsAutorizados)
+    .where(and(...conditions))
+    .limit(1);
+  return result.length > 0;
+}
+
+// Buscar a clinicaId associada a um email autorizado
+export async function getClinicaIdByEmail(email: string): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
   const result = await db
     .select()
     .from(emailsAutorizados)
@@ -31,7 +48,7 @@ export async function isEmailAuthorized(email: string): Promise<boolean> {
       eq(emailsAutorizados.ativo, 1)
     ))
     .limit(1);
-  return result.length > 0;
+  return result.length > 0 ? result[0].clinicaId : null;
 }
 
 export async function getUserByEmail(email: string) {
@@ -148,8 +165,19 @@ async function resetFailedAttempts(userId: number): Promise<void> {
   }).where(eq(users.id, userId));
 }
 
-export async function loginWithPassword(email: string, password: string): Promise<{ success: boolean; user?: any; error?: string; locked?: boolean; minutesRemaining?: number; attemptsRemaining?: number }> {
-  const isAuthorized = await isEmailAuthorized(email);
+export async function loginWithPassword(email: string, password: string, clinicaCodigo?: string): Promise<{ success: boolean; user?: any; error?: string; locked?: boolean; minutesRemaining?: number; attemptsRemaining?: number }> {
+  // Se código da clínica foi fornecido, validar
+  let clinicaId: number | null = null;
+  if (clinicaCodigo) {
+    const { getClinicaByCodigo } = await import('./db');
+    const clinica = await getClinicaByCodigo(clinicaCodigo);
+    if (!clinica) {
+      return { success: false, error: 'Código da clínica inválido ou clínica inativa.' };
+    }
+    clinicaId = clinica.id;
+  }
+  
+  const isAuthorized = await isEmailAuthorized(email, clinicaId ?? undefined);
   if (!isAuthorized) {
     return { success: false, error: 'Este email não está autorizado a acessar o sistema. Solicite permissão ao administrador.' };
   }
@@ -199,17 +227,26 @@ export async function loginWithPassword(email: string, password: string): Promis
   await resetFailedAttempts(user.id);
   
   const db2 = await getDb();
-  if (db2) await db2.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, user.id));
+  if (db2) {
+    const updateData: any = { lastSignedIn: new Date() };
+    // Se o usuário não tem clinicaId mas temos um, atualizar
+    if (clinicaId && !user.clinicaId) {
+      updateData.clinicaId = clinicaId;
+    }
+    await db2.update(users).set(updateData).where(eq(users.id, user.id));
+  }
   
-  return { success: true, user };
+  return { success: true, user: { ...user, clinicaId: user.clinicaId || clinicaId } };
 }
 
-export async function listAuthorizedEmails() {
+export async function listAuthorizedEmails(clinicaId?: number | null) {
   const db = await getDb();
   if (!db) return [];
   
-  // Buscar emails autorizados
-  const emails = await db.select().from(emailsAutorizados).orderBy(emailsAutorizados.email);
+  // Buscar emails autorizados (filtrados por clínica)
+  const emails = clinicaId 
+    ? await db.select().from(emailsAutorizados).where(eq(emailsAutorizados.clinicaId, clinicaId)).orderBy(emailsAutorizados.email)
+    : await db.select().from(emailsAutorizados).orderBy(emailsAutorizados.email);
   
   // Para cada email, verificar se o usuário existe e se está bloqueado
   const emailsComStatus = await Promise.all(
@@ -245,13 +282,14 @@ export async function listAuthorizedEmails() {
   return emailsComStatus;
 }
 
-export async function addAuthorizedEmail(email: string, addedBy?: number): Promise<boolean> {
+export async function addAuthorizedEmail(email: string, addedBy?: number, clinicaId?: number | null): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
   try {
     await db.insert(emailsAutorizados).values({
       email: email.toLowerCase(),
       adicionadoPor: addedBy || null,
+      clinicaId: clinicaId ?? null,
       ativo: 1,
     });
     return true;
@@ -272,7 +310,7 @@ export async function removeAuthorizedEmail(email: string): Promise<boolean> {
 }
 
 // Verificar status do email para primeiro acesso
-export async function checkEmailStatus(email: string): Promise<{ 
+export async function checkEmailStatus(email: string, clinicaCodigo?: string): Promise<{ 
   isAuthorized: boolean; 
   hasPassword: boolean; 
   userExists: boolean;
@@ -280,7 +318,18 @@ export async function checkEmailStatus(email: string): Promise<{
   locked?: boolean;
   minutesRemaining?: number;
 }> {
-  const isAuthorized = await isEmailAuthorized(email);
+  // Se código da clínica foi fornecido, validar
+  let clinicaId: number | null = null;
+  if (clinicaCodigo) {
+    const { getClinicaByCodigo } = await import('./db');
+    const clinica = await getClinicaByCodigo(clinicaCodigo);
+    if (!clinica) {
+      return { isAuthorized: false, hasPassword: false, userExists: false };
+    }
+    clinicaId = clinica.id;
+  }
+  
+  const isAuthorized = await isEmailAuthorized(email, clinicaId ?? undefined);
   if (!isAuthorized) {
     return { isAuthorized: false, hasPassword: false, userExists: false };
   }
@@ -304,8 +353,22 @@ export async function checkEmailStatus(email: string): Promise<{
 }
 
 // Criar usuário e definir senha no primeiro acesso
-export async function createUserWithPassword(email: string, password: string, name?: string): Promise<{ success: boolean; user?: any; error?: string }> {
-  const isAuthorized = await isEmailAuthorized(email);
+export async function createUserWithPassword(email: string, password: string, name?: string, clinicaCodigo?: string): Promise<{ success: boolean; user?: any; error?: string }> {
+  // Se código da clínica foi fornecido, validar
+  let clinicaId: number | null = null;
+  if (clinicaCodigo) {
+    const { getClinicaByCodigo } = await import('./db');
+    const clinica = await getClinicaByCodigo(clinicaCodigo);
+    if (!clinica) {
+      return { success: false, error: 'Código da clínica inválido ou clínica inativa.' };
+    }
+    clinicaId = clinica.id;
+  } else {
+    // Tentar obter clinicaId do email autorizado
+    clinicaId = await getClinicaIdByEmail(email);
+  }
+  
+  const isAuthorized = await isEmailAuthorized(email, clinicaId ?? undefined);
   if (!isAuthorized) {
     return { success: false, error: 'Este email não está autorizado a acessar o sistema.' };
   }
@@ -348,6 +411,7 @@ export async function createUserWithPassword(email: string, password: string, na
     loginMethod: 'password',
     passwordHash: hash,
     role: 'user',
+    clinicaId: clinicaId,
     lastSignedIn: new Date(),
     passwordChangedAt: new Date()
   });

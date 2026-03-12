@@ -186,7 +186,17 @@ export const appRouter = router({
   gestante: gestanteRouter,
   
   auth: router({
-    me: publicProcedure.query(opts => opts.ctx.user),
+    me: publicProcedure.query(async (opts) => {
+      const user = opts.ctx.user;
+      if (!user) return null;
+      // Adicionar código da clínica ao retorno
+      if (user.clinicaId) {
+        const { getClinicaById } = await import('./db');
+        const clinica = await getClinicaById(user.clinicaId);
+        return { ...user, clinicaCodigo: clinica?.codigo || null, clinicaNome: clinica?.nome || null, clinicaLogoUrl: clinica?.logoUrl || null };
+      }
+      return { ...user, clinicaCodigo: null, clinicaNome: null, clinicaLogoUrl: null };
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
@@ -195,9 +205,9 @@ export const appRouter = router({
     
     // Login com email e senha
     loginComSenha: publicProcedure
-      .input(z.object({ email: z.string().email(), senha: z.string().min(6) }))
+      .input(z.object({ email: z.string().email(), senha: z.string().min(6), clinicaCodigo: z.string().optional() }))
       .mutation(async ({ input, ctx }) => {
-        const result = await loginWithPassword(input.email, input.senha);
+        const result = await loginWithPassword(input.email, input.senha, input.clinicaCodigo);
         if (!result.success || !result.user) {
           return { 
             success: false, 
@@ -211,7 +221,7 @@ export const appRouter = router({
         const token = await sdk.signSession({ openId: result.user.openId, appId: process.env.VITE_APP_ID || '', name: result.user.name || '' });
         const cookieOptions = getSessionCookieOptions(ctx.req);
         ctx.res.cookie(COOKIE_NAME, token, cookieOptions);
-        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
+        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role, clinicaId: result.user.clinicaId } };
       }),
     
     // Solicitar recuperação de senha
@@ -257,15 +267,15 @@ export const appRouter = router({
       }),
     
     // Listar emails autorizados (admin)
-    listarEmailsAutorizados: protectedProcedure.query(async () => {
-      return listAuthorizedEmails();
+    listarEmailsAutorizados: protectedProcedure.query(async ({ ctx }) => {
+      return listAuthorizedEmails(ctx.user.clinicaId);
     }),
     
     // Adicionar email autorizado (admin)
     adicionarEmailAutorizado: protectedProcedure
       .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input, ctx }) => {
-        await addAuthorizedEmail(input.email, ctx.user?.id);
+        await addAuthorizedEmail(input.email, ctx.user?.id, ctx.user.clinicaId);
         return { success: true };
       }),
     
@@ -279,9 +289,9 @@ export const appRouter = router({
     
     // Verificar status do email (para primeiro acesso)
     verificarStatusEmail: publicProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().email(), clinicaCodigo: z.string().optional() }))
       .query(async ({ input }) => {
-        return checkEmailStatus(input.email);
+        return checkEmailStatus(input.email, input.clinicaCodigo);
       }),
     
     // Criar usuário e definir senha no primeiro acesso
@@ -289,10 +299,11 @@ export const appRouter = router({
       .input(z.object({ 
         email: z.string().email(), 
         senha: z.string().min(6),
-        nome: z.string().optional()
+        nome: z.string().optional(),
+        clinicaCodigo: z.string().optional()
       }))
       .mutation(async ({ input, ctx }) => {
-        const result = await createUserWithPassword(input.email, input.senha, input.nome);
+        const result = await createUserWithPassword(input.email, input.senha, input.nome, input.clinicaCodigo);
         if (!result.success || !result.user) {
           return { success: false, error: result.error };
         }
@@ -300,7 +311,7 @@ export const appRouter = router({
         const token = await sdk.signSession({ openId: result.user.openId, appId: process.env.VITE_APP_ID || '', name: result.user.name || '' });
         const cookieOptions = getSessionCookieOptions(ctx.req);
         ctx.res.cookie(COOKIE_NAME, token, cookieOptions);
-        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role } };
+        return { success: true, user: { id: result.user.id, name: result.user.name, email: result.user.email, role: result.user.role, clinicaId: result.user.clinicaId } };
       }),
     
     // Alterar senha de usuário logado (invalida todas as sessões)
@@ -333,11 +344,11 @@ export const appRouter = router({
   }),
 
   planosSaude: router({
-    listar: publicProcedure.query(() => listarPlanosAtivos()),
-    listarTodos: protectedProcedure.query(() => listarTodosPlanos()),
+    listar: protectedProcedure.query(({ ctx }) => listarPlanosAtivos(ctx.user.clinicaId)),
+    listarTodos: protectedProcedure.query(({ ctx }) => listarTodosPlanos(ctx.user.clinicaId)),
     criar: protectedProcedure
       .input(z.object({ nome: z.string() }))
-      .mutation(({ input }) => criarPlano(input)),
+      .mutation(({ input, ctx }) => criarPlano({ ...input, clinicaId: ctx.user.clinicaId })),
     atualizar: protectedProcedure
       .input(z.object({ id: z.number(), nome: z.string() }))
       .mutation(({ input }) => {
@@ -353,11 +364,11 @@ export const appRouter = router({
   }),
   
   medicos: router({
-    listar: publicProcedure.query(() => listarMedicos()),
-    listarTodos: protectedProcedure.query(() => listarTodosMedicos()),
+    listar: protectedProcedure.query(({ ctx }) => listarMedicos(ctx.user.clinicaId)),
+    listarTodos: protectedProcedure.query(({ ctx }) => listarTodosMedicos(ctx.user.clinicaId)),
     criar: protectedProcedure
       .input(z.object({ nome: z.string(), ordem: z.number().optional() }))
-      .mutation(({ input }) => criarMedico(input)),
+      .mutation(({ input, ctx }) => criarMedico({ ...input, clinicaId: ctx.user.clinicaId })),
     atualizar: protectedProcedure
       .input(z.object({ id: z.number(), nome: z.string().optional(), ordem: z.number().optional() }))
       .mutation(({ input }) => {
@@ -382,7 +393,7 @@ export const appRouter = router({
         sortBy: z.enum(['nome', 'ig_asc', 'ig_desc']).optional().default('ig_desc')
       }).optional())
       .query(async ({ ctx, input }): Promise<GestanteComCalculos[]> => {
-      const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm);
+      const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm, ctx.user.clinicaId);
       
       // Adicionar cálculos para cada gestante
       const gestantesComCalculo = lista.map(g => {
@@ -552,6 +563,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const data: any = {
           userId: ctx.user.id,
+          clinicaId: ctx.user.clinicaId,
           nome: input.nome,
           telefone: input.telefone || null,
           email: input.email || null,
@@ -596,15 +608,21 @@ export const appRouter = router({
         }
         
         // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico) se data definida
+        // APENAS para clínica 00001 (integração API ativa)
         if (input.dataPartoProgramado && input.tipoPartoDesejado === 'cesariana') {
-          sincronizarCesareaComAdmin({
-            id: novaGestante.id,
-            nomeCompleto: novaGestante.nome,
-            dataCesarea: input.dataPartoProgramado,
-            convenio: input.convenioCirurgia || 'Unimed',
-            hospital: mapearHospital(input.hospitalParto),
-            procedimento: input.procedimentoCirurgia || 'Cesárea',
-          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+          // Verificar se a clínica tem integração API ativa
+          const { getClinicaById } = await import('./db');
+          const clinica = ctx.user.clinicaId ? await getClinicaById(ctx.user.clinicaId) : null;
+          if (clinica?.integracaoApiAtiva === 1) {
+            sincronizarCesareaComAdmin({
+              id: novaGestante.id,
+              nomeCompleto: novaGestante.nome,
+              dataCesarea: input.dataPartoProgramado,
+              convenio: input.convenioCirurgia || 'Unimed',
+              hospital: mapearHospital(input.hospitalParto),
+              procedimento: input.procedimentoCirurgia || 'Cesárea',
+            }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+          }
         }
         
         // Retornar dados da gestante para permitir seleção automática e exibir no modal
@@ -678,7 +696,7 @@ export const appRouter = router({
         sexoBebe: z.enum(["masculino", "feminino", "nao_informado"]).optional(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         const { id, ...rest } = input;
         const data: any = { ...rest };
         
@@ -708,23 +726,27 @@ export const appRouter = router({
         const tinhaDataCesarea = dataPartoProgramadoAntes && tipoPartoAntes === 'cesariana';
         const temDataCesarea = dataPartoProgramadoDepois && tipoPartoDepois === 'cesariana';
         
-        if (temDataCesarea) {
-          // Criar ou atualizar agendamento
-          sincronizarCesareaComAdmin({
-            id: gestante.id,
-            nomeCompleto: gestante.nome,
-            dataCesarea: dataPartoProgramadoDepois,
-            convenio: gestante.convenioCirurgia || 'Unimed',
-            hospital: mapearHospital(gestante.hospitalParto),
-            procedimento: gestante.procedimentoCirurgia || 'Cesárea',
-          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
-        } else if (tinhaDataCesarea && !temDataCesarea) {
-          // Data foi removida ou tipo de parto mudou - deletar agendamento
-          sincronizarCesareaComAdmin({
-            id: gestante.id,
-            nomeCompleto: gestante.nome,
-            dataCesarea: null,
-          }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+        // Sincronizar APENAS se clínica tem integração API ativa
+        const { getClinicaById: getClinicaByIdUpdate } = await import('./db');
+        const clinicaIdForSync = ctx.user.clinicaId || gestante.clinicaId;
+        const clinicaUpdate = clinicaIdForSync ? await getClinicaByIdUpdate(clinicaIdForSync) : null;
+        if (clinicaUpdate?.integracaoApiAtiva === 1) {
+          if (temDataCesarea) {
+            sincronizarCesareaComAdmin({
+              id: gestante.id,
+              nomeCompleto: gestante.nome,
+              dataCesarea: dataPartoProgramadoDepois,
+              convenio: gestante.convenioCirurgia || 'Unimed',
+              hospital: mapearHospital(gestante.hospitalParto),
+              procedimento: gestante.procedimentoCirurgia || 'Cesárea',
+            }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+          } else if (tinhaDataCesarea && !temDataCesarea) {
+            sincronizarCesareaComAdmin({
+              id: gestante.id,
+              nomeCompleto: gestante.nome,
+              dataCesarea: null,
+            }).catch(err => console.error('[Integração] Erro na sincronização:', err));
+          }
         }
         
         return { 
@@ -736,15 +758,20 @@ export const appRouter = router({
     
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         // Buscar gestante antes de deletar para remover agendamento do Mapa Cirúrgico
         const gestante = await getGestanteById(input.id);
         if (gestante && gestante.dataPartoProgramado && gestante.tipoPartoDesejado === 'cesariana') {
-          sincronizarCesareaComAdmin({
-            id: gestante.id,
-            nomeCompleto: gestante.nome,
-            dataCesarea: null, // null = remover agendamento
-          }).catch(err => console.error('[Integração] Erro ao remover agendamento:', err));
+          // Sincronizar APENAS se clínica tem integração API ativa
+          const { getClinicaById: getClinicaByIdDel } = await import('./db');
+          const clinicaDel = ctx.user.clinicaId ? await getClinicaByIdDel(ctx.user.clinicaId) : null;
+          if (clinicaDel?.integracaoApiAtiva === 1) {
+            sincronizarCesareaComAdmin({
+              id: gestante.id,
+              nomeCompleto: gestante.nome,
+              dataCesarea: null, // null = remover agendamento
+            }).catch(err => console.error('[Integração] Erro ao remover agendamento:', err));
+          }
         }
         
         await deleteGestante(input.id);
@@ -809,7 +836,7 @@ export const appRouter = router({
     
     // Alerta de gestantes sem consulta recente (limite dinâmico baseado na IG)
     semConsultaRecente: protectedProcedure
-      .query(() => getGestantesSemConsultaRecente()),
+      .query(({ ctx }) => getGestantesSemConsultaRecente(ctx.user.clinicaId)),
     
     // Justificativas para exclusão do alerta de consulta atrasada
     criarJustificativa: protectedProcedure
@@ -1127,7 +1154,7 @@ export const appRouter = router({
   estatisticas: router({
     tiposPartosDesejados: protectedProcedure
       .query(async ({ ctx }) => {
-        const gestantes = await getGestantesByUserId(ctx.user.id);
+        const gestantes = await getGestantesByUserId(ctx.user.id, undefined, ctx.user.clinicaId);
         
         const contagem = {
           cesariana: 0,
@@ -1146,8 +1173,8 @@ export const appRouter = router({
 
     convenios: protectedProcedure
       .query(async ({ ctx }) => {
-        const gestantes = await getGestantesByUserId(ctx.user.id);
-        const planos = await listarTodosPlanos();
+        const gestantes = await getGestantesByUserId(ctx.user.id, undefined, ctx.user.clinicaId);
+        const planos = await listarTodosPlanos(ctx.user.clinicaId);
         
         const contagem: Record<string, number> = {};
         
@@ -2410,14 +2437,14 @@ export const appRouter = router({
   // Condutas personalizadas
   condutas: router({
     list: protectedProcedure
-      .query(() => getCondutasPersonalizadas()),
+      .query(({ ctx }) => getCondutasPersonalizadas(ctx.user.clinicaId)),
     
     create: protectedProcedure
       .input(z.object({
         nome: z.string().min(1),
         ordem: z.number().optional(),
       }))
-      .mutation(({ input }) => createCondutaPersonalizada(input)),
+      .mutation(({ input, ctx }) => createCondutaPersonalizada({ ...input, clinicaId: ctx.user.clinicaId })),
     
     update: protectedProcedure
       .input(z.object({
@@ -2439,13 +2466,13 @@ export const appRouter = router({
   // Queixas personalizadas
   queixas: router({
     list: protectedProcedure
-      .query(() => getQueixasPersonalizadas()),
+      .query(({ ctx }) => getQueixasPersonalizadas(ctx.user.clinicaId)),
     
     upsert: protectedProcedure
       .input(z.object({
         texto: z.string().min(1),
       }))
-      .mutation(({ input }) => upsertQueixaPersonalizada(input.texto)),
+      .mutation(({ input, ctx }) => upsertQueixaPersonalizada(input.texto, ctx.user.clinicaId)),
 
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
@@ -2461,13 +2488,13 @@ export const appRouter = router({
   // Observações personalizadas
   observacoes: router({
     list: protectedProcedure
-      .query(() => getObservacoesPersonalizadas()),
+      .query(({ ctx }) => getObservacoesPersonalizadas(ctx.user.clinicaId)),
     
     upsert: protectedProcedure
       .input(z.object({
         texto: z.string().min(1),
       }))
-      .mutation(({ input }) => upsertObservacaoPersonalizada(input.texto)),
+      .mutation(({ input, ctx }) => upsertObservacaoPersonalizada(input.texto, ctx.user.clinicaId)),
   }),
 
   // Histórico de interpretações de IA
@@ -2791,10 +2818,10 @@ export const appRouter = router({
   // Router de Opções de Fatores de Risco (Configuráveis)
   opcoesFatoresRisco: router({
     list: protectedProcedure
-      .query(async () => {
+      .query(async ({ ctx }) => {
         // Inicializar opções padrão se não existirem
         await inicializarOpcoesPadrao();
-        return getOpcoesFatoresRisco();
+        return getOpcoesFatoresRisco(ctx.user.clinicaId);
       }),
     
     create: protectedProcedure
@@ -2830,10 +2857,10 @@ export const appRouter = router({
   // Router de Opções de Medicamentos (Configuráveis)
   opcoesMedicamentos: router({
     list: protectedProcedure
-      .query(async () => {
+      .query(async ({ ctx }) => {
         // Inicializar opções padrão se não existirem
         await inicializarOpcoesPadrao();
-        return getOpcoesMedicamentos();
+        return getOpcoesMedicamentos(ctx.user.clinicaId);
       }),
     
     create: protectedProcedure
@@ -2981,13 +3008,26 @@ export const appRouter = router({
 
   // Router de Integração com Sistema Administrativo (Mapa Cirúrgico)
   integracao: router({
-    // Sincronização em lote de cesáreas
+    // Sincronização em lote de cesáreas (apenas para clínicas com integração ativa)
     syncCesareas: protectedProcedure
       .mutation(async ({ ctx }) => {
+        // Verificar se a clínica tem integração API ativa
+        const { getClinicaById: getClinicaByIdSync } = await import('./db');
+        const clinicaSync = ctx.user.clinicaId ? await getClinicaByIdSync(ctx.user.clinicaId) : null;
+        if (!clinicaSync || clinicaSync.integracaoApiAtiva !== 1) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Integração com Mapa Cirúrgico não disponível para esta clínica.' });
+        }
+        
         const db = await getDb();
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
         
-        // Buscar todas as gestantes com data de cesárea e tipo cesariana
+        // Buscar gestantes da clínica com data de cesárea e tipo cesariana
+        const conditions = [
+          isNotNull(gestantes.dataPartoProgramado),
+          eq(gestantes.tipoPartoDesejado, 'cesariana')
+        ];
+        if (ctx.user.clinicaId) conditions.push(eq(gestantes.clinicaId, ctx.user.clinicaId));
+        
         const todasGestantes = await db
           .select({
             id: gestantes.id,
@@ -3000,12 +3040,7 @@ export const appRouter = router({
             procedimentoCirurgia: gestantes.procedimentoCirurgia,
           })
           .from(gestantes)
-          .where(
-            and(
-              isNotNull(gestantes.dataPartoProgramado),
-              eq(gestantes.tipoPartoDesejado, 'cesariana')
-            )
-          );
+          .where(and(...conditions));
         
         if (todasGestantes.length === 0) {
           return { sucesso: 0, falhas: 0, total: 0, detalhes: [] };

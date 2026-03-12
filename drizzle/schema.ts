@@ -1,4 +1,22 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date, json } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, date, json, boolean } from "drizzle-orm/mysql-core";
+
+/**
+ * Tabela de clínicas (multi-tenant)
+ * Cada clínica tem um código de 5 dígitos único para identificação no login
+ */
+export const clinicas = mysqlTable("clinicas", {
+  id: int("id").autoincrement().primaryKey(),
+  codigo: varchar("codigo", { length: 5 }).notNull().unique(), // Código de 5 dígitos (ex: "00001")
+  nome: varchar("nome", { length: 255 }).notNull(),
+  logoUrl: text("logoUrl"), // URL do logotipo da clínica
+  integracaoApiAtiva: int("integracaoApiAtiva").default(0).notNull(), // 1 = envia para Mapa Cirúrgico, 0 = não
+  ativa: int("ativa").default(1).notNull(), // 1 = ativa, 0 = inativa
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Clinica = typeof clinicas.$inferSelect;
+export type InsertClinica = typeof clinicas.$inferInsert;
 
 /**
  * Core user table backing auth flow.
@@ -10,6 +28,7 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id - identifica a qual clínica o usuário pertence
   // Campos para autenticação por senha
   passwordHash: text("passwordHash"),
   passwordResetToken: varchar("passwordResetToken", { length: 128 }),
@@ -32,6 +51,7 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const medicos = mysqlTable("medicos", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   nome: varchar("nome", { length: 255 }).notNull(),
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
   ordem: int("ordem").default(0).notNull(),
@@ -64,6 +84,7 @@ export type InsertCredencialHilum = typeof credenciaisHilum.$inferInsert;
  */
 export const planosSaude = mysqlTable("planosSaude", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   nome: varchar("nome", { length: 255 }).notNull(),
   ativo: int("ativo").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -79,6 +100,7 @@ export type InsertPlanoSaude = typeof planosSaude.$inferInsert;
 export const gestantes = mysqlTable("gestantes", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id - identifica a qual clínica a gestante pertence
   nome: varchar("nome", { length: 255 }).notNull(),
   telefone: varchar("telefone", { length: 20 }),
   email: varchar("email", { length: 320 }),
@@ -335,6 +357,7 @@ export type InsertAgendamentoConsulta = typeof agendamentosConsultas.$inferInser
  */
 export const configuracoesEmail = mysqlTable("configuracoesEmail", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   chave: varchar("chave", { length: 100 }).notNull().unique(),
   valor: text("valor").notNull(),
   descricao: text("descricao"),
@@ -410,6 +433,7 @@ export type InsertUltrassom = typeof ultrassons.$inferInsert;
  */
 export const condutasPersonalizadas = mysqlTable("condutasPersonalizadas", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   nome: varchar("nome", { length: 255 }).notNull(),
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
   ordem: int("ordem").default(0).notNull(),
@@ -425,6 +449,7 @@ export type InsertCondutaPersonalizada = typeof condutasPersonalizadas.$inferIns
  */
 export const queixasPersonalizadas = mysqlTable("queixasPersonalizadas", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   texto: varchar("texto", { length: 500 }).notNull().unique(),
   usageCount: int("usageCount").default(1).notNull(), // Contador de uso
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
@@ -440,6 +465,7 @@ export type InsertQueixaPersonalizada = typeof queixasPersonalizadas.$inferInser
  */
 export const observacoesPersonalizadas = mysqlTable("observacoesPersonalizadas", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   texto: varchar("texto", { length: 1000 }).notNull().unique(),
   usageCount: int("usageCount").default(1).notNull(), // Contador de uso
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
@@ -647,6 +673,7 @@ export type InsertJustificativaAlerta = typeof justificativasAlerta.$inferInsert
  */
 export const historicoTextos = mysqlTable("historicoTextos", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   tipo: mysqlEnum("tipo", ["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar", "us_biometria", "us_avaliacao_anatomica", "us_observacoes", "eco_conclusao", "us_seguimento_observacoes", "hipotese_diagnostica", "detalhamento_queixa_urgencia", "toque_vaginal", "usg_hoje", "auf_urgencia", "outra_conduta_urgencia"]).notNull(),
   texto: text("texto").notNull(),
   contadorUso: int("contadorUso").default(1).notNull(), // Incrementa cada vez que o texto é usado
@@ -665,6 +692,7 @@ export type InsertHistoricoTexto = typeof historicoTextos.$inferInsert;
  */
 export const opcoesFatoresRisco = mysqlTable("opcoesFatoresRisco", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   codigo: varchar("codigo", { length: 100 }).notNull().unique(), // Identificador único (slug)
   nome: varchar("nome", { length: 255 }).notNull(), // Nome de exibição
   descricaoPadrao: text("descricaoPadrao"), // Descrição padrão opcional
@@ -685,6 +713,7 @@ export type InsertOpcaoFatorRisco = typeof opcoesFatoresRisco.$inferInsert;
  */
 export const opcoesMedicamentos = mysqlTable("opcoesMedicamentos", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   codigo: varchar("codigo", { length: 100 }).notNull().unique(), // Identificador único (slug)
   nome: varchar("nome", { length: 255 }).notNull(), // Nome de exibição
   descricaoPadrao: text("descricaoPadrao"), // Descrição padrão opcional
@@ -731,6 +760,7 @@ export type InsertArquivoExame = typeof arquivosExames.$inferInsert;
  */
 export const emailsAutorizados = mysqlTable("emailsAutorizados", {
   id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
   email: varchar("email", { length: 320 }).notNull().unique(),
   adicionadoPor: int("adicionadoPor"), // ID do usuário que adicionou (null se foi o sistema)
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo

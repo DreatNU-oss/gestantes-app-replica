@@ -59,7 +59,10 @@ import {
   LembreteConduta,
   observacoesPersonalizadas,
   InsertObservacaoPersonalizada,
-  ObservacaoPersonalizada
+  ObservacaoPersonalizada,
+  clinicas,
+  Clinica,
+  InsertClinica
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -166,12 +169,32 @@ function normalizeText(text: string): string {
     .toLowerCase();
 }
 
-export async function getGestantesByUserId(userId: number, searchTerm?: string): Promise<Gestante[]> {
+// ============ CLÍNICAS ============
+export async function getClinicaByCodigo(codigo: string): Promise<Clinica | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(clinicas).where(and(eq(clinicas.codigo, codigo), eq(clinicas.ativa, 1))).limit(1);
+  return result[0];
+}
+
+export async function getClinicaById(id: number): Promise<Clinica | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(clinicas).where(eq(clinicas.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getGestantesByUserId(userId: number, searchTerm?: string, clinicaId?: number | null): Promise<Gestante[]> {
   const db = await getDb();
   if (!db) return [];
   
-  // Retorna todas as gestantes (compartilhadas entre todos os usuários)
-  const allGestantes = await db.select().from(gestantes);
+  // Retorna gestantes filtradas pela clínica do usuário
+  const conditions = clinicaId ? [eq(gestantes.clinicaId, clinicaId)] : [];
+  const allGestantes = conditions.length > 0 
+    ? await db.select().from(gestantes).where(and(...conditions))
+    : await db.select().from(gestantes);
   
   // Buscar IDs de gestantes que já tiveram parto registrado
   const partosRegistrados = await db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
@@ -218,17 +241,22 @@ export async function deleteGestante(id: number): Promise<void> {
 }
 
 // ============ MÉDICOS ============
-export async function listarMedicos(): Promise<Medico[]> {
+export async function listarMedicos(clinicaId?: number | null): Promise<Medico[]> {
   const db = await getDb();
   if (!db) return [];
   
-  return db.select().from(medicos).where(eq(medicos.ativo, 1)).orderBy(medicos.ordem);
+  const conditions = [eq(medicos.ativo, 1)];
+  if (clinicaId) conditions.push(eq(medicos.clinicaId, clinicaId));
+  return db.select().from(medicos).where(and(...conditions)).orderBy(medicos.ordem);
 }
 
-export async function listarTodosMedicos(): Promise<Medico[]> {
+export async function listarTodosMedicos(clinicaId?: number | null): Promise<Medico[]> {
   const db = await getDb();
   if (!db) return [];
   
+  if (clinicaId) {
+    return db.select().from(medicos).where(eq(medicos.clinicaId, clinicaId)).orderBy(medicos.ordem);
+  }
   return db.select().from(medicos).orderBy(medicos.ordem);
 }
 
@@ -271,17 +299,22 @@ export async function deletarMedico(id: number): Promise<void> {
 }
 
 // ============ PLANOS DE SAÚDE ============
-export async function listarPlanosAtivos(): Promise<PlanoSaude[]> {
+export async function listarPlanosAtivos(clinicaId?: number | null): Promise<PlanoSaude[]> {
   const db = await getDb();
   if (!db) return [];
   
-  return db.select().from(planosSaude).where(eq(planosSaude.ativo, 1));
+  const conditions = [eq(planosSaude.ativo, 1)];
+  if (clinicaId) conditions.push(eq(planosSaude.clinicaId, clinicaId));
+  return db.select().from(planosSaude).where(and(...conditions));
 }
 
-export async function listarTodosPlanos(): Promise<PlanoSaude[]> {
+export async function listarTodosPlanos(clinicaId?: number | null): Promise<PlanoSaude[]> {
   const db = await getDb();
   if (!db) return [];
   
+  if (clinicaId) {
+    return db.select().from(planosSaude).where(eq(planosSaude.clinicaId, clinicaId));
+  }
   return db.select().from(planosSaude);
 }
 
@@ -412,7 +445,7 @@ function getLimiteDiasConsulta(igSemanas: number | null): { limite: number; faix
   }
 }
 
-export async function getGestantesSemConsultaRecente(): Promise<{
+export async function getGestantesSemConsultaRecente(clinicaId?: number | null): Promise<{
   gestante: Gestante;
   ultimaConsulta: Date | null;
   diasSemConsulta: number;
@@ -423,8 +456,10 @@ export async function getGestantesSemConsultaRecente(): Promise<{
   const db = await getDb();
   if (!db) return [];
   
-  // Buscar todas as gestantes
-  const todasGestantes = await db.select().from(gestantes);
+  // Buscar todas as gestantes (filtradas por clínica)
+  const todasGestantes = clinicaId 
+    ? await db.select().from(gestantes).where(eq(gestantes.clinicaId, clinicaId))
+    : await db.select().from(gestantes);
   
   // Buscar IDs das gestantes que já tiveram parto
   const partosRealizadosData = await db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
@@ -690,12 +725,14 @@ export async function getAlertasByGestanteId(gestanteId: number): Promise<Alerta
 
 // ============ CONDUTAS PERSONALIZADAS ============
 
-export async function getCondutasPersonalizadas(): Promise<CondutaPersonalizada[]> {
+export async function getCondutasPersonalizadas(clinicaId?: number | null): Promise<CondutaPersonalizada[]> {
   const db = await getDb();
   if (!db) return [];
   
+  const conditions = [eq(condutasPersonalizadas.ativo, 1)];
+  if (clinicaId) conditions.push(eq(condutasPersonalizadas.clinicaId, clinicaId));
   return db.select().from(condutasPersonalizadas)
-    .where(eq(condutasPersonalizadas.ativo, 1))
+    .where(and(...conditions))
     .orderBy(asc(condutasPersonalizadas.ordem), asc(condutasPersonalizadas.nome));
 }
 
@@ -728,22 +765,26 @@ export async function deleteCondutaPersonalizada(id: number): Promise<void> {
 
 // ============ QUEIXAS PERSONALIZADAS ============
 
-export async function getQueixasPersonalizadas(): Promise<QueixaPersonalizada[]> {
+export async function getQueixasPersonalizadas(clinicaId?: number | null): Promise<QueixaPersonalizada[]> {
   const db = await getDb();
   if (!db) return [];
   
+  const conditions = [eq(queixasPersonalizadas.ativo, 1)];
+  if (clinicaId) conditions.push(eq(queixasPersonalizadas.clinicaId, clinicaId));
   return db.select().from(queixasPersonalizadas)
-    .where(eq(queixasPersonalizadas.ativo, 1))
+    .where(and(...conditions))
     .orderBy(desc(queixasPersonalizadas.usageCount), desc(queixasPersonalizadas.createdAt));
 }
 
-export async function upsertQueixaPersonalizada(texto: string): Promise<QueixaPersonalizada> {
+export async function upsertQueixaPersonalizada(texto: string, clinicaId?: number | null): Promise<QueixaPersonalizada> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  // Tentar encontrar queixa existente
+  // Tentar encontrar queixa existente (na mesma clínica)
+  const conditions = [eq(queixasPersonalizadas.texto, texto)];
+  if (clinicaId) conditions.push(eq(queixasPersonalizadas.clinicaId, clinicaId));
   const existing = await db.select().from(queixasPersonalizadas)
-    .where(eq(queixasPersonalizadas.texto, texto))
+    .where(and(...conditions))
     .limit(1);
   
   if (existing.length > 0) {
@@ -761,7 +802,7 @@ export async function upsertQueixaPersonalizada(texto: string): Promise<QueixaPe
     return result[0] as QueixaPersonalizada;
   } else {
     // Criar nova queixa
-    const result = await db.insert(queixasPersonalizadas).values({ texto, usageCount: 1 });
+    const result = await db.insert(queixasPersonalizadas).values({ texto, usageCount: 1, clinicaId: clinicaId ?? null });
     const insertedId = Number(result[0].insertId);
     const inserted = await db.select().from(queixasPersonalizadas)
       .where(eq(queixasPersonalizadas.id, insertedId))
@@ -772,22 +813,26 @@ export async function upsertQueixaPersonalizada(texto: string): Promise<QueixaPe
 
 // ============ OBSERVAÇÕES PERSONALIZADAS ============
 
-export async function getObservacoesPersonalizadas(): Promise<ObservacaoPersonalizada[]> {
+export async function getObservacoesPersonalizadas(clinicaId?: number | null): Promise<ObservacaoPersonalizada[]> {
   const db = await getDb();
   if (!db) return [];
   
+  const conditions = [eq(observacoesPersonalizadas.ativo, 1)];
+  if (clinicaId) conditions.push(eq(observacoesPersonalizadas.clinicaId, clinicaId));
   return db.select().from(observacoesPersonalizadas)
-    .where(eq(observacoesPersonalizadas.ativo, 1))
+    .where(and(...conditions))
     .orderBy(desc(observacoesPersonalizadas.usageCount), desc(observacoesPersonalizadas.createdAt));
 }
 
-export async function upsertObservacaoPersonalizada(texto: string): Promise<ObservacaoPersonalizada> {
+export async function upsertObservacaoPersonalizada(texto: string, clinicaId?: number | null): Promise<ObservacaoPersonalizada> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  // Tentar encontrar observação existente
+  // Tentar encontrar observação existente (na mesma clínica)
+  const conditions = [eq(observacoesPersonalizadas.texto, texto)];
+  if (clinicaId) conditions.push(eq(observacoesPersonalizadas.clinicaId, clinicaId));
   const existing = await db.select().from(observacoesPersonalizadas)
-    .where(eq(observacoesPersonalizadas.texto, texto))
+    .where(and(...conditions))
     .limit(1);
   
   if (existing.length > 0) {
@@ -805,7 +850,7 @@ export async function upsertObservacaoPersonalizada(texto: string): Promise<Obse
     return result[0] as ObservacaoPersonalizada;
   } else {
     // Criar nova observação
-    const result = await db.insert(observacoesPersonalizadas).values({ texto, usageCount: 1 });
+    const result = await db.insert(observacoesPersonalizadas).values({ texto, usageCount: 1, clinicaId: clinicaId ?? null });
     const insertedId = Number(result[0].insertId);
     const inserted = await db.select().from(observacoesPersonalizadas)
       .where(eq(observacoesPersonalizadas.id, insertedId))
@@ -982,12 +1027,14 @@ export async function getGestantesIdsComJustificativaAtiva(): Promise<Set<number
 
 // ============ OPÇÕES DE FATORES DE RISCO (CONFIGURÁVEIS) ============
 
-export async function getOpcoesFatoresRisco(): Promise<OpcaoFatorRisco[]> {
+export async function getOpcoesFatoresRisco(clinicaId?: number | null): Promise<OpcaoFatorRisco[]> {
   const db = await getDb();
   if (!db) return [];
   
+  const conditions = [eq(opcoesFatoresRisco.ativo, 1)];
+  if (clinicaId) conditions.push(eq(opcoesFatoresRisco.clinicaId, clinicaId));
   return db.select().from(opcoesFatoresRisco)
-    .where(eq(opcoesFatoresRisco.ativo, 1))
+    .where(and(...conditions))
     .orderBy(asc(opcoesFatoresRisco.nome));
 }
 
@@ -1030,12 +1077,14 @@ export async function deleteOpcaoFatorRisco(id: number): Promise<void> {
 
 // ============ OPÇÕES DE MEDICAMENTOS (CONFIGURÁVEIS) ============
 
-export async function getOpcoesMedicamentos(): Promise<OpcaoMedicamento[]> {
+export async function getOpcoesMedicamentos(clinicaId?: number | null): Promise<OpcaoMedicamento[]> {
   const db = await getDb();
   if (!db) return [];
   
+  const conditions = [eq(opcoesMedicamentos.ativo, 1)];
+  if (clinicaId) conditions.push(eq(opcoesMedicamentos.clinicaId, clinicaId));
   return db.select().from(opcoesMedicamentos)
-    .where(eq(opcoesMedicamentos.ativo, 1))
+    .where(and(...conditions))
     .orderBy(asc(opcoesMedicamentos.nome));
 }
 

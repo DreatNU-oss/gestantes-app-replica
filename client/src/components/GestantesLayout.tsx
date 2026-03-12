@@ -65,7 +65,7 @@ const menuItems = [
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas" },
 ];
 
-const configMenuItems = [
+const allConfigMenuItems = [
   { label: "Gerenciar Planos", path: "/gerenciar-planos" },
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
   { label: "Fatores de Risco", path: "/gerenciar-fatores-risco" },
@@ -73,7 +73,7 @@ const configMenuItems = [
   { label: "Emails Autorizados", path: "/emails-autorizados" },
   { label: "Alterar Senha", path: "/alterar-senha" },
   { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
-  { label: "Integrações", path: "/integracoes" },
+  { label: "Integrações", path: "/integracoes", clinicaOnly: "00001" },
 ];
 
 export default function GestantesLayout({
@@ -82,6 +82,14 @@ export default function GestantesLayout({
   children: React.ReactNode;
 }) {
   const { loading, user } = useAuth();
+  
+  // Filtrar itens de configuração baseado na clínica do usuário
+  const configMenuItems = allConfigMenuItems.filter(item => {
+    if ('clinicaOnly' in item && item.clinicaOnly) {
+      return (user as any)?.clinicaCodigo === item.clinicaOnly;
+    }
+    return true;
+  });
   const [location, setLocation] = useLocation();
   const logoutMutation = trpc.auth.logout.useMutation();
   const [configOpen, setConfigOpen] = useState(false);
@@ -161,8 +169,8 @@ export default function GestantesLayout({
           <SidebarHeader className="border-b border-sidebar-border p-4">
             <div className="flex items-center justify-center">
               <img 
-                src="/logo-horizontal.png" 
-                alt="Mais Mulher - Clínica de Saúde Feminina" 
+                src={(user as any)?.clinicaLogoUrl || "/logo-horizontal.png"} 
+                alt={(user as any)?.clinicaNome || "Clínica"} 
                 className="h-20 w-auto object-contain"
               />
             </div>
@@ -352,7 +360,7 @@ export default function GestantesLayout({
           <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
             <SidebarTrigger />
             <h1 className="text-lg font-semibold text-foreground">
-              Gestão de Pré-Natal - Clínica Mais Mulher
+              Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
             </h1>
           </header>
           <main className="flex-1 p-6">

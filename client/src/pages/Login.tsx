@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Mail, Lock, AlertCircle, User, CheckCircle2, ShieldAlert, Clock } from "lucide-react";
+import { Loader2, Mail, Lock, AlertCircle, User, CheckCircle2, ShieldAlert, Clock, Building2 } from "lucide-react";
 
-type LoginStep = 'email' | 'login' | 'primeiro-acesso';
+type LoginStep = 'clinica' | 'email' | 'login' | 'primeiro-acesso';
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const [step, setStep] = useState<LoginStep>('email');
+  const [step, setStep] = useState<LoginStep>('clinica');
+  const [clinicaCodigo, setClinicaCodigo] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
@@ -25,7 +26,7 @@ export default function Login() {
 
   // Query para verificar status do email
   const statusQuery = trpc.auth.verificarStatusEmail.useQuery(
-    { email },
+    { email, clinicaCodigo: clinicaCodigo || undefined },
     { 
       enabled: false, // Não executa automaticamente
       retry: false 
@@ -69,6 +70,26 @@ export default function Login() {
       setErro(error.message || "Erro ao criar conta");
     },
   });
+
+  const handleVerificarClinica = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErro("");
+    setSucesso("");
+    
+    if (!clinicaCodigo) {
+      setErro("Digite o código da clínica");
+      return;
+    }
+
+    // Validar formato: 5 dígitos numéricos
+    if (!/^\d{5}$/.test(clinicaCodigo)) {
+      setErro("O código da clínica deve ter exatamente 5 dígitos numéricos");
+      return;
+    }
+
+    // Avançar para o passo de email
+    setStep('email');
+  };
 
   const handleVerificarEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,7 +148,7 @@ export default function Login() {
       return;
     }
     
-    loginMutation.mutate({ email, senha });
+    loginMutation.mutate({ email, senha, clinicaCodigo: clinicaCodigo || undefined });
   };
 
   const handleCriarConta = (e: React.FormEvent) => {
@@ -149,11 +170,16 @@ export default function Login() {
       return;
     }
     
-    criarUsuarioMutation.mutate({ email, senha, nome: nome || undefined });
+    criarUsuarioMutation.mutate({ email, senha, nome: nome || undefined, clinicaCodigo: clinicaCodigo || undefined });
   };
 
   const handleVoltar = () => {
-    setStep('email');
+    if (step === 'email') {
+      setStep('clinica');
+      setEmail("");
+    } else {
+      setStep('email');
+    }
     setSenha("");
     setConfirmarSenha("");
     setErro("");
@@ -180,6 +206,7 @@ export default function Login() {
             APP Gestantes
           </CardTitle>
           <CardDescription className="text-gray-600">
+            {step === 'clinica' && "Digite o código da sua clínica para acessar"}
             {step === 'email' && "Sistema de Gestão de Pré-Natal"}
             {step === 'login' && "Digite sua senha para entrar"}
             {step === 'primeiro-acesso' && "Crie sua senha de acesso"}
@@ -222,9 +249,57 @@ export default function Login() {
             </Alert>
           )}
 
+          {/* Step 0: Código da Clínica */}
+          {step === 'clinica' && (
+            <form onSubmit={handleVerificarClinica} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="clinicaCodigo" className="text-[#722F37]">Código da Clínica</Label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="clinicaCodigo"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="\d{5}"
+                    maxLength={5}
+                    placeholder="00000"
+                    value={clinicaCodigo}
+                    onChange={(e) => {
+                      // Permitir apenas dígitos
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 5);
+                      setClinicaCodigo(val);
+                    }}
+                    className="pl-10 border-[#E8D5D0] focus:border-[#722F37] focus:ring-[#722F37] text-center text-lg tracking-[0.3em] font-mono"
+                    disabled={isLoading}
+                    autoFocus
+                  />
+                </div>
+                <p className="text-xs text-gray-500 text-center">
+                  Informe o código de 5 dígitos fornecido pela sua clínica
+                </p>
+              </div>
+              
+              <Button
+                type="submit"
+                className="w-full bg-[#722F37] hover:bg-[#5a252c] text-white font-semibold py-2.5"
+                disabled={isLoading || clinicaCodigo.length !== 5}
+              >
+                Continuar
+              </Button>
+            </form>
+          )}
+
           {/* Step 1: Verificar Email */}
           {step === 'email' && (
             <form onSubmit={handleVerificarEmail} className="space-y-4">
+              {/* Badge com código da clínica */}
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#722F37]/10 text-[#722F37] text-sm font-medium">
+                  <Building2 className="h-3.5 w-3.5" />
+                  Clínica: {clinicaCodigo}
+                </span>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[#722F37]">Email</Label>
                 <div className="relative">
@@ -256,12 +331,30 @@ export default function Login() {
                   "Continuar"
                 )}
               </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleVoltar}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  ← Alterar código da clínica
+                </button>
+              </div>
             </form>
           )}
 
           {/* Step 2: Login com senha */}
           {step === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4">
+              {/* Badge com código da clínica */}
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#722F37]/10 text-[#722F37] text-sm font-medium">
+                  <Building2 className="h-3.5 w-3.5" />
+                  Clínica: {clinicaCodigo}
+                </span>
+              </div>
+
               <div className="space-y-2">
                 <Label className="text-[#722F37]">Email</Label>
                 <div className="relative">
@@ -329,6 +422,14 @@ export default function Login() {
           {/* Step 3: Primeiro acesso - criar senha */}
           {step === 'primeiro-acesso' && (
             <form onSubmit={handleCriarConta} className="space-y-4">
+              {/* Badge com código da clínica */}
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#722F37]/10 text-[#722F37] text-sm font-medium">
+                  <Building2 className="h-3.5 w-3.5" />
+                  Clínica: {clinicaCodigo}
+                </span>
+              </div>
+
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-blue-700">
                   <strong>Primeiro acesso!</strong> Crie uma senha para acessar o sistema.

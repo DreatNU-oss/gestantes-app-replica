@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE users SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE gestantes SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE medicos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE planosSaude SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE emailsAutorizados SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE condutasPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE queixasPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE observacoesPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE opcoesFatoresRisco SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE opcoesMedicamentos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE historicoTextos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE configuracoesEmail SET clinicaId = 1 WHERE clinicaId IS NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE users SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE gestantes SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE medicos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE planosSaude SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE emailsAutorizados SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE condutasPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE queixasPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE observacoesPersonalizadas SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE opcoesFatoresRisco SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE opcoesMedicamentos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE historicoTextos SET clinicaId = 1 WHERE clinicaId IS NULL;\nUPDATE configuracoesEmail SET clinicaId = 1 WHERE clinicaId IS NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 252
+}
