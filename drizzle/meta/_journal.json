@@ -456,6 +456,13 @@
       "when": 1773331604620,
       "tag": "0064_wild_hobgoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "5",
+      "when": 1773332231705,
+      "tag": "0065_high_electro",
+      "breakpoints": true
     }
   ]
 }

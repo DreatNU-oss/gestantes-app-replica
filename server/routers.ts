@@ -44,6 +44,12 @@ import {
   atualizarPlano,
   toggleAtivoPlano,
   deletarPlano,
+  listarHospitaisAtivos,
+  listarTodosHospitais,
+  criarHospital,
+  atualizarHospital,
+  toggleAtivoHospital,
+  deletarHospital,
   createPedidoExame,
   getPedidosByGestanteId,
   updatePedidoExame,
@@ -396,6 +402,26 @@ export const appRouter = router({
     deletar: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deletarMedico(input.id)),
+  }),
+
+  hospitais: router({
+    listar: protectedProcedure.query(({ ctx }) => listarHospitaisAtivos(ctx.user.clinicaId)),
+    listarTodos: protectedProcedure.query(({ ctx }) => listarTodosHospitais(ctx.user.clinicaId)),
+    criar: protectedProcedure
+      .input(z.object({ nome: z.string() }))
+      .mutation(({ input, ctx }) => criarHospital({ ...input, clinicaId: ctx.user.clinicaId })),
+    atualizar: protectedProcedure
+      .input(z.object({ id: z.number(), nome: z.string() }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return atualizarHospital(id, data);
+      }),
+    toggleAtivo: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => toggleAtivoHospital(input.id)),
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deletarHospital(input.id)),
   }),
 
   gestantes: router({

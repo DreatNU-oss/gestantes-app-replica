@@ -1734,3 +1734,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Aplicar cor de fundo na página de login após identificação da clínica
 - [x] Incluir corFundo na resposta da API (auth.me e verificação de clínica no login)
 - [ ] Testar cores em ambas as clínicas (00001 e 00002) - pendente teste manual
+
+## Painel de Configurações por Clínica (Convênios e Hospitais)
+- [x] Analisar schema atual de planos/convênios e hospitais
+- [x] Criar tabela `hospitais` com clinicaId no schema
+- [x] Adicionar clinicaId à tabela de planos (já existia)
+- [x] Criar procedures CRUD para convênios por clínica (já existia)
+- [x] Criar procedures CRUD para hospitais por clínica
+- [x] Criar página de Configurações > Convênios com listagem, criação, edição e exclusão (já existia como Gerenciar Planos)
+- [x] Criar página de Configurações > Hospitais com listagem, criação, edição e exclusão
+- [x] Adicionar submenus Convênios e Hospitais no menu Configurações do GestantesLayout
+- [x] Testar CRUD de convênios e hospitais (7 testes passando)

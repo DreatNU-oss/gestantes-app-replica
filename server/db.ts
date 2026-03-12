@@ -12,6 +12,9 @@ import {
   planosSaude,
   InsertPlanoSaude,
   PlanoSaude,
+  hospitais,
+  InsertHospital,
+  Hospital,
   consultasPrenatal,
   InsertConsultaPrenatal,
   ConsultaPrenatal,
@@ -350,6 +353,60 @@ export async function deletarPlano(id: number): Promise<void> {
   if (!db) throw new Error("Database not available");
   
   await db.delete(planosSaude).where(eq(planosSaude.id, id));
+}
+
+// ============ HOSPITAIS ============
+export async function listarHospitaisAtivos(clinicaId?: number | null): Promise<Hospital[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const conditions = [eq(hospitais.ativo, 1)];
+  if (clinicaId) conditions.push(eq(hospitais.clinicaId, clinicaId));
+  return db.select().from(hospitais).where(and(...conditions));
+}
+
+export async function listarTodosHospitais(clinicaId?: number | null): Promise<Hospital[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  if (clinicaId) {
+    return db.select().from(hospitais).where(eq(hospitais.clinicaId, clinicaId));
+  }
+  return db.select().from(hospitais);
+}
+
+export async function criarHospital(data: InsertHospital): Promise<Hospital> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(hospitais).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(hospitais).where(eq(hospitais.id, insertedId)).limit(1);
+  return inserted[0] as Hospital;
+}
+
+export async function atualizarHospital(id: number, data: Partial<InsertHospital>): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(hospitais).set(data).where(eq(hospitais.id, id));
+}
+
+export async function toggleAtivoHospital(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const hospital = await db.select().from(hospitais).where(eq(hospitais.id, id)).limit(1);
+  if (hospital[0]) {
+    await db.update(hospitais).set({ ativo: hospital[0].ativo === 1 ? 0 : 1 }).where(eq(hospitais.id, id));
+  }
+}
+
+export async function deletarHospital(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(hospitais).where(eq(hospitais.id, id));
 }
 
 // ============ CONSULTAS PRÉ-NATAL ============

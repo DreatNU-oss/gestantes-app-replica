@@ -32,6 +32,7 @@ import EmailsAutorizados from "./pages/EmailsAutorizados";
 import AlterarSenha from "./pages/AlterarSenha";
 import Integracoes from "./pages/Integracoes";
 import AdminClinicas from "./pages/AdminClinicas";
+import GerenciarHospitais from "./pages/GerenciarHospitais";
 
 function Router() {
   return (
@@ -46,6 +47,7 @@ function Router() {
       <Route path={"/cartao-prenatal-impressao/:gestanteId"} component={CartaoPrenatalImpressao} />
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/gerenciar-planos"} component={GerenciarPlanos} />
+      <Route path={"/gerenciar-hospitais"} component={GerenciarHospitais} />
       <Route path={"/gerenciar-medicos"} component={GerenciarMedicos} />
       <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
       <Route path={"/gerenciar-emails"} component={GerenciarEmails} />

@@ -66,7 +66,8 @@ const menuItems = [
 ];
 
 const allConfigMenuItems = [
-  { label: "Gerenciar Planos", path: "/gerenciar-planos" },
+  { label: "Gerenciar Convênios", path: "/gerenciar-planos" },
+  { label: "Gerenciar Hospitais", path: "/gerenciar-hospitais" },
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
   { label: "Fatores de Risco", path: "/gerenciar-fatores-risco" },
   { label: "Medicamentos", path: "/gerenciar-medicamentos" },

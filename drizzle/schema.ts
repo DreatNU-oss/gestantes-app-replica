@@ -97,6 +97,21 @@ export type PlanoSaude = typeof planosSaude.$inferSelect;
 export type InsertPlanoSaude = typeof planosSaude.$inferInsert;
 
 /**
+ * Tabela de hospitais
+ */
+export const hospitais = mysqlTable("hospitais", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
+  nome: varchar("nome", { length: 255 }).notNull(),
+  ativo: int("ativo").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Hospital = typeof hospitais.$inferSelect;
+export type InsertHospital = typeof hospitais.$inferInsert;
+
+/**
  * Tabela de gestantes
  */
 export const gestantes = mysqlTable("gestantes", {
