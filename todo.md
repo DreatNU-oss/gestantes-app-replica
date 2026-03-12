@@ -1699,3 +1699,24 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Testes de isolamento de dados entre clínicas
 - [x] Testes de login com código de clínica
 - [x] Testes de integração API condicional
+
+## Painel Administrativo de Clínicas - 12/03/2026
+
+### Backend
+- [x] Criar ownerProcedure (só OWNER_OPEN_ID pode acessar)
+- [x] Criar CRUD de clínicas (listar, criar, editar, ativar/desativar)
+- [x] Criar endpoint para listar usuários por clínica
+- [x] Criar endpoint para gerenciar emails autorizados por clínica
+- [x] Criar endpoint para gerar próximo código de clínica
+
+### Frontend
+- [x] Criar página AdminClinicas com listagem de todas as clínicas
+- [x] Formulário de criar/editar clínica (nome, logo, integração API)
+- [x] Visualizar e gerenciar usuários de cada clínica
+- [x] Gerenciar emails autorizados de cada clínica
+- [x] Adicionar rota /admin/clinicas no App.tsx
+- [x] Adicionar link no menu para o admin (visível apenas para owner)
+
+### Testes
+- [x] Testes de ownerProcedure (acesso restrito)
+- [x] Testes de CRUD de clínicas

@@ -27,6 +27,24 @@ const requireUser = t.middleware(async opts => {
 
 export const protectedProcedure = t.procedure.use(requireUser);
 
+export const ownerProcedure = t.procedure.use(
+  t.middleware(async opts => {
+    const { ctx, next } = opts;
+    const ownerOpenId = process.env.OWNER_OPEN_ID;
+
+    if (!ctx.user || !ownerOpenId || ctx.user.openId !== ownerOpenId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Acesso restrito ao proprietário do sistema." });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.user,
+      },
+    });
+  }),
+);
+
 export const adminProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;

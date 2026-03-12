@@ -31,6 +31,7 @@ import RedefinirSenha from "./pages/RedefinirSenha";
 import EmailsAutorizados from "./pages/EmailsAutorizados";
 import AlterarSenha from "./pages/AlterarSenha";
 import Integracoes from "./pages/Integracoes";
+import AdminClinicas from "./pages/AdminClinicas";
 
 function Router() {
   return (
@@ -61,6 +62,7 @@ function Router() {
       <Route path={"/emails-autorizados"} component={EmailsAutorizados} />
       <Route path={"/alterar-senha"} component={AlterarSenha} />
       <Route path={"/integracoes"} component={Integracoes} />
+      <Route path={"/admin/clinicas"} component={AdminClinicas} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { publicProcedure, protectedProcedure, ownerProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
 import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount } from "./passwordAuth";
@@ -190,12 +190,14 @@ export const appRouter = router({
       const user = opts.ctx.user;
       if (!user) return null;
       // Adicionar código da clínica ao retorno
+      const ownerOpenId = process.env.OWNER_OPEN_ID;
+      const isOwner = !!(ownerOpenId && user.openId === ownerOpenId);
       if (user.clinicaId) {
         const { getClinicaById } = await import('./db');
         const clinica = await getClinicaById(user.clinicaId);
-        return { ...user, clinicaCodigo: clinica?.codigo || null, clinicaNome: clinica?.nome || null, clinicaLogoUrl: clinica?.logoUrl || null };
+        return { ...user, clinicaCodigo: clinica?.codigo || null, clinicaNome: clinica?.nome || null, clinicaLogoUrl: clinica?.logoUrl || null, isOwner };
       }
-      return { ...user, clinicaCodigo: null, clinicaNome: null, clinicaLogoUrl: null };
+      return { ...user, clinicaCodigo: null, clinicaNome: null, clinicaLogoUrl: null, isOwner };
     }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
@@ -3076,6 +3078,175 @@ export const appRouter = router({
           apiKeyConfigurada: !!apiKey,
         };
       }),
+  }),
+
+  // ==========================================
+  // ADMIN PANEL - Gestão de Clínicas (Owner only)
+  // ==========================================
+  adminClinicas: router({
+    // Listar todas as clínicas
+    listar: ownerProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return [];
+      const { clinicas } = await import('../drizzle/schema');
+      const todasClinicas = await db.select().from(clinicas).orderBy(clinicas.codigo);
+      
+      // Para cada clínica, contar usuários e gestantes
+      const { users, gestantes: gestantesTable } = await import('../drizzle/schema');
+      const resultado = await Promise.all(todasClinicas.map(async (clinica) => {
+        const [usersCount] = await db.select({ count: sql<number>`count(*)` }).from(users).where(eq(users.clinicaId, clinica.id));
+        const [gestantesCount] = await db.select({ count: sql<number>`count(*)` }).from(gestantesTable).where(eq(gestantesTable.clinicaId, clinica.id));
+        return {
+          ...clinica,
+          totalUsuarios: Number(usersCount?.count || 0),
+          totalGestantes: Number(gestantesCount?.count || 0),
+        };
+      }));
+      return resultado;
+    }),
+
+    // Buscar clínica por ID
+    buscarPorId: ownerProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const { getClinicaById } = await import('./db');
+        return getClinicaById(input.id);
+      }),
+
+    // Criar nova clínica
+    criar: ownerProcedure
+      .input(z.object({
+        nome: z.string().min(2),
+        logoUrl: z.string().optional(),
+        integracaoApiAtiva: z.boolean().default(false),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro de conexão com o banco.' });
+        const { clinicas } = await import('../drizzle/schema');
+        
+        // Gerar próximo código sequencial
+        const [ultimaClinica] = await db.select({ codigo: clinicas.codigo }).from(clinicas).orderBy(sql`CAST(codigo AS UNSIGNED) DESC`).limit(1);
+        const ultimoCodigo = ultimaClinica ? parseInt(ultimaClinica.codigo, 10) : 0;
+        const novoCodigo = String(ultimoCodigo + 1).padStart(5, '0');
+        
+        const result = await db.insert(clinicas).values({
+          codigo: novoCodigo,
+          nome: input.nome,
+          logoUrl: input.logoUrl || null,
+          integracaoApiAtiva: input.integracaoApiAtiva ? 1 : 0,
+          ativa: 1,
+        });
+        
+        return { id: Number(result[0].insertId), codigo: novoCodigo };
+      }),
+
+    // Atualizar clínica
+    atualizar: ownerProcedure
+      .input(z.object({
+        id: z.number(),
+        nome: z.string().min(2).optional(),
+        logoUrl: z.string().nullable().optional(),
+        integracaoApiAtiva: z.boolean().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro de conexão com o banco.' });
+        const { clinicas } = await import('../drizzle/schema');
+        
+        const updateData: Record<string, any> = {};
+        if (input.nome !== undefined) updateData.nome = input.nome;
+        if (input.logoUrl !== undefined) updateData.logoUrl = input.logoUrl;
+        if (input.integracaoApiAtiva !== undefined) updateData.integracaoApiAtiva = input.integracaoApiAtiva ? 1 : 0;
+        
+        await db.update(clinicas).set(updateData).where(eq(clinicas.id, input.id));
+        return { success: true };
+      }),
+
+    // Ativar/desativar clínica
+    toggleAtiva: ownerProcedure
+      .input(z.object({ id: z.number(), ativa: z.boolean() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro de conexão com o banco.' });
+        const { clinicas } = await import('../drizzle/schema');
+        
+        await db.update(clinicas).set({ ativa: input.ativa ? 1 : 0 }).where(eq(clinicas.id, input.id));
+        return { success: true };
+      }),
+
+    // Listar usuários de uma clínica
+    listarUsuarios: ownerProcedure
+      .input(z.object({ clinicaId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { users } = await import('../drizzle/schema');
+        return db.select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          lastSignedIn: users.lastSignedIn,
+          createdAt: users.createdAt,
+          failedLoginAttempts: users.failedLoginAttempts,
+          lockedUntil: users.lockedUntil,
+        }).from(users).where(eq(users.clinicaId, input.clinicaId)).orderBy(users.name);
+      }),
+
+    // Listar emails autorizados de uma clínica
+    listarEmailsAutorizados: ownerProcedure
+      .input(z.object({ clinicaId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { emailsAutorizados } = await import('../drizzle/schema');
+        return db.select().from(emailsAutorizados).where(eq(emailsAutorizados.clinicaId, input.clinicaId)).orderBy(emailsAutorizados.email);
+      }),
+
+    // Adicionar email autorizado a uma clínica
+    adicionarEmailAutorizado: ownerProcedure
+      .input(z.object({ clinicaId: z.number(), email: z.string().email() }))
+      .mutation(async ({ input, ctx }) => {
+        await addAuthorizedEmail(input.email, ctx.user?.id, input.clinicaId);
+        return { success: true };
+      }),
+
+    // Remover email autorizado de uma clínica
+    removerEmailAutorizado: ownerProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        await removeAuthorizedEmail(input.email);
+        return { success: true };
+      }),
+
+    // Upload de logo da clínica
+    uploadLogo: ownerProcedure
+      .input(z.object({
+        clinicaId: z.number(),
+        fileBase64: z.string(),
+        fileName: z.string(),
+        contentType: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.fileBase64, 'base64');
+        const fileKey = `clinicas/${input.clinicaId}/logo-${Date.now()}-${input.fileName}`;
+        const { url } = await storagePut(fileKey, buffer, input.contentType);
+        
+        // Atualizar logoUrl da clínica
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro de conexão com o banco.' });
+        const { clinicas } = await import('../drizzle/schema');
+        await db.update(clinicas).set({ logoUrl: url }).where(eq(clinicas.id, input.clinicaId));
+        
+        return { url };
+      }),
+
+    // Verificar se usuário é owner
+    isOwner: protectedProcedure.query(({ ctx }) => {
+      const ownerOpenId = process.env.OWNER_OPEN_ID;
+      return { isOwner: !!(ownerOpenId && ctx.user.openId === ownerOpenId) };
+    }),
   }),
 });
 export type AppRouter = typeof appRouter;

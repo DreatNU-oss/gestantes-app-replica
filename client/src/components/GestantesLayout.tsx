@@ -40,7 +40,8 @@ import {
   Mail,
   Stethoscope,
   ClipboardList,
-  AlertTriangle
+  AlertTriangle,
+  Building2
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -330,6 +331,19 @@ export default function GestantesLayout({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {/* Link Admin - apenas para owner */}
+              {(user as any)?.isOwner && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => setLocation('/admin/clinicas')}
+                    isActive={location === '/admin/clinicas'}
+                    className="mt-2 border-t border-sidebar-border pt-2"
+                  >
+                    <Building2 className="h-4 w-4" />
+                    <span className="font-semibold">Admin Clínicas</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="border-t border-sidebar-border p-4">
