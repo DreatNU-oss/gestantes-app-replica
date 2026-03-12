@@ -498,6 +498,13 @@
       "when": 1773350049869,
       "tag": "0070_sharp_pyro",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "5",
+      "when": 1773354711627,
+      "tag": "0071_lumpy_wong",
+      "breakpoints": true
     }
   ]
 }

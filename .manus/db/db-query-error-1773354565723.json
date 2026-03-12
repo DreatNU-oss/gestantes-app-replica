@@ -1,0 +1,10 @@
+{
+  "query": "SELECT u.id, u.email, u.name, u.role, u.clinicaId, u.passwordHash, c.codigo, c.nome FROM users u LEFT JOIN clinicas c ON u.clinicaId = c.id WHERE u.email = 'dreatnu@yahoo.com'; SELECT ea.id, ea.email, ea.clinicaId, ea.role, c.codigo FROM emails_autorizados ea LEFT JOIN clinicas c ON ea.clinicaId = c.id WHERE ea.email = 'dreatnu@yahoo.com'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT u.id, u.email, u.name, u.role, u.clinicaId, u.passwordHash, c.codigo, c.nome FROM users u LEFT JOIN clinicas c ON u.clinicaId = c.id WHERE u.email = 'dreatnu@yahoo.com'; SELECT ea.id, ea.email, ea.clinicaId, ea.role, c.codigo FROM emails_autorizados ea LEFT JOIN clinicas c ON ea.clinicaId = c.id WHERE ea.email = 'dreatnu@yahoo.com'",
+  "returncode": 1,
+  "logs": [
+    "id\temail\tname\trole\tclinicaId\tpasswordHash\tcodigo\tnome",
+    "1\tDreatNU@yahoo.com\tAndre Schlemper\tadmin\t1\t$2b$10$Di0Z5xudEgwNF0yYMAknLO.DzhI.oHNuWSknsdvswMqOs/vpw0rUa\t00001\tClínica Mais Mulher",
+    "ERROR 1146 (42S02) at line 1: Table 'bsa4q7amjsjesmafoocq7a.emails_autorizados' doesn't exist"
+  ]
+}

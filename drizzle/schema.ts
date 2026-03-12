@@ -796,7 +796,7 @@ export type InsertArquivoExame = typeof arquivosExames.$inferInsert;
 export const emailsAutorizados = mysqlTable("emailsAutorizados", {
   id: int("id").autoincrement().primaryKey(),
   clinicaId: int("clinicaId"), // FK para clinicas.id
-  email: varchar("email", { length: 320 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).notNull(),
   role: mysqlEnum("role", ["admin", "obstetra", "secretaria"]).default("obstetra").notNull(), // Tipo de usuário pré-definido
   adicionadoPor: int("adicionadoPor"), // ID do usuário que adicionou (null se foi o sistema)
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo

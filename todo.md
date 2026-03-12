@@ -1802,3 +1802,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Configurar logo da Clínica 00001
 - [x] Fazer upload da logo existente para S3 e atualizar logoUrl no banco (URL: https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png)
+
+## Cadastrar dreatnu@yahoo.com na Clínica 00002
+- [x] Autorizar email na clínica 00002 e criar usuário com mesma senha da 00001
+- [x] Alterar constraint de email unique para email+clinicaId unique em emailsAutorizados

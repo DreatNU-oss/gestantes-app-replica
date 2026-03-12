@@ -1,0 +1,1 @@
+-- Already applied manually: dropped emailsAutorizados_email_unique and added emailsAutorizados_email_clinica_unique
