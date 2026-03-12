@@ -192,7 +192,7 @@ export default function GestantesLayout({
               ) : (
                 <div className="h-20 flex flex-col items-center justify-center text-center px-2">
                   <p className="text-xs text-muted-foreground leading-tight">
-                    Insira sua logo aqui no menu <strong>Configurações</strong>
+                    Sua logo aqui
                   </p>
                 </div>
               )}
