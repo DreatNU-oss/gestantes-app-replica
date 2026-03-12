@@ -145,7 +145,7 @@ export async function sincronizarTodasCesareasComAdmin(
       dataCesarea: gestante.dataPartoProgramado,
       convenio: gestante.convenioCirurgia || mapearConvenio(gestante.planoSaudeNome),
       procedimento: gestante.procedimentoCirurgia || 'Cesárea',
-      hospital: mapearHospital(gestante.hospitalParto),
+      hospital: gestante.hospitalParto || 'Hospital Unimed',
       observacoes: 'Sincronização em lote - APP Gestantes',
     });
 

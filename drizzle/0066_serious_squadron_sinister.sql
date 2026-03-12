@@ -1,0 +1,1 @@
+ALTER TABLE `gestantes` MODIFY COLUMN `hospitalParto` varchar(255);

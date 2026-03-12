@@ -1745,3 +1745,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar página de Configurações > Hospitais com listagem, criação, edição e exclusão
 - [x] Adicionar submenus Convênios e Hospitais no menu Configurações do GestantesLayout
 - [x] Testar CRUD de convênios e hospitais (7 testes passando)
+
+## Dropdown de Hospital no Formulário de Cesárea
+- [x] Identificar campo de texto livre de hospital no formulário de cesárea
+- [x] Substituir por dropdown com hospitais cadastrados pela clínica
+- [x] Garantir que o dropdown use a lista de hospitais ativos da clínica
+- [x] Testar a alteração

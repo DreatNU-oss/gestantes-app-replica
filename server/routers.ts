@@ -103,7 +103,7 @@ import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto 
 import { registrarAbortamento, listarAbortamentos, getEstatisticasAbortamentos, deletarAbortamento } from './abortamentos';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
-import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin, mapearHospital } from './cesareanSync';
+import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -589,7 +589,7 @@ export const appRouter = router({
         dataPartoProgramado: z.string().optional(),
         motivoCesarea: z.string().optional(),
         motivoCesareaOutro: z.string().optional(),
-        hospitalParto: z.enum(["hospital_unimed", "hospital_sao_sebastiao"]).optional(),
+        hospitalParto: z.string().optional(),
         convenioCirurgia: z.enum(["Particular", "Cortesia", "Unimed", "FUSEX"]).optional(),
         procedimentoCirurgia: z.string().optional(),
         altura: z.number().optional(),
@@ -621,7 +621,7 @@ export const appRouter = router({
           dataUltrassom: input.dataUltrassom ? parseLocalDate(input.dataUltrassom) : null,
           dataPartoProgramado: input.dataPartoProgramado ? parseLocalDate(input.dataPartoProgramado) : null,
           motivoCesarea: input.motivoCesarea || null,
-          hospitalParto: input.hospitalParto || 'hospital_unimed',
+          hospitalParto: input.hospitalParto || null,
           convenioCirurgia: input.convenioCirurgia || 'Unimed',
           procedimentoCirurgia: input.procedimentoCirurgia || null,
           altura: input.altura || null,
@@ -657,7 +657,7 @@ export const appRouter = router({
               nomeCompleto: novaGestante.nome,
               dataCesarea: input.dataPartoProgramado,
               convenio: input.convenioCirurgia || 'Unimed',
-              hospital: mapearHospital(input.hospitalParto),
+              hospital: input.hospitalParto || 'Hospital Unimed',
               procedimento: input.procedimentoCirurgia || 'Cesárea',
             }).catch(err => console.error('[Integração] Erro na sincronização:', err));
           }
@@ -727,7 +727,7 @@ export const appRouter = router({
         dataPartoProgramado: z.string().optional(),
         motivoCesarea: z.string().optional(),
         motivoCesareaOutro: z.string().optional(),
-        hospitalParto: z.enum(["hospital_unimed", "hospital_sao_sebastiao"]).optional(),
+        hospitalParto: z.string().optional(),
         convenioCirurgia: z.enum(["Particular", "Cortesia", "Unimed", "FUSEX"]).optional(),
         procedimentoCirurgia: z.string().optional(),
         nomeBebe: z.string().optional(),
@@ -775,7 +775,7 @@ export const appRouter = router({
               nomeCompleto: gestante.nome,
               dataCesarea: dataPartoProgramadoDepois,
               convenio: gestante.convenioCirurgia || 'Unimed',
-              hospital: mapearHospital(gestante.hospitalParto),
+              hospital: gestante.hospitalParto || 'Hospital Unimed',
               procedimento: gestante.procedimentoCirurgia || 'Cesárea',
             }).catch(err => console.error('[Integração] Erro na sincronização:', err));
           } else if (tinhaDataCesarea && !temDataCesarea) {

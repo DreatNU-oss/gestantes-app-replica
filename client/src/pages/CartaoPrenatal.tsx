@@ -37,6 +37,7 @@ import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
 import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
+import { HospitalSelect } from "@/components/HospitalSelect";
 import MedicamentosManager from "@/components/MedicamentosManager";
 // ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
@@ -3194,26 +3195,15 @@ export default function CartaoPrenatal() {
               )}
 
               {/* Hospital do Parto */}
-              <div className="space-y-2 mt-4">
-                <Label htmlFor="hospitalParto">Hospital</Label>
-                <Select
-                  value={gestante.hospitalParto || "hospital_unimed"}
-                  onValueChange={(value) => {
-                    updateGestanteMutation.mutate({
-                      id: gestanteSelecionada!,
-                      hospitalParto: value as "hospital_unimed" | "hospital_sao_sebastiao",
-                    });
-                  }}
-                >
-                  <SelectTrigger id="hospitalParto" className="max-w-md">
-                    <SelectValue placeholder="Selecione o hospital" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hospital_unimed">Hospital Unimed</SelectItem>
-                    <SelectItem value="hospital_sao_sebastiao">Hospital São Sebastião</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <HospitalSelect
+                value={gestante.hospitalParto || ""}
+                onValueChange={(value) => {
+                  updateGestanteMutation.mutate({
+                    id: gestanteSelecionada!,
+                    hospitalParto: value,
+                  });
+                }}
+              />
             </CardContent>
           </Card>
         )}
