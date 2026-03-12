@@ -355,6 +355,23 @@ export async function deletarPlano(id: number): Promise<void> {
   await db.delete(planosSaude).where(eq(planosSaude.id, id));
 }
 
+export async function setPadraoPlano(id: number, clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Remover padrão de todos os planos da clínica
+  await db.update(planosSaude).set({ padrao: 0 }).where(eq(planosSaude.clinicaId, clinicaId));
+  // Definir o plano selecionado como padrão
+  await db.update(planosSaude).set({ padrao: 1 }).where(and(eq(planosSaude.id, id), eq(planosSaude.clinicaId, clinicaId)));
+}
+
+export async function removePadraoPlano(clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(planosSaude).set({ padrao: 0 }).where(eq(planosSaude.clinicaId, clinicaId));
+}
+
 // ============ HOSPITAIS ============
 export async function listarHospitaisAtivos(clinicaId?: number | null): Promise<Hospital[]> {
   const db = await getDb();
@@ -407,6 +424,23 @@ export async function deletarHospital(id: number): Promise<void> {
   if (!db) throw new Error("Database not available");
   
   await db.delete(hospitais).where(eq(hospitais.id, id));
+}
+
+export async function setPadraoHospital(id: number, clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Remover padrão de todos os hospitais da clínica
+  await db.update(hospitais).set({ padrao: 0 }).where(eq(hospitais.clinicaId, clinicaId));
+  // Definir o hospital selecionado como padrão
+  await db.update(hospitais).set({ padrao: 1 }).where(and(eq(hospitais.id, id), eq(hospitais.clinicaId, clinicaId)));
+}
+
+export async function removePadraoHospital(clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(hospitais).set({ padrao: 0 }).where(eq(hospitais.clinicaId, clinicaId));
 }
 
 // ============ CONSULTAS PRÉ-NATAL ============

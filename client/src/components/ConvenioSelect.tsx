@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,10 +15,21 @@ interface ConvenioSelectProps {
   label?: string;
   required?: boolean;
   className?: string;
+  /** Se true, não aplica o valor padrão automaticamente (útil para edição) */
+  skipDefault?: boolean;
 }
 
-export function ConvenioSelect({ value, onValueChange, label = "Convênio", required = false, className }: ConvenioSelectProps) {
+export function ConvenioSelect({ value, onValueChange, label = "Convênio", required = false, className, skipDefault = false }: ConvenioSelectProps) {
   const { data: planos, isLoading } = trpc.planosSaude.listar.useQuery();
+
+  // Auto-preencher com convênio padrão quando o campo está vazio
+  useEffect(() => {
+    if (skipDefault || isLoading || !planos || value) return;
+    const padrao = planos.find((p: any) => p.padrao === 1);
+    if (padrao) {
+      onValueChange(padrao.nome);
+    }
+  }, [planos, isLoading, value, skipDefault, onValueChange]);
 
   if (isLoading) {
     return (
@@ -57,6 +69,7 @@ export function ConvenioSelect({ value, onValueChange, label = "Convênio", requ
             planosAtivos.map((p: any) => (
               <SelectItem key={p.id} value={p.nome}>
                 {p.nome}
+                {p.padrao === 1 && " \u2605"}
               </SelectItem>
             ))
           )}
@@ -64,7 +77,7 @@ export function ConvenioSelect({ value, onValueChange, label = "Convênio", requ
       </Select>
       {planosAtivos.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          Cadastre convênios em Configurações → Gerenciar Convênios
+          Cadastre convênios em Configurações &rarr; Gerenciar Convênios
         </p>
       )}
     </div>

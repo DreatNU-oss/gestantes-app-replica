@@ -89,6 +89,7 @@ export const planosSaude = mysqlTable("planosSaude", {
   clinicaId: int("clinicaId"), // FK para clinicas.id
   nome: varchar("nome", { length: 255 }).notNull(),
   ativo: int("ativo").default(1).notNull(),
+  padrao: int("padrao").default(0).notNull(), // 1 = convênio padrão da clínica (apenas 1 por clínica)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -104,6 +105,7 @@ export const hospitais = mysqlTable("hospitais", {
   clinicaId: int("clinicaId"), // FK para clinicas.id
   nome: varchar("nome", { length: 255 }).notNull(),
   ativo: int("ativo").default(1).notNull(),
+  padrao: int("padrao").default(0).notNull(), // 1 = hospital padrão da clínica (apenas 1 por clínica)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

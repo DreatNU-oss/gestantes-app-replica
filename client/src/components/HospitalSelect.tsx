@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Label } from "@/components/ui/label";
 import {
@@ -13,10 +14,21 @@ interface HospitalSelectProps {
   onValueChange: (value: string) => void;
   label?: string;
   className?: string;
+  /** Se true, não aplica o valor padrão automaticamente (útil para edição) */
+  skipDefault?: boolean;
 }
 
-export function HospitalSelect({ value, onValueChange, label = "Hospital", className }: HospitalSelectProps) {
+export function HospitalSelect({ value, onValueChange, label = "Hospital", className, skipDefault = false }: HospitalSelectProps) {
   const { data: hospitais, isLoading } = trpc.hospitais.listar.useQuery();
+
+  // Auto-preencher com hospital padrão quando o campo está vazio
+  useEffect(() => {
+    if (skipDefault || isLoading || !hospitais || value) return;
+    const padrao = hospitais.find((h: any) => h.padrao === 1);
+    if (padrao) {
+      onValueChange(padrao.nome);
+    }
+  }, [hospitais, isLoading, value, skipDefault, onValueChange]);
 
   if (isLoading) {
     return (
@@ -52,6 +64,7 @@ export function HospitalSelect({ value, onValueChange, label = "Hospital", class
             hospitaisAtivos.map((h) => (
               <SelectItem key={h.id} value={h.nome}>
                 {h.nome}
+                {(h as any).padrao === 1 && " \u2605"}
               </SelectItem>
             ))
           )}
@@ -59,7 +72,7 @@ export function HospitalSelect({ value, onValueChange, label = "Hospital", class
       </Select>
       {hospitaisAtivos.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          Cadastre hospitais em Configurações → Gerenciar Hospitais
+          Cadastre hospitais em Configurações &rarr; Gerenciar Hospitais
         </p>
       )}
     </div>

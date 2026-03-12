@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, ArrowLeft, Star, CreditCard } from "lucide-react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 
@@ -31,12 +31,13 @@ export default function GerenciarPlanos() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [nome, setNome] = useState("");
 
-  const { data: planos = [], isLoading } = trpc.planosSaude.listar.useQuery();
+  const { data: planos = [], isLoading } = trpc.planosSaude.listarTodos.useQuery();
   const utils = trpc.useUtils();
 
   const createMutation = trpc.planosSaude.criar.useMutation({
     onSuccess: () => {
       toast.success("Plano de saúde criado com sucesso!");
+      utils.planosSaude.listarTodos.invalidate();
       utils.planosSaude.listar.invalidate();
       handleClose();
     },
@@ -48,6 +49,7 @@ export default function GerenciarPlanos() {
   const updateMutation = trpc.planosSaude.atualizar.useMutation({
     onSuccess: () => {
       toast.success("Plano de saúde atualizado com sucesso!");
+      utils.planosSaude.listarTodos.invalidate();
       utils.planosSaude.listar.invalidate();
       handleClose();
     },
@@ -59,10 +61,44 @@ export default function GerenciarPlanos() {
   const deleteMutation = trpc.planosSaude.deletar.useMutation({
     onSuccess: () => {
       toast.success("Plano de saúde removido com sucesso!");
+      utils.planosSaude.listarTodos.invalidate();
       utils.planosSaude.listar.invalidate();
     },
     onError: (error) => {
       toast.error("Erro ao remover plano: " + error.message);
+    },
+  });
+
+  const toggleAtivoMutation = trpc.planosSaude.toggleAtivo.useMutation({
+    onSuccess: () => {
+      toast.success("Status do plano atualizado!");
+      utils.planosSaude.listarTodos.invalidate();
+      utils.planosSaude.listar.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar status: " + error.message);
+    },
+  });
+
+  const setPadraoMutation = trpc.planosSaude.setPadrao.useMutation({
+    onSuccess: () => {
+      toast.success("Convênio definido como padrão!");
+      utils.planosSaude.listarTodos.invalidate();
+      utils.planosSaude.listar.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao definir padrão: " + error.message);
+    },
+  });
+
+  const removePadraoMutation = trpc.planosSaude.removePadrao.useMutation({
+    onSuccess: () => {
+      toast.success("Convênio padrão removido!");
+      utils.planosSaude.listarTodos.invalidate();
+      utils.planosSaude.listar.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao remover padrão: " + error.message);
     },
   });
 
@@ -81,6 +117,14 @@ export default function GerenciarPlanos() {
   const handleDelete = (id: number) => {
     if (confirm("Tem certeza que deseja remover este plano de saúde?")) {
       deleteMutation.mutate({ id });
+    }
+  };
+
+  const handleTogglePadrao = (plano: any) => {
+    if (plano.padrao === 1) {
+      removePadraoMutation.mutate();
+    } else {
+      setPadraoMutation.mutate({ id: plano.id });
     }
   };
 
@@ -106,9 +150,9 @@ export default function GerenciarPlanos() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-foreground">Gerenciar Planos de Saúde</h2>
+            <h2 className="text-3xl font-bold text-foreground">Gerenciar Convênios</h2>
             <p className="text-muted-foreground">
-              Cadastre e gerencie os planos de saúde
+              Cadastre e gerencie os planos de saúde. Clique na estrela para definir o convênio padrão.
             </p>
           </div>
           <Button onClick={() => setShowDialog(true)}>
@@ -119,7 +163,10 @@ export default function GerenciarPlanos() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Planos Cadastrados</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              Convênios Cadastrados
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -129,20 +176,59 @@ export default function GerenciarPlanos() {
               </div>
             ) : planos.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-muted-foreground">Nenhum plano cadastrado</p>
+                <CreditCard className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+                <p className="text-muted-foreground">Nenhum convênio cadastrado</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Clique em "Novo Plano" para adicionar o primeiro convênio.
+                </p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
+                    <TableHead className="text-center">Padrão</TableHead>
+                    <TableHead className="text-center">Status</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {planos.map((plano) => (
-                    <TableRow key={plano.id}>
-                      <TableCell className="font-medium">{plano.nome}</TableCell>
+                    <TableRow key={plano.id} className={plano.ativo === 0 ? "opacity-50" : ""}>
+                      <TableCell className="font-medium">
+                        {plano.nome}
+                        {plano.padrao === 1 && (
+                          <span className="ml-2 text-xs text-amber-600 font-semibold">(Padrão)</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleTogglePadrao(plano)}
+                          disabled={plano.ativo === 0 || setPadraoMutation.isPending || removePadraoMutation.isPending}
+                          title={plano.padrao === 1 ? "Remover padrão" : "Definir como padrão"}
+                        >
+                          <Star
+                            className={`h-5 w-5 ${
+                              plano.padrao === 1
+                                ? "fill-amber-400 text-amber-400"
+                                : "text-muted-foreground hover:text-amber-400"
+                            }`}
+                          />
+                        </Button>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant={plano.ativo === 1 ? "default" : "outline"}
+                          size="sm"
+                          className="text-xs h-7 min-w-[70px]"
+                          onClick={() => toggleAtivoMutation.mutate({ id: plano.id })}
+                        >
+                          {plano.ativo === 1 ? "Ativo" : "Inativo"}
+                        </Button>
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button

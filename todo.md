@@ -1758,3 +1758,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Substituir campo de texto por dropdown com convênios cadastrados pela clínica
 - [x] Atualizar schema (enum para varchar)
 - [x] Testar a alteração
+
+## Hospital e Convênio Padrão
+- [x] Adicionar campo 'padrao' (int 0/1) nas tabelas hospitais e planosSaude
+- [x] Criar funções no db.ts para definir/remover padrão (garantir apenas 1 padrão por clínica)
+- [x] Criar procedures no routers.ts para setPadrao
+- [x] Adicionar botão "Definir como Padrão" nas páginas GerenciarHospitais e GerenciarPlanos
+- [x] Atualizar HospitalSelect para pré-selecionar o hospital padrão quando campo está vazio
+- [x] Atualizar ConvenioSelect para pré-selecionar o convênio padrão quando campo está vazio
+- [x] Escrever testes para a funcionalidade de padrão (15 testes passando)

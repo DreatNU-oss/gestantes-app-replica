@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Edit, Trash2, ArrowLeft, Building2 } from "lucide-react";
+import { Plus, Edit, Trash2, ArrowLeft, Building2, Star } from "lucide-react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 
@@ -80,6 +80,28 @@ export default function GerenciarHospitais() {
     },
   });
 
+  const setPadraoMutation = trpc.hospitais.setPadrao.useMutation({
+    onSuccess: () => {
+      toast.success("Hospital definido como padrão!");
+      utils.hospitais.listarTodos.invalidate();
+      utils.hospitais.listar.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao definir padrão: " + error.message);
+    },
+  });
+
+  const removePadraoMutation = trpc.hospitais.removePadrao.useMutation({
+    onSuccess: () => {
+      toast.success("Hospital padrão removido!");
+      utils.hospitais.listarTodos.invalidate();
+      utils.hospitais.listar.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Erro ao remover padrão: " + error.message);
+    },
+  });
+
   const handleClose = () => {
     setShowDialog(false);
     setEditingId(null);
@@ -95,6 +117,14 @@ export default function GerenciarHospitais() {
   const handleDelete = (id: number) => {
     if (confirm("Tem certeza que deseja remover este hospital?")) {
       deleteMutation.mutate({ id });
+    }
+  };
+
+  const handleTogglePadrao = (hospital: any) => {
+    if (hospital.padrao === 1) {
+      removePadraoMutation.mutate();
+    } else {
+      setPadraoMutation.mutate({ id: hospital.id });
     }
   };
 
@@ -122,7 +152,7 @@ export default function GerenciarHospitais() {
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-foreground">Gerenciar Hospitais</h2>
             <p className="text-muted-foreground">
-              Cadastre e gerencie os hospitais e maternidades
+              Cadastre e gerencie os hospitais e maternidades. Clique na estrela para definir o hospital padrão.
             </p>
           </div>
           <Button onClick={() => setShowDialog(true)}>
@@ -157,6 +187,7 @@ export default function GerenciarHospitais() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
+                    <TableHead className="text-center">Padrão</TableHead>
                     <TableHead className="text-center">Status</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
@@ -164,7 +195,30 @@ export default function GerenciarHospitais() {
                 <TableBody>
                   {hospitais.map((hospital) => (
                     <TableRow key={hospital.id} className={hospital.ativo === 0 ? "opacity-50" : ""}>
-                      <TableCell className="font-medium">{hospital.nome}</TableCell>
+                      <TableCell className="font-medium">
+                        {hospital.nome}
+                        {hospital.padrao === 1 && (
+                          <span className="ml-2 text-xs text-amber-600 font-semibold">(Padrão)</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleTogglePadrao(hospital)}
+                          disabled={hospital.ativo === 0 || setPadraoMutation.isPending || removePadraoMutation.isPending}
+                          title={hospital.padrao === 1 ? "Remover padrão" : "Definir como padrão"}
+                        >
+                          <Star
+                            className={`h-5 w-5 ${
+                              hospital.padrao === 1
+                                ? "fill-amber-400 text-amber-400"
+                                : "text-muted-foreground hover:text-amber-400"
+                            }`}
+                          />
+                        </Button>
+                      </TableCell>
                       <TableCell className="text-center">
                         <Button
                           variant={hospital.ativo === 1 ? "default" : "outline"}

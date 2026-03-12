@@ -50,6 +50,10 @@ import {
   atualizarHospital,
   toggleAtivoHospital,
   deletarHospital,
+  setPadraoHospital,
+  removePadraoHospital,
+  setPadraoPlano,
+  removePadraoPlano,
   createPedidoExame,
   getPedidosByGestanteId,
   updatePedidoExame,
@@ -379,6 +383,17 @@ export const appRouter = router({
     deletar: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deletarPlano(input.id)),
+    setPadrao: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input, ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return setPadraoPlano(input.id, ctx.user.clinicaId);
+      }),
+    removePadrao: protectedProcedure
+      .mutation(({ ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return removePadraoPlano(ctx.user.clinicaId);
+      }),
   }),
   
   medicos: router({
@@ -422,6 +437,17 @@ export const appRouter = router({
     deletar: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deletarHospital(input.id)),
+    setPadrao: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input, ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return setPadraoHospital(input.id, ctx.user.clinicaId);
+      }),
+    removePadrao: protectedProcedure
+      .mutation(({ ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return removePadraoHospital(ctx.user.clinicaId);
+      }),
   }),
 
   gestantes: router({
