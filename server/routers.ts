@@ -54,6 +54,14 @@ import {
   removePadraoHospital,
   setPadraoPlano,
   removePadraoPlano,
+  listarProcedimentosAtivos,
+  listarTodosProcedimentos,
+  criarProcedimento,
+  atualizarProcedimento,
+  toggleAtivoProcedimento,
+  deletarProcedimento,
+  setPadraoProcedimento,
+  removePadraoProcedimento,
   createPedidoExame,
   getPedidosByGestanteId,
   updatePedidoExame,
@@ -447,6 +455,37 @@ export const appRouter = router({
       .mutation(({ ctx }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
         return removePadraoHospital(ctx.user.clinicaId);
+      }),
+  }),
+
+  procedimentos: router({
+    listar: protectedProcedure.query(({ ctx }) => listarProcedimentosAtivos(ctx.user.clinicaId)),
+    listarTodos: protectedProcedure.query(({ ctx }) => listarTodosProcedimentos(ctx.user.clinicaId)),
+    criar: protectedProcedure
+      .input(z.object({ nome: z.string() }))
+      .mutation(({ input, ctx }) => criarProcedimento({ ...input, clinicaId: ctx.user.clinicaId })),
+    atualizar: protectedProcedure
+      .input(z.object({ id: z.number(), nome: z.string() }))
+      .mutation(({ input }) => {
+        const { id, ...data } = input;
+        return atualizarProcedimento(id, data);
+      }),
+    toggleAtivo: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => toggleAtivoProcedimento(input.id)),
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input }) => deletarProcedimento(input.id)),
+    setPadrao: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(({ input, ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return setPadraoProcedimento(input.id, ctx.user.clinicaId);
+      }),
+    removePadrao: protectedProcedure
+      .mutation(({ ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada' });
+        return removePadraoProcedimento(ctx.user.clinicaId);
       }),
   }),
 

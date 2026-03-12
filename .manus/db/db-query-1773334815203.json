@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO procedimentos (clinicaId, nome, ativo, padrao) \nSELECT c.id, p.nome COLLATE utf8mb4_unicode_ci, 1, CASE WHEN p.nome = 'Cesárea sem DIU' THEN 1 ELSE 0 END\nFROM clinicas c\nCROSS JOIN (\n  SELECT 'Cesárea sem DIU' COLLATE utf8mb4_unicode_ci as nome UNION ALL\n  SELECT 'Cesárea + DIU' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Cesárea + LTB' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Histerec aberta' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Histerec vídeo' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Curetagem Uterina' COLLATE utf8mb4_unicode_ci\n) p\nWHERE NOT EXISTS (\n  SELECT 1 FROM procedimentos pr WHERE pr.clinicaId = c.id AND pr.nome COLLATE utf8mb4_unicode_ci = p.nome COLLATE utf8mb4_unicode_ci\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO procedimentos (clinicaId, nome, ativo, padrao) \nSELECT c.id, p.nome COLLATE utf8mb4_unicode_ci, 1, CASE WHEN p.nome = 'Cesárea sem DIU' THEN 1 ELSE 0 END\nFROM clinicas c\nCROSS JOIN (\n  SELECT 'Cesárea sem DIU' COLLATE utf8mb4_unicode_ci as nome UNION ALL\n  SELECT 'Cesárea + DIU' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Cesárea + LTB' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Histerec aberta' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Histerec vídeo' COLLATE utf8mb4_unicode_ci UNION ALL\n  SELECT 'Curetagem Uterina' COLLATE utf8mb4_unicode_ci\n) p\nWHERE NOT EXISTS (\n  SELECT 1 FROM procedimentos pr WHERE pr.clinicaId = c.id AND pr.nome COLLATE utf8mb4_unicode_ci = p.nome COLLATE utf8mb4_unicode_ci\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}

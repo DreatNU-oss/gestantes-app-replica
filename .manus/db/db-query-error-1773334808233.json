@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO procedimentos (clinicaId, nome, ativo, padrao) \nSELECT c.id, p.nome, 1, CASE WHEN p.nome = 'Cesárea sem DIU' THEN 1 ELSE 0 END\nFROM clinicas c\nCROSS JOIN (\n  SELECT 'Cesárea sem DIU' as nome UNION ALL\n  SELECT 'Cesárea + DIU' UNION ALL\n  SELECT 'Cesárea + LTB' UNION ALL\n  SELECT 'Histerec aberta' UNION ALL\n  SELECT 'Histerec vídeo' UNION ALL\n  SELECT 'Curetagem Uterina'\n) p\nWHERE NOT EXISTS (\n  SELECT 1 FROM procedimentos pr WHERE pr.clinicaId = c.id AND pr.nome = p.nome\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO procedimentos (clinicaId, nome, ativo, padrao) \nSELECT c.id, p.nome, 1, CASE WHEN p.nome = 'Cesárea sem DIU' THEN 1 ELSE 0 END\nFROM clinicas c\nCROSS JOIN (\n  SELECT 'Cesárea sem DIU' as nome UNION ALL\n  SELECT 'Cesárea + DIU' UNION ALL\n  SELECT 'Cesárea + LTB' UNION ALL\n  SELECT 'Histerec aberta' UNION ALL\n  SELECT 'Histerec vídeo' UNION ALL\n  SELECT 'Curetagem Uterina'\n) p\nWHERE NOT EXISTS (\n  SELECT 1 FROM procedimentos pr WHERE pr.clinicaId = c.id AND pr.nome = p.nome\n);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1267 (HY000) at line 1: Illegal mix of collations (utf8mb4_unicode_ci,IMPLICIT) and (utf8mb4_0900_ai_ci,IMPLICIT) for operation '='"
+  ]
+}

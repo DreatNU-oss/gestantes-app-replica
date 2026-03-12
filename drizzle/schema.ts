@@ -114,6 +114,22 @@ export type Hospital = typeof hospitais.$inferSelect;
 export type InsertHospital = typeof hospitais.$inferInsert;
 
 /**
+ * Tabela de procedimentos cirúrgicos
+ */
+export const procedimentos = mysqlTable("procedimentos", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
+  nome: varchar("nome", { length: 255 }).notNull(),
+  ativo: int("ativo").default(1).notNull(),
+  padrao: int("padrao").default(0).notNull(), // 1 = procedimento padrão da clínica (apenas 1 por clínica)
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Procedimento = typeof procedimentos.$inferSelect;
+export type InsertProcedimento = typeof procedimentos.$inferInsert;
+
+/**
  * Tabela de gestantes
  */
 export const gestantes = mysqlTable("gestantes", {

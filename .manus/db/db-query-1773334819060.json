@@ -1,0 +1,118 @@
+{
+  "query": "SELECT * FROM procedimentos ORDER BY clinicaId, id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM procedimentos ORDER BY clinicaId, id;",
+  "rows": [
+    {
+      "id": "2",
+      "clinicaId": "1",
+      "nome": "Cesárea sem DIU",
+      "ativo": "1",
+      "padrao": "1",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "4",
+      "clinicaId": "1",
+      "nome": "Cesárea + DIU",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "6",
+      "clinicaId": "1",
+      "nome": "Cesárea + LTB",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "8",
+      "clinicaId": "1",
+      "nome": "Curetagem Uterina",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "10",
+      "clinicaId": "1",
+      "nome": "Histerec vídeo",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "12",
+      "clinicaId": "1",
+      "nome": "Histerec aberta",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "1",
+      "clinicaId": "30001",
+      "nome": "Cesárea sem DIU",
+      "ativo": "1",
+      "padrao": "1",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "3",
+      "clinicaId": "30001",
+      "nome": "Cesárea + DIU",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "5",
+      "clinicaId": "30001",
+      "nome": "Cesárea + LTB",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "7",
+      "clinicaId": "30001",
+      "nome": "Curetagem Uterina",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "9",
+      "clinicaId": "30001",
+      "nome": "Histerec vídeo",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    },
+    {
+      "id": "11",
+      "clinicaId": "30001",
+      "nome": "Histerec aberta",
+      "ativo": "1",
+      "padrao": "0",
+      "createdAt": "2026-03-12 17:00:15",
+      "updatedAt": "2026-03-12 17:00:15"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclinicaId\tnome\tativo\tpadrao\tcreatedAt\tupdatedAt\n2\t1\tCesárea sem DIU\t1\t1\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n4\t1\tCesárea + DIU\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n6\t1\tCesárea + LTB\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n8\t1\tCuretagem Uterina\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n10\t1\tHisterec vídeo\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n12\t1\tHisterec aberta\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n1\t30001\tCesárea sem DIU\t1\t1\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n3\t30001\tCesárea + DIU\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n5\t30001\tCesárea + LTB\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n7\t30001\tCuretagem Uterina\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n9\t30001\tHisterec vídeo\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n11\t30001\tHisterec aberta\t1\t0\t2026-03-12 17:00:15\t2026-03-12 17:00:15\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

@@ -1767,3 +1767,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar HospitalSelect para pré-selecionar o hospital padrão quando campo está vazio
 - [x] Atualizar ConvenioSelect para pré-selecionar o convênio padrão quando campo está vazio
 - [x] Escrever testes para a funcionalidade de padrão (15 testes passando)
+
+## Dropdown Dinâmico de Procedimento por Clínica
+- [x] Criar tabela 'procedimentos' no schema (id, clinicaId, nome, ativo, padrao)
+- [x] Criar funções CRUD no db.ts (listar, criar, atualizar, deletar, toggleAtivo, setPadrao, removePadrao)
+- [x] Criar procedures no routers.ts para procedimentos
+- [x] Criar página GerenciarProcedimentos.tsx com estrela de padrão
+- [x] Criar componente ProcedimentoSelect.tsx com auto-preenchimento padrão
+- [x] Substituir campo de texto por dropdown no formulário de cesárea (CartaoPrenatal)
+- [x] Adicionar link "Gerenciar Procedimentos" no menu Configurações
+- [x] Adicionar rota no App.tsx
+- [x] Migrar dados existentes e semear procedimentos padrão para todas as clínicas
+- [x] Escrever testes unitários (17 testes passando)

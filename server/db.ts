@@ -65,7 +65,10 @@ import {
   ObservacaoPersonalizada,
   clinicas,
   Clinica,
-  InsertClinica
+  InsertClinica,
+  procedimentos,
+  Procedimento,
+  InsertProcedimento
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -441,6 +444,77 @@ export async function removePadraoHospital(clinicaId: number): Promise<void> {
   if (!db) throw new Error("Database not available");
   
   await db.update(hospitais).set({ padrao: 0 }).where(eq(hospitais.clinicaId, clinicaId));
+}
+
+// ============ PROCEDIMENTOS ============
+export async function listarProcedimentosAtivos(clinicaId?: number | null): Promise<Procedimento[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const conditions = [eq(procedimentos.ativo, 1)];
+  if (clinicaId) conditions.push(eq(procedimentos.clinicaId, clinicaId));
+  return db.select().from(procedimentos).where(and(...conditions));
+}
+
+export async function listarTodosProcedimentos(clinicaId?: number | null): Promise<Procedimento[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  if (clinicaId) {
+    return db.select().from(procedimentos).where(eq(procedimentos.clinicaId, clinicaId));
+  }
+  return db.select().from(procedimentos);
+}
+
+export async function criarProcedimento(data: InsertProcedimento): Promise<Procedimento> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(procedimentos).values(data);
+  const insertedId = Number(result[0].insertId);
+  const inserted = await db.select().from(procedimentos).where(eq(procedimentos.id, insertedId)).limit(1);
+  return inserted[0] as Procedimento;
+}
+
+export async function atualizarProcedimento(id: number, data: Partial<InsertProcedimento>): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(procedimentos).set(data).where(eq(procedimentos.id, id));
+}
+
+export async function toggleAtivoProcedimento(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const proc = await db.select().from(procedimentos).where(eq(procedimentos.id, id)).limit(1);
+  if (proc[0]) {
+    await db.update(procedimentos).set({ ativo: proc[0].ativo === 1 ? 0 : 1 }).where(eq(procedimentos.id, id));
+  }
+}
+
+export async function deletarProcedimento(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(procedimentos).where(eq(procedimentos.id, id));
+}
+
+export async function setPadraoProcedimento(id: number, clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Remover padrão de todos os procedimentos da clínica
+  await db.update(procedimentos).set({ padrao: 0 }).where(eq(procedimentos.clinicaId, clinicaId));
+  // Definir o procedimento selecionado como padrão
+  await db.update(procedimentos).set({ padrao: 1 }).where(and(eq(procedimentos.id, id), eq(procedimentos.clinicaId, clinicaId)));
+}
+
+export async function removePadraoProcedimento(clinicaId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(procedimentos).set({ padrao: 0 }).where(eq(procedimentos.clinicaId, clinicaId));
 }
 
 // ============ CONSULTAS PRÉ-NATAL ============

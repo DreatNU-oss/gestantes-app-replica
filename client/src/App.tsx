@@ -33,6 +33,7 @@ import AlterarSenha from "./pages/AlterarSenha";
 import Integracoes from "./pages/Integracoes";
 import AdminClinicas from "./pages/AdminClinicas";
 import GerenciarHospitais from "./pages/GerenciarHospitais";
+import GerenciarProcedimentos from "./pages/GerenciarProcedimentos";
 
 function Router() {
   return (
@@ -58,6 +59,7 @@ function Router() {
       <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
       <Route path={"/gerenciar-fatores-risco"} component={GerenciarFatoresRisco} />
       <Route path={"/gerenciar-medicamentos"} component={GerenciarMedicamentosConfig} />
+      <Route path={"/gerenciar-procedimentos"} component={GerenciarProcedimentos} />
       <Route path={"/login"} component={Login} />
       <Route path={"/esqueci-senha"} component={EsqueciSenha} />
       <Route path={"/redefinir-senha"} component={RedefinirSenha} />

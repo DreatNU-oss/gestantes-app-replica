@@ -39,6 +39,7 @@ import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import { HospitalSelect } from "@/components/HospitalSelect";
 import { ConvenioSelect } from "@/components/ConvenioSelect";
+import { ProcedimentoSelect } from "@/components/ProcedimentoSelect";
 import MedicamentosManager from "@/components/MedicamentosManager";
 // ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
@@ -160,7 +161,7 @@ export default function CartaoPrenatal() {
   
   // Estado local para convênio e procedimento de cirurgia
   const [convenioCirurgiaLocal, setConvenioCirurgiaLocal] = useState("");
-  const [procedimentoCirurgiaLocal, setProcedimentoCirurgiaLocal] = useState("Cesárea sem DIU");
+  const [procedimentoCirurgiaLocal, setProcedimentoCirurgiaLocal] = useState("");
   const [procedimentoOutroTexto, setProcedimentoOutroTexto] = useState("");
   
   // Estado para modal de texto PEP
@@ -349,16 +350,9 @@ export default function CartaoPrenatal() {
       
       // Inicializar estado local para convênio e procedimento
       setConvenioCirurgiaLocal(gestante.convenioCirurgia || "");
-      // Para procedimento: se começa com uma das opções pré-definidas, usar ela; caso contrário, é "Outra"
-      const procedimentoSalvo = gestante.procedimentoCirurgia || "Cesárea sem DIU";
-      const opcoesPredefinidas = ["Cesárea sem DIU", "Cesárea + DIU", "Cesárea + LTB", "Histerec aberta", "Histerec vídeo", "Curetagem Uterina"];
-      if (opcoesPredefinidas.includes(procedimentoSalvo)) {
-        setProcedimentoCirurgiaLocal(procedimentoSalvo);
-        setProcedimentoOutroTexto("");
-      } else if (procedimentoSalvo) {
-        setProcedimentoCirurgiaLocal("Outra");
-        setProcedimentoOutroTexto(procedimentoSalvo);
-      }
+      // Para procedimento: usar o valor salvo diretamente (o ProcedimentoSelect detecta se é "Outra")
+      setProcedimentoCirurgiaLocal(gestante.procedimentoCirurgia || "");
+      setProcedimentoOutroTexto("");
     }
   }, [gestante]);
   const { data: consultas, refetch: refetchConsultas } = trpc.consultasPrenatal.list.useQuery(
@@ -2925,77 +2919,26 @@ export default function CartaoPrenatal() {
                 />
 
                 {/* Procedimento - Obrigatório */}
-                <div className="space-y-2">
-                  <Label htmlFor="procedimentoCirurgia">
-                    Procedimento <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={procedimentoCirurgiaLocal}
-                    onValueChange={(value) => {
-                      setProcedimentoCirurgiaLocal(value);
-                      setDataCesareaModificada(true);
-                      // Se não é "Outra" e já tem agendamento, salvar imediatamente
-                      if (value !== "Outra" && gestante.dataPartoProgramado) {
-                        updateGestanteMutation.mutate({
-                          id: gestanteSelecionada!,
-                          procedimentoCirurgia: value,
-                        });
-                        setProcedimentoOutroTexto("");
-                      }
-                      if (value !== "Outra") {
-                        setProcedimentoOutroTexto("");
-                      }
-                    }}
-                  >
-                    <SelectTrigger id="procedimentoCirurgia" className="max-w-md">
-                      <SelectValue placeholder="Selecione o procedimento" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Cesárea sem DIU">Cesárea sem DIU</SelectItem>
-                      <SelectItem value="Cesárea + DIU">Cesárea + DIU</SelectItem>
-                      <SelectItem value="Cesárea + LTB">Cesárea + LTB</SelectItem>
-                      <SelectItem value="Histerec aberta">Histerec aberta</SelectItem>
-                      <SelectItem value="Histerec vídeo">Histerec vídeo</SelectItem>
-                      <SelectItem value="Curetagem Uterina">Curetagem Uterina</SelectItem>
-                      <SelectItem value="Outra">Outra</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {procedimentoCirurgiaLocal === "Outra" && (
-                    <div className="mt-2 space-y-2">
-                      <Label htmlFor="procedimentoOutro">
-                        Descreva o procedimento <span className="text-red-500">*</span>
-                      </Label>
-                      <div className="flex gap-2 items-center">
-                        <Input
-                          id="procedimentoOutro"
-                          type="text"
-                          placeholder="Ex: Laparoscopia diagnóstica"
-                          value={procedimentoOutroTexto}
-                          onChange={(e) => setProcedimentoOutroTexto(e.target.value)}
-                          className="max-w-md"
-                        />
-                        {gestante.dataPartoProgramado && procedimentoOutroTexto.trim() && (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              updateGestanteMutation.mutate({
-                                id: gestanteSelecionada!,
-                                procedimentoCirurgia: procedimentoOutroTexto.trim(),
-                              });
-                              toast.success('Procedimento salvo.');
-                            }}
-                            className="h-8"
-                          >
-                            <Check className="h-4 w-4 mr-1" />
-                            Salvar
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <ProcedimentoSelect
+                  value={procedimentoCirurgiaLocal}
+                  onValueChange={(value) => {
+                    setProcedimentoCirurgiaLocal(value);
+                    setDataCesareaModificada(true);
+                    // Se não é "Outra" e já tem agendamento, salvar imediatamente
+                    if (value !== "Outra" && gestante.dataPartoProgramado) {
+                      updateGestanteMutation.mutate({
+                        id: gestanteSelecionada!,
+                        procedimentoCirurgia: value,
+                      });
+                      setProcedimentoOutroTexto("");
+                    }
+                  }}
+                  outroTexto={procedimentoOutroTexto}
+                  onOutroTextoChange={setProcedimentoOutroTexto}
+                  label="Procedimento"
+                  required
+                  skipDefault={!!gestante?.procedimentoCirurgia}
+                />
 
                 {/* Botão de Agendar */}
                 <div className="flex gap-2 items-center pt-2">
