@@ -1811,3 +1811,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir logo da clínica no sidebar apenas se configurada (clinicaLogoUrl presente)
 - [x] Caso não configurada, exibir placeholder "Insira sua logo aqui no menu Configurações"
 - [x] Manter logo da 00001 (já configurada no banco via S3)
+
+## BUG: Login com mesmo email em múltiplas clínicas abre sempre a 00001
+- [x] Investigar fluxo de autenticação por senha (passwordAuth.ts)
+- [x] Corrigir getUserByEmail para filtrar por clinicaId
+- [x] Corrigir loginWithPassword para buscar usuário da clínica correta
+- [x] Corrigir checkEmailStatus para buscar usuário da clínica correta
+- [x] Corrigir createUserWithPassword para buscar usuário da clínica correta
+- [x] Corrigir updateEmailAutorizadoRole e removeAuthorizedEmail para usar clinicaId
+- [x] JWT já usa openId único por usuário/clínica (cada usuário tem openId diferente)

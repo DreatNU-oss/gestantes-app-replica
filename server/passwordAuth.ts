@@ -51,13 +51,17 @@ export async function getClinicaIdByEmail(email: string): Promise<number | null>
   return result.length > 0 ? result[0].clinicaId : null;
 }
 
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail(email: string, clinicaId?: number | null) {
   const db = await getDb();
   if (!db) return null;
+  const conditions = [eq(users.email, email.toLowerCase())];
+  if (clinicaId) {
+    conditions.push(eq(users.clinicaId, clinicaId));
+  }
   const result = await db
     .select()
     .from(users)
-    .where(eq(users.email, email.toLowerCase()))
+    .where(and(...conditions))
     .limit(1);
   return result[0] || null;
 }
@@ -182,7 +186,7 @@ export async function loginWithPassword(email: string, password: string, clinica
     return { success: false, error: 'Este email não está autorizado a acessar o sistema. Solicite permissão ao administrador.' };
   }
   
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmail(email, clinicaId);
   if (!user) {
     return { success: false, error: 'Email ou senha incorretos.' };
   }
@@ -229,14 +233,10 @@ export async function loginWithPassword(email: string, password: string, clinica
   const db2 = await getDb();
   if (db2) {
     const updateData: any = { lastSignedIn: new Date() };
-    // Se o usuário não tem clinicaId mas temos um, atualizar
-    if (clinicaId && !user.clinicaId) {
-      updateData.clinicaId = clinicaId;
-    }
     await db2.update(users).set(updateData).where(eq(users.id, user.id));
   }
   
-  return { success: true, user: { ...user, clinicaId: user.clinicaId || clinicaId } };
+  return { success: true, user };
 }
 
 export async function listAuthorizedEmails(clinicaId?: number | null) {
@@ -251,7 +251,7 @@ export async function listAuthorizedEmails(clinicaId?: number | null) {
   // Para cada email, verificar se o usuário existe e se está bloqueado
   const emailsComStatus = await Promise.all(
     emails.map(async (emailAuth) => {
-      const user = await getUserByEmail(emailAuth.email);
+      const user = await getUserByEmail(emailAuth.email, emailAuth.clinicaId);
       let isLocked = false;
       let lockedUntil: Date | null = null;
       let failedAttempts = 0;
@@ -306,22 +306,27 @@ export async function addAuthorizedEmail(email: string, addedBy?: number, clinic
 }
 
 // Atualizar role de um email autorizado
-export async function updateEmailAutorizadoRole(email: string, role: 'admin' | 'obstetra' | 'secretaria'): Promise<boolean> {
+export async function updateEmailAutorizadoRole(email: string, role: 'admin' | 'obstetra' | 'secretaria', clinicaId?: number | null): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
-  await db.update(emailsAutorizados).set({ role }).where(eq(emailsAutorizados.email, email.toLowerCase()));
+  // Atualizar role do email autorizado para esta clínica
+  const emailConditions = [eq(emailsAutorizados.email, email.toLowerCase())];
+  if (clinicaId) emailConditions.push(eq(emailsAutorizados.clinicaId, clinicaId));
+  await db.update(emailsAutorizados).set({ role }).where(and(...emailConditions));
   // Atualizar role do usuário correspondente se existir
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmail(email, clinicaId);
   if (user) {
     await db.update(users).set({ role }).where(eq(users.id, user.id));
   }
   return true;
 }
 
-export async function removeAuthorizedEmail(email: string): Promise<boolean> {
+export async function removeAuthorizedEmail(email: string, clinicaId?: number | null): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
-  await db.update(emailsAutorizados).set({ ativo: 0 }).where(eq(emailsAutorizados.email, email.toLowerCase()));
+  const conditions = [eq(emailsAutorizados.email, email.toLowerCase())];
+  if (clinicaId) conditions.push(eq(emailsAutorizados.clinicaId, clinicaId));
+  await db.update(emailsAutorizados).set({ ativo: 0 }).where(and(...conditions));
   return true;
 }
 
@@ -350,7 +355,7 @@ export async function checkEmailStatus(email: string, clinicaCodigo?: string): P
     return { isAuthorized: false, hasPassword: false, userExists: false };
   }
   
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmail(email, clinicaId);
   if (!user) {
     return { isAuthorized: true, hasPassword: false, userExists: false };
   }
@@ -394,8 +399,8 @@ export async function createUserWithPassword(email: string, password: string, na
     return { success: false, error: 'Erro de conexão com o banco de dados.' };
   }
   
-  // Verificar se usuário já existe
-  let user = await getUserByEmail(email);
+  // Verificar se usuário já existe para esta clínica
+  let user = await getUserByEmail(email, clinicaId);
   
   if (user) {
     // Usuário existe mas não tem senha - definir senha
@@ -409,15 +414,17 @@ export async function createUserWithPassword(email: string, password: string, na
       }).where(eq(users.id, user.id));
       
       // Buscar usuário atualizado
-      user = await getUserByEmail(email);
+      user = await getUserByEmail(email, clinicaId);
       return { success: true, user };
     } else {
       return { success: false, error: 'Este email já possui uma senha cadastrada. Use o login normal.' };
     }
   }
   
-  // Buscar role do email autorizado
-  const emailAuth = await db.select().from(emailsAutorizados).where(eq(emailsAutorizados.email, email.toLowerCase())).limit(1);
+  // Buscar role do email autorizado para esta clínica
+  const emailAuthConditions = [eq(emailsAutorizados.email, email.toLowerCase())];
+  if (clinicaId) emailAuthConditions.push(eq(emailsAutorizados.clinicaId, clinicaId));
+  const emailAuth = await db.select().from(emailsAutorizados).where(and(...emailAuthConditions)).limit(1);
   const roleFromEmail = emailAuth.length > 0 ? emailAuth[0].role : 'obstetra';
   
   // Criar novo usuário
@@ -436,7 +443,7 @@ export async function createUserWithPassword(email: string, password: string, na
     passwordChangedAt: new Date()
   });
   
-  user = await getUserByEmail(email);
+  user = await getUserByEmail(email, clinicaId);
   return { success: true, user };
 }
 

@@ -309,15 +309,15 @@ export const appRouter = router({
         if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
           throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas administradores podem alterar tipos de usuário.' });
         }
-        await updateEmailAutorizadoRole(input.email, input.role);
+        await updateEmailAutorizadoRole(input.email, input.role, ctx.user.clinicaId);
         return { success: true };
       }),
     
     // Remover email autorizado (admin)
     removerEmailAutorizado: protectedProcedure
       .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ input }) => {
-        await removeAuthorizedEmail(input.email);
+      .mutation(async ({ input, ctx }) => {
+        await removeAuthorizedEmail(input.email, ctx.user.clinicaId);
         return { success: true };
       }),
     
