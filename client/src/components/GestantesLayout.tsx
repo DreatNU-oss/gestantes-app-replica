@@ -183,11 +183,19 @@ export default function GestantesLayout({
         <Sidebar>
           <SidebarHeader className="border-b border-sidebar-border p-4">
             <div className="flex items-center justify-center">
-              <img 
-                src={(user as any)?.clinicaLogoUrl || "/logo-horizontal.png"} 
-                alt={(user as any)?.clinicaNome || "Clínica"} 
-                className="h-20 w-auto object-contain"
-              />
+              {(user as any)?.clinicaLogoUrl ? (
+                <img 
+                  src={(user as any).clinicaLogoUrl} 
+                  alt={(user as any)?.clinicaNome || "Clínica"} 
+                  className="h-20 w-auto object-contain"
+                />
+              ) : (
+                <div className="h-20 flex flex-col items-center justify-center text-center px-2">
+                  <p className="text-xs text-muted-foreground leading-tight">
+                    Insira sua logo aqui no menu <strong>Configurações</strong>
+                  </p>
+                </div>
+              )}
             </div>
           </SidebarHeader>
           <SidebarContent>

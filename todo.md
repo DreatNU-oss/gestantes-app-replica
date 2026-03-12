@@ -1806,3 +1806,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Cadastrar dreatnu@yahoo.com na Clínica 00002
 - [x] Autorizar email na clínica 00002 e criar usuário com mesma senha da 00001
 - [x] Alterar constraint de email unique para email+clinicaId unique em emailsAutorizados
+
+## Logo no sidebar do GestantesLayout
+- [x] Exibir logo da clínica no sidebar apenas se configurada (clinicaLogoUrl presente)
+- [x] Caso não configurada, exibir placeholder "Insira sua logo aqui no menu Configurações"
+- [x] Manter logo da 00001 (já configurada no banco via S3)
