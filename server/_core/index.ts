@@ -153,6 +153,10 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    // Iniciar scheduler de mensagens WhatsApp
+    import('../whatsappScheduler').then(({ startWhatsAppScheduler }) => {
+      startWhatsAppScheduler();
+    }).catch(console.error);
   });
 }
 

@@ -825,3 +825,65 @@ export const lembretesConduta = mysqlTable("lembretesConduta", {
 
 export type LembreteConduta = typeof lembretesConduta.$inferSelect;
 export type InsertLembreteConduta = typeof lembretesConduta.$inferInsert;
+
+/**
+ * Templates de mensagens WhatsApp configuráveis por clínica
+ * Cada template define uma mensagem que pode ser enviada por IG ou por evento
+ */
+export const mensagemTemplates = mysqlTable("mensagemTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId").notNull(), // FK para clinicas.id
+  nome: varchar("nome", { length: 255 }).notNull(), // Nome do template (ex: "Lembrete Vacina DTPa")
+  mensagem: text("mensagem").notNull(), // Texto da mensagem (suporta variáveis: {nome}, {ig_semanas}, {dpp})
+  pdfUrl: text("pdfUrl"), // URL do PDF anexo (armazenado no S3)
+  pdfKey: text("pdfKey"), // Key do PDF no S3
+  pdfNome: varchar("pdfNome", { length: 255 }), // Nome original do arquivo PDF
+  // Gatilho por idade gestacional
+  gatilhoTipo: mysqlEnum("gatilhoTipo", ["idade_gestacional", "evento", "manual"]).notNull().default("manual"),
+  igSemanas: int("igSemanas"), // Semana gestacional para disparo (ex: 28 para vacina DTPa)
+  igDias: int("igDias").default(0), // Dias adicionais (ex: semana 28 + 0 dias)
+  // Gatilho por evento
+  evento: mysqlEnum("evento", ["pos_cesarea", "pos_parto_normal", "cadastro_gestante", "primeira_consulta"]),
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
+  criadoPor: int("criadoPor"), // ID do usuário que criou
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MensagemTemplate = typeof mensagemTemplates.$inferSelect;
+export type InsertMensagemTemplate = typeof mensagemTemplates.$inferInsert;
+
+/**
+ * Configuração WhatsApp por clínica (API key e status)
+ */
+export const whatsappConfig = mysqlTable("whatsappConfig", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId").notNull(), // FK para clinicas.id
+  apiKey: text("apiKey"), // Token WaSenderAPI (criptografado ou via env)
+  ativo: int("ativo").default(0).notNull(), // 1 = WhatsApp ativo para esta clínica
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WhatsappConfigRow = typeof whatsappConfig.$inferSelect;
+export type InsertWhatsappConfig = typeof whatsappConfig.$inferInsert;
+
+/**
+ * Histórico de mensagens WhatsApp enviadas
+ */
+export const whatsappHistorico = mysqlTable("whatsappHistorico", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId").notNull(),
+  gestanteId: int("gestanteId"), // FK para gestantes.id (null se envio manual)
+  templateId: int("templateId"), // FK para mensagemTemplates.id (null se envio manual)
+  telefone: varchar("telefone", { length: 20 }).notNull(),
+  mensagem: text("mensagem").notNull(),
+  pdfUrl: text("pdfUrl"), // URL do PDF enviado (se houver)
+  status: mysqlEnum("status", ["enviado", "falhou", "pendente"]).notNull().default("pendente"),
+  erroMensagem: text("erroMensagem"), // Mensagem de erro quando falha
+  nomeGestante: varchar("nomeGestante", { length: 255 }), // Nome da gestante para referência
+  sentAt: timestamp("sentAt").defaultNow().notNull(),
+});
+
+export type WhatsappHistorico = typeof whatsappHistorico.$inferSelect;
+export type InsertWhatsappHistorico = typeof whatsappHistorico.$inferInsert;

@@ -116,6 +116,8 @@ import { registrarAbortamento, listarAbortamentos, getEstatisticasAbortamentos, 
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
+import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
+import { mensagemTemplates, whatsappConfig, whatsappHistorico } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -3366,6 +3368,282 @@ export const appRouter = router({
     isOwner: protectedProcedure.query(async ({ ctx }) => {
       return { isOwner: !!(ctx.user as any).isSystemOwner };
     }),
+  }),
+
+  // ─── WhatsApp Mensagens ─────────────────────────────────────────────────
+  whatsapp: router({
+    // Listar templates de mensagem da clínica
+    listarTemplates: protectedProcedure.query(async ({ ctx }) => {
+      if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
+      if (ctx.user.role === 'secretaria') throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso negado.' });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+      return db.select().from(mensagemTemplates)
+        .where(eq(mensagemTemplates.clinicaId, ctx.user.clinicaId))
+        .orderBy(mensagemTemplates.gatilhoTipo, mensagemTemplates.igSemanas, mensagemTemplates.nome);
+    }),
+
+    // Criar template de mensagem
+    criarTemplate: protectedProcedure
+      .input(z.object({
+        nome: z.string().min(1).max(255),
+        mensagem: z.string().min(1),
+        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual']),
+        igSemanas: z.number().min(1).max(45).optional(),
+        igDias: z.number().min(0).max(6).optional(),
+        evento: z.enum(['pos_cesarea', 'pos_parto_normal', 'cadastro_gestante', 'primeira_consulta']).optional(),
+        pdfUrl: z.string().optional(),
+        pdfKey: z.string().optional(),
+        pdfNome: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin' && ctx.user.role !== 'obstetra') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso negado.' });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        await db.insert(mensagemTemplates).values({
+          clinicaId: ctx.user.clinicaId,
+          nome: input.nome,
+          mensagem: input.mensagem,
+          gatilhoTipo: input.gatilhoTipo,
+          igSemanas: input.igSemanas || null,
+          igDias: input.igDias || 0,
+          evento: input.evento || null,
+          pdfUrl: input.pdfUrl || null,
+          pdfKey: input.pdfKey || null,
+          pdfNome: input.pdfNome || null,
+          criadoPor: ctx.user.id,
+        });
+        return { success: true };
+      }),
+
+    // Atualizar template
+    atualizarTemplate: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        nome: z.string().min(1).max(255),
+        mensagem: z.string().min(1),
+        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual']),
+        igSemanas: z.number().min(1).max(45).optional(),
+        igDias: z.number().min(0).max(6).optional(),
+        evento: z.enum(['pos_cesarea', 'pos_parto_normal', 'cadastro_gestante', 'primeira_consulta']).optional(),
+        pdfUrl: z.string().optional(),
+        pdfKey: z.string().optional(),
+        pdfNome: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin' && ctx.user.role !== 'obstetra') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        await db.update(mensagemTemplates).set({
+          nome: input.nome,
+          mensagem: input.mensagem,
+          gatilhoTipo: input.gatilhoTipo,
+          igSemanas: input.igSemanas || null,
+          igDias: input.igDias || 0,
+          evento: input.evento || null,
+          pdfUrl: input.pdfUrl || null,
+          pdfKey: input.pdfKey || null,
+          pdfNome: input.pdfNome || null,
+        }).where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
+        return { success: true };
+      }),
+
+    // Deletar template
+    deletarTemplate: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin' && ctx.user.role !== 'obstetra') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        await db.delete(mensagemTemplates).where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
+        return { success: true };
+      }),
+
+    // Toggle ativo/inativo
+    toggleTemplate: protectedProcedure
+      .input(z.object({ id: z.number(), ativo: z.number().min(0).max(1) }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin' && ctx.user.role !== 'obstetra') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        await db.update(mensagemTemplates).set({ ativo: input.ativo })
+          .where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
+        return { success: true };
+      }),
+
+    // Upload de PDF para template
+    uploadPdf: protectedProcedure
+      .input(z.object({
+        fileName: z.string(),
+        fileBase64: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin' && ctx.user.role !== 'obstetra') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const buffer = Buffer.from(input.fileBase64, 'base64');
+        const result = await uploadPdf(ctx.user.clinicaId, input.fileName, buffer);
+        return result;
+      }),
+
+    // Enviar mensagem manual para uma gestante
+    enviarManual: protectedProcedure
+      .input(z.object({
+        telefone: z.string().min(10),
+        mensagem: z.string().min(1),
+        pdfUrl: z.string().optional(),
+        nomeGestante: z.string().optional(),
+        gestanteId: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role === 'secretaria') throw new TRPCError({ code: 'FORBIDDEN' });
+        const result = await sendManualMessage(
+          ctx.user.clinicaId,
+          input.telefone,
+          input.mensagem,
+          input.pdfUrl,
+          input.nomeGestante,
+          input.gestanteId,
+        );
+        if (!result.success) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: result.error || 'Erro ao enviar mensagem.' });
+        }
+        return { success: true };
+      }),
+
+    // Enviar template para uma gestante específica
+    enviarTemplate: protectedProcedure
+      .input(z.object({
+        templateId: z.number(),
+        gestanteId: z.number(),
+        telefone: z.string().min(10),
+        nomeGestante: z.string(),
+        igSemanas: z.number().optional(),
+        igDias: z.number().optional(),
+        dpp: z.string().optional(),
+        medico: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role === 'secretaria') throw new TRPCError({ code: 'FORBIDDEN' });
+        const result = await sendToGestante(ctx.user.clinicaId, input.templateId, {
+          nome: input.nomeGestante,
+          telefone: input.telefone,
+          igSemanas: input.igSemanas,
+          igDias: input.igDias,
+          dpp: input.dpp,
+          medico: input.medico,
+          gestanteId: input.gestanteId,
+        });
+        if (!result.success) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: result.error || 'Erro ao enviar mensagem.' });
+        }
+        return { success: true };
+      }),
+
+    // Histórico de mensagens enviadas
+    historico: protectedProcedure
+      .input(z.object({ limit: z.number().min(1).max(200).default(50) }))
+      .query(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role === 'secretaria') throw new TRPCError({ code: 'FORBIDDEN' });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        return db.select().from(whatsappHistorico)
+          .where(eq(whatsappHistorico.clinicaId, ctx.user.clinicaId))
+          .orderBy(desc(whatsappHistorico.sentAt))
+          .limit(input.limit);
+      }),
+
+    // Configuração WhatsApp da clínica
+    getConfig: protectedProcedure.query(async ({ ctx }) => {
+      if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+      if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+        throw new TRPCError({ code: 'FORBIDDEN' });
+      }
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+      const [config] = await db.select().from(whatsappConfig)
+        .where(eq(whatsappConfig.clinicaId, ctx.user.clinicaId))
+        .limit(1);
+      return config || null;
+    }),
+
+    // Salvar configuração WhatsApp
+    salvarConfig: protectedProcedure
+      .input(z.object({
+        apiKey: z.string().min(1),
+        ativo: z.number().min(0).max(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas admin pode configurar WhatsApp.' });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        const [existing] = await db.select().from(whatsappConfig)
+          .where(eq(whatsappConfig.clinicaId, ctx.user.clinicaId))
+          .limit(1);
+        if (existing) {
+          await db.update(whatsappConfig).set({
+            apiKey: input.apiKey,
+            ativo: input.ativo,
+          }).where(eq(whatsappConfig.id, existing.id));
+        } else {
+          await db.insert(whatsappConfig).values({
+            clinicaId: ctx.user.clinicaId,
+            apiKey: input.apiKey,
+            ativo: input.ativo,
+          });
+        }
+        return { success: true };
+      }),
+
+    // Processar mensagens automáticas agora (disparo manual do scheduler)
+    processarAgora: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas admin pode disparar processamento.' });
+        }
+        const { processarMensagensIG } = await import('./whatsappScheduler');
+        const result = await processarMensagensIG();
+        return result;
+      }),
+
+    // Testar envio de mensagem
+    testarEnvio: protectedProcedure
+      .input(z.object({ telefone: z.string().min(10) }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN' });
+        }
+        const result = await sendManualMessage(
+          ctx.user.clinicaId,
+          input.telefone,
+          'Mensagem de teste do APP Gestantes. Se você recebeu esta mensagem, a integração WhatsApp está funcionando corretamente!',
+        );
+        if (!result.success) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: result.error || 'Erro ao enviar mensagem de teste.' });
+        }
+        return { success: true };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

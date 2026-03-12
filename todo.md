@@ -1820,3 +1820,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir createUserWithPassword para buscar usuário da clínica correta
 - [x] Corrigir updateEmailAutorizadoRole e removeAuthorizedEmail para usar clinicaId
 - [x] JWT já usa openId único por usuário/clínica (cada usuário tem openId diferente)
+
+## Sistema de Mensagens de Texto via WhatsApp
+- [x] Criar tabelas no schema: mensagemTemplates, whatsappConfig, whatsappHistorico
+- [x] Criar server/whatsapp.ts (service de envio via WaSenderAPI com substituição de variáveis)
+- [x] Criar procedures tRPC: CRUD templates, upload PDF, envio manual, envio por template, histórico, config
+- [x] Criar página MensagensTexto.tsx com abas: Templates, Histórico, Configuração
+- [x] Suporte a upload de PDFs nos templates de mensagem (S3)
+- [x] Adicionar menu "Mensagens de Texto" no sidebar (visível apenas para admin e obstetras)
+- [x] Adicionar rota /mensagens-texto no App.tsx com RoleGuard
+- [x] Campo telefone já existe na tabela gestantes
+- [x] Implementar scheduler automático (whatsappScheduler.ts) para disparo por IG (a cada 6h)
+- [x] Integrar scheduler com servidor (iniciar ao subir o server)
+- [x] Procedure processarAgora para disparo manual do scheduler
+- [ ] Configurar secret WASENDER_API_KEY quando usuário fornecer o token
+- [x] Escrever testes unitários (16 testes passando)
