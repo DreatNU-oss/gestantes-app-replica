@@ -194,9 +194,9 @@ export const appRouter = router({
       if (user.clinicaId) {
         const { getClinicaById } = await import('./db');
         const clinica = await getClinicaById(user.clinicaId);
-        return { ...user, clinicaCodigo: clinica?.codigo || null, clinicaNome: clinica?.nome || null, clinicaLogoUrl: clinica?.logoUrl || null, isOwner };
+        return { ...user, clinicaCodigo: clinica?.codigo || null, clinicaNome: clinica?.nome || null, clinicaLogoUrl: clinica?.logoUrl || null, clinicaCorFundo: clinica?.corFundo || null, isOwner };
       }
-      return { ...user, clinicaCodigo: null, clinicaNome: null, clinicaLogoUrl: null, isOwner };
+      return { ...user, clinicaCodigo: null, clinicaNome: null, clinicaLogoUrl: null, clinicaCorFundo: null, isOwner };
     }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
@@ -289,6 +289,17 @@ export const appRouter = router({
       }),
     
     // Verificar status do email (para primeiro acesso)
+    verificarClinica: publicProcedure
+      .input(z.object({ codigo: z.string().length(5) }))
+      .query(async ({ input }) => {
+        const { getClinicaByCodigo } = await import('./db');
+        const clinica = await getClinicaByCodigo(input.codigo);
+        if (!clinica || !clinica.ativa) {
+          return { exists: false, nome: null, logoUrl: null, corFundo: null };
+        }
+        return { exists: true, nome: clinica.nome, logoUrl: clinica.logoUrl, corFundo: clinica.corFundo || '#FFF5F0' };
+      }),
+
     verificarStatusEmail: publicProcedure
       .input(z.object({ email: z.string().email(), clinicaCodigo: z.string().optional() }))
       .query(async ({ input }) => {
@@ -3118,6 +3129,7 @@ export const appRouter = router({
         nome: z.string().min(2),
         logoUrl: z.string().optional(),
         integracaoApiAtiva: z.boolean().default(false),
+        corFundo: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -3134,6 +3146,7 @@ export const appRouter = router({
           nome: input.nome,
           logoUrl: input.logoUrl || null,
           integracaoApiAtiva: input.integracaoApiAtiva ? 1 : 0,
+          corFundo: input.corFundo || '#FFF5F0',
           ativa: 1,
         });
         
@@ -3147,6 +3160,7 @@ export const appRouter = router({
         nome: z.string().min(2).optional(),
         logoUrl: z.string().nullable().optional(),
         integracaoApiAtiva: z.boolean().optional(),
+        corFundo: z.string().nullable().optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -3157,6 +3171,7 @@ export const appRouter = router({
         if (input.nome !== undefined) updateData.nome = input.nome;
         if (input.logoUrl !== undefined) updateData.logoUrl = input.logoUrl;
         if (input.integracaoApiAtiva !== undefined) updateData.integracaoApiAtiva = input.integracaoApiAtiva ? 1 : 0;
+        if (input.corFundo !== undefined) updateData.corFundo = input.corFundo;
         
         await db.update(clinicas).set(updateData).where(eq(clinicas.id, input.id));
         return { success: true };

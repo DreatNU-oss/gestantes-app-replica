@@ -1,0 +1,1 @@
+ALTER TABLE `clinicas` ADD `corFundo` varchar(7) DEFAULT '#FFF5F0';

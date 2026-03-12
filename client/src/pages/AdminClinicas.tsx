@@ -35,6 +35,7 @@ type ClinicaComStats = {
   logoUrl: string | null;
   integracaoApiAtiva: number;
   ativa: number;
+  corFundo: string | null;
   createdAt: Date;
   updatedAt: Date;
   totalUsuarios: number;
@@ -56,6 +57,7 @@ export default function AdminClinicas() {
   const [novoEmail, setNovoEmail] = useState("");
   const [editNome, setEditNome] = useState("");
   const [editIntegracao, setEditIntegracao] = useState(false);
+  const [editCorFundo, setEditCorFundo] = useState("#FFF5F0");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Queries
@@ -140,6 +142,7 @@ export default function AdminClinicas() {
       id: selectedClinica.id,
       nome: editNome.trim(),
       integracaoApiAtiva: editIntegracao,
+      corFundo: editCorFundo,
     });
   };
 
@@ -147,6 +150,7 @@ export default function AdminClinicas() {
     setSelectedClinica(clinica);
     setEditNome(clinica.nome);
     setEditIntegracao(clinica.integracaoApiAtiva === 1);
+    setEditCorFundo(clinica.corFundo || '#FFF5F0');
     setShowEditDialog(true);
   };
 
@@ -338,6 +342,15 @@ export default function AdminClinicas() {
                   </div>
                 </div>
                 <Separator className="mb-4" />
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs text-muted-foreground">Cor de fundo:</span>
+                  <div
+                    className="h-6 w-10 rounded border"
+                    style={{ backgroundColor: clinica.corFundo || '#FFF5F0' }}
+                    title={clinica.corFundo || '#FFF5F0'}
+                  />
+                  <span className="text-xs font-mono text-muted-foreground">{clinica.corFundo || '#FFF5F0'}</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline" onClick={() => handleOpenEdit(clinica)}>
                     <Pencil className="h-3.5 w-3.5 mr-1.5" />
@@ -458,6 +471,54 @@ export default function AdminClinicas() {
                 checked={editIntegracao}
                 onCheckedChange={setEditIntegracao}
               />
+            </div>
+            <div className="space-y-3">
+              <Label>Cor de Fundo da Página</Label>
+              <p className="text-sm text-muted-foreground">
+                Escolha a cor de fundo para a página da clínica e tela de login
+              </p>
+              <div className="grid grid-cols-6 gap-2">
+                {[
+                  { color: '#FFFFFF', label: 'Branco' },
+                  { color: '#FFF5F0', label: 'Rosa Claro' },
+                  { color: '#FDF8F5', label: 'Bege Rosado' },
+                  { color: '#F5F0FF', label: 'Lilás Claro' },
+                  { color: '#F0F5FF', label: 'Azul Claro' },
+                  { color: '#F0FFF5', label: 'Verde Claro' },
+                  { color: '#FFFFF0', label: 'Amarelo Claro' },
+                  { color: '#FFF5F5', label: 'Vermelho Claro' },
+                  { color: '#F5FFFF', label: 'Ciano Claro' },
+                  { color: '#FFF0F5', label: 'Rosa Lavanda' },
+                  { color: '#F5F5F5', label: 'Cinza Claro' },
+                  { color: '#FFF8F0', label: 'Pêssego Claro' },
+                  { color: '#F0FFF0', label: 'Menta' },
+                  { color: '#F8F0FF', label: 'Violeta Claro' },
+                  { color: '#F0F8FF', label: 'Azul Gelo' },
+                  { color: '#FFFAF0', label: 'Creme' },
+                  { color: '#F5F0F0', label: 'Rosa Cinza' },
+                  { color: '#F0F0F5', label: 'Lavanda Cinza' },
+                ].map(({ color, label }) => (
+                  <button
+                    key={color}
+                    type="button"
+                    title={label}
+                    onClick={() => setEditCorFundo(color)}
+                    className={`h-10 w-full rounded-lg border-2 transition-all hover:scale-105 ${
+                      editCorFundo === color
+                        ? 'border-primary ring-2 ring-primary/30 scale-105'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center gap-3 mt-2">
+                <div
+                  className="h-8 w-8 rounded-md border"
+                  style={{ backgroundColor: editCorFundo }}
+                />
+                <span className="text-sm text-muted-foreground font-mono">{editCorFundo}</span>
+              </div>
             </div>
             {selectedClinica?.logoUrl && (
               <div className="space-y-2">

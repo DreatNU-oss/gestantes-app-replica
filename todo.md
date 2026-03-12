@@ -1726,3 +1726,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir logout para redirecionar para /login ao invés do OAuth Manus
 - [x] Corrigir Home page para redirecionar para /login ao invés do OAuth Manus
 - [x] Garantir que o fluxo padrão de todos os usuários seja login com código da clínica + email + senha
+
+## Personalização de Cor de Fundo por Clínica
+- [x] Adicionar campo `corFundo` na tabela clinicas (schema)
+- [x] Adicionar seletor de cores no painel Admin Clínicas (18 opções em tons claros)
+- [x] Aplicar cor de fundo no Dashboard/GestantesLayout baseado na clínica do usuário
+- [x] Aplicar cor de fundo na página de login após identificação da clínica
+- [x] Incluir corFundo na resposta da API (auth.me e verificação de clínica no login)
+- [ ] Testar cores em ambas as clínicas (00001 e 00002) - pendente teste manual

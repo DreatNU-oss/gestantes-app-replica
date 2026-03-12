@@ -14,6 +14,9 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const [step, setStep] = useState<LoginStep>('clinica');
   const [clinicaCodigo, setClinicaCodigo] = useState("");
+  const [clinicaNome, setClinicaNome] = useState<string | null>(null);
+  const [clinicaLogoUrl, setClinicaLogoUrl] = useState<string | null>(null);
+  const [clinicaCorFundo, setClinicaCorFundo] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
@@ -24,13 +27,16 @@ export default function Login() {
   const [minutosRestantes, setMinutosRestantes] = useState(0);
   const [tentativasRestantes, setTentativasRestantes] = useState<number | null>(null);
 
+  // Query para verificar clínica
+  const clinicaQuery = trpc.auth.verificarClinica.useQuery(
+    { codigo: clinicaCodigo },
+    { enabled: false, retry: false }
+  );
+
   // Query para verificar status do email
   const statusQuery = trpc.auth.verificarStatusEmail.useQuery(
     { email, clinicaCodigo: clinicaCodigo || undefined },
-    { 
-      enabled: false, // Não executa automaticamente
-      retry: false 
-    }
+    { enabled: false, retry: false }
   );
 
   const loginMutation = trpc.auth.loginComSenha.useMutation({
@@ -39,12 +45,10 @@ export default function Login() {
         window.location.href = "/dashboard";
       } else {
         setErro(data.error || "Erro ao fazer login");
-        // Verificar se conta foi bloqueada
         if (data.locked) {
           setBloqueado(true);
           setMinutosRestantes(data.minutesRemaining || 15);
         }
-        // Mostrar tentativas restantes
         if (data.attemptsRemaining !== undefined) {
           setTentativasRestantes(data.attemptsRemaining);
         }
@@ -71,7 +75,7 @@ export default function Login() {
     },
   });
 
-  const handleVerificarClinica = (e: React.FormEvent) => {
+  const handleVerificarClinica = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro("");
     setSucesso("");
@@ -81,14 +85,24 @@ export default function Login() {
       return;
     }
 
-    // Validar formato: 5 dígitos numéricos
     if (!/^\d{5}$/.test(clinicaCodigo)) {
       setErro("O código da clínica deve ter exatamente 5 dígitos numéricos");
       return;
     }
 
-    // Avançar para o passo de email
-    setStep('email');
+    try {
+      const result = await clinicaQuery.refetch();
+      if (result.data?.exists) {
+        setClinicaNome(result.data.nome);
+        setClinicaLogoUrl(result.data.logoUrl);
+        setClinicaCorFundo(result.data.corFundo);
+        setStep('email');
+      } else {
+        setErro("Código de clínica inválido ou clínica inativa.");
+      }
+    } catch {
+      setErro("Erro ao verificar clínica. Tente novamente.");
+    }
   };
 
   const handleVerificarEmail = async (e: React.FormEvent) => {
@@ -101,7 +115,6 @@ export default function Login() {
       return;
     }
 
-    // Validar formato do email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErro("Digite um email válido");
@@ -116,7 +129,6 @@ export default function Login() {
         return;
       }
 
-      // Verificar se conta está bloqueada
       if (result.data.locked) {
         setBloqueado(true);
         setMinutosRestantes(result.data.minutesRemaining || 15);
@@ -125,16 +137,14 @@ export default function Login() {
       }
 
       if (result.data.hasPassword) {
-        // Usuário já tem senha - ir para login normal
         setStep('login');
       } else {
-        // Primeiro acesso - ir para criação de senha
         if (result.data.userName) {
           setNome(result.data.userName);
         }
         setStep('primeiro-acesso');
       }
-    } catch (error) {
+    } catch {
       setErro("Erro ao verificar email. Tente novamente.");
     }
   };
@@ -177,6 +187,9 @@ export default function Login() {
     if (step === 'email') {
       setStep('clinica');
       setEmail("");
+      setClinicaNome(null);
+      setClinicaLogoUrl(null);
+      setClinicaCorFundo(null);
     } else {
       setStep('email');
     }
@@ -189,21 +202,31 @@ export default function Login() {
     setTentativasRestantes(null);
   };
 
-  const isLoading = statusQuery.isFetching || loginMutation.isPending || criarUsuarioMutation.isPending;
+  const isLoading = clinicaQuery.isFetching || statusQuery.isFetching || loginMutation.isPending || criarUsuarioMutation.isPending;
+
+  // Compute background gradient based on clinic color
+  const bgColor = clinicaCorFundo || '#FDF8F5';
+  // Create a slightly darker shade for gradient end
+  const bgStyle = step === 'clinica'
+    ? { background: 'linear-gradient(135deg, #FDF8F5, #F5E6E0)' }
+    : { background: `linear-gradient(135deg, ${bgColor}, ${bgColor}dd)` };
+
+  // Determine logo to show
+  const logoSrc = (step !== 'clinica' && clinicaLogoUrl) ? clinicaLogoUrl : '/logo-vertical.png';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FDF8F5] to-[#F5E6E0] p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-500" style={bgStyle}>
       <Card className="w-full max-w-md shadow-xl border-0 bg-white/90 backdrop-blur">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
             <img 
-              src="/logo-vertical.png" 
-              alt="Mais Mulher - Clínica de Saúde Feminina"
-              className="h-28 w-auto"
+              src={logoSrc}
+              alt={clinicaNome || "APP Gestantes"}
+              className="h-28 w-auto object-contain"
             />
           </div>
           <CardTitle className="text-2xl font-bold text-[#722F37]">
-            APP Gestantes
+            {step !== 'clinica' && clinicaNome ? clinicaNome : 'APP Gestantes'}
           </CardTitle>
           <CardDescription className="text-gray-600">
             {step === 'clinica' && "Digite o código da sua clínica para acessar"}
@@ -265,7 +288,6 @@ export default function Login() {
                     placeholder="00000"
                     value={clinicaCodigo}
                     onChange={(e) => {
-                      // Permitir apenas dígitos
                       const val = e.target.value.replace(/\D/g, '').slice(0, 5);
                       setClinicaCodigo(val);
                     }}
@@ -284,7 +306,14 @@ export default function Login() {
                 className="w-full bg-[#722F37] hover:bg-[#5a252c] text-white font-semibold py-2.5"
                 disabled={isLoading || clinicaCodigo.length !== 5}
               >
-                Continuar
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Verificando...
+                  </>
+                ) : (
+                  "Continuar"
+                )}
               </Button>
             </form>
           )}

@@ -449,6 +449,13 @@
       "when": 1773320020011,
       "tag": "0063_powerful_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "5",
+      "when": 1773331604620,
+      "tag": "0064_wild_hobgoblin",
+      "breakpoints": true
     }
   ]
 }

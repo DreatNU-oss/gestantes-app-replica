@@ -164,7 +164,7 @@ export default function GestantesLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
         <Sidebar>
           <SidebarHeader className="border-b border-sidebar-border p-4">
             <div className="flex items-center justify-center">
@@ -376,7 +376,7 @@ export default function GestantesLayout({
               Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
             </h1>
           </header>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
             {children}
           </main>
         </SidebarInset>

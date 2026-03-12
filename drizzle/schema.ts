@@ -11,6 +11,7 @@ export const clinicas = mysqlTable("clinicas", {
   logoUrl: text("logoUrl"), // URL do logotipo da clínica
   integracaoApiAtiva: int("integracaoApiAtiva").default(0).notNull(), // 1 = envia para Mapa Cirúrgico, 0 = não
   ativa: int("ativa").default(1).notNull(), // 1 = ativa, 0 = inativa
+  corFundo: varchar("corFundo", { length: 7 }).default("#FFF5F0"), // Cor de fundo da clínica (hex, tons claros)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
