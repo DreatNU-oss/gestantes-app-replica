@@ -1833,5 +1833,5 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar scheduler automático (whatsappScheduler.ts) para disparo por IG (a cada 6h)
 - [x] Integrar scheduler com servidor (iniciar ao subir o server)
 - [x] Procedure processarAgora para disparo manual do scheduler
-- [ ] Configurar secret WASENDER_API_KEY quando usuário fornecer o token
+- [x] Configurar secret WASENDER_API_KEY (token validado com sucesso)
 - [x] Escrever testes unitários (16 testes passando)
