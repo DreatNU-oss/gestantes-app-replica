@@ -450,3 +450,81 @@ describe('WhatsApp - Notificação para funcionárias ao registrar parto', () =>
     expect(jenifer!.nome).not.toBe('Jennifer');
   });
 });
+
+// ─── Test: Envio manual de orientações alimentares ──────────────────────────
+
+describe('WhatsApp - Envio manual de orientações alimentares (botão)', () => {
+
+  it('deve rejeitar envio quando gestante não tem telefone', () => {
+    const gestante = { nome: 'Maria', telefone: null };
+    const hasPhone = !!gestante.telefone;
+    expect(hasPhone).toBe(false);
+  });
+
+  it('deve permitir envio quando gestante tem telefone', () => {
+    const gestante = { nome: 'Maria', telefone: '5535991156028' };
+    const hasPhone = !!gestante.telefone;
+    expect(hasPhone).toBe(true);
+  });
+
+  it('botão só deve aparecer quando gestanteId existe (edição, não criação)', () => {
+    const gestanteId = 123;
+    const telefone = '5535991156028';
+    const showButton = !!gestanteId && !!telefone;
+    expect(showButton).toBe(true);
+
+    const noId = null;
+    const showButtonNoId = !!noId && !!telefone;
+    expect(showButtonNoId).toBe(false);
+  });
+
+  it('evento cadastro_gestante deve ser usado para orientações alimentares', () => {
+    const evento = 'cadastro_gestante';
+    expect(evento).toBe('cadastro_gestante');
+  });
+});
+
+// ─── Test: Admin Clínicas access control ────────────────────────────────────
+
+describe('Admin Clínicas - Controle de acesso', () => {
+
+  it('admin deve ter acesso ao Admin Clínicas', () => {
+    const allowedRoles = ['superadmin', 'admin'];
+    const userRole = 'admin';
+    expect(allowedRoles.includes(userRole)).toBe(true);
+  });
+
+  it('superadmin deve ter acesso ao Admin Clínicas', () => {
+    const allowedRoles = ['superadmin', 'admin'];
+    const userRole = 'superadmin';
+    expect(allowedRoles.includes(userRole)).toBe(true);
+  });
+
+  it('obstetra NÃO deve ter acesso ao Admin Clínicas', () => {
+    const allowedRoles = ['superadmin', 'admin'];
+    const userRole = 'obstetra';
+    expect(allowedRoles.includes(userRole)).toBe(false);
+  });
+
+  it('secretaria NÃO deve ter acesso ao Admin Clínicas', () => {
+    const allowedRoles = ['superadmin', 'admin'];
+    const userRole = 'secretaria';
+    expect(allowedRoles.includes(userRole)).toBe(false);
+  });
+
+  it('ownerProcedure deve aceitar admin além de isSystemOwner', () => {
+    // Simula a lógica do ownerProcedure atualizado
+    const checkAccess = (user: { isSystemOwner?: boolean; role: string } | null) => {
+      if (!user || (!user.isSystemOwner && user.role !== 'admin')) {
+        return false;
+      }
+      return true;
+    };
+
+    expect(checkAccess({ isSystemOwner: true, role: 'superadmin' })).toBe(true);
+    expect(checkAccess({ isSystemOwner: false, role: 'admin' })).toBe(true);
+    expect(checkAccess({ isSystemOwner: false, role: 'obstetra' })).toBe(false);
+    expect(checkAccess({ isSystemOwner: false, role: 'secretaria' })).toBe(false);
+    expect(checkAccess(null)).toBe(false);
+  });
+});

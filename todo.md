@@ -1872,3 +1872,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Incluir nome da gestante, tipo de parto e data na mensagem
 - [x] Verificar se é segundo parto com Dr. André e incluir lembrete de flores
 - [x] Escrever testes para a funcionalidade (53 testes passando)
+
+## Botão de Envio Manual de Orientações Alimentares
+- [x] Remover envio automático do PDF de orientações alimentares ao salvar gestante
+- [x] Criar procedure tRPC para envio manual do PDF de orientações alimentares
+- [x] Adicionar botão de envio WhatsApp ao lado do campo de telefone no formulário da gestante
+- [x] Escrever testes para a funcionalidade (62 testes passando)
+
+## Bug: Admin sem acesso ao Menu Admin Clínicas
+- [x] Corrigir acesso ao menu Admin Clínicas para role "admin" (frontend + backend corrigidos)

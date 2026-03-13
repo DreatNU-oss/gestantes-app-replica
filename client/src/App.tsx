@@ -124,9 +124,9 @@ function Router() {
       {/* Alterar senha - acessível a todos os autenticados */}
       <Route path={"/alterar-senha"} component={AlterarSenha} />
 
-      {/* Admin Clínicas - apenas superadmin (owner) */}
+      {/* Admin Clínicas - superadmin (owner) e admin */}
       <Route path={"/admin/clinicas"}>
-        <RoleGuard allowedRoles={["superadmin"]}><AdminClinicas /></RoleGuard>
+        <RoleGuard allowedRoles={["superadmin", "admin"]}><AdminClinicas /></RoleGuard>
       </Route>
 
       <Route path={"/404"} component={NotFound} />

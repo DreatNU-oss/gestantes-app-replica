@@ -728,18 +728,8 @@ export const appRouter = router({
           // Não falhar a criação da gestante se o medicamento não puder ser adicionado
         }
         
-        // Enviar orientações alimentares via WhatsApp (evento: cadastro_gestante)
-        if (ctx.user.clinicaId && novaGestante.telefone) {
-          processarMensagemEvento(ctx.user.clinicaId, 'cadastro_gestante', {
-            nome: novaGestante.nome,
-            telefone: novaGestante.telefone,
-            gestanteId: novaGestante.id,
-          }).then(result => {
-            if (result.enviadas > 0) {
-              console.log(`[WhatsApp] Orientações alimentares enviadas para ${novaGestante.nome}`);
-            }
-          }).catch(err => console.error('[WhatsApp] Erro ao enviar orientações alimentares:', err));
-        }
+        // REMOVIDO: Envio automático de orientações alimentares ao salvar
+        // Agora o envio é feito manualmente via botão ao lado do campo de telefone
 
         // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico) se data definida
         // APENAS para clínica 00001 (integração API ativa)
@@ -1005,6 +995,35 @@ export const appRouter = router({
     removerJustificativa: protectedProcedure
       .input(z.object({ gestanteId: z.number() }))
       .mutation(({ input }) => deleteJustificativa(input.gestanteId)),
+
+    // Enviar orientações alimentares via WhatsApp (botão manual)
+    enviarOrientacoesAlimentares: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Database not available' });
+
+        const [gestante] = await db.select({
+          nome: gestantes.nome,
+          telefone: gestantes.telefone,
+        }).from(gestantes).where(eq(gestantes.id, input.gestanteId)).limit(1);
+
+        if (!gestante) throw new TRPCError({ code: 'NOT_FOUND', message: 'Gestante não encontrada.' });
+        if (!gestante.telefone) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Gestante não possui telefone cadastrado.' });
+
+        const result = await processarMensagemEvento(ctx.user.clinicaId, 'cadastro_gestante', {
+          nome: gestante.nome,
+          telefone: gestante.telefone,
+          gestanteId: input.gestanteId,
+        });
+
+        if (result.enviadas > 0) {
+          return { success: true, message: `Orientações alimentares enviadas para ${gestante.nome}` };
+        } else {
+          return { success: false, message: 'Não foi possível enviar. Verifique se há um template de orientações alimentares configurado e se o WhatsApp está ativo.' };
+        }
+      }),
   }),
 
   consultasPrenatal: router({

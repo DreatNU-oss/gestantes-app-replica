@@ -31,8 +31,8 @@ export const ownerProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
 
-    if (!ctx.user || !(ctx.user as any).isSystemOwner) {
-      throw new TRPCError({ code: "FORBIDDEN", message: "Acesso restrito ao proprietário do sistema." });
+    if (!ctx.user || (!(ctx.user as any).isSystemOwner && ctx.user.role !== 'admin')) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Acesso restrito ao proprietário do sistema ou administrador." });
     }
 
     return next({

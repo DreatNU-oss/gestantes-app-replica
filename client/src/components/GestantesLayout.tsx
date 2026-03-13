@@ -367,8 +367,8 @@ export default function GestantesLayout({
                   ))}
                 </>
               )}
-              {/* Link Admin - apenas para owner */}
-              {(user as any)?.isOwner && (
+              {/* Link Admin - admin e owner */}
+              {((user as any)?.isOwner || userRole === 'admin') && (
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     onClick={() => setLocation('/admin/clinicas')}
