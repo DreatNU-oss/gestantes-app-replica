@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, nome, clinicaId FROM medicos WHERE nome LIKE '%Andr%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, clinicaId FROM medicos WHERE nome LIKE '%Andr%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Dr. André",
+      "clinicaId": "1"
+    },
+    {
+      "id": "30001",
+      "nome": "Dr. André Luis Schlemper",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tclinicaId\n1\tDr. André\t1\n30001\tDr. André Luis Schlemper\t1\n",
+  "stderr": "",
+  "execution_time_ms": 103
+}

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mensagemTemplates SET mensagem = 'Olá {nome}! Você acaba de completar 36 semanas e sua cesariana já está chegando! Segue em anexo orientações para sua internação.' WHERE nome = 'Orientações Pré-operatórias Cesárea - 36 semanas' AND condicaoTipoParto = 'cesariana';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE mensagemTemplates SET mensagem = 'Olá {nome}! Você acaba de completar 36 semanas e sua cesariana já está chegando! Segue em anexo orientações para sua internação.' WHERE nome = 'Orientações Pré-operatórias Cesárea - 36 semanas' AND condicaoTipoParto = 'cesariana';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 64
+}

@@ -122,6 +122,16 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
           // Enviar se a gestante está na semana correta (margem de 1 dia para frente)
           // Como o scheduler roda 1x por dia às 9h, margem de 1 dia é suficiente
           if (ig.totalDias >= templateTotalDias && ig.totalDias <= templateTotalDias + 1) {
+            // Verificar condições opcionais do template
+            // Se o template exige tipo de parto específico, verificar
+            if (template.condicaoTipoParto && gestante.tipoPartoDesejado !== template.condicaoTipoParto) {
+              continue; // Gestante não atende à condição de tipo de parto
+            }
+            // Se o template exige médico específico, verificar
+            if (template.condicaoMedicoId && gestante.medicoId !== template.condicaoMedicoId) {
+              continue; // Gestante não atende à condição de médico
+            }
+
             // Verificar se já foi enviada
             const enviada = await jaEnviada(db, clinicaConfig.clinicaId, gestante.id, template.id);
             if (enviada) continue;

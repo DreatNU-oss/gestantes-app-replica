@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO mensagemTemplates (clinicaId, nome, mensagem, pdfUrl, pdfNome, gatilhoTipo, igSemanas, igDias, condicaoTipoParto, condicaoMedicoId, ativo) VALUES (1, 'Orientações Pré-operatórias Cesárea - 36 semanas', 'Olá {nome}! Você está com *{ig_semanas} semanas de gestação* e sua cesárea já está agendada. Segue em anexo as *Orientações Pré-Operatórias para Cesárea*, com informações importantes sobre jejum, medicamentos, o que levar ao hospital e cuidados antes do procedimento. Leia com atenção e qualquer dúvida, entre em contato conosco!', 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PreOperatorioCesariana.pdf', 'PreOperatorioCesariana.pdf', 'idade_gestacional', 36, 0, 'cesariana', 1, 1);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO mensagemTemplates (clinicaId, nome, mensagem, pdfUrl, pdfNome, gatilhoTipo, igSemanas, igDias, condicaoTipoParto, condicaoMedicoId, ativo) VALUES (1, 'Orientações Pré-operatórias Cesárea - 36 semanas', 'Olá {nome}! Você está com *{ig_semanas} semanas de gestação* e sua cesárea já está agendada. Segue em anexo as *Orientações Pré-Operatórias para Cesárea*, com informações importantes sobre jejum, medicamentos, o que levar ao hospital e cuidados antes do procedimento. Leia com atenção e qualquer dúvida, entre em contato conosco!', 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PreOperatorioCesariana.pdf', 'PreOperatorioCesariana.pdf', 'idade_gestacional', 36, 0, 'cesariana', 1, 1);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}

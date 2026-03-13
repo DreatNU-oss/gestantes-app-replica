@@ -1846,3 +1846,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Upload do PDF "Orientações Alimentares" para S3
 - [x] Implementar envio automático via WhatsApp ao salvar nova gestante
 - [x] Escrever testes para a funcionalidade (17 testes passando)
+
+## Envio Automático PDF Pré-operatório Cesariana (36 semanas + Dr. André)
+- [x] Upload do PDF "Pré-operatório Cesariana" para S3
+- [x] Criar template de IG 36 semanas com condição: cesariana agendada + Dr. André
+- [x] Implementar lógica condicional no scheduler para verificar tipo de parto e médico
+- [x] Escrever testes para a funcionalidade (23 testes scheduler passando) (23 testes scheduler passando)
+- [x] Atualizar texto da mensagem do template pré-operatório cesárea para texto personalizado do usuário

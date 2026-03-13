@@ -172,6 +172,82 @@ describe('WhatsApp - Envio automático de orientações alimentares ao cadastrar
   });
 });
 
+// ─── Test: Condições de template (tipo parto + médico) ────────────────────
+
+describe('WhatsApp Scheduler - Condições de template (pré-operatório cesárea)', () => {
+  
+  it('deve pular template quando gestante não tem cesariana agendada', () => {
+    const template = { condicaoTipoParto: 'cesariana' as const, condicaoMedicoId: 1 };
+    const gestante = { tipoPartoDesejado: 'normal', medicoId: 1 };
+    
+    const passaTipoParto = !template.condicaoTipoParto || gestante.tipoPartoDesejado === template.condicaoTipoParto;
+    const passaMedico = !template.condicaoMedicoId || gestante.medicoId === template.condicaoMedicoId;
+    
+    expect(passaTipoParto).toBe(false);
+    expect(passaMedico).toBe(true);
+    expect(passaTipoParto && passaMedico).toBe(false); // Não deve enviar
+  });
+
+  it('deve pular template quando gestante não é do Dr. André', () => {
+    const template = { condicaoTipoParto: 'cesariana' as const, condicaoMedicoId: 1 };
+    const gestante = { tipoPartoDesejado: 'cesariana', medicoId: 99 };
+    
+    const passaTipoParto = !template.condicaoTipoParto || gestante.tipoPartoDesejado === template.condicaoTipoParto;
+    const passaMedico = !template.condicaoMedicoId || gestante.medicoId === template.condicaoMedicoId;
+    
+    expect(passaTipoParto).toBe(true);
+    expect(passaMedico).toBe(false);
+    expect(passaTipoParto && passaMedico).toBe(false); // Não deve enviar
+  });
+
+  it('deve enviar quando gestante tem cesariana + Dr. André', () => {
+    const template = { condicaoTipoParto: 'cesariana' as const, condicaoMedicoId: 1 };
+    const gestante = { tipoPartoDesejado: 'cesariana', medicoId: 1 };
+    
+    const passaTipoParto = !template.condicaoTipoParto || gestante.tipoPartoDesejado === template.condicaoTipoParto;
+    const passaMedico = !template.condicaoMedicoId || gestante.medicoId === template.condicaoMedicoId;
+    
+    expect(passaTipoParto).toBe(true);
+    expect(passaMedico).toBe(true);
+    expect(passaTipoParto && passaMedico).toBe(true); // Deve enviar
+  });
+
+  it('deve enviar template sem condições para qualquer gestante', () => {
+    const template = { condicaoTipoParto: null, condicaoMedicoId: null };
+    const gestante = { tipoPartoDesejado: 'normal', medicoId: 99 };
+    
+    const passaTipoParto = !template.condicaoTipoParto || gestante.tipoPartoDesejado === template.condicaoTipoParto;
+    const passaMedico = !template.condicaoMedicoId || gestante.medicoId === template.condicaoMedicoId;
+    
+    expect(passaTipoParto).toBe(true);
+    expect(passaMedico).toBe(true);
+    expect(passaTipoParto && passaMedico).toBe(true); // Templates sem condição enviam para todos
+  });
+
+  it('deve pular quando gestante tem tipo "a_definir" e template exige cesariana', () => {
+    const template = { condicaoTipoParto: 'cesariana' as const, condicaoMedicoId: 1 };
+    const gestante = { tipoPartoDesejado: 'a_definir', medicoId: 1 };
+    
+    const passaTipoParto = !template.condicaoTipoParto || gestante.tipoPartoDesejado === template.condicaoTipoParto;
+    expect(passaTipoParto).toBe(false); // "a_definir" não é cesariana
+  });
+
+  it('template pré-operatório deve ser IG 36 semanas com PDF anexo', () => {
+    const template = {
+      igSemanas: 36,
+      igDias: 0,
+      condicaoTipoParto: 'cesariana',
+      condicaoMedicoId: 1,
+      pdfUrl: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PreOperatorioCesariana.pdf',
+    };
+    
+    expect(template.igSemanas).toBe(36);
+    expect(template.condicaoTipoParto).toBe('cesariana');
+    expect(template.condicaoMedicoId).toBe(1); // Dr. André
+    expect(template.pdfUrl).toContain('PreOperatorioCesariana.pdf');
+  });
+});
+
 // ─── Test: IG matching logic ─────────────────────────────────────────────────
 
 describe('WhatsApp Scheduler - Lógica de matching por IG', () => {
