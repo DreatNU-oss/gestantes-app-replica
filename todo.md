@@ -1887,3 +1887,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover validação obrigatória de e-mail no backend (routers.ts) (já era opcional no backend)
 - [x] Remover validação obrigatória de e-mail no frontend (FormularioGestante)
 - [x] Remover asterisco (*) do label do campo e-mail
+
+## Integração WhatsApp AI Bot (andreschlemper.com) - Allowlist Sync
+- [x] Configurar secrets WHATSAPP_BOT_API_KEY e WHATSAPP_BOT_API_URL
+- [x] Criar server/whatsappBotSync.ts com funções syncPatientToBot, removePatientFromBot, updatePatientOnBot, syncAllPatientsToBot
+- [x] Integrar auto-sync no cadastro de gestante (POST ao bot quando criada com telefone)
+- [x] Integrar auto-sync na edição de gestante (PUT/DELETE+POST quando nome ou telefone mudar)
+- [x] Integrar auto-sync na exclusão de gestante (DELETE do bot)
+- [x] Integrar auto-sync no registro de parto - remover do bot (status "Nasceu")
+- [x] Integrar auto-sync quando status mudar para Abortamento ou inativada
+- [x] Criar botão "Sincronizar com Bot WhatsApp" na página Integrações
+- [x] Tratamento de erros (409 ignorar, timeout não bloquear operação principal)
+- [x] Escrever testes para a funcionalidade (74 testes passando)

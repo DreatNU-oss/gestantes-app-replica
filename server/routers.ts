@@ -118,6 +118,7 @@ import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento } from './whatsappScheduler';
+import { syncPatientToBot, removePatientFromBot, updatePatientOnBot } from './whatsappBotSync';
 import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
@@ -731,6 +732,17 @@ export const appRouter = router({
         // REMOVIDO: Envio automático de orientações alimentares ao salvar
         // Agora o envio é feito manualmente via botão ao lado do campo de telefone
 
+        // Sincronizar com bot de WhatsApp (allowlist)
+        if (input.telefone) {
+          const igInfo = novaGestante.dum ? `IG: calculando` : '';
+          syncPatientToBot(
+            input.telefone,
+            input.nome,
+            novaGestante.id,
+            igInfo
+          ).catch(err => console.error('[BotSync] Erro ao sincronizar nova gestante:', err));
+        }
+
         // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico) se data definida
         // APENAS para clínica 00001 (integração API ativa)
         if (input.dataPartoProgramado && input.tipoPartoDesejado === 'cesariana') {
@@ -873,6 +885,28 @@ export const appRouter = router({
           }
         }
         
+        // Sincronizar com bot de WhatsApp (allowlist) - detectar mudanças de nome ou telefone
+        const telefoneAntes = gestanteAntes?.telefone || '';
+        const telefoneDepois = gestante.telefone || '';
+        const nomeAntes = gestanteAntes?.nome || '';
+        const nomeDepois = gestante.nome || '';
+
+        if (telefoneAntes !== telefoneDepois) {
+          // Telefone mudou: remover o antigo e cadastrar o novo
+          if (telefoneAntes) {
+            removePatientFromBot(telefoneAntes)
+              .catch(err => console.error('[BotSync] Erro ao remover telefone antigo:', err));
+          }
+          if (telefoneDepois) {
+            syncPatientToBot(telefoneDepois, nomeDepois, gestante.id)
+              .catch(err => console.error('[BotSync] Erro ao sincronizar novo telefone:', err));
+          }
+        } else if (nomeAntes !== nomeDepois && telefoneDepois) {
+          // Apenas nome mudou
+          updatePatientOnBot(telefoneDepois, { name: nomeDepois })
+            .catch(err => console.error('[BotSync] Erro ao atualizar nome:', err));
+        }
+
         return { 
           success: true,
           id: gestante.id,
@@ -898,6 +932,12 @@ export const appRouter = router({
           }
         }
         
+        // Remover do bot de WhatsApp (allowlist)
+        if (gestante?.telefone) {
+          removePatientFromBot(gestante.telefone)
+            .catch(err => console.error('[BotSync] Erro ao remover gestante deletada:', err));
+        }
+
         await deleteGestante(input.id);
         return { success: true };
       }),
@@ -2915,6 +2955,12 @@ export const appRouter = router({
               enviarParaFuncionarias().catch(err =>
                 console.error('[WhatsApp] Erro ao notificar funcionárias:', err)
               );
+
+              // Remover do bot de WhatsApp (allowlist) - bebê nasceu
+              if (gestante?.telefone) {
+                removePatientFromBot(gestante.telefone)
+                  .catch(err => console.error('[BotSync] Erro ao remover gestante após parto:', err));
+              }
             }
           } catch (err) {
             console.error(`[WhatsApp] Erro ao processar envio pós-parto (${input.tipoParto}):`, err);
@@ -2954,7 +3000,24 @@ export const appRouter = router({
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        return await registrarAbortamento(input);
+        const result = await registrarAbortamento(input);
+
+        // Remover do bot de WhatsApp (allowlist) - abortamento
+        try {
+          const db = await getDb();
+          if (db) {
+            const [gestante] = await db.select({ telefone: gestantes.telefone })
+              .from(gestantes).where(eq(gestantes.id, input.gestanteId)).limit(1);
+            if (gestante?.telefone) {
+              removePatientFromBot(gestante.telefone)
+                .catch(err => console.error('[BotSync] Erro ao remover gestante após abortamento:', err));
+            }
+          }
+        } catch (err) {
+          console.error('[BotSync] Erro ao processar remoção por abortamento:', err);
+        }
+
+        return result;
       }),
 
     listar: protectedProcedure
@@ -3321,6 +3384,63 @@ export const appRouter = router({
           configurado: !!(adminUrl && apiKey),
           urlConfigurada: !!adminUrl,
           apiKeyConfigurada: !!apiKey,
+        };
+      }),
+
+    // Sincronização em lote com bot de WhatsApp (allowlist)
+    syncBotWhatsApp: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
+
+        // Buscar todas as gestantes com telefone que não tiveram parto nem abortamento
+        const { abortamentos } = await import('../drizzle/schema');
+        const partosIds = db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
+        const abortamentosIds = db.select({ gestanteId: abortamentos.gestanteId }).from(abortamentos);
+        const { notInArray } = await import('drizzle-orm');
+        
+        const todasGestantes = await db
+          .select({
+            id: gestantes.id,
+            nome: gestantes.nome,
+            telefone: gestantes.telefone,
+          })
+          .from(gestantes)
+          .where(isNotNull(gestantes.telefone));
+
+        const gestantesComTelefone = todasGestantes.filter(g => g.telefone);
+
+        if (gestantesComTelefone.length === 0) {
+          return { success: true, synced: 0, failed: 0, total: 0, message: 'Nenhuma gestante ativa com telefone encontrada.' };
+        }
+
+        const { syncAllPatientsToBot } = await import('./whatsappBotSync');
+        const result = await syncAllPatientsToBot(
+          gestantesComTelefone.map(g => ({
+            phone: g.telefone!,
+            name: g.nome,
+            externalId: g.id,
+          }))
+        );
+
+        return {
+          ...result,
+          total: gestantesComTelefone.length,
+          message: result.success
+            ? `${result.synced} gestante(s) sincronizada(s) com o bot de WhatsApp.`
+            : `Erro na sincronização: ${result.error}`,
+        };
+      }),
+
+    // Verificar status da configuração do bot de WhatsApp
+    statusBot: protectedProcedure
+      .query(async () => {
+        const botUrl = process.env.WHATSAPP_BOT_API_URL;
+        const botKey = process.env.WHATSAPP_BOT_API_KEY;
+        return {
+          configurado: !!(botUrl && botKey),
+          urlConfigurada: !!botUrl,
+          apiKeyConfigurada: !!botKey,
         };
       }),
   }),

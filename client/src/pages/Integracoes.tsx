@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, CheckCircle2, XCircle, AlertTriangle, Link2, Loader2 } from "lucide-react";
+import { RefreshCw, CheckCircle2, XCircle, AlertTriangle, Link2, Loader2, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Integracoes() {
@@ -32,6 +32,37 @@ export default function Integracoes() {
       } else {
         toast.warning("Sincronização parcial", {
           description: `${data.sucesso} sucesso, ${data.falhas} falha(s) de ${data.total} total.`,
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error("Erro na sincronização", {
+        description: error.message,
+      });
+    },
+  });
+
+  // Bot WhatsApp sync
+  const [botSyncResult, setBotSyncResult] = useState<{
+    success: boolean; synced: number; failed: number; total: number; message: string;
+  } | null>(null);
+
+  const { data: statusBot, isLoading: loadingStatusBot } = trpc.integracao.statusBot.useQuery();
+
+  const syncBotMutation = trpc.integracao.syncBotWhatsApp.useMutation({
+    onSuccess: (data) => {
+      setBotSyncResult(data);
+      if (data.total === 0) {
+        toast.info("Nenhuma gestante para sincronizar", {
+          description: data.message,
+        });
+      } else if (data.success) {
+        toast.success("Sincronização concluída", {
+          description: data.message,
+        });
+      } else {
+        toast.error("Erro na sincronização", {
+          description: data.message,
         });
       }
     },
@@ -193,6 +224,121 @@ export default function Integracoes() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      {/* Card: Bot WhatsApp (Allowlist) */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                <MessageCircle className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Bot WhatsApp (Allowlist)</CardTitle>
+                <CardDescription>
+                  Sincronização de gestantes ativas com a lista de números autorizados do bot
+                </CardDescription>
+              </div>
+            </div>
+            {loadingStatusBot ? (
+              <Badge variant="outline">Verificando...</Badge>
+            ) : statusBot?.configurado ? (
+              <Badge variant="default" className="bg-green-600">
+                <CheckCircle2 className="h-3 w-3 mr-1" />
+                Configurado
+              </Badge>
+            ) : (
+              <Badge variant="destructive">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Não configurado
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-sm text-muted-foreground space-y-2">
+            <p>
+              Esta integração sincroniza os números de telefone das gestantes ativas com a
+              allowlist do bot de WhatsApp em andreschlemper.com.
+            </p>
+            <p>
+              <strong>Sincronização automática:</strong> Ao cadastrar, editar ou remover uma gestante,
+              o sistema atualiza automaticamente a allowlist do bot. Ao registrar parto ou abortamento,
+              o número é removido automaticamente.
+            </p>
+            <p>
+              <strong>Sincronização em lote:</strong> Use o botão abaixo para enviar todas as gestantes
+              ativas de uma vez. Útil para a primeira sincronização ou para corrigir inconsistências.
+            </p>
+          </div>
+
+          {!statusBot?.configurado && !loadingStatusBot && (
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                <div>
+                  <strong>Configuração necessária:</strong> As variáveis de ambiente{" "}
+                  <code className="bg-yellow-100 px-1 rounded">WHATSAPP_BOT_API_URL</code> e{" "}
+                  <code className="bg-yellow-100 px-1 rounded">WHATSAPP_BOT_API_KEY</code>{" "}
+                  precisam ser configuradas para ativar a integração.
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() => {
+                setBotSyncResult(null);
+                syncBotMutation.mutate();
+              }}
+              disabled={syncBotMutation.isPending || !statusBot?.configurado}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {syncBotMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Sincronizando...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Sincronizar Gestantes com Bot WhatsApp
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Resultado da sincronização */}
+          {botSyncResult && (
+            <div className="rounded-lg border p-4 mt-4">
+              <h4 className="font-medium mb-2">Resultado da Sincronização</h4>
+              <div className="grid grid-cols-3 gap-4 mb-3">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{botSyncResult.synced}</div>
+                  <div className="text-xs text-muted-foreground">Sincronizadas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">{botSyncResult.failed}</div>
+                  <div className="text-xs text-muted-foreground">Falhas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold">{botSyncResult.total}</div>
+                  <div className="text-xs text-muted-foreground">Total</div>
+                </div>
+              </div>
+              {botSyncResult.total > 0 && (
+                <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-green-600 h-full rounded-full transition-all"
+                    style={{ width: `${(botSyncResult.synced / botSyncResult.total) * 100}%` }}
+                  />
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground mt-2">{botSyncResult.message}</p>
             </div>
           )}
         </CardContent>
