@@ -232,13 +232,16 @@ describe('WhatsApp Scheduler - Condições de template (pré-operatório cesáre
     expect(passaTipoParto).toBe(false); // "a_definir" não é cesariana
   });
 
-  it('deve enviar pós-operatório apenas quando tipoParto é cesarea', () => {
+  it('deve enviar evento correto conforme tipo de parto', () => {
     // Simula a lógica do trigger no registro de parto
     const inputCesarea = { tipoParto: 'cesarea' as const };
     const inputNormal = { tipoParto: 'normal' as const };
     
-    expect(inputCesarea.tipoParto === 'cesarea').toBe(true); // Deve enviar
-    expect(inputNormal.tipoParto === 'cesarea').toBe(false); // NÃO deve enviar
+    const eventoCesarea = inputCesarea.tipoParto === 'cesarea' ? 'pos_cesarea' : 'pos_parto_normal';
+    const eventoNormal = inputNormal.tipoParto === 'cesarea' ? 'pos_cesarea' : 'pos_parto_normal';
+    
+    expect(eventoCesarea).toBe('pos_cesarea');
+    expect(eventoNormal).toBe('pos_parto_normal');
   });
 
   it('processarMensagemEvento deve aceitar evento pos_cesarea', async () => {
@@ -261,6 +264,27 @@ describe('WhatsApp Scheduler - Condições de template (pré-operatório cesáre
     expect(templateMsg).toContain('{nome}');
     expect(templateMsg).toContain('Parabéns');
     expect(pdfUrl).toContain('PosOperatorioCesariana.pdf');
+  });
+
+  it('processarMensagemEvento deve aceitar evento pos_parto_normal', async () => {
+    const { processarMensagemEvento } = await import('./whatsappScheduler');
+    const result = await processarMensagemEvento(999999, 'pos_parto_normal', {
+      nome: 'Teste Pós-Parto Normal',
+      telefone: '5535999999999',
+      gestanteId: 1,
+    });
+    expect(result).toBeDefined();
+    expect(result.enviadas).toBe(0);
+    expect(result.erros).toBe(0);
+  });
+
+  it('template pós-parto normal deve conter mensagem de parabéns e PDF', () => {
+    const templateMsg = 'Olá {nome}! Parabéns pelo nascimento do seu bebê!';
+    const pdfUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosPartoNormal.pdf';
+    
+    expect(templateMsg).toContain('{nome}');
+    expect(templateMsg).toContain('Parabéns');
+    expect(pdfUrl).toContain('PosPartoNormal.pdf');
   });
 
   it('template pré-operatório deve ser IG 36 semanas com PDF anexo', () => {

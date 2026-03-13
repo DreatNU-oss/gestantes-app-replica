@@ -2810,10 +2810,9 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const result = await registrarParto(input);
 
-        // Enviar PDF pós-operatório via WhatsApp APENAS para cesárea
-        if (input.tipoParto === 'cesarea' && ctx.user.clinicaId) {
+        // Enviar PDF pós-parto via WhatsApp (cesárea ou normal)
+        if (ctx.user.clinicaId) {
           try {
-            // Buscar dados da gestante para o envio
             const db = await getDb();
             if (db) {
               const [gestante] = await db.select({
@@ -2822,19 +2821,20 @@ export const appRouter = router({
               }).from(gestantes).where(eq(gestantes.id, input.gestanteId)).limit(1);
 
               if (gestante?.telefone) {
-                processarMensagemEvento(ctx.user.clinicaId, 'pos_cesarea', {
+                const evento = input.tipoParto === 'cesarea' ? 'pos_cesarea' : 'pos_parto_normal';
+                processarMensagemEvento(ctx.user.clinicaId, evento, {
                   nome: gestante.nome,
                   telefone: gestante.telefone,
                   gestanteId: input.gestanteId,
                 }).then(r => {
                   if (r.enviadas > 0) {
-                    console.log(`[WhatsApp] Pós-operatório cesárea enviado para ${gestante.nome}`);
+                    console.log(`[WhatsApp] Pós-parto (${input.tipoParto}) enviado para ${gestante.nome}`);
                   }
-                }).catch(err => console.error('[WhatsApp] Erro ao enviar pós-operatório:', err));
+                }).catch(err => console.error(`[WhatsApp] Erro ao enviar pós-parto (${input.tipoParto}):`, err));
               }
             }
           } catch (err) {
-            console.error('[WhatsApp] Erro ao processar envio pós-cesárea:', err);
+            console.error(`[WhatsApp] Erro ao processar envio pós-parto (${input.tipoParto}):`, err);
           }
         }
 

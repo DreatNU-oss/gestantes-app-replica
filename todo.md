@@ -1860,3 +1860,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar template de evento "pos_cesarea" com mensagem de parabéns + PDF
 - [x] Implementar trigger no registro de parto: enviar apenas quando tipo = cesariana
 - [x] Escrever testes para a funcionalidade (42 testes passando)
+
+## Envio Automático PDF Pós Parto Normal ao Registrar Parto Normal
+- [x] Upload do PDF "Pós Parto Normal" para S3
+- [x] Criar template de evento "pos_parto_normal" com mensagem de parabéns + PDF
+- [x] Implementar trigger no registro de parto: enviar quando tipo = normal
+- [x] Escrever testes para a funcionalidade (44 testes passando)
