@@ -1881,3 +1881,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug: Admin sem acesso ao Menu Admin Clínicas
 - [x] Corrigir acesso ao menu Admin Clínicas para role "admin" (frontend + backend corrigidos)
+
+## Tornar E-mail Opcional no Cadastro de Gestantes
+- [x] Remover obrigatoriedade do e-mail no schema do banco de dados (já era opcional no schema)
+- [x] Remover validação obrigatória de e-mail no backend (routers.ts) (já era opcional no backend)
+- [x] Remover validação obrigatória de e-mail no frontend (FormularioGestante)
+- [x] Remover asterisco (*) do label do campo e-mail
