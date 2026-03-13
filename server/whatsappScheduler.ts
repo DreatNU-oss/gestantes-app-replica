@@ -1,7 +1,7 @@
 /**
  * WhatsApp Scheduler - Disparo automático de mensagens por idade gestacional
  * 
- * Este módulo roda periodicamente (a cada 6 horas) e verifica:
+ * Este módulo roda diariamente às 9:00 AM BRT (GMT-3) e verifica:
  * 1. Quais templates de IG estão ativos
  * 2. Quais gestantes atingiram a IG configurada
  * 3. Se a mensagem já foi enviada (evita duplicatas)
@@ -119,9 +119,9 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
 
           const templateTotalDias = template.igSemanas * 7 + (template.igDias || 0);
 
-          // Enviar se a gestante está na semana correta (margem de 3 dias para frente)
-          // Isso permite que o scheduler rode a cada 6h sem perder janelas
-          if (ig.totalDias >= templateTotalDias && ig.totalDias <= templateTotalDias + 3) {
+          // Enviar se a gestante está na semana correta (margem de 1 dia para frente)
+          // Como o scheduler roda 1x por dia às 9h, margem de 1 dia é suficiente
+          if (ig.totalDias >= templateTotalDias && ig.totalDias <= templateTotalDias + 1) {
             // Verificar se já foi enviada
             const enviada = await jaEnviada(db, clinicaConfig.clinicaId, gestante.id, template.id);
             if (enviada) continue;
@@ -156,8 +156,8 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               erros++;
             }
 
-            // Pequeno delay entre envios para não sobrecarregar a API
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Delay de 2 segundos entre envios (trial = 1 req/min, mas produção é mais rápido)
+            await new Promise(resolve => setTimeout(resolve, 2000));
           }
         }
       }
@@ -222,32 +222,75 @@ export async function processarMensagemEvento(
   return { enviadas, erros };
 }
 
+// ─── Calcular ms até próxima execução às 9:00 BRT ──────────────────────────
+
+/**
+ * Calcula quantos milissegundos faltam até as 9:00 AM BRT (UTC-3).
+ * Se já passou das 9:00 BRT hoje, agenda para amanhã.
+ */
+function msAteProxima9hBRT(): number {
+  const agora = new Date();
+  
+  // Converter para horário BRT (UTC-3)
+  const utcHours = agora.getUTCHours();
+  const utcMinutes = agora.getUTCMinutes();
+  const utcSeconds = agora.getUTCSeconds();
+  
+  // 9:00 BRT = 12:00 UTC
+  const targetUTCHour = 12; // 9:00 BRT = 12:00 UTC
+  
+  // Calcular ms desde meia-noite UTC
+  const msDesdeUTCMeiaNoite = (utcHours * 3600 + utcMinutes * 60 + utcSeconds) * 1000;
+  const msAlvo = targetUTCHour * 3600 * 1000; // 12:00 UTC em ms
+  
+  let diff = msAlvo - msDesdeUTCMeiaNoite;
+  
+  // Se já passou, agendar para amanhã
+  if (diff <= 0) {
+    diff += 24 * 60 * 60 * 1000; // +24h
+  }
+  
+  return diff;
+}
+
 // ─── Iniciar Scheduler ──────────────────────────────────────────────────────
 
+let schedulerTimeout: ReturnType<typeof setTimeout> | null = null;
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;
 
+function agendarProximaExecucao() {
+  const ms = msAteProxima9hBRT();
+  const horasRestantes = (ms / (1000 * 60 * 60)).toFixed(1);
+  
+  console.log(`[WhatsApp Scheduler] Próxima execução em ${horasRestantes}h (9:00 AM BRT)`);
+  
+  schedulerTimeout = setTimeout(async () => {
+    console.log(`[WhatsApp Scheduler] Executando às 9:00 AM BRT...`);
+    await processarMensagensIG().catch(console.error);
+    
+    // Após executar, agendar para o dia seguinte (24h)
+    schedulerInterval = setInterval(async () => {
+      console.log(`[WhatsApp Scheduler] Executando às 9:00 AM BRT...`);
+      await processarMensagensIG().catch(console.error);
+    }, 24 * 60 * 60 * 1000); // A cada 24h
+  }, ms);
+}
+
 export function startWhatsAppScheduler() {
-  if (schedulerInterval) return; // Já rodando
+  if (schedulerTimeout || schedulerInterval) return; // Já rodando
 
-  // Rodar a cada 6 horas (21600000 ms)
-  const INTERVAL_MS = 6 * 60 * 60 * 1000;
-
-  // Primeira execução após 5 minutos (dar tempo do server iniciar)
-  setTimeout(() => {
-    processarMensagensIG().catch(console.error);
-  }, 5 * 60 * 1000);
-
-  schedulerInterval = setInterval(() => {
-    processarMensagensIG().catch(console.error);
-  }, INTERVAL_MS);
-
-  console.log('[WhatsApp Scheduler] Iniciado - verificação a cada 6 horas');
+  agendarProximaExecucao();
+  console.log('[WhatsApp Scheduler] Iniciado - execução diária às 9:00 AM BRT (GMT-3)');
 }
 
 export function stopWhatsAppScheduler() {
+  if (schedulerTimeout) {
+    clearTimeout(schedulerTimeout);
+    schedulerTimeout = null;
+  }
   if (schedulerInterval) {
     clearInterval(schedulerInterval);
     schedulerInterval = null;
-    console.log('[WhatsApp Scheduler] Parado');
   }
+  console.log('[WhatsApp Scheduler] Parado');
 }

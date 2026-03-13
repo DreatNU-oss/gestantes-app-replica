@@ -1835,3 +1835,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Procedure processarAgora para disparo manual do scheduler
 - [x] Configurar secret WASENDER_API_KEY (token validado com sucesso)
 - [x] Escrever testes unitários (16 testes passando)
+
+## Copiar templates de e-mail para WhatsApp + Envio às 9h
+- [x] Analisar sistema de e-mails automáticos (5 lembretes: dTpa 27s, Bronquiolite 32s, Morfo1 10s, Morfo2 18s e 19s)
+- [x] Criar templates WhatsApp equivalentes (10 templates: 5 por clínica, 2 clínicas)
+- [x] Ajustar scheduler para enviar às 9:00 AM BRT (GMT-3) diariamente
+- [x] Escrever testes (13 testes passando: horário 9h BRT, conteúdo templates, matching IG)

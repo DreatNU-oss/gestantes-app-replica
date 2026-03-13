@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, codigo FROM clinicas",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, codigo FROM clinicas",
+  "rows": [
+    {
+      "id": "1",
+      "codigo": "00001"
+    },
+    {
+      "id": "30001",
+      "codigo": "00002"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\n1\t00001\n30001\t00002\n",
+  "stderr": "",
+  "execution_time_ms": 143
+}
