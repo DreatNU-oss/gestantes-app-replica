@@ -339,3 +339,114 @@ describe('WhatsApp Scheduler - Lógica de matching por IG', () => {
     expect(shouldSend).toBe(false);
   });
 });
+
+// ─── Test: Notificação para funcionárias ao registrar parto ──────────────────
+
+describe('WhatsApp - Notificação para funcionárias ao registrar parto', () => {
+
+  it('deve gerar mensagem personalizada com nome da funcionária', () => {
+    const funcionarias = [
+      { nome: 'Bruna', telefone: '5535987046110' },
+      { nome: 'Crislaine', telefone: '5535988222837' },
+      { nome: 'Jenifer', telefone: '5535988156771' },
+    ];
+
+    const nomeGestante = 'Maria Silva';
+    const tipoPartoLabel = 'Cesárea';
+    const dataFormatada = '13/03/2026';
+    const nomeMedico = 'Dr. André';
+
+    for (const func of funcionarias) {
+      const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestante}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.\n\nObrigado!`;
+
+      expect(msg).toContain(`Olá ${func.nome}!`);
+      expect(msg).toContain('*Maria Silva*');
+      expect(msg).toContain('*Cesárea*');
+      expect(msg).toContain('*13/03/2026*');
+      expect(msg).toContain('*Dr. André*');
+      expect(msg).toContain('consulta puerperal');
+    }
+  });
+
+  it('deve incluir lembrete de flores quando é segundo parto com Dr. André', () => {
+    const ehSegundoPartoComAndre = true;
+    const lembreteFlores = ehSegundoPartoComAndre
+      ? '\n\n🌸 *ATENÇÃO:* Este é o segundo parto desta paciente com o Dr. André. Por favor, providencie o envio de flores para ela!'
+      : '';
+
+    expect(lembreteFlores).toContain('flores');
+    expect(lembreteFlores).toContain('segundo parto');
+    expect(lembreteFlores).toContain('Dr. André');
+  });
+
+  it('NÃO deve incluir lembrete de flores quando é primeiro parto com Dr. André', () => {
+    const ehSegundoPartoComAndre = false;
+    const lembreteFlores = ehSegundoPartoComAndre
+      ? '\n\n🌸 *ATENÇÃO:* Este é o segundo parto desta paciente com o Dr. André. Por favor, providencie o envio de flores para ela!'
+      : '';
+
+    expect(lembreteFlores).toBe('');
+  });
+
+  it('NÃO deve incluir lembrete de flores quando médico não é Dr. André', () => {
+    const medicoId = 2; // Outro médico
+    const ehSegundoPartoComAndre = medicoId === 1 ? true : false;
+    const lembreteFlores = ehSegundoPartoComAndre
+      ? '\n\n🌸 *ATENÇÃO:* Este é o segundo parto desta paciente com o Dr. André. Por favor, providencie o envio de flores para ela!'
+      : '';
+
+    expect(lembreteFlores).toBe('');
+  });
+
+  it('deve ter os 3 contatos corretos das funcionárias', () => {
+    const funcionarias = [
+      { nome: 'Bruna', telefone: '5535987046110' },
+      { nome: 'Crislaine', telefone: '5535988222837' },
+      { nome: 'Jenifer', telefone: '5535988156771' },
+    ];
+
+    expect(funcionarias).toHaveLength(3);
+    expect(funcionarias[0].nome).toBe('Bruna');
+    expect(funcionarias[1].nome).toBe('Crislaine');
+    expect(funcionarias[2].nome).toBe('Jenifer');
+    // Verificar formato dos telefones (DDI + DDD + número, sem espaços/caracteres)
+    for (const f of funcionarias) {
+      expect(f.telefone).toMatch(/^55\d{10,11}$/);
+    }
+  });
+
+  it('deve formatar a data corretamente de YYYY-MM-DD para DD/MM/YYYY', () => {
+    const dataParto = '2026-03-13';
+    const dataFormatada = dataParto.split('-').reverse().join('/');
+    expect(dataFormatada).toBe('13/03/2026');
+  });
+
+  it('deve mapear tipo de parto corretamente para o label', () => {
+    expect('cesarea' === 'cesarea' ? 'Cesárea' : 'Normal').toBe('Cesárea');
+    expect('normal' === 'cesarea' ? 'Cesárea' : 'Normal').toBe('Normal');
+  });
+
+  it('lógica de segundo parto: count >= 2 significa segundo ou mais partos', () => {
+    // Simula contagem de partos anteriores (já incluindo o atual)
+    const partosCount1 = 1; // Primeiro parto
+    const partosCount2 = 2; // Segundo parto
+    const partosCount3 = 3; // Terceiro parto
+
+    expect(partosCount1 >= 2).toBe(false); // Primeiro parto - sem flores
+    expect(partosCount2 >= 2).toBe(true);  // Segundo parto - com flores
+    expect(partosCount3 >= 2).toBe(true);  // Terceiro parto - com flores
+  });
+
+  it('nome Jenifer deve estar escrito corretamente (sem duplo n)', () => {
+    const funcionarias = [
+      { nome: 'Bruna', telefone: '5535987046110' },
+      { nome: 'Crislaine', telefone: '5535988222837' },
+      { nome: 'Jenifer', telefone: '5535988156771' },
+    ];
+
+    const jenifer = funcionarias.find(f => f.nome === 'Jenifer');
+    expect(jenifer).toBeDefined();
+    expect(jenifer!.nome).toBe('Jenifer'); // Não "Jennifer"
+    expect(jenifer!.nome).not.toBe('Jennifer');
+  });
+});

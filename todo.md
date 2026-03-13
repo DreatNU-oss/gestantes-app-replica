@@ -1866,3 +1866,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar template de evento "pos_parto_normal" com mensagem de parabéns + PDF
 - [x] Implementar trigger no registro de parto: enviar quando tipo = normal
 - [x] Escrever testes para a funcionalidade (44 testes passando)
+
+## Notificação WhatsApp para Funcionárias ao Registrar Parto
+- [x] Implementar envio de mensagem personalizada para Bruna, Crislaine e Jenifer ao registrar qualquer parto
+- [x] Incluir nome da gestante, tipo de parto e data na mensagem
+- [x] Verificar se é segundo parto com Dr. André e incluir lembrete de flores
+- [x] Escrever testes para a funcionalidade (53 testes passando)

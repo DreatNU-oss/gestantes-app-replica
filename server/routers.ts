@@ -118,7 +118,7 @@ import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento } from './whatsappScheduler';
-import { mensagemTemplates, whatsappConfig, whatsappHistorico } from '../drizzle/schema';
+import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -2832,6 +2832,70 @@ export const appRouter = router({
                   }
                 }).catch(err => console.error(`[WhatsApp] Erro ao enviar pós-parto (${input.tipoParto}):`, err));
               }
+
+              // ── Notificar funcionárias da clínica sobre o parto ──
+              const nomeGestante = gestante?.nome || 'Gestante';
+              const tipoPartoLabel = input.tipoParto === 'cesarea' ? 'Cesárea' : 'Normal';
+              const dataParto = input.dataParto; // YYYY-MM-DD
+              const dataFormatada = dataParto.split('-').reverse().join('/');
+
+              // Buscar nome do médico
+              const [medico] = await db.select({ nome: medicos.nome })
+                .from(medicos).where(eq(medicos.id, input.medicoId)).limit(1);
+              const nomeMedico = medico?.nome || 'médico';
+
+              // Verificar se é o segundo parto com Dr. André (medicoId = 1)
+              let ehSegundoPartoComAndre = false;
+              if (input.medicoId === 1) {
+                const partosAnteriores = await db.select({ id: partosRealizados.id })
+                  .from(partosRealizados)
+                  .where(and(
+                    eq(partosRealizados.medicoId, 1),
+                    eq(partosRealizados.gestanteId, input.gestanteId)
+                  ));
+                // O parto atual já foi inserido, então se count >= 2, é o segundo ou mais
+                ehSegundoPartoComAndre = partosAnteriores.length >= 2;
+              }
+
+              const lembreteFlores = ehSegundoPartoComAndre
+                ? '\n\n🌸 *ATENÇÃO:* Este é o segundo parto desta paciente com o Dr. André. Por favor, providencie o envio de flores para ela!'
+                : '';
+
+              // Contatos das funcionárias
+              const funcionarias = [
+                { nome: 'Bruna', telefone: '5535987046110' },
+                { nome: 'Crislaine', telefone: '5535988222837' },
+                { nome: 'Jenifer', telefone: '5535988156771' },
+              ];
+
+              // Enviar mensagem personalizada para cada funcionária (com delay entre envios)
+              const enviarParaFuncionarias = async () => {
+                for (let i = 0; i < funcionarias.length; i++) {
+                  const func = funcionarias[i];
+                  const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestante}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.${lembreteFlores}\n\nObrigado!`;
+
+                  try {
+                    const r = await sendWhatsApp({ to: func.telefone, text: msg }, ctx.user.clinicaId!);
+                    if (r.success) {
+                      console.log(`[WhatsApp] Notificação de parto enviada para ${func.nome}`);
+                    } else {
+                      console.error(`[WhatsApp] Erro ao notificar ${func.nome}: ${r.error}`);
+                    }
+                  } catch (err) {
+                    console.error(`[WhatsApp] Erro ao notificar ${func.nome}:`, err);
+                  }
+
+                  // Aguardar 2 segundos entre envios para evitar rate limit
+                  if (i < funcionarias.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                  }
+                }
+              };
+
+              // Executar assincronamente para não bloquear o registro
+              enviarParaFuncionarias().catch(err =>
+                console.error('[WhatsApp] Erro ao notificar funcionárias:', err)
+              );
             }
           } catch (err) {
             console.error(`[WhatsApp] Erro ao processar envio pós-parto (${input.tipoParto}):`, err);
