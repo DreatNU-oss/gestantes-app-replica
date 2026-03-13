@@ -1,0 +1,32 @@
+{
+  "query": "SELECT * FROM clinicas LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM clinicas LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "codigo": "00001",
+      "nome": "Clínica Mais Mulher",
+      "logoUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png",
+      "integracaoApiAtiva": "1",
+      "ativa": "1",
+      "createdAt": "2026-03-12 11:45:56",
+      "updatedAt": "2026-03-12 22:26:17",
+      "corFundo": "#FFF5F0"
+    },
+    {
+      "id": "30001",
+      "codigo": "00002",
+      "nome": "Clínica Teste 00002",
+      "logoUrl": "NULL",
+      "integracaoApiAtiva": "0",
+      "ativa": "1",
+      "createdAt": "2026-03-12 15:58:15",
+      "updatedAt": "2026-03-12 21:02:09",
+      "corFundo": "#F5FFFF"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\tnome\tlogoUrl\tintegracaoApiAtiva\tativa\tcreatedAt\tupdatedAt\tcorFundo\n1\t00001\tClínica Mais Mulher\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/clinicas/00001/logo-vertical.png\t1\t1\t2026-03-12 11:45:56\t2026-03-12 22:26:17\t#FFF5F0\n30001\t00002\tClínica Teste 00002\tNULL\t0\t1\t2026-03-12 15:58:15\t2026-03-12 21:02:09\t#F5FFFF\n",
+  "stderr": "",
+  "execution_time_ms": 69
+}

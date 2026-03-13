@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, codigo, nome FROM clinicas ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, codigo, nome FROM clinicas ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "codigo": "00001",
+      "nome": "Clínica Mais Mulher"
+    },
+    {
+      "id": "30001",
+      "codigo": "00002",
+      "nome": "Clínica Teste 00002"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\tnome\n1\t00001\tClínica Mais Mulher\n30001\t00002\tClínica Teste 00002\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

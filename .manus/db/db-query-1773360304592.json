@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO whatsappConfig (clinicaId, apiKey, ativo, createdAt) VALUES (1, '1e96943f71a7fbc99798088ec5e2815f895aca7723858dd1f70e3d77100942e5', 1, NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO whatsappConfig (clinicaId, apiKey, ativo, createdAt) VALUES (1, '1e96943f71a7fbc99798088ec5e2815f895aca7723858dd1f70e3d77100942e5', 1, NOW());",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 64
+}

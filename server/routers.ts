@@ -117,6 +117,7 @@ import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
+import { processarMensagemEvento } from './whatsappScheduler';
 import { mensagemTemplates, whatsappConfig, whatsappHistorico } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
@@ -727,6 +728,19 @@ export const appRouter = router({
           // Não falhar a criação da gestante se o medicamento não puder ser adicionado
         }
         
+        // Enviar orientações alimentares via WhatsApp (evento: cadastro_gestante)
+        if (ctx.user.clinicaId && novaGestante.telefone) {
+          processarMensagemEvento(ctx.user.clinicaId, 'cadastro_gestante', {
+            nome: novaGestante.nome,
+            telefone: novaGestante.telefone,
+            gestanteId: novaGestante.id,
+          }).then(result => {
+            if (result.enviadas > 0) {
+              console.log(`[WhatsApp] Orientações alimentares enviadas para ${novaGestante.nome}`);
+            }
+          }).catch(err => console.error('[WhatsApp] Erro ao enviar orientações alimentares:', err));
+        }
+
         // Sincronizar cesárea com sistema administrativo (Mapa Cirúrgico) se data definida
         // APENAS para clínica 00001 (integração API ativa)
         if (input.dataPartoProgramado && input.tipoPartoDesejado === 'cesariana') {

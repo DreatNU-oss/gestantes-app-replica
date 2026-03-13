@@ -1841,3 +1841,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar templates WhatsApp equivalentes (10 templates: 5 por clínica, 2 clínicas)
 - [x] Ajustar scheduler para enviar às 9:00 AM BRT (GMT-3) diariamente
 - [x] Escrever testes (13 testes passando: horário 9h BRT, conteúdo templates, matching IG)
+
+## Envio Automático de PDF Orientações Alimentares ao Cadastrar Gestante
+- [x] Upload do PDF "Orientações Alimentares" para S3
+- [x] Implementar envio automático via WhatsApp ao salvar nova gestante
+- [x] Escrever testes para a funcionalidade (17 testes passando)

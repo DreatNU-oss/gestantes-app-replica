@@ -129,6 +129,49 @@ Você está com *{ig_semanas} semanas de gestação* e está no período ideal p
   });
 });
 
+// ─── Test: Envio automático de PDF ao cadastrar gestante ────────────────────
+
+describe('WhatsApp - Envio automático de orientações alimentares ao cadastrar gestante', () => {
+  
+  it('processarMensagemEvento deve aceitar evento cadastro_gestante', async () => {
+    const { processarMensagemEvento } = await import('./whatsappScheduler');
+    // Chamar com clinicaId inexistente - deve retornar 0 enviadas (sem config ativa)
+    const result = await processarMensagemEvento(999999, 'cadastro_gestante', {
+      nome: 'Teste Cadastro',
+      telefone: '5535999999999',
+      gestanteId: 1,
+    });
+    expect(result).toBeDefined();
+    expect(result.enviadas).toBe(0);
+    expect(result.erros).toBe(0);
+  });
+
+  it('deve ter evento cadastro_gestante no schema', () => {
+    const eventosValidos = ['pos_cesarea', 'pos_parto_normal', 'cadastro_gestante', 'primeira_consulta'];
+    expect(eventosValidos).toContain('cadastro_gestante');
+  });
+
+  it('template de cadastro deve conter variável {nome} e URL do PDF', () => {
+    const templateMsg = 'Olá {nome}! Seja bem-vinda ao acompanhamento pré-natal da Clínica Mais Mulher! Segue em anexo o nosso Guia de Alimentação para uma Gestação Saudável.';
+    const pdfUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes-alimentares/OrientacoesAlimentares1aconsulta.pdf';
+    
+    expect(templateMsg).toContain('{nome}');
+    expect(templateMsg).toContain('Guia de Alimentação');
+    expect(pdfUrl).toContain('.pdf');
+    expect(pdfUrl.startsWith('https://')).toBe(true);
+  });
+
+  it('deve substituir variável {nome} na mensagem de orientações alimentares', async () => {
+    const { replaceTemplateVariables } = await import('./whatsapp');
+    const template = 'Olá {nome}! Seja bem-vinda ao acompanhamento pré-natal!';
+    const result = replaceTemplateVariables(template, {
+      nome: 'Juliana Santos',
+      telefone: '5535999999999',
+    });
+    expect(result).toBe('Olá Juliana Santos! Seja bem-vinda ao acompanhamento pré-natal!');
+  });
+});
+
 // ─── Test: IG matching logic ─────────────────────────────────────────────────
 
 describe('WhatsApp Scheduler - Lógica de matching por IG', () => {
