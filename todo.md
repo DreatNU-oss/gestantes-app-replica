@@ -1853,3 +1853,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar lógica condicional no scheduler para verificar tipo de parto e médico
 - [x] Escrever testes para a funcionalidade (23 testes scheduler passando) (23 testes scheduler passando)
 - [x] Atualizar texto da mensagem do template pré-operatório cesárea para texto personalizado do usuário
+
+## Envio Automático PDF Pós-op Cesariana ao Registrar Parto Cesárea
+- [x] Upload do PDF "Pós-op Cesariana" para S3
+- [x] Revisar fluxo de registro de parto (ícone bebê) no código
+- [x] Criar template de evento "pos_cesarea" com mensagem de parabéns + PDF
+- [x] Implementar trigger no registro de parto: enviar apenas quando tipo = cesariana
+- [x] Escrever testes para a funcionalidade (42 testes passando)

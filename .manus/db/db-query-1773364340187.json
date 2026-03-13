@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO mensagemTemplates (clinicaId, nome, mensagem, pdfUrl, pdfNome, gatilhoTipo, evento, ativo) VALUES (1, 'Parabéns + Cuidados Pós-Operatórios Cesárea', 'Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejamos muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estamos à disposição!', 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf', 'PosOperatorioCesariana.pdf', 'evento', 'pos_cesarea', 1);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO mensagemTemplates (clinicaId, nome, mensagem, pdfUrl, pdfNome, gatilhoTipo, evento, ativo) VALUES (1, 'Parabéns + Cuidados Pós-Operatórios Cesárea', 'Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejamos muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estamos à disposição!', 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf', 'PosOperatorioCesariana.pdf', 'evento', 'pos_cesarea', 1);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 73
+}

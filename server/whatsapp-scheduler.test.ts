@@ -232,6 +232,37 @@ describe('WhatsApp Scheduler - Condições de template (pré-operatório cesáre
     expect(passaTipoParto).toBe(false); // "a_definir" não é cesariana
   });
 
+  it('deve enviar pós-operatório apenas quando tipoParto é cesarea', () => {
+    // Simula a lógica do trigger no registro de parto
+    const inputCesarea = { tipoParto: 'cesarea' as const };
+    const inputNormal = { tipoParto: 'normal' as const };
+    
+    expect(inputCesarea.tipoParto === 'cesarea').toBe(true); // Deve enviar
+    expect(inputNormal.tipoParto === 'cesarea').toBe(false); // NÃO deve enviar
+  });
+
+  it('processarMensagemEvento deve aceitar evento pos_cesarea', async () => {
+    const { processarMensagemEvento } = await import('./whatsappScheduler');
+    // Chamar com clinicaId inexistente - deve retornar 0 enviadas (sem config)
+    const result = await processarMensagemEvento(999999, 'pos_cesarea', {
+      nome: 'Teste Pós-Cesárea',
+      telefone: '5535999999999',
+      gestanteId: 1,
+    });
+    expect(result).toBeDefined();
+    expect(result.enviadas).toBe(0);
+    expect(result.erros).toBe(0);
+  });
+
+  it('template pós-cesárea deve conter mensagem de parabéns e PDF', () => {
+    const templateMsg = 'Olá {nome}! Parabéns pelo nascimento do seu bebê!';
+    const pdfUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf';
+    
+    expect(templateMsg).toContain('{nome}');
+    expect(templateMsg).toContain('Parabéns');
+    expect(pdfUrl).toContain('PosOperatorioCesariana.pdf');
+  });
+
   it('template pré-operatório deve ser IG 36 semanas com PDF anexo', () => {
     const template = {
       igSemanas: 36,

@@ -2807,8 +2807,38 @@ export const appRouter = router({
         pdfKey: z.string().optional(),
         observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
-        return await registrarParto(input);
+      .mutation(async ({ ctx, input }) => {
+        const result = await registrarParto(input);
+
+        // Enviar PDF pós-operatório via WhatsApp APENAS para cesárea
+        if (input.tipoParto === 'cesarea' && ctx.user.clinicaId) {
+          try {
+            // Buscar dados da gestante para o envio
+            const db = await getDb();
+            if (db) {
+              const [gestante] = await db.select({
+                nome: gestantes.nome,
+                telefone: gestantes.telefone,
+              }).from(gestantes).where(eq(gestantes.id, input.gestanteId)).limit(1);
+
+              if (gestante?.telefone) {
+                processarMensagemEvento(ctx.user.clinicaId, 'pos_cesarea', {
+                  nome: gestante.nome,
+                  telefone: gestante.telefone,
+                  gestanteId: input.gestanteId,
+                }).then(r => {
+                  if (r.enviadas > 0) {
+                    console.log(`[WhatsApp] Pós-operatório cesárea enviado para ${gestante.nome}`);
+                  }
+                }).catch(err => console.error('[WhatsApp] Erro ao enviar pós-operatório:', err));
+              }
+            }
+          } catch (err) {
+            console.error('[WhatsApp] Erro ao processar envio pós-cesárea:', err);
+          }
+        }
+
+        return result;
       }),
 
     listar: protectedProcedure
