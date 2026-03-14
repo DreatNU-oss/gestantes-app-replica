@@ -1905,3 +1905,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Ampliar janela de envio de 1 dia para 6 dias (evitar perder mensagens se scheduler falhar em um dia)
 - [x] Filtrar gestantes com parto/abortamento no scheduler (não enviar para quem já deu à luz)
 - [x] Adicionar log mais detalhado para diagnóstico + corrigido cálculo IG por ultrassom (semanas*7+dias)
+
+## URGENTE: Meta tag Google Search Console
+- [x] Adicionar meta tag de verificação do Google Search Console no index.html (permanente)
