@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { replaceTemplateVariables, type GestanteContext } from './whatsapp';
+import { replaceTemplateVariables, extrairPrimeiroNome, type GestanteContext } from './whatsapp';
 
 // ─── Template Variable Replacement Tests ─────────────────────────────────────
 
@@ -17,13 +17,13 @@ describe('WhatsApp - replaceTemplateVariables', () => {
   it('deve substituir todas as variáveis no template', () => {
     const template = 'Olá {nome}, você está com {ig_semanas} semanas e {ig_dias} dias. Sua DPP é {dpp}. Médico: {medico}.';
     const result = replaceTemplateVariables(template, baseContext);
-    expect(result).toBe('Olá Maria Silva, você está com 28 semanas e 3 dias. Sua DPP é 15/06/2026. Médico: Dr. André.');
+    expect(result).toBe('Olá Maria, você está com 28 semanas e 3 dias. Sua DPP é 15/06/2026. Médico: Dr. André.');
   });
 
   it('deve substituir múltiplas ocorrências da mesma variável', () => {
     const template = '{nome} - Lembrete para {nome}';
     const result = replaceTemplateVariables(template, baseContext);
-    expect(result).toBe('Maria Silva - Lembrete para Maria Silva');
+    expect(result).toBe('Maria - Lembrete para Maria');
   });
 
   it('deve lidar com variáveis ausentes (undefined/null)', () => {
@@ -50,13 +50,51 @@ describe('WhatsApp - replaceTemplateVariables', () => {
   it('deve substituir variáveis em mensagem de vacina DTPa', () => {
     const template = 'Olá {nome}! Você está com {ig_semanas} semanas de gestação. É hora de tomar a vacina DTPa. Converse com seu médico {medico} na próxima consulta.';
     const result = replaceTemplateVariables(template, baseContext);
-    expect(result).toContain('Maria Silva');
+    expect(result).toContain('Maria');
     expect(result).toContain('28 semanas');
     expect(result).toContain('Dr. André');
   });
 });
+// ─── Testes de Extração de Primeiro Nome ────────────────────────────────────────
 
-// ─── WhatsApp Scheduler IG Calculation Tests ─────────────────────────────────
+describe('WhatsApp - extrairPrimeiroNome', () => {
+  it('deve extrair primeiro nome de nome completo', () => {
+    expect(extrairPrimeiroNome('Maria Silva')).toBe('Maria');
+  });
+
+  it('deve capitalizar corretamente nomes em maiúsculas', () => {
+    expect(extrairPrimeiroNome('FERNANDA APARECIDA LEMES')).toBe('Fernanda');
+  });
+
+  it('deve capitalizar corretamente nomes em minúsculas', () => {
+    expect(extrairPrimeiroNome('camila rosa carvalho')).toBe('Camila');
+  });
+
+  it('deve lidar com nomes com preposição', () => {
+    expect(extrairPrimeiroNome('Maria da Silva')).toBe('Maria');
+    expect(extrairPrimeiroNome('Ana de Souza')).toBe('Ana');
+  });
+
+  it('deve lidar com nome único', () => {
+    expect(extrairPrimeiroNome('Juliana')).toBe('Juliana');
+  });
+
+  it('deve lidar com string vazia', () => {
+    expect(extrairPrimeiroNome('')).toBe('');
+  });
+
+  it('deve lidar com espaços extras', () => {
+    expect(extrairPrimeiroNome('  Bruna   do Carmo  ')).toBe('Bruna');
+  });
+
+  it('deve usar {nome} como primeiro nome e {nome_completo} como nome inteiro', () => {
+    const template = 'Olá {nome}! Seu nome completo é {nome_completo}.';
+    const result = replaceTemplateVariables(template, { nome: 'Fernanda Aparecida Lemes', telefone: '5535999999999' });
+    expect(result).toBe('Olá Fernanda! Seu nome completo é Fernanda Aparecida Lemes.');
+  });
+});
+
+// ─── WhatsApp Scheduler IG Calculation Tests ─────────────────────────────────────────
 
 describe('WhatsApp Scheduler - Cálculo de IG', () => {
   // Importar a função de cálculo do scheduler

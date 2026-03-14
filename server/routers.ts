@@ -2893,7 +2893,9 @@ export const appRouter = router({
               }
 
               // ── Notificar funcionárias da clínica sobre o parto ──
-              const nomeGestante = gestante?.nome || 'Gestante';
+              const nomeGestante = gestante?.nome?.split(' ')[0] || 'Gestante';
+              // Capitalizar: primeira letra maiúscula, resto minúsculo
+              const nomeGestanteFormatado = nomeGestante.charAt(0).toUpperCase() + nomeGestante.slice(1).toLowerCase();
               const tipoPartoLabel = input.tipoParto === 'cesarea' ? 'Cesárea' : 'Normal';
               const dataParto = input.dataParto; // YYYY-MM-DD
               const dataFormatada = dataParto.split('-').reverse().join('/');
@@ -2931,7 +2933,7 @@ export const appRouter = router({
               const enviarParaFuncionarias = async () => {
                 for (let i = 0; i < funcionarias.length; i++) {
                   const func = funcionarias[i];
-                  const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestante}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.${lembreteFlores}\n\nObrigado!`;
+                  const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestanteFormatado}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.${lembreteFlores}\n\nObrigado!`;
 
                   try {
                     const r = await sendWhatsApp({ to: func.telefone, text: msg }, ctx.user.clinicaId!);

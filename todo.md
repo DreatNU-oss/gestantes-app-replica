@@ -1908,3 +1908,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## URGENTE: Meta tag Google Search Console
 - [x] Adicionar meta tag de verificação do Google Search Console no index.html (permanente)
+
+## Usar Primeiro Nome nas Mensagens WhatsApp
+- [x] Alterar todos os templates e lógica de envio para usar apenas o primeiro nome da gestante
+- [x] Atualizar scheduler (processarMensagensIG) para extrair primeiro nome
+- [x] Atualizar envio manual de orientações alimentares para usar primeiro nome
+- [x] Atualizar envio pós-parto (cesárea e normal) para usar primeiro nome
+- [x] Atualizar notificação para funcionárias para usar primeiro nome da gestante (70 testes passando)

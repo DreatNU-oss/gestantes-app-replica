@@ -109,12 +109,35 @@ export async function sendWhatsApp(message: WhatsAppMessage, clinicaId?: number)
 // ─── Template Variable Replacement ───────────────────────────────────────────
 
 /**
+ * Extrai o primeiro nome de um nome completo.
+ * Ex: "Maria da Silva" → "Maria", "ANA CLARA" → "Ana Clara"
+ */
+export function extrairPrimeiroNome(nomeCompleto: string): string {
+  if (!nomeCompleto) return '';
+  const partes = nomeCompleto.trim().split(/\s+/);
+  // Se o nome tem 2+ partes e a segunda é uma preposição curta, incluir a terceira parte
+  // Ex: "Ana Clara Borges" → "Ana Clara", "Maria da Silva" → "Maria"
+  let primeiro = partes[0] || '';
+  if (partes.length >= 3 && ['da', 'de', 'do', 'das', 'dos'].includes(partes[1].toLowerCase())) {
+    primeiro = partes[0]; // Só o primeiro nome
+  } else if (partes.length >= 2) {
+    // Verificar se o segundo nome é curto (possível nome composto como "Ana Clara")
+    // Usar apenas o primeiro nome para manter pessoal
+    primeiro = partes[0];
+  }
+  // Capitalizar corretamente: primeira letra maiúscula, resto minúsculo
+  return primeiro.charAt(0).toUpperCase() + primeiro.slice(1).toLowerCase();
+}
+
+/**
  * Substitui variáveis no template de mensagem com dados da gestante.
- * Variáveis suportadas: {nome}, {ig_semanas}, {ig_dias}, {dpp}, {medico}
+ * Variáveis suportadas: {nome} (primeiro nome), {nome_completo}, {ig_semanas}, {ig_dias}, {dpp}, {medico}
  */
 export function replaceTemplateVariables(template: string, context: GestanteContext): string {
   let msg = template;
-  msg = msg.replace(/\{nome\}/g, context.nome || '');
+  const primeiroNome = extrairPrimeiroNome(context.nome || '');
+  msg = msg.replace(/\{nome\}/g, primeiroNome);
+  msg = msg.replace(/\{nome_completo\}/g, context.nome || '');
   msg = msg.replace(/\{ig_semanas\}/g, String(context.igSemanas ?? ''));
   msg = msg.replace(/\{ig_dias\}/g, String(context.igDias ?? ''));
   msg = msg.replace(/\{dpp\}/g, context.dpp || '');

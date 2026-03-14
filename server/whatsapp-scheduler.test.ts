@@ -168,7 +168,7 @@ describe('WhatsApp - Envio automático de orientações alimentares ao cadastrar
       nome: 'Juliana Santos',
       telefone: '5535999999999',
     });
-    expect(result).toBe('Olá Juliana Santos! Seja bem-vinda ao acompanhamento pré-natal!');
+    expect(result).toBe('Olá Juliana! Seja bem-vinda ao acompanhamento pré-natal!');
   });
 });
 
@@ -351,16 +351,18 @@ describe('WhatsApp - Notificação para funcionárias ao registrar parto', () =>
       { nome: 'Jenifer', telefone: '5535988156771' },
     ];
 
-    const nomeGestante = 'Maria Silva';
+    const nomeCompleto = 'Maria Silva';
+    const nomeGestante = nomeCompleto.split(' ')[0]; // Primeiro nome apenas
+    const nomeGestanteFormatado = nomeGestante.charAt(0).toUpperCase() + nomeGestante.slice(1).toLowerCase();
     const tipoPartoLabel = 'Cesárea';
     const dataFormatada = '13/03/2026';
     const nomeMedico = 'Dr. André';
 
     for (const func of funcionarias) {
-      const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestante}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.\n\nObrigado!`;
+      const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestanteFormatado}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.\n\nObrigado!`;
 
       expect(msg).toContain(`Olá ${func.nome}!`);
-      expect(msg).toContain('*Maria Silva*');
+      expect(msg).toContain('*Maria*');
       expect(msg).toContain('*Cesárea*');
       expect(msg).toContain('*13/03/2026*');
       expect(msg).toContain('*Dr. André*');
