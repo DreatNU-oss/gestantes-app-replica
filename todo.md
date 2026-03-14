@@ -1915,3 +1915,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar envio manual de orientações alimentares para usar primeiro nome
 - [x] Atualizar envio pós-parto (cesárea e normal) para usar primeiro nome
 - [x] Atualizar notificação para funcionárias para usar primeiro nome da gestante (70 testes passando)
+
+## Bug: Falha no envio WhatsApp por formato de número
+- [x] Investigar formato dos números que falharam (Raissa, Bruna, Giovanna, Marcela, Tatiane)
+- [x] Corrigir normalização de telefone para sempre incluir código do país +55
+- [x] Criar função centralizada normalizePhone() em whatsapp.ts
+- [x] Aplicar normalizePhone() em sendWhatsApp(), sendToGestante() e sendManualMessage()
+- [x] Escrever 8 testes para normalização de telefone (32 testes WhatsApp passando)
+- [ ] Reenviar mensagens para as 4 pacientes com números corrigidos (Erica, Makisleide, Sophy, Maria da Glória)
+- [ ] Monitorar scheduler amanhã às 9h BRT para confirmar envio correto

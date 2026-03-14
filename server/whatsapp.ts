@@ -38,6 +38,31 @@ export interface GestanteContext {
   gestanteId?: number;
 }
 
+// ─── Phone Normalization ────────────────────────────────────────────────────
+
+/**
+ * Normaliza telefone brasileiro para formato E.164 (apenas dígitos com código do país).
+ * Assume sempre Brasil (+55) pois o sistema atende apenas gestantes no Brasil.
+ * Ex: "(35) 99137-5232" → "5535991375232"
+ *     "35991375232"    → "5535991375232"
+ *     "5535991375232"  → "5535991375232"
+ *     "+5535991375232" → "5535991375232"
+ */
+export function normalizePhone(phone: string): string {
+  if (!phone) return '';
+  // Remove tudo que não é dígito
+  let digits = phone.replace(/\D/g, '');
+  // Se começa com 0, remove (ex: 035...)
+  if (digits.startsWith('0')) {
+    digits = digits.substring(1);
+  }
+  // Se não começa com 55, adiciona código do Brasil
+  if (!digits.startsWith('55')) {
+    digits = '55' + digits;
+  }
+  return digits;
+}
+
 // ─── Core Send Function ───────────────────────────────────────────────────────
 
 /**
@@ -77,8 +102,10 @@ export async function sendWhatsApp(message: WhatsAppMessage, clinicaId?: number)
   }
 
   try {
+    // Always normalize phone number to ensure +55 country code
+    const normalizedTo = normalizePhone(message.to) || message.to;
     const body: Record<string, string> = {
-      to: message.to,
+      to: normalizedTo,
       text: message.text,
     };
     if (message.documentUrl) body.documentUrl = message.documentUrl;
@@ -178,8 +205,8 @@ export async function sendToGestante(
     return { success: false, error: 'Gestante sem telefone cadastrado' };
   }
 
-  // Formatar número (remover tudo que não é dígito)
-  const telefoneFormatado = gestante.telefone.replace(/\D/g, '');
+  // Formatar número com código do país (+55 Brasil)
+  const telefoneFormatado = normalizePhone(gestante.telefone);
 
   // Substituir variáveis
   const mensagemFinal = replaceTemplateVariables(template.mensagem, gestante);
@@ -225,7 +252,7 @@ export async function sendManualMessage(
   const db = await getDb();
   if (!db) return { success: false, error: 'Database not available' };
 
-  const telefoneFormatado = telefone.replace(/\D/g, '');
+  const telefoneFormatado = normalizePhone(telefone);
 
   const result = await sendWhatsApp(
     {

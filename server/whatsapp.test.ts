@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { replaceTemplateVariables, extrairPrimeiroNome, type GestanteContext } from './whatsapp';
+import { replaceTemplateVariables, extrairPrimeiroNome, normalizePhone, type GestanteContext } from './whatsapp';
 
 // ─── Template Variable Replacement Tests ─────────────────────────────────────
 
@@ -131,6 +131,44 @@ describe('WhatsApp - sendWhatsApp', () => {
     if (!result.success) {
       expect(result.error).toBeDefined();
     }
+  });
+});
+
+describe('WhatsApp - normalizePhone', () => {
+  it('deve adicionar +55 para número sem código do país', () => {
+    expect(normalizePhone('35991375232')).toBe('5535991375232');
+  });
+
+  it('deve formatar número com parênteses e traço', () => {
+    expect(normalizePhone('(35) 99137-5232')).toBe('5535991375232');
+  });
+
+  it('deve manter número que já tem 55', () => {
+    expect(normalizePhone('5535991375232')).toBe('5535991375232');
+  });
+
+  it('deve formatar número com +55', () => {
+    expect(normalizePhone('+5535991375232')).toBe('5535991375232');
+  });
+
+  it('deve remover zero inicial', () => {
+    expect(normalizePhone('035991375232')).toBe('5535991375232');
+  });
+
+  it('deve formatar número com espaços', () => {
+    expect(normalizePhone('55 35 99137 5232')).toBe('5535991375232');
+  });
+
+  it('deve retornar vazio para string vazia', () => {
+    expect(normalizePhone('')).toBe('');
+  });
+
+  it('deve formatar números reais cadastrados pelas pacientes', () => {
+    // Formato real: (DDD) XXXXX-XXXX sem código do país
+    expect(normalizePhone('(35) 98407-1855')).toBe('5535984071855');
+    expect(normalizePhone('(35) 99243-4836')).toBe('5535992434836');
+    expect(normalizePhone('(35) 99111-5958')).toBe('5535991115958');
+    expect(normalizePhone('(35) 98408-7562')).toBe('5535984087562');
   });
 });
 
