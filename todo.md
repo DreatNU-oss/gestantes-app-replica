@@ -1924,3 +1924,21 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Escrever 8 testes para normalização de telefone (32 testes WhatsApp passando)
 - [ ] Reenviar mensagens para as 4 pacientes com números corrigidos (Erica, Makisleide, Sophy, Maria da Glória)
 - [ ] Monitorar scheduler amanhã às 9h BRT para confirmar envio correto
+
+## Envio em massa: Mensagem sobre tipo de celular (14/03/2026)
+- [ ] Consultar todas as gestantes ativas com telefone
+- [ ] Enviar mensagem perguntando sobre Android/Apple para todas
+- [ ] Respeitar rate limit de 6 segundos entre envios
+- [ ] Reportar resultado (enviadas vs falhas)
+
+## Envio em massa: Mensagem sobre tipo de celular (14/03/2026)
+- [x] Consultar todas as gestantes ativas com telefone (97 gestantes)
+- [x] Enviar mensagem perguntando sobre Android/Apple para todas
+- [x] Respeitar rate limit de 6 segundos entre envios
+- [x] Gerar log de todos os telefones que falharam
+- [x] Reportar resultado: 97/97 enviadas com sucesso, 0 falhas
+
+## Restaurar e-mail obrigatório no cadastro de gestante (14/03/2026)
+- [x] Tornar campo e-mail obrigatório novamente no formulário frontend (cadastro e edição)
+- [x] Restaurar asterisco (*) no label do campo e-mail
+- [x] Verificar e restaurar validação backend (create e update)

@@ -442,8 +442,10 @@ export default function FormularioGestante({
       errors.dataNascimento = 'Data de nascimento é obrigatória';
     }
     
-    // Validar e-mail (opcional)
-    if (formData.email && formData.email.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    // Validar e-mail (obrigatório)
+    if (!formData.email || formData.email.trim() === '') {
+      errors.email = 'E-mail é obrigatório';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'E-mail inválido';
     }
     
@@ -487,7 +489,9 @@ export default function FormularioGestante({
         }
         break;
       case 'email':
-        if (formData.email && formData.email.trim() !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        if (!formData.email || formData.email.trim() === '') {
+          errors.email = 'E-mail é obrigatório';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
           errors.email = 'E-mail inválido';
         }
         break;
@@ -662,7 +666,7 @@ export default function FormularioGestante({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
+                <Label htmlFor="email">E-mail <span className="text-red-500">*</span></Label>
                 <EmailInput
                   id="email"
                   value={formData.email}

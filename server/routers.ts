@@ -648,7 +648,7 @@ export const appRouter = router({
           },
           { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
         ),
-        email: z.string().email({ message: "E-mail inválido" }).optional().or(z.literal("")),
+        email: z.string().email({ message: "E-mail inválido" }),
         dataNascimento: z.string().optional().refine(
           (date) => {
             if (!date) return true; // Opcional
@@ -798,7 +798,7 @@ export const appRouter = router({
           },
           { message: "Telefone inválido. Use o formato (11) 98765-4321 ou (11) 3456-7890" }
         ),
-        email: z.string().email({ message: "E-mail inválido" }).optional().or(z.literal("")),
+        email: z.string().email({ message: "E-mail inválido" }).optional(),
         dataNascimento: z.string().optional().refine(
           (date) => {
             if (!date) return true; // Opcional
