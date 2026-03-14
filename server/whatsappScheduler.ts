@@ -229,8 +229,8 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               console.log(`[WhatsApp Scheduler] ❌ Falha ao enviar para ${gestante.nome}: ${result.error}`);
             }
 
-            // Delay de 2 segundos entre envios (trial = 1 req/min, mas produção é mais rápido)
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Delay de 6 segundos entre envios (Account Protection: 1 msg a cada 5s)
+            await new Promise(resolve => setTimeout(resolve, 6000));
           }
         }
       }
