@@ -1,0 +1,8 @@
+{
+  "query": "SELECT wh.id, wh.gestanteId, g.nome AS gestanteNome, wh.telefone, wh.mensagem, wh.tipo, wh.status, wh.enviadoEm, wh.erro FROM whatsappHistorico wh LEFT JOIN gestantes g ON wh.gestanteId = g.id WHERE wh.enviadoEm >= DATE_SUB(NOW(), INTERVAL 3 DAY) ORDER BY wh.enviadoEm DESC LIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT wh.id, wh.gestanteId, g.nome AS gestanteNome, wh.telefone, wh.mensagem, wh.tipo, wh.status, wh.enviadoEm, wh.erro FROM whatsappHistorico wh LEFT JOIN gestantes g ON wh.gestanteId = g.id WHERE wh.enviadoEm >= DATE_SUB(NOW(), INTERVAL 3 DAY) ORDER BY wh.enviadoEm DESC LIMIT 50;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'wh.enviadoEm' in 'order clause'"
+  ]
+}

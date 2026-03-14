@@ -1,0 +1,13 @@
+{
+  "query": "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION) AS cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'mensagemTemplates';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION) AS cols FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'mensagemTemplates';",
+  "rows": [
+    {
+      "cols": "id,clinicaId,nome,mensagem,pdfUrl,pdfKey,pdfNome,gatilhoTipo,igSemanas,igDias,evento,ativo,criadoPor,createdAt,updatedAt,condicaoTipoParto,condicaoMedicoId"
+    }
+  ],
+  "messages": [],
+  "stdout": "cols\nid,clinicaId,nome,mensagem,pdfUrl,pdfKey,pdfNome,gatilhoTipo,igSemanas,igDias,evento,ativo,criadoPor,createdAt,updatedAt,condicaoTipoParto,condicaoMedicoId\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

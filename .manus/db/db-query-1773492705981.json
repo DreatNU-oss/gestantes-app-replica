@@ -1,0 +1,43 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'whatsappHistorico' ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'whatsappHistorico' ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "clinicaId"
+    },
+    {
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "COLUMN_NAME": "templateId"
+    },
+    {
+      "COLUMN_NAME": "telefone"
+    },
+    {
+      "COLUMN_NAME": "mensagem"
+    },
+    {
+      "COLUMN_NAME": "pdfUrl"
+    },
+    {
+      "COLUMN_NAME": "status"
+    },
+    {
+      "COLUMN_NAME": "erroMensagem"
+    },
+    {
+      "COLUMN_NAME": "nomeGestante"
+    },
+    {
+      "COLUMN_NAME": "sentAt"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\nclinicaId\ngestanteId\ntemplateId\ntelefone\nmensagem\npdfUrl\nstatus\nerroMensagem\nnomeGestante\nsentAt\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

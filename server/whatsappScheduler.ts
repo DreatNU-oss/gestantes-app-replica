@@ -6,24 +6,57 @@
  * 2. Quais gestantes atingiram a IG configurada
  * 3. Se a mensagem já foi enviada (evita duplicatas)
  * 4. Envia a mensagem e registra no histórico
+ * 
+ * Melhorias v2:
+ * - Janela de envio ampliada para 6 dias (evita perder mensagens se o scheduler falhar em um dia)
+ * - Retry com backoff na conexão do banco
+ * - Filtra gestantes com parto/abortamento registrado
+ * - Corrige cálculo de IG por ultrassom (semanas * 7 + dias)
+ * - Log detalhado para diagnóstico
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos } from '../drizzle/schema';
-import { eq, and, isNotNull, sql, desc } from 'drizzle-orm';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos } from '../drizzle/schema';
+import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
+
+// ─── Retry Helper ───────────────────────────────────────────────────────────
+
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayMs = 2000): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      const isConnectionError = error?.cause?.code === 'ECONNRESET' || 
+        error?.message?.includes('ECONNRESET') ||
+        error?.message?.includes('ETIMEDOUT') ||
+        error?.message?.includes('ECONNREFUSED');
+      
+      if (isConnectionError && attempt < maxRetries) {
+        const delay = baseDelayMs * Math.pow(2, attempt - 1);
+        console.log(`[WhatsApp Scheduler] Erro de conexão (tentativa ${attempt}/${maxRetries}), retentando em ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
 
 // ─── Cálculo de Idade Gestacional ────────────────────────────────────────────
 
-function calcularIGAtual(dum: Date | string | null, igUltrassomDias?: number | null, dataUltrassom?: Date | string | null): { semanas: number; dias: number; totalDias: number } | null {
+function calcularIGAtual(dum: Date | string | null, igUltrassomSemanas?: number | null, igUltrassomDias?: number | null, dataUltrassom?: Date | string | null): { semanas: number; dias: number; totalDias: number } | null {
   const hoje = new Date();
 
   // Prioridade: Ultrassom > DUM
-  if (igUltrassomDias && dataUltrassom) {
+  if ((igUltrassomSemanas || igUltrassomSemanas === 0) && dataUltrassom) {
     const dataUS = typeof dataUltrassom === 'string' ? new Date(dataUltrassom + 'T12:00:00') : dataUltrassom;
     const diffMs = hoje.getTime() - dataUS.getTime();
     const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const totalDias = igUltrassomDias + diasDesdeUS;
+    // Converter semanas + dias do ultrassom para total de dias
+    const igTotalDiasNoUS = igUltrassomSemanas * 7 + (igUltrassomDias || 0);
+    const totalDias = igTotalDiasNoUS + diasDesdeUS;
     if (totalDias < 0 || totalDias > 315) return null; // 45 semanas max
     return { semanas: Math.floor(totalDias / 7), dias: totalDias % 7, totalDias };
   }
@@ -66,48 +99,75 @@ async function jaEnviada(db: any, clinicaId: number, gestanteId: number, templat
 // ─── Processar Templates por IG ──────────────────────────────────────────────
 
 export async function processarMensagensIG(): Promise<{ enviadas: number; erros: number }> {
-  const db = await getDb();
-  if (!db) return { enviadas: 0, erros: 0 };
+  const db = await withRetry(() => getDb());
+  if (!db) {
+    console.error('[WhatsApp Scheduler] Falha ao conectar ao banco de dados após retries');
+    return { enviadas: 0, erros: 0 };
+  }
 
   let enviadas = 0;
   let erros = 0;
 
   try {
     // Buscar todas as clínicas com WhatsApp ativo
-    const clinicasAtivas = await db
-      .select()
-      .from(whatsappConfig)
-      .where(eq(whatsappConfig.ativo, 1));
+    const clinicasAtivas = await withRetry(() => 
+      db.select().from(whatsappConfig).where(eq(whatsappConfig.ativo, 1))
+    );
+
+    console.log(`[WhatsApp Scheduler] ${clinicasAtivas.length} clínica(s) com WhatsApp ativo`);
+
+    // Buscar IDs de gestantes que já deram à luz ou tiveram abortamento
+    const partosIds = await withRetry(() =>
+      db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados)
+    );
+    const abortamentosIds = await withRetry(() =>
+      db.select({ gestanteId: abortamentos.gestanteId }).from(abortamentos)
+    );
+    const excludedIds = new Set([
+      ...partosIds.map((p: any) => p.gestanteId),
+      ...abortamentosIds.map((a: any) => a.gestanteId),
+    ]);
+
+    console.log(`[WhatsApp Scheduler] ${excludedIds.size} gestante(s) excluídas (parto/abortamento)`);
 
     for (const clinicaConfig of clinicasAtivas) {
       // Buscar templates de IG ativos desta clínica
-      const templatesIG = await db
-        .select()
-        .from(mensagemTemplates)
-        .where(and(
+      const templatesIG = await withRetry(() =>
+        db.select().from(mensagemTemplates).where(and(
           eq(mensagemTemplates.clinicaId, clinicaConfig.clinicaId),
           eq(mensagemTemplates.gatilhoTipo, 'idade_gestacional'),
           eq(mensagemTemplates.ativo, 1),
           isNotNull(mensagemTemplates.igSemanas),
-        ));
+        ))
+      );
 
-      if (!templatesIG.length) continue;
+      if (!templatesIG.length) {
+        console.log(`[WhatsApp Scheduler] Clínica ${clinicaConfig.clinicaId}: nenhum template IG ativo`);
+        continue;
+      }
+
+      console.log(`[WhatsApp Scheduler] Clínica ${clinicaConfig.clinicaId}: ${templatesIG.length} template(s) IG`);
 
       // Buscar gestantes ativas desta clínica com telefone
-      const gestantesList = await db
-        .select()
-        .from(gestantes)
-        .where(and(
+      const gestantesList = await withRetry(() =>
+        db.select().from(gestantes).where(and(
           sql`${gestantes.clinicaId} = ${clinicaConfig.clinicaId}`,
           isNotNull(gestantes.telefone),
-        ));
+        ))
+      );
 
-      for (const gestante of gestantesList) {
+      // Filtrar gestantes que já deram à luz ou tiveram abortamento
+      const gestantesAtivas = gestantesList.filter((g: any) => !excludedIds.has(g.id));
+
+      console.log(`[WhatsApp Scheduler] Clínica ${clinicaConfig.clinicaId}: ${gestantesAtivas.length} gestante(s) ativas com telefone (${gestantesList.length - gestantesAtivas.length} excluídas)`);
+
+      for (const gestante of gestantesAtivas) {
         if (!gestante.telefone) continue;
 
-        // Calcular IG atual
+        // Calcular IG atual - usando igUltrassomSemanas * 7 + igUltrassomDias
         const ig = calcularIGAtual(
           gestante.dum,
+          gestante.igUltrassomSemanas,
           gestante.igUltrassomDias,
           gestante.dataUltrassom,
         );
@@ -119,17 +179,16 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
 
           const templateTotalDias = template.igSemanas * 7 + (template.igDias || 0);
 
-          // Enviar se a gestante está na semana correta (margem de 1 dia para frente)
-          // Como o scheduler roda 1x por dia às 9h, margem de 1 dia é suficiente
-          if (ig.totalDias >= templateTotalDias && ig.totalDias <= templateTotalDias + 1) {
+          // Janela de envio: 6 dias de margem (evita perder mensagens se scheduler falhar)
+          // Envia se a gestante está na IG do template ou até 6 dias depois
+          // A verificação de "já enviada" evita duplicatas
+          if (ig.totalDias >= templateTotalDias && ig.totalDias <= templateTotalDias + 6) {
             // Verificar condições opcionais do template
-            // Se o template exige tipo de parto específico, verificar
             if (template.condicaoTipoParto && gestante.tipoPartoDesejado !== template.condicaoTipoParto) {
-              continue; // Gestante não atende à condição de tipo de parto
+              continue;
             }
-            // Se o template exige médico específico, verificar
             if (template.condicaoMedicoId && gestante.medicoId !== template.condicaoMedicoId) {
-              continue; // Gestante não atende à condição de médico
+              continue;
             }
 
             // Verificar se já foi enviada
@@ -159,11 +218,15 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               gestanteId: gestante.id,
             };
 
+            console.log(`[WhatsApp Scheduler] Enviando "${template.nome}" para ${gestante.nome} (IG: ${ig.semanas}s${ig.dias}d, template IG: ${template.igSemanas}s)`);
+
             const result = await sendToGestante(clinicaConfig.clinicaId, template.id, context);
             if (result.success) {
               enviadas++;
+              console.log(`[WhatsApp Scheduler] ✅ Enviada com sucesso para ${gestante.nome}`);
             } else {
               erros++;
+              console.log(`[WhatsApp Scheduler] ❌ Falha ao enviar para ${gestante.nome}: ${result.error}`);
             }
 
             // Delay de 2 segundos entre envios (trial = 1 req/min, mas produção é mais rápido)
@@ -176,9 +239,7 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
     console.error('[WhatsApp Scheduler] Erro ao processar mensagens:', error);
   }
 
-  if (enviadas > 0 || erros > 0) {
-    console.log(`[WhatsApp Scheduler] Processamento concluído: ${enviadas} enviadas, ${erros} erros`);
-  }
+  console.log(`[WhatsApp Scheduler] Processamento concluído: ${enviadas} enviadas, ${erros} erros`);
 
   return { enviadas, erros };
 }

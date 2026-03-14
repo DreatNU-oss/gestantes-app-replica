@@ -1899,3 +1899,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar botão "Sincronizar com Bot WhatsApp" na página Integrações
 - [x] Tratamento de erros (409 ignorar, timeout não bloquear operação principal)
 - [x] Escrever testes para a funcionalidade (74 testes passando)
+
+## Bug: Scheduler não enviou mensagens automáticas nos últimos 2 dias
+- [x] Adicionar retry com backoff na conexão do banco no scheduler
+- [x] Ampliar janela de envio de 1 dia para 6 dias (evitar perder mensagens se scheduler falhar em um dia)
+- [x] Filtrar gestantes com parto/abortamento no scheduler (não enviar para quem já deu à luz)
+- [x] Adicionar log mais detalhado para diagnóstico + corrigido cálculo IG por ultrassom (semanas*7+dias)
