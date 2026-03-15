@@ -3079,6 +3079,33 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(({ input }) => deleteFatorRisco(input.id)),
+
+    // Sincronizar fator de risco Rh negativo baseado no tipo sanguíneo
+    syncRhRiskFactor: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoSanguineo: z.string(), // Ex: "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"
+      }))
+      .mutation(async ({ input }) => {
+        const { gestanteId, tipoSanguineo } = input;
+        const ehRhNegativo = tipoSanguineo.endsWith('-');
+        
+        // Buscar fatores de risco atuais
+        const fatoresAtuais = await getFatoresRiscoByGestanteId(gestanteId);
+        const fatorRhExistente = fatoresAtuais.find(f => f.tipo === 'fator_rh_negativo');
+        
+        if (ehRhNegativo && !fatorRhExistente) {
+          // Adicionar fator de risco Rh negativo
+          await createFatorRisco({ gestanteId, tipo: 'fator_rh_negativo' });
+          return { action: 'added', message: 'Fator de risco "Rh Negativo" adicionado automaticamente ao cartão da gestante.' };
+        } else if (!ehRhNegativo && fatorRhExistente) {
+          // Remover fator de risco Rh negativo (soft delete)
+          await deleteFatorRisco(fatorRhExistente.id);
+          return { action: 'removed', message: 'Fator de risco "Rh Negativo" removido automaticamente do cartão da gestante.' };
+        }
+        
+        return { action: 'none', message: null };
+      }),
   }),
 
   // Router de Medicamentos na Gestação

@@ -1972,3 +1972,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] TAB no campo de data vai para o campo de resultado da mesma linha
 - [x] Atributos data-exame-nome, data-field-type, data-trimestre adicionados a todos os campos
 - [x] Compila sem erros TypeScript
+
+## Dropdown Tipo Sanguíneo + Fator de Risco Rh Negativo (15/03/2026)
+- [x] Implementar dropdown com todos os tipos sanguíneos possíveis (A+, A-, B+, B-, AB+, AB-, O+, O-)
+- [x] Ao selecionar tipo com Rh negativo, adicionar automaticamente fator de risco "Rh negativo" na gestante
+- [x] Ao alterar de Rh negativo para positivo, remover automaticamente o fator de risco
+- [x] Mostrar toast/mensagem quando fator de risco for adicionado ou removido
+- [x] Criar procedimento backend syncRhRiskFactor para adicionar/remover fator de risco
+- [x] 7 testes unitários passando (syncRh.test.ts)

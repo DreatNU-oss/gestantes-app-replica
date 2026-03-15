@@ -276,6 +276,31 @@ export default function ExamesLaboratoriais() {
     },
   });
 
+  // Mutation para sincronizar fator de risco Rh negativo baseado no tipo sanguíneo
+  const syncRhMutation = trpc.fatoresRisco.syncRhRiskFactor.useMutation({
+    onSuccess: (data) => {
+      if (data.action === 'added') {
+        toast.warning(data.message, {
+          duration: 6000,
+          icon: '⚠️',
+          description: 'A gestante foi classificada como alto risco por Rh Negativo.',
+        });
+        // Invalidar fatores de risco para atualizar o cartão
+        utils.fatoresRisco.list.invalidate();
+      } else if (data.action === 'removed') {
+        toast.success(data.message, {
+          duration: 6000,
+          icon: '✅',
+          description: 'O tipo sanguíneo agora é Rh Positivo.',
+        });
+        utils.fatoresRisco.list.invalidate();
+      }
+    },
+    onError: (error) => {
+      toast.error('Erro ao sincronizar fator de risco Rh: ' + error.message);
+    },
+  });
+
   // Carregar resultados quando gestante é selecionada
   useEffect(() => {
     if (resultadosSalvos) {
@@ -646,6 +671,67 @@ export default function ExamesLaboratoriais() {
     
     // Verificar se é EPF (Parasitológico de Fezes)
     const ehEPF = nomeExame === "EPF (Parasitológico de Fezes)";
+    
+    // Verificar se é Tipagem sanguínea ABO/Rh
+    const ehTipagem = nomeExame === "Tipagem sanguínea ABO/Rh";
+    
+    // Renderizar dropdown para Tipagem sanguínea ABO/Rh
+    if (ehTipagem) {
+      const tiposSanguineos = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+      const ehRhNegativo = valor?.endsWith('-');
+      
+      // Handler para atalhos numéricos: 1-8 para os tipos
+      const handleKeyDownTipagem = (e: React.KeyboardEvent) => {
+        const idx = parseInt(e.key) - 1;
+        if (idx >= 0 && idx < tiposSanguineos.length) {
+          e.preventDefault();
+          const novoTipo = tiposSanguineos[idx];
+          handleResultadoChange(nomeExame, chave, novoTipo);
+          // Sincronizar fator de risco Rh
+          if (gestanteSelecionada) {
+            syncRhMutation.mutate({ gestanteId: gestanteSelecionada, tipoSanguineo: novoTipo });
+          }
+        }
+      };
+      
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => {
+            handleResultadoChange(nomeExame, chave, novoValor);
+            // Sincronizar fator de risco Rh automaticamente
+            if (gestanteSelecionada) {
+              syncRhMutation.mutate({ gestanteId: gestanteSelecionada, tipoSanguineo: novoValor });
+            }
+          }}
+        >
+          <SelectTrigger 
+            className={`w-full ${ehRhNegativo ? 'border-red-500 bg-red-50 text-red-900 font-bold' : valor ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
+            data-field-type="resultado"
+            data-trimestre={trimestre}
+            onKeyDown={(e) => {
+              handleKeyDownTipagem(e);
+              if (e.key === 'Tab' && !e.shiftKey) {
+                const navegou = navegarParaProximoResultado(trimestre);
+                if (navegou === true || navegou === 'need-date') {
+                  e.preventDefault();
+                }
+              }
+            }}
+            title="Atalhos: 1=A+, 2=A-, 3=B+, 4=B-, 5=AB+, 6=AB-, 7=O+, 8=O-"
+          >
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            {tiposSanguineos.map((tipo) => (
+              <SelectItem key={tipo} value={tipo}>
+                {tipo} {tipo.endsWith('-') ? '⚠️' : ''}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
     
     // Renderizar dropdown para EAS (Urina tipo 1) com campo de observações condicional
     if (ehEAS) {
