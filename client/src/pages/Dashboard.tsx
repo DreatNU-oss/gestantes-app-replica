@@ -266,6 +266,16 @@ export default function Dashboard() {
   const [abortamentoIGDias, setAbortamentoIGDias] = useState<string>("");
   const [abortamentoObs, setAbortamentoObs] = useState<string>("");
 
+  // Buscar exames lab e fatores de risco da gestante selecionada para deletar (para alerta Rh no abortamento)
+  const { data: deleteGestanteExames } = trpc.examesLab.buscar.useQuery(
+    { gestanteId: deleteGestanteId! },
+    { enabled: !!deleteGestanteId && showDeleteDialog }
+  );
+  const { data: deleteGestanteFatores } = trpc.fatoresRisco.list.useQuery(
+    { gestanteId: deleteGestanteId! },
+    { enabled: !!deleteGestanteId && showDeleteDialog }
+  );
+
   const registrarAbortamentoMutation = trpc.abortamentos.registrar.useMutation({
     onSuccess: (data) => {
       toast.success(`Abortamento registrado para ${data.nomeGestante}`);
@@ -828,6 +838,52 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">
                   O abortamento será registrado nas estatísticas e a gestante será removida da lista ativa.
                 </p>
+
+                {/* Alerta Rh Negativo no Abortamento */}
+                {(() => {
+                  const tipagemExame = deleteGestanteExames?.['Tipagem sanguínea ABO/Rh'];
+                  const tipoSanguineo = tipagemExame && typeof tipagemExame === 'object' ? (tipagemExame['1'] || '') : '';
+                  const temTipoSanguineo = !!tipoSanguineo;
+                  const isRhNegativo = tipoSanguineo.includes('-') || deleteGestanteFatores?.some((f: any) => f.tipo === 'fator_rh_negativo');
+
+                  if (!temTipoSanguineo) {
+                    return (
+                      <div className="p-3 rounded-md border-2 border-amber-400 bg-amber-100 dark:bg-amber-950/40">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-bold text-amber-800 dark:text-amber-300 text-sm">
+                              TIPO SANGUÍNEO NÃO CADASTRADO
+                            </p>
+                            <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+                              Verifique o tipo sanguíneo da paciente. Se for <strong>Rh negativo</strong>, é necessário prescrever <strong>Imunoglobulina anti-Rh</strong> após o abortamento.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (isRhNegativo) {
+                    return (
+                      <div className="p-3 rounded-md border-2 border-red-400 bg-red-50 dark:bg-red-950/30">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-bold text-red-700 dark:text-red-400 text-sm">
+                              ⚠️ GESTANTE Rh NEGATIVO ({tipoSanguineo})
+                            </p>
+                            <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+                              <strong>OBRIGATÓRIO:</strong> Prescrever <strong>Imunoglobulina anti-Rh</strong> para a paciente após o abortamento para prevenir sensibilização Rh em gestações futuras.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })()}
 
                 <div className="space-y-2">
                   <Label htmlFor="abortamentoData">Data do Abortamento *</Label>

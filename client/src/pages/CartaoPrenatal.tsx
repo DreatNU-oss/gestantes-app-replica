@@ -2153,6 +2153,77 @@ export default function CartaoPrenatal() {
               </div>
             </CardHeader>
             <CardContent>
+              {/* Alerta Rh Negativo */}
+              {(() => {
+                // Verificar se gestante é Rh negativo via exames lab ou fatores de risco
+                const tipagemExame = resultadosExamesLab?.['Tipagem sanguínea ABO/Rh'];
+                const tipoSanguineo = tipagemExame && typeof tipagemExame === 'object' ? (tipagemExame['1'] || '') : '';
+                const isRhNegativo = tipoSanguineo.includes('-') || fatoresRisco?.some((f: any) => f.tipo === 'fator_rh_negativo');
+                const temTipoSanguineo = !!tipoSanguineo;
+                
+                if (!isRhNegativo) return null;
+                
+                // Calcular data de 28 semanas
+                let data28Semanas = '';
+                let igAtualSemanas = 0;
+                if (gestante) {
+                  // Priorizar US sobre DUM
+                  if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== undefined && gestante.igUltrassomSemanas !== null) {
+                    const dataUS = new Date(gestante.dataUltrassom);
+                    const igDiasNoUS = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0);
+                    const hoje = new Date();
+                    const diffMs = hoje.getTime() - dataUS.getTime();
+                    const diasDesdeUS = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                    const igAtualDias = igDiasNoUS + diasDesdeUS;
+                    igAtualSemanas = Math.floor(igAtualDias / 7);
+                    const diasFaltam28 = (28 * 7) - igAtualDias;
+                    if (diasFaltam28 > 0) {
+                      const data28 = new Date(hoje.getTime() + diasFaltam28 * 24 * 60 * 60 * 1000);
+                      data28Semanas = data28.toLocaleDateString('pt-BR');
+                    }
+                  } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Incompatível com US') {
+                    const dum = new Date(gestante.dum);
+                    const hoje = new Date();
+                    const diffMs = hoje.getTime() - dum.getTime();
+                    const igAtualDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                    igAtualSemanas = Math.floor(igAtualDias / 7);
+                    const diasFaltam28 = (28 * 7) - igAtualDias;
+                    if (diasFaltam28 > 0) {
+                      const data28 = new Date(hoje.getTime() + diasFaltam28 * 24 * 60 * 60 * 1000);
+                      data28Semanas = data28.toLocaleDateString('pt-BR');
+                    }
+                  }
+                }
+                
+                return (
+                  <div className="mb-4 p-4 rounded-lg border-2 border-red-400 bg-red-50 dark:bg-red-950/30">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
+                      <div className="space-y-2">
+                        <p className="font-bold text-red-700 dark:text-red-400 text-base">
+                          ⚠️ GESTANTE Rh NEGATIVO {temTipoSanguineo ? `(${tipoSanguineo})` : ''}
+                        </p>
+                        <ul className="text-sm text-red-700 dark:text-red-300 space-y-1.5 list-disc list-inside">
+                          <li><strong>Solicitar Coombs Indireto</strong> nesta consulta</li>
+                          <li>
+                            <strong>Prescrever Imunoglobulina anti-Rh</strong>
+                            {igAtualSemanas >= 28 ? (
+                              <span className="ml-1 font-bold text-red-800 dark:text-red-200">
+                                — ATENÇÃO: gestante já atingiu 28 semanas! Prescrever AGORA se ainda não prescrito.
+                              </span>
+                            ) : data28Semanas ? (
+                              <span className="ml-1">
+                                — completará 28 semanas em <strong>{data28Semanas}</strong>
+                              </span>
+                            ) : null}
+                          </li>
+                          <li>Em caso de <strong>sangramento vaginal antes de 28 semanas</strong>, prescrever imunoglobulina imediatamente</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>

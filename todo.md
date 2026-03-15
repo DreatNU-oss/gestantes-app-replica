@@ -1988,3 +1988,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Não duplicar unidade se já estiver presente no valor
 - [x] Placeholder mostra unidade esperada (ex: "Resultado (g/dL)")
 - [x] Compila sem erros TypeScript
+
+## Alertas Rh Negativo (15/03/2026)
+- [x] Ao iniciar consulta: se gestante Rh negativo, exibir alerta sobre Coombs indireto e Imunoglobulina anti-Rh
+- [x] Calcular e exibir data em que gestante completará 28 semanas (prioriza US sobre DUM)
+- [x] Mencionar que antes de 28 semanas deve receitar se houver sangramento vaginal
+- [x] Ao registrar aborto: se não há tipo sanguíneo cadastrado, alertar âmbar para verificar
+- [x] Ao registrar aborto: se Rh negativo, alertar vermelho para receitar imunoglobulina anti-Rh
+- [x] 39 testes passando (syncRh + whatsapp)
