@@ -1980,3 +1980,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Mostrar toast/mensagem quando fator de risco for adicionado ou removido
 - [x] Criar procedimento backend syncRhRiskFactor para adicionar/remover fator de risco
 - [x] 7 testes unitários passando (syncRh.test.ts)
+
+## Unidades de medida automáticas nos exames laboratoriais (15/03/2026)
+- [x] Pesquisar unidades de medida padrão: Hb (g/dL), Plaquetas (/mm³), Glicemia (mg/dL), TSH (mUI/L), T4L (ng/dL), Ferritina (ng/mL), VitD (ng/mL), VitB12 (pg/mL), TTGO (mg/dL), Proteinúria (mg/24h)
+- [x] Identificar nomes exatos dos campos em examesConfig.ts
+- [x] Implementar lógica de auto-append da unidade ao perder foco (blur/TAB)
+- [x] Não duplicar unidade se já estiver presente no valor
+- [x] Placeholder mostra unidade esperada (ex: "Resultado (g/dL)")
+- [x] Compila sem erros TypeScript

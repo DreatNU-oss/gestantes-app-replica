@@ -37,6 +37,46 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Mapeamento de unidades de medida para exames laboratoriais
+// Chave = nome do exame (ou "NomeExame::subcampo" para subcampos)
+const UNIDADES_EXAMES: Record<string, string> = {
+  "Hemoglobina/Hematócrito": "g/dL",
+  "Plaquetas": "/mm³",
+  "Glicemia de jejum": "mg/dL",
+  "TSH": "mUI/L",
+  "T4 Livre": "ng/dL",
+  "Ferritina": "ng/mL",
+  "Vitamina D (25-OH)": "ng/mL",
+  "Vitamina B12": "pg/mL",
+  "TTGO 75g (Curva Glicêmica)::Jejum": "mg/dL",
+  "TTGO 75g (Curva Glicêmica)::1 hora": "mg/dL",
+  "TTGO 75g (Curva Glicêmica)::2 horas": "mg/dL",
+  "Proteinúria de 24 horas": "mg/24h",
+};
+
+// Função para obter a unidade de medida de um exame
+const obterUnidadeExame = (nomeExame: string, subcampo?: string): string | null => {
+  if (subcampo) {
+    return UNIDADES_EXAMES[`${nomeExame}::${subcampo}`] || UNIDADES_EXAMES[nomeExame] || null;
+  }
+  return UNIDADES_EXAMES[nomeExame] || null;
+};
+
+// Função para adicionar unidade automaticamente ao valor numérico
+const adicionarUnidade = (valor: string, unidade: string): string => {
+  if (!valor || valor.trim() === '') return valor;
+  // Se já contém a unidade, não duplicar
+  if (valor.includes(unidade)) return valor;
+  // Extrair apenas a parte numérica (aceita vírgula como decimal)
+  const valorLimpo = valor.trim();
+  // Verificar se é um número (com ponto ou vírgula decimal)
+  const ehNumero = /^\d+([.,]\d+)?$/.test(valorLimpo);
+  if (ehNumero) {
+    return `${valorLimpo} ${unidade}`;
+  }
+  return valor;
+};
+
 // Função auxiliar para navegação inteligente por TAB
 // Retorna: true se navegou, false se não navegou, 'need-date' se precisa de data
 const navegarParaProximoResultado = (trimestreAtual: number): boolean | 'need-date' => {
@@ -981,6 +1021,9 @@ export default function ExamesLaboratoriais() {
     }
     
     // Renderizar Input para exames não-sorológicos com botão de histórico
+    const unidadeExame = obterUnidadeExame(nomeExame, subcampo);
+    const placeholderComUnidade = unidadeExame ? `Resultado (${unidadeExame})` : "Resultado";
+    
     return (
       <div className="flex items-center gap-1">
         <InputExameValidado
@@ -990,12 +1033,29 @@ export default function ExamesLaboratoriais() {
           onChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           onKeyDown={(e) => {
             if (e.key === 'Tab' && !e.shiftKey) {
+              // Auto-append unit before navigating
+              if (unidadeExame && valor) {
+                const valorComUnidade = adicionarUnidade(valor, unidadeExame);
+                if (valorComUnidade !== valor) {
+                  handleResultadoChange(nomeExame, chave, valorComUnidade);
+                }
+              }
               const navegou = navegarParaProximoResultado(trimestre);
               if (navegou === true || navegou === 'need-date') {
                 e.preventDefault();
               }
             }
           }}
+          onBlur={() => {
+            // Auto-append unit on blur (click elsewhere)
+            if (unidadeExame && valor) {
+              const valorComUnidade = adicionarUnidade(valor, unidadeExame);
+              if (valorComUnidade !== valor) {
+                handleResultadoChange(nomeExame, chave, valorComUnidade);
+              }
+            }
+          }}
+          placeholder={placeholderComUnidade}
           className="flex-1"
         />
         {historicoDoExame.length > 1 && (
