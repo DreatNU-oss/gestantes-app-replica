@@ -32,6 +32,11 @@ export function calcularMarcosImportantes(dataUltrassom: string, igUltrassom: st
       periodo: "18-24 semanas",
     },
     {
+      titulo: "Curva Glicêmica (TOTG 75g)",
+      data: new Date(dppUS.getTime() - (280 - 168) * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR"),
+      periodo: "24-28 semanas",
+    },
+    {
       titulo: "Ecocardiograma Fetal",
       data: new Date(dppUS.getTime() - (280 - 168) * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR"),
       periodo: "24-28 semanas",

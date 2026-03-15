@@ -1996,3 +1996,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Ao registrar aborto: se não há tipo sanguíneo cadastrado, alertar âmbar para verificar
 - [x] Ao registrar aborto: se Rh negativo, alertar vermelho para receitar imunoglobulina anti-Rh
 - [x] 39 testes passando (syncRh + whatsapp)
+
+## Bug: Curva Glicêmica não aparece na rota gestante.marcos (15/03/2026)
+- [x] Investigar rota tRPC gestante.marcos - causa: rota REST gestanteApi.ts não incluía Curva Glicêmica
+- [x] Corrigido em 4 arquivos: gestanteApi.ts, gestante-router.ts (generateMarcos), marcos.ts, routers.ts (já tinha)
+- [x] Adicionados também: Ecocardiograma Fetal e Estreptococo Grupo B nas rotas que faltavam
+- [x] 39 testes passando, 0 erros TypeScript

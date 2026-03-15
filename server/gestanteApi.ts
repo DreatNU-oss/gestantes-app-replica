@@ -263,6 +263,20 @@ router.get('/marcos', authMiddleware, async (req: GestanteRequest, res: Response
         descricao: 'Ultrassom morfológico do segundo trimestre',
       },
       {
+        nome: 'Curva Glicêmica (TOTG 75g)',
+        dataInicio: calcularDataPorSemana(dpp, 24).toISOString().split('T')[0],
+        dataFim: calcularDataPorSemana(dpp, 28).toISOString().split('T')[0],
+        semana: '24-28',
+        descricao: 'Teste de tolerância à glicose oral para rastreio de diabetes gestacional',
+      },
+      {
+        nome: 'Ecocardiograma Fetal',
+        dataInicio: calcularDataPorSemana(dpp, 24).toISOString().split('T')[0],
+        dataFim: calcularDataPorSemana(dpp, 28).toISOString().split('T')[0],
+        semana: '24-28',
+        descricao: 'Avaliação cardíaca fetal detalhada',
+      },
+      {
         nome: 'Vacina dTpa',
         data: calcularDataPorSemana(dpp, 27).toISOString().split('T')[0],
         semana: 27,
@@ -274,6 +288,13 @@ router.get('/marcos', authMiddleware, async (req: GestanteRequest, res: Response
         dataFim: calcularDataPorSemana(dpp, 36).toISOString().split('T')[0],
         semana: '32-36',
         descricao: 'Vacina contra bronquiolite (VSR)',
+      },
+      {
+        nome: 'Estreptococo Grupo B',
+        dataInicio: calcularDataPorSemana(dpp, 35).toISOString().split('T')[0],
+        dataFim: calcularDataPorSemana(dpp, 37).toISOString().split('T')[0],
+        semana: '35-37',
+        descricao: 'Pesquisa de Streptococcus do grupo B (swab vaginal/retal)',
       },
       {
         nome: 'Termo Precoce',

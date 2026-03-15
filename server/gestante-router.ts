@@ -101,6 +101,20 @@ function generateMarcos(dpp: string, dum: Date) {
       descricao: "Ultrassom morfológico do segundo trimestre",
     },
     {
+      nome: "Curva Glicêmica (TOTG 75g)",
+      dataInicio: weekToDate(24),
+      dataFim: weekToDate(28),
+      semana: "24-28",
+      descricao: "Teste de tolerância à glicose oral para rastreio de diabetes gestacional",
+    },
+    {
+      nome: "Ecocardiograma Fetal",
+      dataInicio: weekToDate(24),
+      dataFim: weekToDate(28),
+      semana: "24-28",
+      descricao: "Avaliação cardíaca fetal detalhada",
+    },
+    {
       nome: "Vacina dTpa",
       data: weekToDate(27),
       semana: 27,
@@ -112,6 +126,13 @@ function generateMarcos(dpp: string, dum: Date) {
       dataFim: weekToDate(36),
       semana: "32-36",
       descricao: "Vacina contra bronquiolite (VSR)",
+    },
+    {
+      nome: "Estreptococo Grupo B",
+      dataInicio: weekToDate(35),
+      dataFim: weekToDate(37),
+      semana: "35-37",
+      descricao: "Pesquisa de Streptococcus do grupo B (swab vaginal/retal)",
     },
     {
       nome: "Termo Precoce",
