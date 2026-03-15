@@ -63,12 +63,29 @@ const obterUnidadeExame = (nomeExame: string, subcampo?: string): string | null 
 };
 
 // Função para adicionar unidade automaticamente ao valor numérico
-const adicionarUnidade = (valor: string, unidade: string): string => {
+const adicionarUnidade = (valor: string, unidade: string, nomeExame?: string): string => {
   if (!valor || valor.trim() === '') return valor;
   // Se já contém a unidade, não duplicar
   if (valor.includes(unidade)) return valor;
-  // Extrair apenas a parte numérica (aceita vírgula como decimal)
   const valorLimpo = valor.trim();
+  
+  // Bug 3 fix: Hemoglobina/Hematócrito aceita dois valores (ex: "12/36", "12 36", "12,5/36")
+  if (nomeExame === 'Hemoglobina/Hematócrito') {
+    // Já formatado?
+    if (valorLimpo.includes('g/dL') || valorLimpo.includes('%')) return valor;
+    // Detectar dois valores separados por / ou espaço
+    const matchDuplo = valorLimpo.match(/^(\d+[.,]?\d*)\s*[\/\s]\s*(\d+[.,]?\d*)$/);
+    if (matchDuplo) {
+      return `${matchDuplo[1]} g/dL / ${matchDuplo[2]}%`;
+    }
+    // Valor único - tratar como hemoglobina
+    const ehNumero = /^\d+([.,]\d+)?$/.test(valorLimpo);
+    if (ehNumero) {
+      return `${valorLimpo} g/dL`;
+    }
+    return valor;
+  }
+  
   // Verificar se é um número (com ponto ou vírgula decimal)
   const ehNumero = /^\d+([.,]\d+)?$/.test(valorLimpo);
   if (ehNumero) {
@@ -79,6 +96,8 @@ const adicionarUnidade = (valor: string, unidade: string): string => {
 
 // Função auxiliar para navegação inteligente por TAB
 // Retorna: true se navegou, false se não navegou, 'need-date' se precisa de data
+// TAB apenas navega entre campos de resultado. O auto-preenchimento de data
+// acontece em handleResultadoChange (quando o usuário digita/seleciona um resultado).
 const navegarParaProximoResultado = (trimestreAtual: number): boolean | 'need-date' => {
   // Buscar todos os campos de resultado do mesmo trimestre
   const camposResultado = Array.from(
@@ -93,30 +112,26 @@ const navegarParaProximoResultado = (trimestreAtual: number): boolean | 'need-da
   
   // Se encontrou o elemento atual e há um próximo
   if (indiceAtual !== -1 && indiceAtual < camposResultado.length - 1) {
-    // Verificar se o campo atual tem resultado preenchido mas sem data
     const campoAtual = camposResultado[indiceAtual];
-    const nomeExameAtual = campoAtual.closest('tr')?.querySelector('[data-exame-nome]')?.getAttribute('data-exame-nome');
     
-    if (nomeExameAtual) {
-      // Verificar se tem resultado preenchido
-      const valorAtual = campoAtual instanceof HTMLInputElement ? campoAtual.value : campoAtual.textContent;
-      const temResultado = valorAtual && valorAtual.trim() !== '' && valorAtual !== '1/2' && valorAtual !== '1/2/3';
-      
-      if (temResultado) {
-        // Verificar se tem data preenchida
-        const campoData = campoAtual.closest('tr')?.querySelector(
-          `input[data-field-type="data"][data-trimestre="${trimestreAtual}"]`
-        ) as HTMLInputElement | null;
-        
-        if (campoData && !campoData.value) {
-          // Não tem data - verificar se há data anterior para copiar
-          const dataAnterior = obterDataAnteriorDOM(trimestreAtual, campoAtual);
-          if (!dataAnterior) {
-            // Sem data anterior - focar no campo de data e exigir preenchimento
-            campoData.focus();
-            return 'need-date';
-          }
-        }
+    // Bug 1 fix: Verificar data do exame atual diretamente pelo campo de data no DOM
+    const campoDataAtual = campoAtual.closest('tr')?.querySelector(
+      `input[data-field-type="data"][data-trimestre="${trimestreAtual}"]`
+    ) as HTMLInputElement | null;
+    
+    // Verificar se o campo atual tem um resultado preenchido mas sem data
+    const valorAtual = campoAtual instanceof HTMLInputElement ? campoAtual.value : campoAtual.textContent;
+    const temResultado = valorAtual && valorAtual.trim() !== '' && valorAtual !== '1/2' && valorAtual !== '1/2/3' && valorAtual !== 'Tipo';
+    
+    if (temResultado && campoDataAtual && !campoDataAtual.value) {
+      // Não tem data - verificar se há data anterior para copiar
+      const dataAnterior = obterDataAnteriorDOM(trimestreAtual, campoAtual);
+      if (!dataAnterior) {
+        // Sem data anterior - focar no campo de data e exigir preenchimento
+        campoDataAtual.focus();
+        campoDataAtual.classList.add('ring-2', 'ring-red-500');
+        toast.error("Data obrigatória: preencha a data da coleta antes de continuar.");
+        return 'need-date';
       }
     }
     
@@ -439,11 +454,29 @@ export default function ExamesLaboratoriais() {
           if (!dataAtual || dataAtual.trim() === '') {
             // Buscar data do exame anterior via DOM
             const campoResultadoAtual = document.activeElement;
+            let dataAnterior: string | null = null;
             if (campoResultadoAtual) {
-              const dataAnterior = obterDataAnteriorDOM(parseInt(numTrimestre), campoResultadoAtual);
-              if (dataAnterior) {
-                (novoEstado[exame] as Record<string, string>)[campoData] = dataAnterior;
+              dataAnterior = obterDataAnteriorDOM(parseInt(numTrimestre), campoResultadoAtual);
+            }
+            
+            // Bug 2 fix: Se não encontrou no DOM, buscar no state (prev)
+            // O DOM pode estar desatualizado quando a data foi recém-digitada
+            if (!dataAnterior) {
+              // Percorrer todos os exames no state para encontrar uma data preenchida
+              for (const [outroExame, outroValor] of Object.entries(novoEstado)) {
+                if (outroExame === exame) continue; // Pular o próprio exame
+                if (typeof outroValor === 'object' && outroValor !== null) {
+                  const dataOutro = (outroValor as Record<string, string>)[campoData];
+                  if (dataOutro && dataOutro.trim() !== '') {
+                    dataAnterior = dataOutro;
+                    break; // Usar a primeira data encontrada
+                  }
+                }
               }
+            }
+            
+            if (dataAnterior) {
+              (novoEstado[exame] as Record<string, string>)[campoData] = dataAnterior;
             }
           }
         }
@@ -743,6 +776,44 @@ export default function ExamesLaboratoriais() {
             if (gestanteSelecionada) {
               syncRhMutation.mutate({ gestanteId: gestanteSelecionada, tipoSanguineo: novoValor });
             }
+            // Após selecionar tipo sanguíneo, verificar se precisa de data
+            // Usar setTimeout para garantir que o DOM foi atualizado
+            setTimeout(() => {
+              const trigger = document.querySelector(
+                `[data-field-type="resultado"][data-trimestre="${trimestre}"]`
+              ) as HTMLElement | null;
+              if (trigger) {
+                const row = trigger.closest('tr');
+                if (row) {
+                  const campoData = row.querySelector(
+                    `input[data-field-type="data"][data-trimestre="${trimestre}"]`
+                  ) as HTMLInputElement | null;
+                  if (campoData && !campoData.value) {
+                    // Verificar se há data anterior para copiar
+                    const dataAnterior = obterDataAnteriorDOM(trimestre, trigger);
+                    if (dataAnterior) {
+                      // Auto-preencher data
+                      const numTrimestre = String(trimestre).match(/\d/)?.[0];
+                      if (numTrimestre) {
+                        setResultados(prev => ({
+                          ...prev,
+                          [nomeExame]: {
+                            ...(typeof prev[nomeExame] === 'object' && prev[nomeExame] !== null ? prev[nomeExame] : {}),
+                            [`data${numTrimestre}`]: dataAnterior,
+                          },
+                        }));
+                      }
+                    } else {
+                      // Sem data anterior - focar no campo de data e exigir preenchimento
+                      campoData.focus();
+                      campoData.classList.add('ring-2', 'ring-red-500');
+                      toast.error("Data obrigatória: preencha a data da coleta antes de continuar.");
+                      return; // Não avançar
+                    }
+                  }
+                }
+              }
+            }, 100);
           }}
         >
           <SelectTrigger 
@@ -1035,7 +1106,7 @@ export default function ExamesLaboratoriais() {
             if (e.key === 'Tab' && !e.shiftKey) {
               // Auto-append unit before navigating
               if (unidadeExame && valor) {
-                const valorComUnidade = adicionarUnidade(valor, unidadeExame);
+                const valorComUnidade = adicionarUnidade(valor, unidadeExame, nomeExame);
                 if (valorComUnidade !== valor) {
                   handleResultadoChange(nomeExame, chave, valorComUnidade);
                 }
@@ -1049,7 +1120,7 @@ export default function ExamesLaboratoriais() {
           onBlur={() => {
             // Auto-append unit on blur (click elsewhere)
             if (unidadeExame && valor) {
-              const valorComUnidade = adicionarUnidade(valor, unidadeExame);
+              const valorComUnidade = adicionarUnidade(valor, unidadeExame, nomeExame);
               if (valorComUnidade !== valor) {
                 handleResultadoChange(nomeExame, chave, valorComUnidade);
               }

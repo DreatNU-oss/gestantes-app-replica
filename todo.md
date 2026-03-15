@@ -2002,3 +2002,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigido em 4 arquivos: gestanteApi.ts, gestante-router.ts (generateMarcos), marcos.ts, routers.ts (já tinha)
 - [x] Adicionados também: Ecocardiograma Fetal e Estreptococo Grupo B nas rotas que faltavam
 - [x] 39 testes passando, 0 erros TypeScript
+
+## Bug: TAB navigation em Exames Laboratoriais (15/03/2026)
+- [x] Bug 1: Tipo Sanguíneo (dropdown) não exige data ao ser primeiro exame sem data anterior
+- [x] Bug 2: Após preencher data manualmente e TAB, data não é auto-copiada para o próximo exame (fallback busca no state React)
+- [x] Bug 3: Hemoglobina/Hematócrito não recebe unidades duplas (g/dL e %) quando valor é "12/36" ou "12 36"
