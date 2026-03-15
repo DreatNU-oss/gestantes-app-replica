@@ -179,12 +179,7 @@ export default function ExamesLaboratoriais() {
 
   // Debug: verificar dados da gestante
   React.useEffect(() => {
-    if (gestante) {
-      console.log('[DEBUG ExamesLaboratoriais] Gestante carregada:', gestante.nome);
-      console.log('[DEBUG ExamesLaboratoriais] DUM:', gestante.dum);
-      console.log('[DEBUG ExamesLaboratoriais] calculado:', gestante.calculado);
-      console.log('[DEBUG ExamesLaboratoriais] dppUS:', gestante.calculado?.dppUS);
-    }
+    // Gestante loaded
   }, [gestante]);
 
   // Query para buscar resultados salvos com histórico
@@ -283,7 +278,6 @@ export default function ExamesLaboratoriais() {
 
   // Carregar resultados quando gestante é selecionada
   useEffect(() => {
-    console.log('🔍 DEBUG resultadosSalvos:', resultadosSalvos);
     if (resultadosSalvos) {
       setResultados(resultadosSalvos);
     } else if (gestanteSelecionada) {
@@ -605,23 +599,17 @@ export default function ExamesLaboratoriais() {
   // Função para obter a primeira data preenchida de um trimestre
   const obterPrimeiraDataTrimestre = (numeroTrimestre: 1 | 2 | 3): string | null => {
     const campoData = `data${numeroTrimestre}`;
-    console.log('[DEBUG] obterPrimeiraDataTrimestre chamada. Trimestre:', numeroTrimestre, 'Campo:', campoData);
-    console.log('[DEBUG] Resultados atuais:', resultados);
     
     // Percorrer todos os exames para encontrar a primeira data preenchida
     for (const exame of [...examesSangue, ...examesUrina, ...examesFezes, ...outrosExames]) {
       const resultadoExame = resultados[exame.nome];
-      console.log('[DEBUG] Verificando exame:', exame.nome, 'Resultado:', resultadoExame);
       if (typeof resultadoExame === 'object' && resultadoExame !== null) {
         const data = resultadoExame[campoData];
-        console.log('[DEBUG] Data encontrada:', data);
         if (data && data.trim() !== '') {
-          console.log('[DEBUG] Retornando data:', data);
           return data;
         }
       }
     }
-    console.log('[DEBUG] Nenhuma data encontrada');
     return null;
   };
 
@@ -1443,11 +1431,6 @@ export default function ExamesLaboratoriais() {
                   dumGestante={gestante?.dum && gestante.dum !== "Incerta" && gestante.dum !== "Incompatível com US" ? new Date(gestante.dum) : null}
                   dppUltrassom={gestante?.calculado?.dppUS ? new Date(gestante.calculado.dppUS) : null}
                   onResultados={(novosResultados, trimestre, dataColeta, arquivosProcessados, modoAutomatico) => {
-                    console.log('[DEBUG FRONTEND] onResultados chamado');
-                    console.log('[DEBUG FRONTEND] novosResultados:', novosResultados);
-                    console.log('[DEBUG FRONTEND] trimestre:', trimestre);
-                    console.log('[DEBUG FRONTEND] dataColeta:', dataColeta);
-                    console.log('[DEBUG FRONTEND] modoAutomatico:', modoAutomatico);
                     
                     // Converter resultados da IA para o formato esperado
                     const trimestreNumPadrao = trimestre === "primeiro" ? "1" : trimestre === "segundo" ? "2" : "3";
@@ -1511,16 +1494,13 @@ export default function ExamesLaboratoriais() {
                           // Mas o mais seguro é verificar se o valor é muito baixo
                           const numVal = valorLower.startsWith('<') ? 0 : valorNum;
                           if (numVal < 0.5) {
-                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Não Reagente (< 0.5)`);
                             return { valorNormalizado: 'Não Reagente' };
                           } else if (numVal >= 0.5 && numVal < 1.0) {
                             // Zona cinza - pode ser indeterminado ou reagente dependendo do exame
                             // Ser conservador e marcar como Indeterminado
-                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Indeterminado (0.5-1.0)`);
                             return { valorNormalizado: 'Indeterminado' };
                           } else {
                             // Valores altos geralmente são Reagente
-                            console.log(`[NORMALIZAR] Sorologia ${nomeExame}: valor numérico ${valor} interpretado como Reagente (>= 1.0)`);
                             return { valorNormalizado: 'Reagente' };
                           }
                         }
@@ -1571,7 +1551,6 @@ export default function ExamesLaboratoriais() {
                     };
                     
                     for (const [chave, valor] of Object.entries(novosResultados)) {
-                      console.log(`[DEBUG FRONTEND] Processando: ${chave} = ${valor}`);
                       
                       // A chave pode conter sufixos com trimestre e data:
                       // Formato: "NomeExame::trimestre::data" ou "NomeExame::data"
@@ -1595,7 +1574,7 @@ export default function ExamesLaboratoriais() {
                             if (modoAutomatico) {
                               trimestreNum = calcularTrimestreAutomatico(dataExame, dumGestanteDate);
                             }
-                            console.log(`[DEBUG FRONTEND] Data detectada: ${dataExame}, trimestre: ${trimestreNum}`);
+
                           } else if (/^[123]$/.test(partes[1])) {
                             // É um número de trimestre (1, 2 ou 3)
                             // No modo manual, usar o trimestre selecionado pelo usuário
@@ -1610,7 +1589,6 @@ export default function ExamesLaboratoriais() {
                       
                       // Detectar se é um exame com subcampo (formato: "NomeExame__Subcampo")
                       if (nomeExameBase.includes('__')) {
-                        console.log(`[DEBUG FRONTEND] Detectado subcampo em: ${nomeExameBase}`);
                         const [nomeExame, sub] = nomeExameBase.split('__');
                         subcampo = sub;
                         nomeExameBase = nomeExame;
@@ -1625,7 +1603,6 @@ export default function ExamesLaboratoriais() {
                         
                         // Adicionar subcampo ao trimestre correspondente
                         const subcampoKey = `${subcampo}_${trimestreNum}`;
-                        console.log(`[DEBUG FRONTEND] subcampoKey: ${subcampoKey}`);
                         (resultadosFormatados[nomeExameBase] as Record<string, string>)[subcampoKey] = valor;
                         
                         // Adicionar data para o trimestre (uma vez por exame)
@@ -1636,7 +1613,6 @@ export default function ExamesLaboratoriais() {
                         // Exame simples (sem subcampos)
                         // Normalizar o valor para o formato esperado pelo dropdown
                         const { valorNormalizado, camposExtras } = normalizarValorExame(nomeExameBase, valor);
-                        console.log(`[DEBUG FRONTEND] Valor normalizado: ${valor} -> ${valorNormalizado}`);
                         
                         const existente = resultados[nomeExameBase];
                         resultadosFormatados[nomeExameBase] = {
@@ -1657,7 +1633,6 @@ export default function ExamesLaboratoriais() {
                       }
                     }
                     
-                    console.log('[DEBUG FRONTEND] resultadosFormatados:', resultadosFormatados);
                     
                     setResultados(prev => {
                       const novoEstado = { ...prev };
@@ -1681,12 +1656,10 @@ export default function ExamesLaboratoriais() {
                             const campoJaPreenchido = valorExistente && valorExistente.trim() !== '';
                             
                             if (campoJaPreenchido) {
-                              console.log(`[DEBUG FRONTEND] Campo ${nomeExame}.${campo} já preenchido com "${valorExistente}", ignorando novo valor "${valor}"`);
                               camposIgnorados++;
                             } else {
                               mesclado[campo] = valor;
                               camposAdicionados++;
-                              console.log(`[DEBUG FRONTEND] Campo ${nomeExame}.${campo} preenchido com "${valor}"`);
                             }
                           }
                           
@@ -1699,18 +1672,14 @@ export default function ExamesLaboratoriais() {
                             valorExistente.trim() !== '';
                           
                           if (campoJaPreenchido) {
-                            console.log(`[DEBUG FRONTEND] Exame ${nomeExame} já preenchido com "${valorExistente}", ignorando novo valor "${novoValor}"`);
                             camposIgnorados++;
                           } else {
                             novoEstado[nomeExame] = novoValor;
                             camposAdicionados++;
-                            console.log(`[DEBUG FRONTEND] Exame ${nomeExame} preenchido com "${novoValor}"`);
                           }
                         }
                       }
                       
-                      console.log(`[DEBUG FRONTEND] Resumo: ${camposAdicionados} campos adicionados, ${camposIgnorados} campos ignorados (já preenchidos)`);
-                      console.log('[DEBUG FRONTEND] Novo estado de resultados:', novoEstado);
                       return novoEstado;
                     });
                     
