@@ -38,7 +38,8 @@ import {
 } from "@/components/ui/select";
 
 // Função auxiliar para navegação inteligente por TAB
-const navegarParaProximoResultado = (trimestreAtual: number) => {
+// Retorna: true se navegou, false se não navegou, 'need-date' se precisa de data
+const navegarParaProximoResultado = (trimestreAtual: number): boolean | 'need-date' => {
   // Buscar todos os campos de resultado do mesmo trimestre
   const camposResultado = Array.from(
     document.querySelectorAll<HTMLInputElement | HTMLButtonElement>(
@@ -52,12 +53,66 @@ const navegarParaProximoResultado = (trimestreAtual: number) => {
   
   // Se encontrou o elemento atual e há um próximo
   if (indiceAtual !== -1 && indiceAtual < camposResultado.length - 1) {
+    // Verificar se o campo atual tem resultado preenchido mas sem data
+    const campoAtual = camposResultado[indiceAtual];
+    const nomeExameAtual = campoAtual.closest('tr')?.querySelector('[data-exame-nome]')?.getAttribute('data-exame-nome');
+    
+    if (nomeExameAtual) {
+      // Verificar se tem resultado preenchido
+      const valorAtual = campoAtual instanceof HTMLInputElement ? campoAtual.value : campoAtual.textContent;
+      const temResultado = valorAtual && valorAtual.trim() !== '' && valorAtual !== '1/2' && valorAtual !== '1/2/3';
+      
+      if (temResultado) {
+        // Verificar se tem data preenchida
+        const campoData = campoAtual.closest('tr')?.querySelector(
+          `input[data-field-type="data"][data-trimestre="${trimestreAtual}"]`
+        ) as HTMLInputElement | null;
+        
+        if (campoData && !campoData.value) {
+          // Não tem data - verificar se há data anterior para copiar
+          const dataAnterior = obterDataAnteriorDOM(trimestreAtual, campoAtual);
+          if (!dataAnterior) {
+            // Sem data anterior - focar no campo de data e exigir preenchimento
+            campoData.focus();
+            return 'need-date';
+          }
+        }
+      }
+    }
+    
     const proximoCampo = camposResultado[indiceAtual + 1];
     proximoCampo.focus();
     return true;
   }
   
   return false;
+};
+
+// Função para buscar data do exame anterior mais próximo (acima) que tem data preenchida, via DOM
+const obterDataAnteriorDOM = (trimestre: number, campoResultadoAtual: Element): string | null => {
+  const camposResultado = Array.from(
+    document.querySelectorAll<HTMLInputElement | HTMLButtonElement>(
+      `[data-field-type="resultado"][data-trimestre="${trimestre}"]`
+    )
+  );
+  
+  const indiceAtual = camposResultado.indexOf(campoResultadoAtual as HTMLInputElement | HTMLButtonElement);
+  
+  // Percorrer os exames acima (de baixo para cima) para encontrar a data mais próxima
+  for (let i = indiceAtual - 1; i >= 0; i--) {
+    const campoAnterior = camposResultado[i];
+    const rowAnterior = campoAnterior.closest('tr');
+    if (rowAnterior) {
+      const campoDataAnterior = rowAnterior.querySelector(
+        `input[data-field-type="data"][data-trimestre="${trimestre}"]`
+      ) as HTMLInputElement | null;
+      if (campoDataAnterior && campoDataAnterior.value && campoDataAnterior.value.trim() !== '') {
+        return campoDataAnterior.value;
+      }
+    }
+  }
+  
+  return null;
 };
 
 // Lista de exames sorológicos que devem ter dropdown Reagente/Não Reagente
@@ -301,13 +356,42 @@ export default function ExamesLaboratoriais() {
   }, [gestanteSelecionada]);
 
   const handleResultadoChange = (exame: string, trimestre: string, valor: string) => {
-    setResultados((prev) => ({
-      ...prev,
-      [exame]: {
-        ...(typeof prev[exame] === 'object' && prev[exame] !== null ? prev[exame] : {}),
-        [trimestre]: valor,
-      },
-    }));
+    setResultados((prev) => {
+      const novoEstado = {
+        ...prev,
+        [exame]: {
+          ...(typeof prev[exame] === 'object' && prev[exame] !== null ? prev[exame] : {}),
+          [trimestre]: valor,
+        },
+      };
+      
+      // Auto-preencher data quando um resultado é digitado/selecionado
+      // Apenas para campos de resultado (não para campos de data, obs, agente, etc.)
+      const ehCampoResultado = /^(\d|[A-Za-z]+_\d)$/.test(trimestre);
+      if (ehCampoResultado && valor && valor.trim() !== '') {
+        // Extrair número do trimestre
+        const numTrimestre = trimestre.match(/\d/)?.[0];
+        if (numTrimestre) {
+          const campoData = `data${numTrimestre}`;
+          const exameObj = novoEstado[exame];
+          const dataAtual = typeof exameObj === 'object' && exameObj !== null ? (exameObj as Record<string, string>)[campoData] : '';
+          
+          // Só auto-preencher se a data ainda não está preenchida
+          if (!dataAtual || dataAtual.trim() === '') {
+            // Buscar data do exame anterior via DOM
+            const campoResultadoAtual = document.activeElement;
+            if (campoResultadoAtual) {
+              const dataAnterior = obterDataAnteriorDOM(parseInt(numTrimestre), campoResultadoAtual);
+              if (dataAnterior) {
+                (novoEstado[exame] as Record<string, string>)[campoData] = dataAnterior;
+              }
+            }
+          }
+        }
+      }
+      
+      return novoEstado;
+    });
   };
 
   // Função para salvar resultados (usada pelo botão e pelo atalho Ctrl+S)
@@ -606,7 +690,7 @@ export default function ExamesLaboratoriais() {
                 handleKeyDownEAS(e);
                 if (e.key === 'Tab' && !e.shiftKey) {
                   const navegou = navegarParaProximoResultado(trimestre);
-                  if (navegou) {
+                  if (navegou === true || navegou === 'need-date') {
                     e.preventDefault();
                   }
                 }
@@ -666,7 +750,7 @@ export default function ExamesLaboratoriais() {
                 handleKeyDownUrocultura(e);
                 if (e.key === 'Tab' && !e.shiftKey) {
                   const navegou = navegarParaProximoResultado(trimestre);
-                  if (navegou) {
+                  if (navegou === true || navegou === 'need-date') {
                     e.preventDefault();
                   }
                 }
@@ -726,16 +810,16 @@ export default function ExamesLaboratoriais() {
             className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
             data-field-type="resultado"
             data-trimestre={trimestre}
-            onKeyDown={(e) => {
-              handleKeyDownEPF(e);
-              if (e.key === 'Tab' && !e.shiftKey) {
-                const navegou = navegarParaProximoResultado(trimestre);
-                if (navegou) {
-                  e.preventDefault();
+              onKeyDown={(e) => {
+                handleKeyDownEPF(e);
+                if (e.key === 'Tab' && !e.shiftKey) {
+                  const navegou = navegarParaProximoResultado(trimestre);
+                  if (navegou === true || navegou === 'need-date') {
+                    e.preventDefault();
+                  }
                 }
-              }
-            }}
-            title="Atalhos: 1=Positivo, 2=Negativo"
+              }}
+              title="Atalhos: 1=Positivo, 2=Negativo"
           >
             <SelectValue placeholder="1/2" />
           </SelectTrigger>
@@ -804,7 +888,7 @@ export default function ExamesLaboratoriais() {
               handleKeyDownSorologico(e);
               if (e.key === 'Tab' && !e.shiftKey) {
                 const navegou = navegarParaProximoResultado(trimestre);
-                if (navegou) {
+                if (navegou === true || navegou === 'need-date') {
                   e.preventDefault();
                 }
               }
@@ -833,7 +917,7 @@ export default function ExamesLaboratoriais() {
           onKeyDown={(e) => {
             if (e.key === 'Tab' && !e.shiftKey) {
               const navegou = navegarParaProximoResultado(trimestre);
-              if (navegou) {
+              if (navegou === true || navegou === 'need-date') {
                 e.preventDefault();
               }
             }
@@ -862,7 +946,7 @@ export default function ExamesLaboratoriais() {
         <React.Fragment key={exame.nome}>
           {exame.subcampos.map((subcampo, index) => (
             <TableRow key={`${exame.nome}-${subcampo}`}>
-              <TableCell className="font-medium">
+              <TableCell className="font-medium" data-exame-nome={exame.nome}>
                 {index === 0 ? exame.nome : ""}
                 <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
               </TableCell>
@@ -872,10 +956,23 @@ export default function ExamesLaboratoriais() {
                   <div className="flex flex-col gap-1">
                     <Input
                       type="date"
+                      data-field-type="data"
+                      data-trimestre={1}
+                      data-exame-nome={exame.nome}
                       value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data1", e.target.value)
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Tab' && !e.shiftKey) {
+                          const row = (e.target as HTMLElement).closest('tr');
+                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="1"]`) as HTMLElement;
+                          if (campoResultado) {
+                            e.preventDefault();
+                            campoResultado.focus();
+                          }
+                        }
+                      }}
                       className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_1`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
@@ -904,10 +1001,23 @@ export default function ExamesLaboratoriais() {
                   <div className="flex flex-col gap-1">
                     <Input
                       type="date"
+                      data-field-type="data"
+                      data-trimestre={2}
+                      data-exame-nome={exame.nome}
                       value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data2", e.target.value)
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Tab' && !e.shiftKey) {
+                          const row = (e.target as HTMLElement).closest('tr');
+                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="2"]`) as HTMLElement;
+                          if (campoResultado) {
+                            e.preventDefault();
+                            campoResultado.focus();
+                          }
+                        }
+                      }}
                       className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_2`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
@@ -936,10 +1046,23 @@ export default function ExamesLaboratoriais() {
                   <div className="flex flex-col gap-1">
                     <Input
                       type="date"
+                      data-field-type="data"
+                      data-trimestre={3}
+                      data-exame-nome={exame.nome}
                       value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
                       onChange={(e) =>
                         handleResultadoChange(exame.nome, "data3", e.target.value)
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Tab' && !e.shiftKey) {
+                          const row = (e.target as HTMLElement).closest('tr');
+                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="3"]`) as HTMLElement;
+                          if (campoResultado) {
+                            e.preventDefault();
+                            campoResultado.focus();
+                          }
+                        }
+                      }}
                       className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_3`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
                       placeholder="Data"
                     />
@@ -971,17 +1094,31 @@ export default function ExamesLaboratoriais() {
     // Renderização normal para exames sem subcampos
     return (
       <TableRow key={exame.nome}>
-        <TableCell className="font-medium">{exame.nome}</TableCell>
+        <TableCell className="font-medium" data-exame-nome={exame.nome}>{exame.nome}</TableCell>
         {/* 1º Trimestre - Data */}
         <TableCell className="text-center">
           {exame.trimestres.primeiro ? (
             <div className="flex flex-col gap-1">
               <Input
                 type="date"
+                data-field-type="data"
+                data-trimestre={1}
+                data-exame-nome={exame.nome}
                 value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data1", e.target.value)
                 }
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    // Ao TAB de um campo de data, ir para o campo de resultado da mesma linha
+                    const row = (e.target as HTMLElement).closest('tr');
+                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="1"]`) as HTMLElement;
+                    if (campoResultado) {
+                      e.preventDefault();
+                      campoResultado.focus();
+                    }
+                  }
+                }}
                 className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["1"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />
@@ -1008,10 +1145,23 @@ export default function ExamesLaboratoriais() {
             <div className="flex flex-col gap-1">
               <Input
                 type="date"
+                data-field-type="data"
+                data-trimestre={2}
+                data-exame-nome={exame.nome}
                 value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data2", e.target.value)
                 }
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    const row = (e.target as HTMLElement).closest('tr');
+                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="2"]`) as HTMLElement;
+                    if (campoResultado) {
+                      e.preventDefault();
+                      campoResultado.focus();
+                    }
+                  }
+                }}
                 className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["2"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />
@@ -1038,10 +1188,23 @@ export default function ExamesLaboratoriais() {
             <div className="flex flex-col gap-1">
               <Input
                 type="date"
+                data-field-type="data"
+                data-trimestre={3}
+                data-exame-nome={exame.nome}
                 value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
                 onChange={(e) =>
                   handleResultadoChange(exame.nome, "data3", e.target.value)
                 }
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    const row = (e.target as HTMLElement).closest('tr');
+                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="3"]`) as HTMLElement;
+                    if (campoResultado) {
+                      e.preventDefault();
+                      campoResultado.focus();
+                    }
+                  }
+                }}
                 className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["3"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
                 placeholder="Data"
               />

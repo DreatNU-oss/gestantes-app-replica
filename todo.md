@@ -1959,3 +1959,16 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar marco "Curva Glicêmica" (24s0d a 28s6d) na página MarcosImportantes
 - [x] Adicionar marco "Curva Glicêmica" no Cartão de Pré-Natal (visualização + PDF + calcularMarcos)
 - [x] CartaoPrenatalPDF recebe marcos via props do calcularMarcos (já incluído)
+
+## Template WhatsApp: Curva Glicêmica (15/03/2026)
+- [x] Verificar estrutura dos templates existentes no banco
+- [x] Criar template de mensagem para Curva Glicêmica (ID 60001, IG 24 semanas, usando {nome} = primeiro nome)
+- [x] Template configurado como gatilhoTipo='idade_gestacional', igSemanas=24 - scheduler dispara automaticamente
+
+## Preenchimento rápido de exames laboratoriais com TAB (15/03/2026)
+- [x] TAB no campo Resultado pula para Resultado do próximo exame abaixo (mesmo trimestre)
+- [x] Ao preencher resultado, auto-preencher data com a data do exame anterior mais próximo que tem data
+- [x] Se não há data anterior (ex: primeiro exame), exigir data antes de permitir avançar
+- [x] TAB no campo de data vai para o campo de resultado da mesma linha
+- [x] Atributos data-exame-nome, data-field-type, data-trimestre adicionados a todos os campos
+- [x] Compila sem erros TypeScript
