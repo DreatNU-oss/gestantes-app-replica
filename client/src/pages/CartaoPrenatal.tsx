@@ -994,6 +994,7 @@ export default function CartaoPrenatal() {
           { titulo: 'Morfol\u00f3gico 1\u00ba Tri (11-13s)', inicio: new Date(concepcao.getTime() + 77*24*60*60*1000), fim: new Date(concepcao.getTime() + 98*24*60*60*1000), color: [110, 231, 183] }, // emerald-300
           { titulo: '13 Semanas', data: new Date(concepcao.getTime() + 91*24*60*60*1000), color: [147, 197, 253] }, // blue-300
           { titulo: 'Morfol\u00f3gico 2\u00ba Tri (20-24s)', inicio: new Date(concepcao.getTime() + 140*24*60*60*1000), fim: new Date(concepcao.getTime() + 168*24*60*60*1000), color: [103, 232, 249] }, // cyan-300
+          { titulo: 'Curva Glic\u00eamica (24-28s)', inicio: new Date(concepcao.getTime() + 168*24*60*60*1000), fim: new Date(concepcao.getTime() + 202*24*60*60*1000), color: [251, 191, 36] }, // amber-300
           { titulo: 'Vacina dTpa (27s)', data: new Date(concepcao.getTime() + 189*24*60*60*1000), color: [253, 186, 116] }, // orange-300
           { titulo: 'Vacina Bronquiolite (32-36s)', inicio: new Date(concepcao.getTime() + 224*24*60*60*1000), fim: new Date(concepcao.getTime() + 252*24*60*60*1000), color: [253, 224, 71] }, // yellow-300
           { titulo: 'Termo Precoce (37s)', data: new Date(concepcao.getTime() + 259*24*60*60*1000), color: [103, 232, 249] }, // cyan-300
@@ -1366,6 +1367,13 @@ export default function CartaoPrenatal() {
     const morf2Fim = new Date(concepcao);
     morf2Fim.setDate(morf2Fim.getDate() + 168);
     marcos.push({ titulo: "Morfológico 2º Tri", data: `${morf2Inicio.toLocaleDateString("pt-BR")} a ${morf2Fim.toLocaleDateString("pt-BR")}` });
+    
+    // Curva Glicêmica (24-28 semanas e 6 dias)
+    const curvaGlicInicio = new Date(concepcao);
+    curvaGlicInicio.setDate(curvaGlicInicio.getDate() + 168);
+    const curvaGlicFim = new Date(concepcao);
+    curvaGlicFim.setDate(curvaGlicFim.getDate() + 202);
+    marcos.push({ titulo: "Curva Glicêmica", data: `${curvaGlicInicio.toLocaleDateString("pt-BR")} a ${curvaGlicFim.toLocaleDateString("pt-BR")}` });
     
     // Vacina dTpa (27 semanas)
     const dtpa = new Date(concepcao);
@@ -1949,6 +1957,14 @@ export default function CartaoPrenatal() {
       semanas: [20, 24],
       dias: [0, 6],
       color: "bg-cyan-100 text-cyan-700 border-cyan-300",
+      isRange: true,
+    },
+    {
+      titulo: "Curva Glicêmica",
+      icon: Activity,
+      semanas: [24, 28],
+      dias: [0, 6],
+      color: "bg-amber-100 text-amber-700 border-amber-300",
       isRange: true,
     },
     {

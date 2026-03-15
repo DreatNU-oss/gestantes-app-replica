@@ -1942,3 +1942,20 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Tornar campo e-mail obrigatório novamente no formulário frontend (cadastro e edição)
 - [x] Restaurar asterisco (*) no label do campo e-mail
 - [x] Verificar e restaurar validação backend (create e update)
+
+## Testar envio automático de templates WhatsApp (14/03/2026)
+- [x] Investigar lógica do scheduler de WhatsApp (whatsappScheduler.ts)
+- [x] Verificar templates configurados e como funciona o envio por IG
+- [x] Verificar dados da paciente TESTE TESTE (telefone, DUM, IG)
+- [x] Criar teste enviando mensagem template para TESTE TESTE em 5 minutos
+- [x] Mensagem enviada com SUCESSO às 18:29 BRT (erro apenas no registro do histórico - coluna enviadoEm não existe)
+
+## Usar apenas primeiro nome nas mensagens WhatsApp (14/03/2026)
+- [x] Verificado: replaceTemplateVariables() já usa extrairPrimeiroNome() para {nome}
+- [x] Scheduler automático (sendToGestante) já envia com primeiro nome
+- [x] Problema era apenas nos scripts manuais de envio em massa (já corrigido para próximos)
+
+## Adicionar Marco: Curva Glicêmica (15/03/2026)
+- [x] Adicionar marco "Curva Glicêmica" (24s0d a 28s6d) na página MarcosImportantes
+- [x] Adicionar marco "Curva Glicêmica" no Cartão de Pré-Natal (visualização + PDF + calcularMarcos)
+- [x] CartaoPrenatalPDF recebe marcos via props do calcularMarcos (já incluído)

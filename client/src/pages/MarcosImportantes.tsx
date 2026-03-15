@@ -123,6 +123,15 @@ export default function MarcosImportantes() {
       isRange: true,
     },
     {
+      titulo: "Curva Glicêmica",
+      descricao: "Período ideal: 24 semanas a 28 semanas e 6 dias",
+      icon: Activity,
+      semanas: [24, 28],
+      dias: [0, 6],
+      color: "bg-amber-100 text-amber-700 border-amber-300",
+      isRange: true,
+    },
+    {
       titulo: "Vacina dTpa",
       descricao: "Recomendada a partir de 27 semanas",
       icon: Syringe,

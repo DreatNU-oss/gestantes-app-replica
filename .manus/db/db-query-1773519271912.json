@@ -1,0 +1,280 @@
+{
+  "query": "\nSELECT g.id, g.nome, g.telefone,\n  CASE WHEN g.telefone IS NULL OR g.telefone = '' THEN 'SEM TELEFONE' \n       WHEN g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL) THEN 'TEM PARTO'\n       WHEN g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL) THEN 'TEM ABORTAMENTO'\n       WHEN UPPER(g.nome) LIKE '%TESTE TESTE%' THEN 'TESTE'\n       ELSE 'ATIVA - DEVERIA RECEBER' END AS motivo_exclusao\nFROM gestantes g\nWHERE g.telefone IS NULL OR g.telefone = '' \n   OR g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\n   OR g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL)\n   OR UPPER(g.nome) LIKE '%TESTE TESTE%'\nORDER BY motivo_exclusao, g.nome\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT g.id, g.nome, g.telefone,\n  CASE WHEN g.telefone IS NULL OR g.telefone = '' THEN 'SEM TELEFONE' \n       WHEN g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL) THEN 'TEM PARTO'\n       WHEN g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL) THEN 'TEM ABORTAMENTO'\n       WHEN UPPER(g.nome) LIKE '%TESTE TESTE%' THEN 'TESTE'\n       ELSE 'ATIVA - DEVERIA RECEBER' END AS motivo_exclusao\nFROM gestantes g\nWHERE g.telefone IS NULL OR g.telefone = '' \n   OR g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\n   OR g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL)\n   OR UPPER(g.nome) LIKE '%TESTE TESTE%'\nORDER BY motivo_exclusao, g.nome\n",
+  "rows": [
+    {
+      "id": "330011",
+      "nome": "Aline Aparecida Ribeiro Reis",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330012",
+      "nome": "Aline Clara Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330020",
+      "nome": "Anna Clara Sousa Borges",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330024",
+      "nome": "Bruna Fernandes Fonseca Oliveira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330029",
+      "nome": "Carine Rosário Pereira Galvão",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330031",
+      "nome": "Cecília de Salles Amaral Olímpio",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330032",
+      "nome": "Cinthia dos Anjos Antonietto Drumond",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330033",
+      "nome": "Cintia de Oliveira Souza Rosa",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330037",
+      "nome": "Danielle Fliegner Enout Nadur",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330038",
+      "nome": "Denise Bittencourt Siqueira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330041",
+      "nome": "Eliane Tolentino Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330045",
+      "nome": "Fabrícia Paulino Luciano da Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330058",
+      "nome": "Jéssica Aparecida de Souza",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330059",
+      "nome": "Joyce Mirelle Costa Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "870001",
+      "nome": "Julia Prates Gonçalves",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330063",
+      "nome": "Kerolainy Aparecida Faria Jorge",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330066",
+      "nome": "Laura Antônia Marques Correa",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330067",
+      "nome": "Laura Stefany Quintiliano da Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330068",
+      "nome": "Letícia Campos Calderaro Dias",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330069",
+      "nome": "Letícia Celeste Caetano",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330071",
+      "nome": "Letícia Nogueira Chauke Piovezan",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330079",
+      "nome": "Naiane Kelly de Oliveira Vale",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "930002",
+      "nome": "Patrícia de Melo Carvalho",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330002",
+      "nome": "Paula Marques de Oliveira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330082",
+      "nome": "Poliane Amado Silva do Prado",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330083",
+      "nome": "Raquel Couto e Silva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330085",
+      "nome": "Rayssa Aparecida Oliveira Martins",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330086",
+      "nome": "Roana Borges Nascimento",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "1290002",
+      "nome": "Sara Rosa da SIlva",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330095",
+      "nome": "Tainara dos Reis Oliveira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330096",
+      "nome": "Tamiris Cristina Moreira Gomes",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330099",
+      "nome": "Taynara Magalhães Porfirio",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330097",
+      "nome": "Thaina Cristiane Marques",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330102",
+      "nome": "Thaynara Evelyn Souza Galo",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330094",
+      "nome": "Valéria Aparecida Palmeira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330093",
+      "nome": "Vanessa Gomes Ferreira",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330091",
+      "nome": "Wanna Marya Coelho Rosa Borges",
+      "telefone": "NULL",
+      "motivo_exclusao": "SEM TELEFONE"
+    },
+    {
+      "id": "330039",
+      "nome": "Débora Gouvea Rocha de Jesus",
+      "telefone": "(32) 99999-9999",
+      "motivo_exclusao": "TEM PARTO"
+    },
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "telefone": "5535991156028",
+      "motivo_exclusao": "TESTE"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\tmotivo_exclusao\n330011\tAline Aparecida Ribeiro Reis\tNULL\tSEM TELEFONE\n330012\tAline Clara Silva\tNULL\tSEM TELEFONE\n330014\tAmanda Cristina Souza Oliveira\tNULL\tSEM TELEFONE\n330015\tAmanda Junqueira Vilela\tNULL\tSEM TELEFONE\n330020\tAnna Clara Sousa Borges\tNULL\tSEM TELEFONE\n330024\tBruna Fernandes Fonseca Oliveira\tNULL\tSEM TELEFONE\n300004\tCamila Zanco Pereira\tNULL\tSEM TELEFONE\n330029\tCarine Rosário Pereira Galvão\tNULL\tSEM TELEFONE\n330031\tCecília de Salles Amaral Olímpio\tNULL\tSEM TELEFONE\n330032\tCinthia dos Anjos Antonietto Drumond\tNULL\tSEM TELEFONE\n330033\tCintia de Oliveira Souza Rosa\tNULL\tSEM TELEFONE\n330005\tDaniela Aparecida Françoso\tNULL\tSEM TELEFONE\n330037\tDanielle Fliegner Enout Nadur\tNULL\tSEM TELEFONE\n330038\tDenise Bittencourt Siqueira\tNULL\tSEM TELEFONE\n330041\tEliane Tolentino Silva\tNULL\tSEM TELEFONE\n330045\tFabrícia Paulino Luciano da Silva\tNULL\tSEM TELEFONE\n330058\tJéssica Aparecida de Souza\tNULL\tSEM TELEFONE\n300005\tJosiane Alves Batista\tNULL\tSEM TELEFONE\n330059\tJoyce Mirelle Costa Silva\tNULL\tSEM TELEFONE\n870001\tJulia Prates Gonçalves\tNULL\tSEM TELEFONE\n330063\tKerolainy Aparecida Faria Jorge\tNULL\tSEM TELEFONE\n330004\tKetlin Pereira Ferreira\tNULL\tSEM TELEFONE\n330066\tLaura Antônia Marques Correa\tNULL\tSEM TELEFONE\n330067\tLaura Stefany Quintiliano da Silva\tNULL\tSEM TELEFONE\n330068\tLetícia Campos Calderaro Dias\tNULL\tSEM TELEFONE\n330069\tLetícia Celeste Caetano\tNULL\tSEM TELEFONE\n330071\tLetícia Nogueira Chauke Piovezan\tNULL\tSEM TELEFONE\n330079\tNaiane Kelly de Oliveira Vale\tNULL\tSEM TELEFONE\n930002\tPatrícia de Melo Carvalho\tNULL\tSEM TELEFONE\n330002\tPaula Marques de Oliveira\tNULL\tSEM TELEFONE\n330082\tPoliane Amado Silva do Prado\tNULL\tSEM TELEFONE\n330083\tRaquel Couto e Silva\tNULL\tSEM TELEFONE\n330085\tRayssa Aparecida Oliveira Martins\tNULL\tSEM TELEFONE\n330086\tRoana Borges Nascimento\tNULL\tSEM TELEFONE\n1290002\tSara Rosa da SIlva\tNULL\tSEM TELEFONE\n330095\tTainara dos Reis Oliveira\tNULL\tSEM TELEFONE\n330096\tTamiris Cristina Moreira Gomes\tNULL\tSEM TELEFONE\n330099\tTaynara Magalhães Porfirio\tNULL\tSEM TELEFONE\n330097\tThaina Cristiane Marques\tNULL\tSEM TELEFONE\n330102\tThaynara Evelyn Souza Galo\tNULL\tSEM TELEFONE\n330094\tValéria Aparecida Palmeira\tNULL\tSEM TELEFONE\n330093\tVanessa Gomes Ferreira\tNULL\tSEM TELEFONE\n330091\tWanna Marya Coelho Rosa Borges\tNULL\tSEM TELEFONE\n330039\tDébora Gouvea Rocha de Jesus\t(32) 99999-9999\tTEM PARTO\n1560002\tTESTE TESTE\t5535991156028\tTESTE\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

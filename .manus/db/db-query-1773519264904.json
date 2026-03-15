@@ -1,0 +1,1146 @@
+{
+  "query": "\nSELECT g.id, g.nome, g.telefone,\n  CASE WHEN g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL) THEN 'SIM' ELSE 'NÃO' END AS tem_parto,\n  CASE WHEN g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL) THEN 'SIM' ELSE 'NÃO' END AS tem_abortamento,\n  CASE WHEN UPPER(g.nome) LIKE '%TESTE TESTE%' THEN 'SIM' ELSE 'NÃO' END AS eh_teste\nFROM gestantes g\nORDER BY g.nome\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT g.id, g.nome, g.telefone,\n  CASE WHEN g.id IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL) THEN 'SIM' ELSE 'NÃO' END AS tem_parto,\n  CASE WHEN g.id IN (SELECT gestanteId FROM abortamentos WHERE gestanteId IS NOT NULL) THEN 'SIM' ELSE 'NÃO' END AS tem_abortamento,\n  CASE WHEN UPPER(g.nome) LIKE '%TESTE TESTE%' THEN 'SIM' ELSE 'NÃO' END AS eh_teste\nFROM gestantes g\nORDER BY g.nome\n",
+  "rows": [
+    {
+      "id": "30001",
+      "nome": "Adrieli Rezende Barros",
+      "telefone": "(35) 99228-9660",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1350002",
+      "nome": "Alexandra Maria Silva Souza ",
+      "telefone": "(35) 99126-8626",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330011",
+      "nome": "Aline Aparecida Ribeiro Reis",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330012",
+      "nome": "Aline Clara Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330013",
+      "nome": "Aline Cristina Soares Gallo",
+      "telefone": "(35) 98842-2584",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330015",
+      "nome": "Amanda Junqueira Vilela",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330016",
+      "nome": "Amanda Paula da Costa Silva",
+      "telefone": "(35) 98856-8114",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1500002",
+      "nome": "Amanda Ribeiro Freitas",
+      "telefone": "(35) 99931-1810",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330017",
+      "nome": "Amanda Tavares Amado",
+      "telefone": "(35) 99775-4348",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1140002",
+      "nome": "Ana Beatriz de Oliveira Salles",
+      "telefone": "(35) 99985-2307",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2190002",
+      "nome": "Ana Carolini Almeida de Souza",
+      "telefone": "(14) 99635-7688",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330018",
+      "nome": "Ana Clara Borges da Silva",
+      "telefone": "(35) 98889-2511",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1890002",
+      "nome": "Ana Laura Marinho Amaral",
+      "telefone": "(31) 98252-2303",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1170003",
+      "nome": "Andressa Cristina Gonçalves",
+      "telefone": "(35) 99912-6437",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "telefone": "(35) 99849-3185",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330020",
+      "nome": "Anna Clara Sousa Borges",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "telefone": "(35) 99904-0233",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "telefone": "(35) 99147-0014",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330023",
+      "nome": "Bruna do Carmo Cunha",
+      "telefone": "(35) 98407-1855",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330024",
+      "nome": "Bruna Fernandes Fonseca Oliveira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330025",
+      "nome": "Bruna Ribeiro Costa",
+      "telefone": "(35) 99705-0080",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330026",
+      "nome": "Bruna Tertuliano de Souza",
+      "telefone": "(35) 99112-1923",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1650002",
+      "nome": "Camila Cristina Luiz da Silva",
+      "telefone": "(35) 98435-1550",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330027",
+      "nome": "Camila Dias Vicente",
+      "telefone": "(35) 99909-0827",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "720002",
+      "nome": "Camila Paiva do Nascimento",
+      "telefone": "(35) 98427-6768",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330028",
+      "nome": "Camila Rosa Carvalho",
+      "telefone": "(35) 98864-0766",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "telefone": "(35) 99179-1204",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "300004",
+      "nome": "Camila Zanco Pereira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2160002",
+      "nome": "Camily De Souza Junqueira Costa",
+      "telefone": "(35) 98441-1782",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330029",
+      "nome": "Carine Rosário Pereira Galvão",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330031",
+      "nome": "Cecília de Salles Amaral Olímpio",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1860002",
+      "nome": "Chaiane Priscila da Silva Carvalho",
+      "telefone": "(35) 98859-4161",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330032",
+      "nome": "Cinthia dos Anjos Antonietto Drumond",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330033",
+      "nome": "Cintia de Oliveira Souza Rosa",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330034",
+      "nome": "Crisilane Aparecida da Costa Soares",
+      "telefone": "(35) 99932-7688",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330035",
+      "nome": "Crislayne Eleniz de Andrade",
+      "telefone": "(35) 98702-9492",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1770002",
+      "nome": "Damaris Pereira Arlindo",
+      "telefone": "(35) 99123-4544",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330005",
+      "nome": "Daniela Aparecida Françoso",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330037",
+      "nome": "Danielle Fliegner Enout Nadur",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330039",
+      "nome": "Débora Gouvea Rocha de Jesus",
+      "telefone": "(32) 99999-9999",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330038",
+      "nome": "Denise Bittencourt Siqueira",
+      "telefone": "NULL",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330040",
+      "nome": "Eliana Gomes de Noronha",
+      "telefone": "(35) 99853-9531",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330041",
+      "nome": "Eliane Tolentino Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1920002",
+      "nome": "Elisa Matias Jorge Souza",
+      "telefone": "(35) 99961-0388",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "720001",
+      "nome": "Elisangela da Silva",
+      "telefone": "(35) 99200-9797",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330042",
+      "nome": "Ellem Ribeiro Lemes",
+      "telefone": "(35) 98407-4122",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330043",
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "telefone": "(35) 99126-5151",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330044",
+      "nome": "Erica Aparecida Luz",
+      "telefone": "(35) 99935-9659",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1560003",
+      "nome": "Estefane Alvarenga Cardoso",
+      "telefone": "(35) 99860-3176",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1980002",
+      "nome": "Fabiana Aparecida Fonseca",
+      "telefone": "(35) 98701-6463",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330045",
+      "nome": "Fabrícia Paulino Luciano da Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "840001",
+      "nome": "Fernanda Angélica Mafra",
+      "telefone": "(35) 98866-8363",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1380002",
+      "nome": "Fernanda Aparecida Lemes",
+      "telefone": "(35) 99923-3153",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330046",
+      "nome": "Fernanda Carmem de Souza",
+      "telefone": "(35) 99993-0821",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "telefone": "(35) 99949-4671",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1230002",
+      "nome": "Flávia Helena Felizardo Pereira",
+      "telefone": "(35) 98821-7940",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330048",
+      "nome": "Gabriela das Graças Arantes Lemos",
+      "telefone": "(35) 99861-8174",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330049",
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "telefone": "(35) 99269-0286",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1500003",
+      "nome": "Gabriella da Silva leite",
+      "telefone": "(35) 99931-8438",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330050",
+      "nome": "Giovanna Alexsandra Mecia",
+      "telefone": "(35) 99111-5958",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330051",
+      "nome": "Gisele Silva Batista",
+      "telefone": "(35) 98831-4210",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2130003",
+      "nome": "Gussiê Vitória Tavares Santos",
+      "telefone": "(35) 98831-0359",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330052",
+      "nome": "Helena Resende Andrade",
+      "telefone": "(35) 99891-9065",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330054",
+      "nome": "Iara Silva Miguel",
+      "telefone": "(12) 99612-7694",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330055",
+      "nome": "Iris Fonseca de Morais",
+      "telefone": "(35) 99713-7696",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2310002",
+      "nome": "Jacqueline Mantovani Dos Santos Viana De Paula",
+      "telefone": "(35) 98842-0545",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330057",
+      "nome": "Janaína Helena Machado",
+      "telefone": "(35) 98892-5227",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "690018",
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "telefone": "(35) 99248-0745",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330009",
+      "nome": "Jenilda Aparecida Souza Santos",
+      "telefone": "(35) 98832-8459",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1740002",
+      "nome": "Jéssica Adriana Morais Lopes",
+      "telefone": "(35) 98889-4868",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330058",
+      "nome": "Jéssica Aparecida de Souza",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1950003",
+      "nome": "Joane Lopes Andrade",
+      "telefone": "(31) 99790-6488",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "300005",
+      "nome": "Josiane Alves Batista",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330059",
+      "nome": "Joyce Mirelle Costa Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "870001",
+      "nome": "Julia Prates Gonçalves",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330060",
+      "nome": "Juliana da Silva Tavares",
+      "telefone": "(35) 98812-3752",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330061",
+      "nome": "Kassiara Batista Borges",
+      "telefone": "(35) 99130-0554",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330062",
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "telefone": "(35) 98800-1074",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330063",
+      "nome": "Kerolainy Aparecida Faria Jorge",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330064",
+      "nome": "Lara Carolyne Miguel de Paula",
+      "telefone": "(35) 98709-6389",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1620002",
+      "nome": "Lara de Souza Gomes",
+      "telefone": "(35) 99815-4273",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2190003",
+      "nome": "Lara De Souza Silverio",
+      "telefone": "(35) 98712-5973",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330066",
+      "nome": "Laura Antônia Marques Correa",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330067",
+      "nome": "Laura Stefany Quintiliano da Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "telefone": "(35) 99208-7701",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330068",
+      "nome": "Letícia Campos Calderaro Dias",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330069",
+      "nome": "Letícia Celeste Caetano",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330070",
+      "nome": "Letícia Dias de Souza",
+      "telefone": "(35) 98456-4541",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330071",
+      "nome": "Letícia Nogueira Chauke Piovezan",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "780001",
+      "nome": "Leticia Petrin",
+      "telefone": "(35) 98813-5747",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330075",
+      "nome": "Lívia Caldas Marins",
+      "telefone": "(35) 99952-9318",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330072",
+      "nome": "Lorena Luísa da Costa",
+      "telefone": "(35) 99824-1549",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1530002",
+      "nome": "Lorenza Silva Pereira",
+      "telefone": "(35) 99198-8651",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "810001",
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "telefone": "(35) 98814-4033",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330073",
+      "nome": "Luciana Maria Silva",
+      "telefone": "(35) 98809-1543",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330074",
+      "nome": "Luciany Aparecida Vilela",
+      "telefone": "(35) 99911-0116",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "telefone": "(35) 98885-5312",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330076",
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "telefone": "(35) 99764-9027",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1440002",
+      "nome": "Marcela Bellato Reis",
+      "telefone": "(35) 98408-7562",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "990003",
+      "nome": "Maria da Glória Barros Pires Ferrari",
+      "telefone": "(35) 99832-6366",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1170002",
+      "nome": "Maria Eduarda da Silva Souza",
+      "telefone": "(18) 98194-0809",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1530003",
+      "nome": "Mariá Raíssa Loureira Rodrigues",
+      "telefone": "(35) 98847-3761",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "660001",
+      "nome": "Meireceli Batista Teixeira",
+      "telefone": "(35) 99128-5764",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330077",
+      "nome": "Meirielen Santiago Levy de Souza",
+      "telefone": "(35) 98404-4719",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330078",
+      "nome": "Milene de Souza Braga",
+      "telefone": "(35) 98864-6143",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330079",
+      "nome": "Naiane Kelly de Oliveira Vale",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330080",
+      "nome": "Natália da Silva Silveira",
+      "telefone": "(35) 99208-2487",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "930002",
+      "nome": "Patrícia de Melo Carvalho",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330002",
+      "nome": "Paula Marques de Oliveira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330082",
+      "nome": "Poliane Amado Silva do Prado",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram",
+      "telefone": "(35) 99137-5232",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2250002",
+      "nome": "Raissa Silva Gabriel",
+      "telefone": "(35) 98833-2186",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330083",
+      "nome": "Raquel Couto e Silva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330084",
+      "nome": "Rayane Aparecida Zanin",
+      "telefone": "(35) 99158-3690",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330085",
+      "nome": "Rayssa Aparecida Oliveira Martins",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330086",
+      "nome": "Roana Borges Nascimento",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1470002",
+      "nome": "Roberta Lopes Rodrigues ",
+      "telefone": "(35) 99939-7164",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2310003",
+      "nome": "Rosemeire Furtado de Paiva",
+      "telefone": "(35) 99970-3857",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1590002",
+      "nome": "Sandra Cristina Pereira Camargo",
+      "telefone": "(35) 98801-9803",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1290002",
+      "nome": "Sara Rosa da SIlva",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330089",
+      "nome": "Sophy Marie Ferreira Martins",
+      "telefone": "(35) 99764-9027",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330090",
+      "nome": "Suelen Gandza Gomes",
+      "telefone": "(35) 98894-2521",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1260002",
+      "nome": "Suzane Catarine da Silva Bisi",
+      "telefone": "(35) 99938-7723",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "2220002",
+      "nome": "Taciana Ribeiro Rios de Abreu",
+      "telefone": "(35) 98875-6556",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330095",
+      "nome": "Tainara dos Reis Oliveira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330096",
+      "nome": "Tamiris Cristina Moreira Gomes",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330098",
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "telefone": "(35) 99752-5058",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1890003",
+      "nome": "Tatiane Aparecida Vicente Wickert",
+      "telefone": "(35) 99243-4836",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330099",
+      "nome": "Taynara Magalhães Porfirio",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "telefone": "5535991156028",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "SIM"
+    },
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "telefone": "(35) 98706-0390",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330100",
+      "nome": "Thaiane Massarim do Nascimento",
+      "telefone": "(35) 99179-8324",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330101",
+      "nome": "Thainá Batista Valim",
+      "telefone": "(35) 98409-0424",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330097",
+      "nome": "Thaina Cristiane Marques",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330102",
+      "nome": "Thaynara Evelyn Souza Galo",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330094",
+      "nome": "Valéria Aparecida Palmeira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330093",
+      "nome": "Vanessa Gomes Ferreira",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330092",
+      "nome": "Vivian Mantovani Lopes e Silva",
+      "telefone": "(35) 99861-6351",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "330091",
+      "nome": "Wanna Marya Coelho Rosa Borges",
+      "telefone": "NULL",
+      "tem_parto": "SIM",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    },
+    {
+      "id": "1200002",
+      "nome": "Yanka Moreira Távora",
+      "telefone": "(35) 99155-9782",
+      "tem_parto": "NÃO",
+      "tem_abortamento": "NÃO",
+      "eh_teste": "NÃO"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\ttem_parto\ttem_abortamento\teh_teste\n30001\tAdrieli Rezende Barros\t(35) 99228-9660\tNÃO\tNÃO\tNÃO\n1350002\tAlexandra Maria Silva Souza \t(35) 99126-8626\tNÃO\tNÃO\tNÃO\n330011\tAline Aparecida Ribeiro Reis\tNULL\tSIM\tNÃO\tNÃO\n330012\tAline Clara Silva\tNULL\tSIM\tNÃO\tNÃO\n330013\tAline Cristina Soares Gallo\t(35) 98842-2584\tNÃO\tNÃO\tNÃO\n330014\tAmanda Cristina Souza Oliveira\tNULL\tSIM\tNÃO\tNÃO\n330015\tAmanda Junqueira Vilela\tNULL\tSIM\tNÃO\tNÃO\n330016\tAmanda Paula da Costa Silva\t(35) 98856-8114\tNÃO\tNÃO\tNÃO\n1500002\tAmanda Ribeiro Freitas\t(35) 99931-1810\tNÃO\tNÃO\tNÃO\n330017\tAmanda Tavares Amado\t(35) 99775-4348\tNÃO\tNÃO\tNÃO\n1140002\tAna Beatriz de Oliveira Salles\t(35) 99985-2307\tNÃO\tNÃO\tNÃO\n2190002\tAna Carolini Almeida de Souza\t(14) 99635-7688\tNÃO\tNÃO\tNÃO\n330018\tAna Clara Borges da Silva\t(35) 98889-2511\tNÃO\tNÃO\tNÃO\n1890002\tAna Laura Marinho Amaral\t(31) 98252-2303\tNÃO\tNÃO\tNÃO\n1170003\tAndressa Cristina Gonçalves\t(35) 99912-6437\tNÃO\tNÃO\tNÃO\n330019\tAndressa Helena Silva Fonseca\t(35) 99849-3185\tNÃO\tNÃO\tNÃO\n330020\tAnna Clara Sousa Borges\tNULL\tSIM\tNÃO\tNÃO\n330021\tBianca Aparecida Marcolino do Carmo\t(35) 99904-0233\tNÃO\tNÃO\tNÃO\n330022\tBianca Fonseca Moreno da Cruz\t(35) 99147-0014\tNÃO\tNÃO\tNÃO\n330023\tBruna do Carmo Cunha\t(35) 98407-1855\tNÃO\tNÃO\tNÃO\n330024\tBruna Fernandes Fonseca Oliveira\tNULL\tSIM\tNÃO\tNÃO\n330025\tBruna Ribeiro Costa\t(35) 99705-0080\tNÃO\tNÃO\tNÃO\n330026\tBruna Tertuliano de Souza\t(35) 99112-1923\tNÃO\tNÃO\tNÃO\n1650002\tCamila Cristina Luiz da Silva\t(35) 98435-1550\tNÃO\tNÃO\tNÃO\n330027\tCamila Dias Vicente\t(35) 99909-0827\tNÃO\tNÃO\tNÃO\n720002\tCamila Paiva do Nascimento\t(35) 98427-6768\tNÃO\tNÃO\tNÃO\n330028\tCamila Rosa Carvalho\t(35) 98864-0766\tNÃO\tNÃO\tNÃO\n330007\tCamila Soares Ferreira Sidrin\t(35) 99179-1204\tNÃO\tNÃO\tNÃO\n300004\tCamila Zanco Pereira\tNULL\tSIM\tNÃO\tNÃO\n2160002\tCamily De Souza Junqueira Costa\t(35) 98441-1782\tNÃO\tNÃO\tNÃO\n330029\tCarine Rosário Pereira Galvão\tNULL\tSIM\tNÃO\tNÃO\n330031\tCecília de Salles Amaral Olímpio\tNULL\tSIM\tNÃO\tNÃO\n1860002\tChaiane Priscila da Silva Carvalho\t(35) 98859-4161\tNÃO\tNÃO\tNÃO\n330032\tCinthia dos Anjos Antonietto Drumond\tNULL\tSIM\tNÃO\tNÃO\n330033\tCintia de Oliveira Souza Rosa\tNULL\tSIM\tNÃO\tNÃO\n330034\tCrisilane Aparecida da Costa Soares\t(35) 99932-7688\tNÃO\tNÃO\tNÃO\n330035\tCrislayne Eleniz de Andrade\t(35) 98702-9492\tNÃO\tNÃO\tNÃO\n1770002\tDamaris Pereira Arlindo\t(35) 99123-4544\tNÃO\tNÃO\tNÃO\n330005\tDaniela Aparecida Françoso\tNULL\tSIM\tNÃO\tNÃO\n330037\tDanielle Fliegner Enout Nadur\tNULL\tSIM\tNÃO\tNÃO\n330039\tDébora Gouvea Rocha de Jesus\t(32) 99999-9999\tSIM\tNÃO\tNÃO\n330038\tDenise Bittencourt Siqueira\tNULL\tNÃO\tNÃO\tNÃO\n330040\tEliana Gomes de Noronha\t(35) 99853-9531\tNÃO\tNÃO\tNÃO\n330041\tEliane Tolentino Silva\tNULL\tSIM\tNÃO\tNÃO\n1920002\tElisa Matias Jorge Souza\t(35) 99961-0388\tNÃO\tNÃO\tNÃO\n720001\tElisangela da Silva\t(35) 99200-9797\tNÃO\tNÃO\tNÃO\n330042\tEllem Ribeiro Lemes\t(35) 98407-4122\tNÃO\tNÃO\tNÃO\n330043\tEllen Aparecida Ferreira Batista\t(35) 99126-5151\tNÃO\tNÃO\tNÃO\n330044\tErica Aparecida Luz\t(35) 99935-9659\tNÃO\tNÃO\tNÃO\n1560003\tEstefane Alvarenga Cardoso\t(35) 99860-3176\tNÃO\tNÃO\tNÃO\n1980002\tFabiana Aparecida Fonseca\t(35) 98701-6463\tNÃO\tNÃO\tNÃO\n330045\tFabrícia Paulino Luciano da Silva\tNULL\tSIM\tNÃO\tNÃO\n840001\tFernanda Angélica Mafra\t(35) 98866-8363\tNÃO\tNÃO\tNÃO\n1380002\tFernanda Aparecida Lemes\t(35) 99923-3153\tNÃO\tNÃO\tNÃO\n330046\tFernanda Carmem de Souza\t(35) 99993-0821\tNÃO\tNÃO\tNÃO\n330047\tFernanda Luciano Santos Gonçalves\t(35) 99949-4671\tNÃO\tNÃO\tNÃO\n1230002\tFlávia Helena Felizardo Pereira\t(35) 98821-7940\tNÃO\tNÃO\tNÃO\n330048\tGabriela das Graças Arantes Lemos\t(35) 99861-8174\tNÃO\tNÃO\tNÃO\n330049\tGabriela dos Santos Batista Figueiredo\t(35) 99269-0286\tNÃO\tNÃO\tNÃO\n1500003\tGabriella da Silva leite\t(35) 99931-8438\tNÃO\tNÃO\tNÃO\n330050\tGiovanna Alexsandra Mecia\t(35) 99111-5958\tNÃO\tNÃO\tNÃO\n330051\tGisele Silva Batista\t(35) 98831-4210\tNÃO\tNÃO\tNÃO\n2130003\tGussiê Vitória Tavares Santos\t(35) 98831-0359\tNÃO\tNÃO\tNÃO\n330052\tHelena Resende Andrade\t(35) 99891-9065\tNÃO\tNÃO\tNÃO\n330054\tIara Silva Miguel\t(12) 99612-7694\tNÃO\tNÃO\tNÃO\n330055\tIris Fonseca de Morais\t(35) 99713-7696\tNÃO\tNÃO\tNÃO\n2310002\tJacqueline Mantovani Dos Santos Viana De Paula\t(35) 98842-0545\tNÃO\tNÃO\tNÃO\n330057\tJanaína Helena Machado\t(35) 98892-5227\tNÃO\tNÃO\tNÃO\n690018\tJeniffer Catrine Alves de Souza\t(35) 99248-0745\tNÃO\tNÃO\tNÃO\n330009\tJenilda Aparecida Souza Santos\t(35) 98832-8459\tNÃO\tNÃO\tNÃO\n1740002\tJéssica Adriana Morais Lopes\t(35) 98889-4868\tNÃO\tNÃO\tNÃO\n330058\tJéssica Aparecida de Souza\tNULL\tSIM\tNÃO\tNÃO\n1950003\tJoane Lopes Andrade\t(31) 99790-6488\tNÃO\tNÃO\tNÃO\n300005\tJosiane Alves Batista\tNULL\tSIM\tNÃO\tNÃO\n330059\tJoyce Mirelle Costa Silva\tNULL\tSIM\tNÃO\tNÃO\n870001\tJulia Prates Gonçalves\tNULL\tSIM\tNÃO\tNÃO\n330060\tJuliana da Silva Tavares\t(35) 98812-3752\tNÃO\tNÃO\tNÃO\n330061\tKassiara Batista Borges\t(35) 99130-0554\tNÃO\tNÃO\tNÃO\n330062\tKayane Ketnny Gomes Branquinho\t(35) 98800-1074\tNÃO\tNÃO\tNÃO\n330063\tKerolainy Aparecida Faria Jorge\tNULL\tSIM\tNÃO\tNÃO\n330004\tKetlin Pereira Ferreira\tNULL\tSIM\tNÃO\tNÃO\n330064\tLara Carolyne Miguel de Paula\t(35) 98709-6389\tNÃO\tNÃO\tNÃO\n1620002\tLara de Souza Gomes\t(35) 99815-4273\tNÃO\tNÃO\tNÃO\n2190003\tLara De Souza Silverio\t(35) 98712-5973\tNÃO\tNÃO\tNÃO\n330066\tLaura Antônia Marques Correa\tNULL\tSIM\tNÃO\tNÃO\n330067\tLaura Stefany Quintiliano da Silva\tNULL\tSIM\tNÃO\tNÃO\n330010\tLetícia Aparecida Silveira\t(35) 99208-7701\tNÃO\tNÃO\tNÃO\n330068\tLetícia Campos Calderaro Dias\tNULL\tSIM\tNÃO\tNÃO\n330069\tLetícia Celeste Caetano\tNULL\tSIM\tNÃO\tNÃO\n330070\tLetícia Dias de Souza\t(35) 98456-4541\tNÃO\tNÃO\tNÃO\n330071\tLetícia Nogueira Chauke Piovezan\tNULL\tSIM\tNÃO\tNÃO\n780001\tLeticia Petrin\t(35) 98813-5747\tNÃO\tNÃO\tNÃO\n330075\tLívia Caldas Marins\t(35) 99952-9318\tNÃO\tNÃO\tNÃO\n330072\tLorena Luísa da Costa\t(35) 99824-1549\tNÃO\tNÃO\tNÃO\n1530002\tLorenza Silva Pereira\t(35) 99198-8651\tNÃO\tNÃO\tNÃO\n810001\tLuana Maria Oliveira Ribeiro Bernardes\t(35) 98814-4033\tNÃO\tNÃO\tNÃO\n330073\tLuciana Maria Silva\t(35) 98809-1543\tNÃO\tNÃO\tNÃO\n330074\tLuciany Aparecida Vilela\t(35) 99911-0116\tNÃO\tNÃO\tNÃO\n330008\tLucíola Viviane Achilles Medeiros Araújo\t(35) 98885-5312\tNÃO\tNÃO\tNÃO\n330076\tMakisleide Ferreira de Souza Santos\t(35) 99764-9027\tNÃO\tNÃO\tNÃO\n1440002\tMarcela Bellato Reis\t(35) 98408-7562\tNÃO\tNÃO\tNÃO\n990003\tMaria da Glória Barros Pires Ferrari\t(35) 99832-6366\tNÃO\tNÃO\tNÃO\n1170002\tMaria Eduarda da Silva Souza\t(18) 98194-0809\tNÃO\tNÃO\tNÃO\n1530003\tMariá Raíssa Loureira Rodrigues\t(35) 98847-3761\tNÃO\tNÃO\tNÃO\n660001\tMeireceli Batista Teixeira\t(35) 99128-5764\tNÃO\tNÃO\tNÃO\n330077\tMeirielen Santiago Levy de Souza\t(35) 98404-4719\tNÃO\tNÃO\tNÃO\n330078\tMilene de Souza Braga\t(35) 98864-6143\tNÃO\tNÃO\tNÃO\n330079\tNaiane Kelly de Oliveira Vale\tNULL\tSIM\tNÃO\tNÃO\n330080\tNatália da Silva Silveira\t(35) 99208-2487\tNÃO\tNÃO\tNÃO\n930002\tPatrícia de Melo Carvalho\tNULL\tSIM\tNÃO\tNÃO\n330002\tPaula Marques de Oliveira\tNULL\tSIM\tNÃO\tNÃO\n330082\tPoliane Amado Silva do Prado\tNULL\tSIM\tNÃO\tNÃO\n270001\tRaissa Andrade Gibram\t(35) 99137-5232\tNÃO\tNÃO\tNÃO\n2250002\tRaissa Silva Gabriel\t(35) 98833-2186\tNÃO\tNÃO\tNÃO\n330083\tRaquel Couto e Silva\tNULL\tSIM\tNÃO\tNÃO\n330084\tRayane Aparecida Zanin\t(35) 99158-3690\tNÃO\tNÃO\tNÃO\n330085\tRayssa Aparecida Oliveira Martins\tNULL\tSIM\tNÃO\tNÃO\n330086\tRoana Borges Nascimento\tNULL\tSIM\tNÃO\tNÃO\n1470002\tRoberta Lopes Rodrigues \t(35) 99939-7164\tNÃO\tNÃO\tNÃO\n2310003\tRosemeire Furtado de Paiva\t(35) 99970-3857\tNÃO\tNÃO\tNÃO\n1590002\tSandra Cristina Pereira Camargo\t(35) 98801-9803\tNÃO\tNÃO\tNÃO\n1290002\tSara Rosa da SIlva\tNULL\tSIM\tNÃO\tNÃO\n330089\tSophy Marie Ferreira Martins\t(35) 99764-9027\tNÃO\tNÃO\tNÃO\n330090\tSuelen Gandza Gomes\t(35) 98894-2521\tNÃO\tNÃO\tNÃO\n1260002\tSuzane Catarine da Silva Bisi\t(35) 99938-7723\tNÃO\tNÃO\tNÃO\n2220002\tTaciana Ribeiro Rios de Abreu\t(35) 98875-6556\tNÃO\tNÃO\tNÃO\n330095\tTainara dos Reis Oliveira\tNULL\tSIM\tNÃO\tNÃO\n330096\tTamiris Cristina Moreira Gomes\tNULL\tSIM\tNÃO\tNÃO\n330098\tTassiana Tonioli Craveiro Chagas\t(35) 99752-5058\tNÃO\tNÃO\tNÃO\n1890003\tTatiane Aparecida Vicente Wickert\t(35) 99243-4836\tNÃO\tNÃO\tNÃO\n330099\tTaynara Magalhães Porfirio\tNULL\tSIM\tNÃO\tNÃO\n1560002\tTESTE TESTE\t5535991156028\tNÃO\tNÃO\tSIM\n330006\tThabata Aline de Oliveira Costa\t(35) 98706-0390\tNÃO\tNÃO\tNÃO\n330100\tThaiane Massarim do Nascimento\t(35) 99179-8324\tNÃO\tNÃO\tNÃO\n330101\tThainá Batista Valim\t(35) 98409-0424\tNÃO\tNÃO\tNÃO\n330097\tThaina Cristiane Marques\tNULL\tSIM\tNÃO\tNÃO\n330102\tThaynara Evelyn Souza Galo\tNULL\tSIM\tNÃO\tNÃO\n330094\tValéria Aparecida Palmeira\tNULL\tSIM\tNÃO\tNÃO\n330093\tVanessa Gomes Ferreira\tNULL\tSIM\tNÃO\tNÃO\n330092\tVivian Mantovani Lopes e Silva\t(35) 99861-6351\tNÃO\tNÃO\tNÃO\n330091\tWanna Marya Coelho Rosa Borges\tNULL\tSIM\tNÃO\tNÃO\n1200002\tYanka Moreira Távora\t(35) 99155-9782\tNÃO\tNÃO\tNÃO\n",
+  "stderr": "",
+  "execution_time_ms": 676
+}
