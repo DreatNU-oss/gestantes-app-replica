@@ -1,0 +1,1 @@
+ALTER TABLE `mensagemTemplates` ADD `condicaoMedicamento` varchar(100);

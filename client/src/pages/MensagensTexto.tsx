@@ -186,6 +186,7 @@ export default function MensagensTexto() {
     pdfKey?: string;
     pdfNome?: string;
     condicaoRhNegativo?: number;
+    condicaoMedicamento?: string;
   }) => {
     criarMutation.mutate({
       ...data,
@@ -842,6 +843,7 @@ function TemplateCard({
     pdfUrl: string | null;
     pdfNome: string | null;
     condicaoRhNegativo: number | null;
+    condicaoMedicamento: string | null;
     ativo: number;
   };
   onEdit: () => void;
@@ -877,6 +879,11 @@ function TemplateCard({
             {template.condicaoRhNegativo === 1 && (
               <Badge variant="outline" className="text-xs gap-1 border-amber-400 text-amber-700 bg-amber-50">
                 Rh-
+              </Badge>
+            )}
+            {template.condicaoMedicamento && (
+              <Badge variant="outline" className="text-xs gap-1 border-orange-400 text-orange-700 bg-orange-50">
+                {template.condicaoMedicamento.toUpperCase()}
               </Badge>
             )}
           </div>

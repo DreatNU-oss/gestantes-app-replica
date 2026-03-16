@@ -547,6 +547,13 @@
       "when": 1773658461952,
       "tag": "0077_little_sunfire",
       "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "5",
+      "when": 1773689378106,
+      "tag": "0078_bouncy_gauntlet",
+      "breakpoints": true
     }
   ]
 }

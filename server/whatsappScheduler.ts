@@ -16,7 +16,7 @@
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users } from '../drizzle/schema';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users, medicamentosGestacao } from '../drizzle/schema';
 import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
 
@@ -204,6 +204,22 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
                 .limit(1);
               if (!fatorRh) {
                 continue; // Gestante não é Rh negativo, pular
+              }
+            }
+
+            // Verificar condição de medicamento em uso
+            if (template.condicaoMedicamento) {
+              const [medEmUso] = await db
+                .select({ id: medicamentosGestacao.id })
+                .from(medicamentosGestacao)
+                .where(and(
+                  eq(medicamentosGestacao.gestanteId, gestante.id),
+                  eq(medicamentosGestacao.tipo, template.condicaoMedicamento as any),
+                  eq(medicamentosGestacao.ativo, 1),
+                ))
+                .limit(1);
+              if (!medEmUso) {
+                continue; // Gestante não usa este medicamento, pular
               }
             }
 

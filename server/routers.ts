@@ -4045,6 +4045,7 @@ export const appRouter = router({
         pdfKey: z.string().optional(),
         pdfNome: z.string().optional(),
         condicaoRhNegativo: z.number().min(0).max(1).optional(),
+        condicaoMedicamento: z.string().max(100).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
@@ -4065,6 +4066,7 @@ export const appRouter = router({
           pdfKey: input.pdfKey || null,
           pdfNome: input.pdfNome || null,
           condicaoRhNegativo: input.condicaoRhNegativo || 0,
+          condicaoMedicamento: input.condicaoMedicamento || null,
           criadoPor: ctx.user.id,
         });
         return { success: true };
@@ -4084,6 +4086,7 @@ export const appRouter = router({
         pdfKey: z.string().optional(),
         pdfNome: z.string().optional(),
         condicaoRhNegativo: z.number().min(0).max(1).optional(),
+        condicaoMedicamento: z.string().max(100).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
@@ -4103,6 +4106,7 @@ export const appRouter = router({
           pdfKey: input.pdfKey || null,
           pdfNome: input.pdfNome || null,
           condicaoRhNegativo: input.condicaoRhNegativo ?? 0,
+          condicaoMedicamento: input.condicaoMedicamento || null,
         }).where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
         return { success: true };
       }),

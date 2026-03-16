@@ -2180,3 +2180,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## BUG: Botão de voltar na página Mensagens de Texto (16/03/2026)
 - [x] Adicionar botão de voltar na página Mensagens de Texto seguindo o padrão das demais páginas
+
+## Mensagem automática AAS 35s6d (16/03/2026)
+- [x] Analisar scheduler existente e estrutura de medicamentos
+- [x] Adicionar campo condicaoMedicamento no schema e migrar banco
+- [x] Implementar lógica no scheduler: verificar gestantes com IG=35s6d que usam AAS
+- [x] Adicionar sugestão "Suspensão do AAS" no TemplateWizard (categoria Medicamentos)
+- [x] Adicionar UI de seleção de medicamento no wizard e badge na lista
+- [x] Atualizar routers (criar/atualizar template) com condicaoMedicamento
+- [x] 8 testes passando

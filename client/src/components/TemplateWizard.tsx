@@ -26,6 +26,7 @@ import {
   PenLine,
   ChevronRight,
   AlertTriangle,
+  Pill,
 } from 'lucide-react';
 
 // ─── Template Suggestions ───────────────────────────────────────────────────
@@ -43,6 +44,7 @@ interface TemplateSuggestion {
   igDias?: number;
   evento?: string;
   condicaoRhNegativo?: boolean;
+  condicaoMedicamento?: string;
   mensagem: string;
 }
 
@@ -437,10 +439,35 @@ Você está com {ig_semanas} semanas de gestação e se aproximando do momento d
 Atenciosamente,
 Equipe de Pré-Natal`,
   },
+  // Medicamentos
+  {
+    id: 'suspensao_aas',
+    categoria: 'Medicamentos',
+    icon: Pill,
+    iconColor: 'text-orange-600',
+    bgColor: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
+    nome: 'Suspensão do AAS (35s6d)',
+    descricao: 'Aviso de suspensão do AAS para gestantes que fazem uso, às 35 semanas e 6 dias',
+    gatilhoTipo: 'idade_gestacional',
+    igSemanas: 35,
+    igDias: 6,
+    condicaoMedicamento: 'aas',
+    mensagem: `Olá {nome}! 🤰
+
+Informamos que hoje, com *35 semanas e 6 dias* de gestação, é o *último dia de uso do AAS (Ácido Acetilsalicílico)*.
+
+A partir de amanhã (36 semanas), o AAS deve ser *suspenso*.
+
+Quanto ao *Cálcio*, você pode continuar tomando até acabar a caixa de medicamentos.
+
+Em caso de dúvidas, converse com seu médico na próxima consulta.
+
+Abraços da equipe Mais Mulher! 💜`,
+  },
 ];
 
 // Group suggestions by category
-const CATEGORIAS = ['Vacinas', 'Exames', 'Consultas', 'Pós-Parto', 'Alertas'];
+const CATEGORIAS = ['Vacinas', 'Exames', 'Consultas', 'Medicamentos', 'Pós-Parto', 'Alertas'];
 
 const CATEGORIA_ICONS: Record<string, { icon: typeof Syringe; color: string }> = {
   'Vacinas': { icon: Syringe, color: 'text-blue-600' },
@@ -448,6 +475,7 @@ const CATEGORIA_ICONS: Record<string, { icon: typeof Syringe; color: string }> =
   'Consultas': { icon: Calendar, color: 'text-green-600' },
   'Pós-Parto': { icon: Baby, color: 'text-pink-600' },
   'Alertas': { icon: AlertTriangle, color: 'text-amber-600' },
+  'Medicamentos': { icon: Pill, color: 'text-orange-600' },
 };
 
 const EVENTO_LABELS: Record<string, string> = {
@@ -473,6 +501,7 @@ interface TemplateWizardProps {
     pdfKey?: string;
     pdfNome?: string;
     condicaoRhNegativo?: number;
+    condicaoMedicamento?: string;
   }) => void;
   onUploadPdf: (file: File) => Promise<{ url: string; key: string }>;
   isSaving: boolean;
@@ -501,6 +530,7 @@ export default function TemplateWizard({
   const [igDias, setIgDias] = useState<number>(0);
   const [evento, setEvento] = useState<string>('');
   const [condicaoRhNegativo, setCondicaoRhNegativo] = useState(false);
+  const [condicaoMedicamento, setCondicaoMedicamento] = useState<string | undefined>();
   const [pdfUrl, setPdfUrl] = useState<string>();
   const [pdfKey, setPdfKey] = useState<string>();
   const [pdfNome, setPdfNome] = useState<string>();
@@ -520,6 +550,7 @@ export default function TemplateWizard({
     setIgDias(0);
     setEvento('');
     setCondicaoRhNegativo(false);
+    setCondicaoMedicamento(undefined);
     setPdfUrl(undefined);
     setPdfKey(undefined);
     setPdfNome(undefined);
@@ -540,6 +571,7 @@ export default function TemplateWizard({
     setIgDias(suggestion.igDias || 0);
     setEvento(suggestion.evento || '');
     setCondicaoRhNegativo(suggestion.condicaoRhNegativo || false);
+    setCondicaoMedicamento(suggestion.condicaoMedicamento || undefined);
     setStep(2);
   };
 
@@ -599,6 +631,7 @@ export default function TemplateWizard({
       pdfKey,
       pdfNome,
       condicaoRhNegativo: condicaoRhNegativo ? 1 : 0,
+      condicaoMedicamento: condicaoMedicamento || undefined,
     });
 
     resetWizard();
@@ -688,6 +721,9 @@ export default function TemplateWizard({
                                   <span className="font-medium text-sm">{suggestion.nome}</span>
                                   {suggestion.condicaoRhNegativo && (
                                     <Badge variant="outline" className="text-xs border-red-400 text-red-700 bg-red-50">Rh-</Badge>
+                                  )}
+                                  {suggestion.condicaoMedicamento && (
+                                    <Badge variant="outline" className="text-xs border-orange-400 text-orange-700 bg-orange-50">{suggestion.condicaoMedicamento.toUpperCase()}</Badge>
                                   )}
                                   {suggestion.gatilhoTipo === 'idade_gestacional' && suggestion.igSemanas && (
                                     <Badge variant="secondary" className="text-xs">{suggestion.igSemanas}ª semana</Badge>
@@ -816,6 +852,34 @@ export default function TemplateWizard({
               </div>
             )}
 
+            {/* Condição Medicamento */}
+            {gatilhoTipo === 'idade_gestacional' && (
+              <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg space-y-2">
+                <div className="flex items-center gap-2">
+                  <Pill className="h-4 w-4 text-orange-600" />
+                  <Label className="text-sm font-medium text-orange-800">Condição: Medicamento em uso</Label>
+                </div>
+                <Select value={condicaoMedicamento || 'nenhum'} onValueChange={v => setCondicaoMedicamento(v === 'nenhum' ? undefined : v)}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Sem filtro de medicamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="nenhum">Sem filtro (todas as gestantes)</SelectItem>
+                    <SelectItem value="aas">AAS (Ácido Acetilsalicílico)</SelectItem>
+                    <SelectItem value="calcio">Cálcio</SelectItem>
+                    <SelectItem value="anti_hipertensivos">Anti-hipertensivos</SelectItem>
+                    <SelectItem value="enoxaparina">Enoxaparina</SelectItem>
+                    <SelectItem value="insulina">Insulina</SelectItem>
+                    <SelectItem value="levotiroxina">Levotiroxina</SelectItem>
+                    <SelectItem value="medicamentos_inalatorios">Medicamentos Inalatórios</SelectItem>
+                    <SelectItem value="polivitaminicos">Polivitamínicos</SelectItem>
+                    <SelectItem value="progestagenos">Progestágenos</SelectItem>
+                    <SelectItem value="psicotropicos">Psicotrópicos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             <div>
               <div className="flex items-center justify-between mb-1">
                 <Label>Mensagem</Label>
@@ -920,6 +984,12 @@ export default function TemplateWizard({
               {condicaoRhNegativo && (
                 <Badge variant="outline" className="border-red-400 text-red-700 bg-red-50">
                   Apenas Rh Negativo
+                </Badge>
+              )}
+              {condicaoMedicamento && (
+                <Badge variant="outline" className="border-orange-400 text-orange-700 bg-orange-50 gap-1">
+                  <Pill className="h-3 w-3" />
+                  Apenas com {condicaoMedicamento.toUpperCase()}
                 </Badge>
               )}
               {pdfUrl && (
