@@ -1180,6 +1180,37 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       return false;
     };
     
+    // Função para limpar resultados de IgG/IgM:
+    // "IgG reagente / IgM não reagente" → "Reagente"
+    // "IgG não reagente / IgM não reagente" → "Não Reagente"
+    // Remove prefixos "IgG "/"IgM " e parte combinada após " / "
+    const cleanIgResult = (nomeExame: string, resultado: string): string => {
+      if (!resultado || resultado === '-') return resultado;
+      const isIgExam = /Ig[GM]$/i.test(nomeExame);
+      if (!isIgExam) return resultado;
+      const r = resultado.trim();
+      // Se contém " / ", pegar apenas a parte correspondente ao tipo do exame
+      if (r.includes(' / ')) {
+        const isIgM = /IgM$/i.test(nomeExame);
+        const parts = r.split(' / ').map(p => p.trim());
+        // Encontrar a parte que corresponde ao tipo (IgG ou IgM)
+        const targetPrefix = isIgM ? 'igm' : 'igg';
+        let matched = parts.find(p => p.toLowerCase().startsWith(targetPrefix));
+        if (matched) {
+          // Remover prefixo "IgG " ou "IgM "
+          matched = matched.replace(/^ig[gm]\s+/i, '');
+          // Capitalizar primeira letra
+          return matched.charAt(0).toUpperCase() + matched.slice(1);
+        }
+      }
+      // Se não tem " / ", apenas remover prefixo "IgG " ou "IgM "
+      const cleaned = r.replace(/^ig[gm]\s+/i, '');
+      if (cleaned !== r) {
+        return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+      }
+      return resultado;
+    };
+
     // Função para desenhar uma linha de exame
     let rowIndex = 0;
     const drawExameRow = (nomeExame: string) => {
@@ -1197,9 +1228,9 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       rowIndex++;
       
       const resultados = [
-        exame.trimestre1?.resultado || '-',
-        exame.trimestre2?.resultado || '-',
-        exame.trimestre3?.resultado || '-',
+        cleanIgResult(exame.nome, exame.trimestre1?.resultado || '-'),
+        cleanIgResult(exame.nome, exame.trimestre2?.resultado || '-'),
+        cleanIgResult(exame.nome, exame.trimestre3?.resultado || '-'),
       ];
       const rowData = [exame.nome, ...resultados];
       

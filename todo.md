@@ -2154,3 +2154,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Eliminar loop de extras que adiciona exames à seção EGB
 - [x] Seção EGB contém APENAS Swab vaginal/retal EGB
 - [x] Testes unitários (23 testes de normalização passando)
+
+## Limpeza de resultados IgG/IgM no PDF (16/03/2026)
+- [x] Criar função de limpeza que remove prefixos "IgG"/"IgM" e parte combinada "/ IgM não reagente" dos resultados
+- [x] Aplicar limpeza no htmlToPdf.ts (PDF backend)
+- [x] Aplicar limpeza no CartaoPrenatal.tsx (PDF frontend)
+- [x] Resultado esperado: "IgG reagente / IgM não reagente" → "Reagente"
+- [x] Testes unitários (17 testes passando)

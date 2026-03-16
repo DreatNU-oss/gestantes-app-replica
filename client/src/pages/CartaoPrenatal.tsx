@@ -1302,12 +1302,37 @@ export default function CartaoPrenatal() {
           return false;
         };
         
+        // Função para limpar resultados de IgG/IgM:
+        // "IgG reagente / IgM não reagente" → "Reagente"
+        // Remove prefixos "IgG "/"IgM " e parte combinada após " / "
+        const cleanIgResult = (nomeExame: string, resultado: string): string => {
+          if (!resultado || resultado === '-') return resultado;
+          const isIgExam = /Ig[GM]$/i.test(nomeExame);
+          if (!isIgExam) return resultado;
+          const r = resultado.trim();
+          if (r.includes(' / ')) {
+            const isIgM = /IgM$/i.test(nomeExame);
+            const parts = r.split(' / ').map(p => p.trim());
+            const targetPrefix = isIgM ? 'igm' : 'igg';
+            let matched = parts.find(p => p.toLowerCase().startsWith(targetPrefix));
+            if (matched) {
+              matched = matched.replace(/^ig[gm]\s+/i, '');
+              return matched.charAt(0).toUpperCase() + matched.slice(1);
+            }
+          }
+          const cleaned = r.replace(/^ig[gm]\s+/i, '');
+          if (cleaned !== r) {
+            return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+          }
+          return resultado;
+        };
+
         // Função para desenhar uma linha de exame
         let rowIdx = 0;
         const drawExameRowPdf = (nomeExame: string) => {
-          const r1 = getExameResultado(nomeExame, '1');
-          const r2 = getExameResultado(nomeExame, '2');
-          const r3 = getExameResultado(nomeExame, '3');
+          const r1 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '1'));
+          const r2 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '2'));
+          const r3 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '3'));
           if (r1 === '-' && r2 === '-' && r3 === '-') return; // Sem resultados
           
           if (y > 270) {
