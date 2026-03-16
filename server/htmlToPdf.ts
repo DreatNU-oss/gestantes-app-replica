@@ -70,6 +70,9 @@ interface DadosPdf {
     au?: Array<{ igSemanas: number; valor: number }>;
     pa?: Array<{ igSemanas: number; sistolica: number; diastolica: number }>;
   };
+  // Dados para curva de peso ideal
+  pesoInicial?: number | null; // em gramas
+  altura?: number | null; // em cm
 }
 
 /**
@@ -118,7 +121,51 @@ const auReferenceData: Record<number, { min: number; max: number; median: number
 };
 
 /**
- * Desenha gráfico de peso diretamente no jsPDF (sem SVG, sem dependência de fontes do sistema)
+ * Calcula a curva de peso ideal baseada no IMC pré-gestacional
+ * (mesma lógica de calculateWeightCurve em gestante-router.ts)
+ */
+function calcularCurvaPesoIdeal(pesoInicial: number, altura: number): Array<{ semana: number; pesoMin: number; pesoMax: number }> {
+  const alturaM = altura / 100;
+  const imc = pesoInicial / 1000 / (alturaM * alturaM);
+  
+  let ganhoMin: number, ganhoMax: number;
+  
+  if (imc < 18.5) {
+    ganhoMin = 12.5;
+    ganhoMax = 18;
+  } else if (imc < 25) {
+    ganhoMin = 11.5;
+    ganhoMax = 16;
+  } else if (imc < 30) {
+    ganhoMin = 7;
+    ganhoMax = 11.5;
+  } else {
+    ganhoMin = 5;
+    ganhoMax = 9;
+  }
+  
+  // Gerar curva semana a semana (0 a 42)
+  const curva: Array<{ semana: number; pesoMin: number; pesoMax: number }> = [];
+  for (let semana = 0; semana <= 42; semana++) {
+    let fator: number;
+    if (semana <= 13) {
+      fator = (semana / 13) * 0.125; // 1º trimestre: ganho lento
+    } else {
+      fator = 0.125 + ((semana - 13) / 27) * 0.875; // 2º/3º trimestre: ganho linear
+    }
+    curva.push({
+      semana,
+      pesoMin: (pesoInicial + ganhoMin * 1000 * fator) / 1000, // converter para kg
+      pesoMax: (pesoInicial + ganhoMax * 1000 * fator) / 1000, // converter para kg
+    });
+  }
+  
+  return curva;
+}
+
+/**
+ * Desenha gráfico de peso diretamente no jsPDF
+ * Eixo X proporcional à idade gestacional real + curva de peso ideal
  */
 function desenharGraficoPeso(
   doc: jsPDF,
@@ -126,7 +173,9 @@ function desenharGraficoPeso(
   startX: number,
   startY: number,
   width: number,
-  height: number
+  height: number,
+  pesoInicial?: number | null,
+  altura?: number | null
 ): number {
   if (dados.length === 0) return startY;
 
@@ -137,15 +186,78 @@ function desenharGraficoPeso(
   const chartX = startX + padding.left;
   const chartY = startY + padding.top;
 
+  // Eixo X proporcional à idade gestacional
+  const semanasData = sorted.map(d => d.igSemanas);
+  const minWeek = Math.max(0, Math.min(...semanasData) - 2);
+  const maxWeek = Math.min(42, Math.max(...semanasData) + 2);
+  
+  const mapWeekToX = (week: number) => chartX + ((week - minWeek) / (maxWeek - minWeek)) * chartW;
+
+  // Calcular curva de peso ideal se dados disponíveis
+  let curvaPesoIdeal: Array<{ semana: number; pesoMin: number; pesoMax: number }> | null = null;
+  if (pesoInicial && pesoInicial > 0 && altura && altura > 0) {
+    curvaPesoIdeal = calcularCurvaPesoIdeal(pesoInicial, altura);
+  }
+
+  // Calcular range Y considerando dados reais e curva ideal
   const valores = sorted.map(d => d.valor);
-  const minY = Math.floor(Math.min(...valores) - 2);
-  const maxY = Math.ceil(Math.max(...valores) + 2);
+  let allMinY = Math.min(...valores);
+  let allMaxY = Math.max(...valores);
+  
+  if (curvaPesoIdeal) {
+    const curvaFiltrada = curvaPesoIdeal.filter(c => c.semana >= minWeek && c.semana <= maxWeek);
+    if (curvaFiltrada.length > 0) {
+      allMinY = Math.min(allMinY, ...curvaFiltrada.map(c => c.pesoMin));
+      allMaxY = Math.max(allMaxY, ...curvaFiltrada.map(c => c.pesoMax));
+    }
+  }
+  
+  const minY = Math.floor(allMinY - 2);
+  const maxY = Math.ceil(allMaxY + 2);
+  
+  const mapValueToY = (value: number) => chartY + chartH - ((value - minY) / (maxY - minY)) * chartH;
 
   // Título
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(51, 51, 51);
   doc.text('Peso (kg)', startX + width / 2, startY + 4, { align: 'center' });
+
+  // Desenhar curva de peso ideal (faixa min/max) ANTES do grid
+  if (curvaPesoIdeal) {
+    const curvaFiltrada = curvaPesoIdeal.filter(c => c.semana >= minWeek && c.semana <= maxWeek);
+    if (curvaFiltrada.length > 1) {
+      // Área sombreada entre min e max
+      doc.setFillColor(200, 230, 200);
+      doc.setGState(new (doc as any).GState({ opacity: 0.25 }));
+      for (let i = 0; i < curvaFiltrada.length - 1; i++) {
+        const x1 = mapWeekToX(curvaFiltrada[i].semana);
+        const x2 = mapWeekToX(curvaFiltrada[i + 1].semana);
+        const topY = Math.min(mapValueToY(curvaFiltrada[i].pesoMax), mapValueToY(curvaFiltrada[i + 1].pesoMax));
+        const botY = Math.max(mapValueToY(curvaFiltrada[i].pesoMin), mapValueToY(curvaFiltrada[i + 1].pesoMin));
+        doc.rect(x1, topY, x2 - x1, botY - topY, 'F');
+      }
+      doc.setGState(new (doc as any).GState({ opacity: 1 }));
+
+      // Linhas tracejadas para min e max
+      doc.setDrawColor(76, 175, 80);
+      doc.setLineWidth(0.2);
+      for (let i = 0; i < curvaFiltrada.length - 1; i++) {
+        const x1 = mapWeekToX(curvaFiltrada[i].semana);
+        const x2 = mapWeekToX(curvaFiltrada[i + 1].semana);
+        const y1t = mapValueToY(curvaFiltrada[i].pesoMax);
+        const y2t = mapValueToY(curvaFiltrada[i + 1].pesoMax);
+        const y1b = mapValueToY(curvaFiltrada[i].pesoMin);
+        const y2b = mapValueToY(curvaFiltrada[i + 1].pesoMin);
+        // Tracejado
+        for (let s = 0; s < 4; s += 2) {
+          const t1 = s / 4, t2 = (s + 1) / 4;
+          doc.line(x1 + (x2 - x1) * t1, y1t + (y2t - y1t) * t1, x1 + (x2 - x1) * t2, y1t + (y2t - y1t) * t2);
+          doc.line(x1 + (x2 - x1) * t1, y1b + (y2b - y1b) * t1, x1 + (x2 - x1) * t2, y1b + (y2b - y1b) * t2);
+        }
+      }
+    }
+  }
 
   // Grid horizontal
   doc.setDrawColor(229, 231, 235);
@@ -161,10 +273,10 @@ function desenharGraficoPeso(
     doc.text(value.toFixed(0), chartX - 2, yPos + 1, { align: 'right' });
   }
 
-  // Mapear pontos
-  const points = sorted.map((d, i) => ({
-    x: chartX + (i / Math.max(sorted.length - 1, 1)) * chartW,
-    y: chartY + chartH - ((d.valor - minY) / (maxY - minY)) * chartH,
+  // Mapear pontos com eixo X proporcional
+  const points = sorted.map(d => ({
+    x: mapWeekToX(d.igSemanas),
+    y: mapValueToY(d.valor),
     valor: d.valor,
     semana: d.igSemanas,
   }));
@@ -186,14 +298,22 @@ function desenharGraficoPeso(
     doc.text(point.valor.toFixed(1), point.x, point.y - 2, { align: 'center' });
   });
 
-  // Labels eixo X (semanas)
+  // Labels eixo X (semanas) - proporcional
   doc.setFontSize(5.5);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(102, 102, 102);
-  sorted.forEach((d, i) => {
-    const x = chartX + (i / Math.max(sorted.length - 1, 1)) * chartW;
-    doc.text(`${d.igSemanas}s`, x, chartY + chartH + 4, { align: 'center' });
-  });
+  const weekStep = Math.ceil((maxWeek - minWeek) / 8);
+  for (let week = minWeek; week <= maxWeek; week += weekStep) {
+    const x = mapWeekToX(week);
+    doc.text(`${week}s`, x, chartY + chartH + 4, { align: 'center' });
+  }
+
+  // Legenda da curva ideal
+  if (curvaPesoIdeal) {
+    doc.setFontSize(5);
+    doc.setTextColor(76, 175, 80);
+    doc.text('Peso Ideal', startX + width - 12, startY + 10);
+  }
 
   // Label eixo X
   doc.setFontSize(6);
@@ -679,7 +799,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setDrawColor(229, 231, 235);
       doc.setLineWidth(0.3);
       doc.roundedRect(margin, y, halfWidth, chartHeight, 2, 2);
-      desenharGraficoPeso(doc, dados.dadosGraficos.peso, margin, y, halfWidth, chartHeight);
+      desenharGraficoPeso(doc, dados.dadosGraficos.peso, margin, y, halfWidth, chartHeight, dados.pesoInicial, dados.altura);
       
       doc.roundedRect(margin + halfWidth + 4, y, halfWidth, chartHeight, 2, 2);
       desenharGraficoAU(doc, dados.dadosGraficos.au, margin + halfWidth + 4, y, halfWidth, chartHeight);
@@ -691,7 +811,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       doc.setDrawColor(229, 231, 235);
       doc.setLineWidth(0.3);
       doc.roundedRect(margin, y, contentWidth * 0.6, chartHeight, 2, 2);
-      desenharGraficoPeso(doc, dados.dadosGraficos.peso, margin, y, contentWidth * 0.6, chartHeight);
+      desenharGraficoPeso(doc, dados.dadosGraficos.peso, margin, y, contentWidth * 0.6, chartHeight, dados.pesoInicial, dados.altura);
       y += chartHeight + 5;
     } else if (dados.dadosGraficos.au && dados.dadosGraficos.au.length > 0) {
       checkNewPage(chartHeight + 10);

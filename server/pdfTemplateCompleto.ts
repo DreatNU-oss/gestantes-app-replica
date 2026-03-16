@@ -66,6 +66,9 @@ export interface DadosPdfCompleto {
     au?: Array<{ igSemanas: number; valor: number }>;
     pa?: Array<{ igSemanas: number; sistolica: number; diastolica: number }>;
   };
+  // Dados para curva de peso ideal
+  pesoInicial?: number | null; // em gramas
+  altura?: number | null; // em cm
 }
 
 /**

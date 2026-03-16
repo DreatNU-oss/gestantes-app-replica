@@ -2089,3 +2089,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Causa raiz: igSemanas é null quando DUM é "Incerta" - adicionado fallback para igUltrassomSemanas
 - [x] Corrigido em routers.ts, gestante-router.ts (3 arquivos, 6 pontos)
 - [x] Testes unitários (14 testes passando)
+
+## Melhorias Gráfico de Peso no PDF (16/03/2026)
+- [x] Eixo X proporcional à idade gestacional real (não equidistante)
+- [x] Adicionar curva de peso ideal baseada no IMC pré-gestacional da paciente (faixa min/max sombreada em verde)
+- [x] Testes unitários (13 testes passando)

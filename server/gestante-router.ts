@@ -888,6 +888,9 @@ export const gestanteRouter = router({
         },
         // Dados brutos para gráficos nativos jsPDF
         dadosGraficos: dadosGraficosNativos,
+        // Dados para curva de peso ideal
+        pesoInicial: gestante.pesoInicial || null,
+        altura: gestante.altura || null,
         gestante: {
           nome: gestante.nome,
           idade: idade,
