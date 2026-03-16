@@ -2126,3 +2126,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionado normalização case-insensitive (vdrl, hiv, tsh, urocultura -> nomes canônicos)
 - [x] Atualizado shared/examNormalization.ts, htmlToPdf.ts, CartaoPrenatal.tsx
 - [x] Testes unitários (23 testes passando)
+
+## BUG: Exames redundantes no PDF (16/03/2026)
+- [x] Remover "Hemograma" da lista canônica do PDF (redundante com Hemoglobina + Hematócrito + Plaquetas separados)
+- [x] Remover linhas separadas de IgM para Toxoplasmose, Rubéola e Citomegalovírus (IgG já contém info de IgM)
+- [x] Atualizado htmlToPdf.ts e CartaoPrenatal.tsx
+- [x] Testes unitários (23 testes passando)

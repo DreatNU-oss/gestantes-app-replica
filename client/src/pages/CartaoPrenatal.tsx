@@ -1138,13 +1138,13 @@ export default function CartaoPrenatal() {
         y += 10;
         
         // Sequência canônica de exames (mesma do frontend examesConfig.ts)
-        // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
-        const EXAMES_SANGUE_PDF = [
-          'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Hemograma', 'Plaquetas',
-          'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
-          'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
-          'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
-          'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
+         // Hemograma removido (redundante com Hb+Ht+Plaq separados), IgM removidos (IgG já contém)
+         const EXAMES_SANGUE_PDF = [
+           'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
+           'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+           'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG',
+           'Rubéola IgG', 'Citomegalovírus IgG',
+           'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
           'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
         ];
         const EXAMES_URINA_PDF = ['EAS (Urina tipo 1)', 'Urocultura', 'Protein\u00faria de 24 horas'];
@@ -1192,7 +1192,7 @@ export default function CartaoPrenatal() {
         };
         
           // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
-        // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
+        // Hemoglobina, Hematócrito e Plaquetas separados; Hemograma removido do PDF (redundante)
         const EXAM_NORM: Record<string, string> = {
           'Tipagem sanguínea': 'Tipagem sanguínea ABO/Rh', 'tipagem_sanguinea': 'Tipagem sanguínea ABO/Rh',
           'Tipagem Sanguínea': 'Tipagem sanguínea ABO/Rh',

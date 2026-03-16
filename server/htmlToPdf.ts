@@ -1031,12 +1031,13 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawSectionTitle('Exames Laboratoriais');
     
     // Sequência canônica de exames (mesma do frontend examesConfig.ts)
-    // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
+    // Hemoglobina, Hematócrito e Plaquetas separados (Hemograma removido pois é redundante)
+    // IgM de Toxo/Rubéola/CMV removidos pois IgG já contém info de IgM
     const EXAMES_SANGUE = [
-      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Hemograma', 'Plaquetas',
+      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
       'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
-      'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
-      'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
+      'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG',
+      'Rubéola IgG', 'Citomegalovírus IgG',
       'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
       'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
     ];
