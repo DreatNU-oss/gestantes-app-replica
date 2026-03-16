@@ -2189,3 +2189,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar UI de seleção de medicamento no wizard e badge na lista
 - [x] Atualizar routers (criar/atualizar template) com condicaoMedicamento
 - [x] 8 testes passando
+
+## Alerta pré-eclâmpsia sem AAS (16/03/2026)
+- [x] Identificar fatores de risco de pré-eclâmpsia (DHEG, histórico familiar, hipertensão, obesidade, trombofilia, gemelar, FIV, diabetes)
+- [x] Verificar se gestante usa AAS ativo nos medicamentos via trpc.medicamentos.list
+- [x] Criar alerta visual vermelho no FatoresRiscoManager quando risco de PE e sem AAS
+- [x] Exibir fatores específicos e orientação de prescrição (AAS 100-150mg/dia)
+- [x] 9 testes unitários passando

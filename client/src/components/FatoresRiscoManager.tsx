@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle, Plus, X } from "lucide-react";
+import { AlertTriangle, Plus, X, ShieldAlert, Pill } from "lucide-react";
 import { toast } from "sonner";
 
 interface FatoresRiscoManagerProps {
@@ -146,6 +146,12 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
     }
   }, [idadeGestante, fatores, isLoading, gestanteId]);
 
+  // Buscar medicamentos da gestante para verificar uso de AAS
+  const { data: medicamentosGestante = [] } = trpc.medicamentos.list.useQuery(
+    { gestanteId },
+    { enabled: !!gestanteId }
+  );
+
   // Verificar se deve adicionar ou remover automaticamente "sobrepeso_obesidade" (apenas obesidade: IMC >= 30)
   // Executa quando o IMC da gestante muda (após preencher altura e peso)
   // ou quando os fatores de risco são carregados/atualizados
@@ -210,6 +216,33 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
     f.descricao?.toLowerCase() !== 'alergia a medicamentos'
   );
 
+  // Fatores de risco associados a pré-eclâmpsia
+  const FATORES_PRE_ECLAMPSIA = [
+    'fator_preditivo_dheg',
+    'historico_familiar_dheg',
+    'hipertensao',
+    'sobrepeso_obesidade',
+    'diabetes_tipo_1',
+    'diabetes_tipo2',
+    'trombofilia',
+    'fiv_nesta_gestacao',
+    'gemelar',
+  ];
+
+  const fatoresPreEclampsia = useMemo(() => {
+    return fatoresAtivos.filter(f => FATORES_PRE_ECLAMPSIA.includes(f.tipo));
+  }, [fatoresAtivos]);
+
+  const temRiscoPreEclampsia = fatoresPreEclampsia.length > 0;
+
+  const usaAAS = useMemo(() => {
+    return medicamentosGestante.some(
+      (m: any) => m.tipo === 'aas' && m.ativo === 1
+    );
+  }, [medicamentosGestante]);
+
+  const alertaAAS = temRiscoPreEclampsia && !usaAAS;
+
   return (
     <Card>
       <CardHeader>
@@ -224,6 +257,27 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Alerta: Risco de pré-eclâmpsia sem AAS */}
+        {alertaAAS && (
+          <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border-2 border-red-300 dark:border-red-700 rounded-lg animate-pulse-subtle">
+            <ShieldAlert className="h-6 w-6 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-semibold text-red-800 dark:text-red-300 text-sm">
+                Atenção: Gestante com risco de pré-eclâmpsia sem AAS prescrito
+              </p>
+              <p className="text-xs text-red-700 dark:text-red-400 mt-1">
+                Esta gestante possui {fatoresPreEclampsia.length === 1 ? 'fator' : 'fatores'} de risco para pré-eclâmpsia
+                ({fatoresPreEclampsia.map(f => fatoresRiscoLabels[f.tipo] || f.tipo).join(', ')})
+                mas <strong>não está usando AAS (Ácido Acetilsalicílico)</strong>.
+              </p>
+              <p className="text-xs text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
+                <Pill className="h-3.5 w-3.5" />
+                Considere prescrever AAS 100-150mg/dia, idealmente antes de 16 semanas de gestação.
+              </p>
+            </div>
+          </div>
+        )}
+
         {fatoresAtivos.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Nenhum fator de risco registrado
