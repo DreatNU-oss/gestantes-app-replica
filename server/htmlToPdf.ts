@@ -1077,6 +1077,95 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       drawExameTableHeader();
     };
     
+    // Função para verificar se um resultado de exame é alterado/anormal
+    const isResultadoAlterado = (nomeExame: string, resultado: string): boolean => {
+      if (!resultado || resultado === '-') return false;
+      const r = resultado.toLowerCase().trim();
+      
+      // Palavras-chave universais de resultado alterado
+      const palavrasAlteradas = [
+        'reagente', 'positiv', 'detecta', 'presente', 'anormal',
+        'alterado', 'elevad', 'aumentad', 'reduzid', 'baixo',
+        'insuficien', 'deficien'
+      ];
+      // Palavras-chave de resultado normal (para evitar falsos positivos)
+      const palavrasNormais = [
+        'não reagente', 'nao reagente', 'n reagente', 'nr',
+        'não reag', 'nao reag', 'negativ', 'não detecta', 'nao detecta',
+        'não reativo', 'nao reativo', 'imune', 'normal', 'adequad',
+        'ausente', 'suficien'
+      ];
+      
+      // Primeiro verificar se é normal (tem prioridade)
+      for (const normal of palavrasNormais) {
+        if (r.includes(normal)) return false;
+      }
+      
+      // Depois verificar se é alterado
+      for (const alterada of palavrasAlteradas) {
+        if (r.includes(alterada)) return true;
+      }
+      
+      // Regras específicas por exame com valores numéricos
+      const numMatch = r.match(/([\d.,]+)/);
+      if (numMatch) {
+        const val = parseFloat(numMatch[1].replace(',', '.'));
+        if (isNaN(val)) return false;
+        
+        const nome = nomeExame.toLowerCase();
+        
+        // Hemoglobina < 11 g/dl
+        if (nome.includes('hemoglobina') || nome.includes('hemat')) {
+          if (val < 11 && !r.includes('%')) return true;
+        }
+        // Plaquetas < 150.000
+        if (nome.includes('plaqueta')) {
+          const plaq = r.includes('.') && val > 100 ? val * 1000 : val;
+          if (plaq < 150000) return true;
+        }
+        // Glicemia de jejum >= 92 mg/dl
+        if (nome.includes('glicemia') && nome.includes('jejum')) {
+          if (val >= 92) return true;
+        }
+        // TSH > 4.0 ou < 0.1
+        if (nome === 'tsh') {
+          if (val > 4.0 || val < 0.1) return true;
+        }
+        // TTGO: Jejum >= 92, 1h >= 180, 2h >= 153
+        if (nome.includes('ttgo') || nome.includes('curva glic')) {
+          // Pode ter múltiplos valores separados por /
+          const partes = r.split(/[\/|;,]/).map(p => parseFloat(p.replace(',', '.')));
+          if (partes.length >= 1 && partes[0] >= 92) return true;
+          if (partes.length >= 2 && partes[1] >= 180) return true;
+          if (partes.length >= 3 && partes[2] >= 153) return true;
+        }
+        // Ferritina < 15
+        if (nome.includes('ferritina')) {
+          if (val < 15) return true;
+        }
+        // Vitamina D < 20
+        if (nome.includes('vitamina d')) {
+          if (val < 20) return true;
+        }
+        // Vitamina B12 < 200
+        if (nome.includes('vitamina b12') || nome.includes('b12')) {
+          if (val < 200) return true;
+        }
+      }
+      
+      // Urocultura positiva
+      if (nomeExame.toLowerCase().includes('urocultura')) {
+        if (r.includes('positiv') || r.includes('crescimento')) return true;
+      }
+      
+      // EPF positivo
+      if (nomeExame.toLowerCase().includes('epf') || nomeExame.toLowerCase().includes('parasitol')) {
+        if (r.includes('positiv') || r.includes('presente') || r.includes('encontrad')) return true;
+      }
+      
+      return false;
+    };
+    
     // Função para desenhar uma linha de exame
     let rowIndex = 0;
     const drawExameRow = (nomeExame: string) => {
@@ -1093,15 +1182,14 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       }
       rowIndex++;
       
-      const rowData = [
-        exame.nome,
+      const resultados = [
         exame.trimestre1?.resultado || '-',
         exame.trimestre2?.resultado || '-',
         exame.trimestre3?.resultado || '-',
       ];
+      const rowData = [exame.nome, ...resultados];
       
       let x = margin;
-      doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
       doc.setFontSize(7);
       
       rowData.forEach((cell, i) => {
@@ -1110,8 +1198,17 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         // Nome do exame em negrito
         if (i === 0) {
           doc.setFont('helvetica', 'bold');
+          doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
         } else {
-          doc.setFont('helvetica', 'normal');
+          // Verificar se resultado é alterado
+          const alterado = isResultadoAlterado(exame.nome, resultados[i - 1]);
+          if (alterado) {
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(200, 30, 30); // Vermelho
+          } else {
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+          }
         }
         if (doc.getTextWidth(text) > maxWidth) {
           while (doc.getTextWidth(text + '...') > maxWidth && text.length > 0) {
@@ -1123,6 +1220,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         x += exameColWidths[i];
       });
       doc.setFont('helvetica', 'normal');
+      doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
       y += 5;
     };
     

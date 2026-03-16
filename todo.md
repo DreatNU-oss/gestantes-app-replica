@@ -2103,3 +2103,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Separar por categorias: Sangue, Urina, Fezes, E.G.B.
 - [x] Corrigido em htmlToPdf.ts, CartaoPrenatal.tsx, routers.ts e gestante-router.ts
 - [x] Testes unitários (16 testes passando)
+
+## Destacar Resultados Alterados em Vermelho no PDF (16/03/2026)
+- [x] Definir regras de resultados alterados por exame (keywords + limiares numéricos)
+- [x] Implementar destaque vermelho no htmlToPdf.ts (backend PDF)
+- [x] Implementar destaque vermelho no CartaoPrenatal.tsx (frontend PDF)
+- [x] Testes unitários (49 testes passando)

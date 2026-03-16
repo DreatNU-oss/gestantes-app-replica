@@ -1201,6 +1201,54 @@ export default function CartaoPrenatal() {
           return '-';
         };
         
+        // Função para verificar se resultado de exame é alterado/anormal
+        const isResultadoAlteradoPdf = (nomeExame: string, resultado: string): boolean => {
+          if (!resultado || resultado === '-') return false;
+          const r = resultado.toLowerCase().trim();
+          const palavrasAlteradas = [
+            'reagente', 'positiv', 'detecta', 'presente', 'anormal',
+            'alterado', 'elevad', 'aumentad', 'reduzid', 'baixo',
+            'insuficien', 'deficien'
+          ];
+          const palavrasNormais = [
+            'n\u00e3o reagente', 'nao reagente', 'n reagente', 'nr',
+            'n\u00e3o reag', 'nao reag', 'negativ', 'n\u00e3o detecta', 'nao detecta',
+            'n\u00e3o reativo', 'nao reativo', 'imune', 'normal', 'adequad',
+            'ausente', 'suficien'
+          ];
+          for (const normal of palavrasNormais) {
+            if (r.includes(normal)) return false;
+          }
+          for (const alterada of palavrasAlteradas) {
+            if (r.includes(alterada)) return true;
+          }
+          const numMatch = r.match(/([\d.,]+)/);
+          if (numMatch) {
+            const val = parseFloat(numMatch[1].replace(',', '.'));
+            if (isNaN(val)) return false;
+            const nome = nomeExame.toLowerCase();
+            if ((nome.includes('hemoglobina') || nome.includes('hemat')) && val < 11 && !r.includes('%')) return true;
+            if (nome.includes('plaqueta')) {
+              const plaq = r.includes('.') && val > 100 ? val * 1000 : val;
+              if (plaq < 150000) return true;
+            }
+            if (nome.includes('glicemia') && nome.includes('jejum') && val >= 92) return true;
+            if (nome === 'tsh' && (val > 4.0 || val < 0.1)) return true;
+            if (nome.includes('ttgo') || nome.includes('curva glic')) {
+              const partes = r.split(/[\/|;,]/).map(p => parseFloat(p.replace(',', '.')));
+              if (partes.length >= 1 && partes[0] >= 92) return true;
+              if (partes.length >= 2 && partes[1] >= 180) return true;
+              if (partes.length >= 3 && partes[2] >= 153) return true;
+            }
+            if (nome.includes('ferritina') && val < 15) return true;
+            if (nome.includes('vitamina d') && val < 20) return true;
+            if ((nome.includes('vitamina b12') || nome.includes('b12')) && val < 200) return true;
+          }
+          if (nomeExame.toLowerCase().includes('urocultura') && (r.includes('positiv') || r.includes('crescimento'))) return true;
+          if ((nomeExame.toLowerCase().includes('epf') || nomeExame.toLowerCase().includes('parasitol')) && (r.includes('positiv') || r.includes('presente') || r.includes('encontrad'))) return true;
+          return false;
+        };
+        
         // Função para desenhar uma linha de exame
         let rowIdx = 0;
         const drawExameRowPdf = (nomeExame: string) => {
@@ -1234,7 +1282,6 @@ export default function CartaoPrenatal() {
           }
           pdf.text(nomeDisplay, colExameX + 2, y);
           
-          pdf.setFont('', 'normal');
           pdf.setFontSize(7);
           // Truncar resultados se necessário
           const truncResult = (text: string) => {
@@ -1246,9 +1293,22 @@ export default function CartaoPrenatal() {
             }
             return text;
           };
-          pdf.text(truncResult(r1), col1X + 2, y);
-          pdf.text(truncResult(r2), col2X + 2, y);
-          pdf.text(truncResult(r3), col3X + 2, y);
+          // Renderizar cada resultado com cor baseada em alteração
+          const resultados = [r1, r2, r3];
+          const colXs = [col1X, col2X, col3X];
+          resultados.forEach((res, i) => {
+            const alterado = isResultadoAlteradoPdf(nomeExame, res);
+            if (alterado) {
+              pdf.setFont('', 'bold');
+              pdf.setTextColor(200, 30, 30);
+            } else {
+              pdf.setFont('', 'normal');
+              pdf.setTextColor(0, 0, 0);
+            }
+            pdf.text(truncResult(res), colXs[i] + 2, y);
+          });
+          pdf.setFont('', 'normal');
+          pdf.setTextColor(0, 0, 0);
           y += 5;
         };
         
