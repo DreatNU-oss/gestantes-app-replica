@@ -2026,3 +2026,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Permitir edição do telefone para todos os tipos de usuários (admin pode editar)
 - [x] Atualizar sistema de templates WhatsApp: nova variável {telefone_medico} + scheduler busca telefone do médico
 - [x] Testes unitários (8 testes passando)
+
+## Dropdown EGB (15/03/2026)
+- [x] Adicionar dropdown POSITIVO/NEGATIVO para o campo resultado do exame EGB (Pesquisa para EGB) + preenchimento em lote + atalhos 1=Neg, 2=Pos

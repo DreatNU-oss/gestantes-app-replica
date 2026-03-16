@@ -579,6 +579,15 @@ export default function ExamesLaboratoriais() {
           valorAlterado: "Positivo"
         });
       }
+      // EGB (Swab vaginal/retal)
+      else if (exame.nome === "Swab vaginal/retal EGB") {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "egb",
+          valorNormal: "Negativo",
+          valorAlterado: "Positivo"
+        });
+      }
     }
     
     return examesQualitativos;
@@ -744,6 +753,9 @@ export default function ExamesLaboratoriais() {
     
     // Verificar se é EPF (Parasitológico de Fezes)
     const ehEPF = nomeExame === "EPF (Parasitológico de Fezes)";
+    
+    // Verificar se é Swab vaginal/retal EGB
+    const ehEGB = nomeExame === "Swab vaginal/retal EGB";
     
     // Verificar se é Tipagem sanguínea ABO/Rh
     const ehTipagem = nomeExame === "Tipagem sanguínea ABO/Rh";
@@ -1011,6 +1023,51 @@ export default function ExamesLaboratoriais() {
           <SelectContent>
             <SelectItem value="Positivo">Positivo</SelectItem>
             <SelectItem value="Negativo">Negativo</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+    
+    // Renderizar dropdown para Swab vaginal/retal EGB
+    if (ehEGB) {
+      const ehPositivo = valor === "Positivo";
+      
+      // Handler para atalhos numéricos: 1=Negativo, 2=Positivo
+      const handleKeyDownEGB = (e: React.KeyboardEvent) => {
+        if (e.key === '1') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Negativo');
+        } else if (e.key === '2') {
+          e.preventDefault();
+          handleResultadoChange(nomeExame, chave, 'Positivo');
+        }
+      };
+      
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger 
+            className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900 font-bold' : valor === 'Negativo' ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
+            data-field-type="resultado"
+            data-trimestre={trimestre}
+            onKeyDown={(e) => {
+              handleKeyDownEGB(e);
+              if (e.key === 'Tab' && !e.shiftKey) {
+                const navegou = navegarParaProximoResultado(trimestre);
+                if (navegou === true || navegou === 'need-date') {
+                  e.preventDefault();
+                }
+              }
+            }}
+            title="Atalhos: 1=Negativo, 2=Positivo"
+          >
+            <SelectValue placeholder="1/2" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Negativo">Negativo</SelectItem>
+            <SelectItem value="Positivo">Positivo</SelectItem>
           </SelectContent>
         </Select>
       );
