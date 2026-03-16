@@ -2161,3 +2161,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Aplicar limpeza no CartaoPrenatal.tsx (PDF frontend)
 - [x] Resultado esperado: "IgG reagente / IgM não reagente" → "Reagente"
 - [x] Testes unitários (17 testes passando)
+
+## Criar Clínica 00003 (16/03/2026)
+- [x] Criar registro da Clínica 00003 no banco de dados (id=60001, código=00003, cor=#FFFFFF)
+- [x] Atribuir fabiana.mautoni@gmail.com como admin da clínica (emailsAutorizados id=90001)
+
+## Botão WhatsApp "Or. Ativ. Físicas" (16/03/2026)
+- [x] Upload do PDF de atividade física para CDN
+- [x] Adicionar botão "Or. Ativ. Físicas" na interface de envio WhatsApp
+- [x] Reutiliza handleEnviarOrientacao existente (backend já suporta envio de PDF)
+- [x] Compilando sem erros, TypeScript OK

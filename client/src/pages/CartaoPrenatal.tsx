@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert, Send, MessageSquare, UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert, Send, MessageSquare, UtensilsCrossed, Dumbbell } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -3310,6 +3310,28 @@ export default function CartaoPrenatal() {
                   )}
                   Enviar Cartão
                   {foiEnviada('enviar-cartao') && <Check className="h-3 w-3 text-blue-600" />}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`gap-2 ${foiEnviada('or-ativ-fisicas') ? 'border-orange-400 bg-orange-50 text-orange-800' : 'border-orange-200 hover:bg-orange-50 hover:border-orange-400 text-orange-800'}`}
+                  disabled={!gestante.telefone || enviandoWhatsApp === 'or-ativ-fisicas'}
+                  title={foiEnviada('or-ativ-fisicas') ? `Enviado em ${ultimoEnvio('or-ativ-fisicas')}` : 'Enviar orientações de atividade física na gestação'}
+                  onClick={() => handleEnviarOrientacao(
+                    'or-ativ-fisicas',
+                    `Olá ${gestante.nome?.split(' ')[0] || ''}! 🤰\n\nSegue o guia de *Orientações para Atividade Física na Gestação*.\n\nEste material contém informações importantes sobre:\n• Benefícios da atividade física durante a gravidez\n• Exercícios recomendados para cada fase\n• Cuidados e contraindicações\n• Dicas de segurança\n\nLeia com atenção e converse com seu médico sobre o melhor plano de exercícios para você.\n\nAbraços da equipe Mais Mulher! 💜`,
+                    'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/atividade_fisica_gestacao_1ad0b797.pdf'
+                  )}
+                >
+                  {enviandoWhatsApp === 'or-ativ-fisicas' ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : foiEnviada('or-ativ-fisicas') ? (
+                    <CheckCircle2 className="h-4 w-4 text-orange-600" />
+                  ) : (
+                    <Dumbbell className="h-4 w-4" />
+                  )}
+                  Or. Ativ. Físicas
+                  {foiEnviada('or-ativ-fisicas') && <Check className="h-3 w-3 text-orange-600" />}
                 </Button>
                 {/* Espaço para futuros botões */}
               </div>
