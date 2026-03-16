@@ -120,7 +120,7 @@ import { enviarLembreteFloresAdmin } from './flowerReminder';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento } from './whatsappScheduler';
 import { syncPatientToBot, removePatientFromBot, updatePatientOnBot } from './whatsappBotSync';
-import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados } from '../drizzle/schema';
+import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados, orientacoesEnviadas } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -4178,6 +4178,41 @@ export const appRouter = router({
         const { processarMensagensIG } = await import('./whatsappScheduler');
         const result = await processarMensagensIG();
         return result;
+      }),
+
+    // Registrar orientação enviada
+    registrarOrientacaoEnviada: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        tipoOrientacao: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        await db.insert(orientacoesEnviadas).values({
+          gestanteId: input.gestanteId,
+          clinicaId: ctx.user.clinicaId,
+          tipoOrientacao: input.tipoOrientacao,
+          enviadoPorId: ctx.user.id,
+          enviadoPorNome: ctx.user.name || 'Desconhecido',
+        });
+        return { success: true };
+      }),
+
+    // Listar orientações enviadas para uma gestante
+    listarOrientacoesEnviadas: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        return db.select().from(orientacoesEnviadas)
+          .where(and(
+            eq(orientacoesEnviadas.gestanteId, input.gestanteId),
+            eq(orientacoesEnviadas.clinicaId, ctx.user.clinicaId),
+          ))
+          .orderBy(desc(orientacoesEnviadas.enviadoEm));
       }),
 
     // Testar envio de mensagem

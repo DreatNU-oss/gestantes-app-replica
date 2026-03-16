@@ -2065,3 +2065,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar botão "Enviar Cartão" na barra de envio rápido WhatsApp (azul, com ícone FileText)
 - [x] Gerar PDF do cartão de pré-natal, fazer upload para S3, e enviar via WhatsApp (procedure pdf.enviarCartaoWhatsApp)
 - [x] Testes unitários (10 testes passando)
+
+## Registro de Orientações Enviadas + Check Verde (16/03/2026)
+- [x] Criar tabela orientacoesEnviadas no schema (gestanteId, tipoOrientacao, dataEnvio, enviadoPor)
+- [x] Criar procedures backend para registrar envio e listar orientações enviadas por gestante
+- [x] Atualizar botões de envio rápido para mostrar check verde quando já enviado
+- [x] Registrar automaticamente ao enviar (Or. Alimentares 1ª cons, Enviar Cartão, etc.)
+- [x] Tooltip com data/hora do último envio ao passar o mouse sobre botão já enviado
+- [x] Testes unitários (21 testes passando)

@@ -894,3 +894,20 @@ export const whatsappHistorico = mysqlTable("whatsappHistorico", {
 
 export type WhatsappHistorico = typeof whatsappHistorico.$inferSelect;
 export type InsertWhatsappHistorico = typeof whatsappHistorico.$inferInsert;
+
+/**
+ * Registro de orientações/documentos enviados via WhatsApp para cada gestante
+ * Permite rastrear quais orientações já foram enviadas e mostrar check verde nos botões
+ */
+export const orientacoesEnviadas = mysqlTable("orientacoesEnviadas", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  clinicaId: int("clinicaId").notNull(),
+  tipoOrientacao: varchar("tipoOrientacao", { length: 100 }).notNull(), // ex: 'or-alimentares-1a', 'cartao-prenatal', etc.
+  enviadoPorId: int("enviadoPorId").notNull(), // FK para users.id
+  enviadoPorNome: varchar("enviadoPorNome", { length: 255 }),
+  enviadoEm: timestamp("enviadoEm").defaultNow().notNull(),
+});
+
+export type OrientacaoEnviada = typeof orientacoesEnviadas.$inferSelect;
+export type InsertOrientacaoEnviada = typeof orientacoesEnviadas.$inferInsert;

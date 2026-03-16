@@ -540,6 +540,13 @@
       "when": 1773625913141,
       "tag": "0076_public_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "5",
+      "when": 1773658461952,
+      "tag": "0077_little_sunfire",
+      "breakpoints": true
     }
   ]
 }

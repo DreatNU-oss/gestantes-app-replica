@@ -527,10 +527,33 @@ export default function CartaoPrenatal() {
     },
   });
 
+  // Query orientações já enviadas para esta gestante
+  const orientacoesEnviadasQuery = trpc.whatsapp.listarOrientacoesEnviadas.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+  const orientacoesEnviadas = orientacoesEnviadasQuery.data || [];
+
+  const registrarOrientacaoMutation = trpc.whatsapp.registrarOrientacaoEnviada.useMutation({
+    onSuccess: () => {
+      orientacoesEnviadasQuery.refetch();
+    },
+  });
+
+  const foiEnviada = (tipo: string) => orientacoesEnviadas.some(o => o.tipoOrientacao === tipo);
+  const ultimoEnvio = (tipo: string) => {
+    const envio = orientacoesEnviadas.find(o => o.tipoOrientacao === tipo);
+    if (!envio) return null;
+    return new Date(envio.enviadoEm).toLocaleString('pt-BR');
+  };
+
   const enviarCartaoMutation = trpc.pdf.enviarCartaoWhatsApp.useMutation({
     onSuccess: () => {
       toast.success('Cartão de Pré-Natal enviado com sucesso via WhatsApp!');
       setEnviandoWhatsApp(null);
+      if (gestanteSelecionada) {
+        registrarOrientacaoMutation.mutate({ gestanteId: gestanteSelecionada, tipoOrientacao: 'enviar-cartao' });
+      }
     },
     onError: (error) => {
       toast.error(`Erro ao enviar cartão: ${error.message}`);
@@ -554,6 +577,10 @@ export default function CartaoPrenatal() {
       pdfUrl,
       nomeGestante: gestante.nome,
       gestanteId: gestante.id,
+    }, {
+      onSuccess: () => {
+        registrarOrientacaoMutation.mutate({ gestanteId: gestante.id, tipoOrientacao: tipo });
+      },
     });
   };
 
@@ -3036,8 +3063,9 @@ export default function CartaoPrenatal() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-2 border-green-200 hover:bg-green-50 hover:border-green-400 text-green-800"
+                  className={`gap-2 ${foiEnviada('or-alimentares-1a') ? 'border-green-400 bg-green-50 text-green-800' : 'border-green-200 hover:bg-green-50 hover:border-green-400 text-green-800'}`}
                   disabled={!gestante.telefone || enviandoWhatsApp === 'or-alimentares-1a'}
+                  title={foiEnviada('or-alimentares-1a') ? `Enviado em ${ultimoEnvio('or-alimentares-1a')}` : 'Enviar orientações alimentares 1ª consulta'}
                   onClick={() => handleEnviarOrientacao(
                     'or-alimentares-1a',
                     `Olá ${gestante.nome?.split(' ')[0] || ''}! 🤰\n\nSegue o *Guia de Alimentação para uma Gestação Saudável* da Clínica Mais Mulher.\n\nEste material contém orientações nutricionais importantes para esta fase, incluindo:\n• Princípios de ouro da nutrição na gravidez\n• Alimentos que devem ser evitados\n• Sugestão de cardápio semanal balanceado\n\nLeia com atenção e em caso de dúvidas, converse com seu médico na próxima consulta.\n\nAbraços da equipe Mais Mulher! 💜`,
@@ -3046,16 +3074,20 @@ export default function CartaoPrenatal() {
                 >
                   {enviandoWhatsApp === 'or-alimentares-1a' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : foiEnviada('or-alimentares-1a') ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
                   ) : (
                     <UtensilsCrossed className="h-4 w-4" />
                   )}
                   Or. Alimentares 1ª cons
+                  {foiEnviada('or-alimentares-1a') && <Check className="h-3 w-3 text-green-600" />}
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-2 border-blue-200 hover:bg-blue-50 hover:border-blue-400 text-blue-800"
+                  className={`gap-2 ${foiEnviada('enviar-cartao') ? 'border-blue-400 bg-blue-50 text-blue-800' : 'border-blue-200 hover:bg-blue-50 hover:border-blue-400 text-blue-800'}`}
                   disabled={!gestante.telefone || enviandoWhatsApp === 'enviar-cartao'}
+                  title={foiEnviada('enviar-cartao') ? `Enviado em ${ultimoEnvio('enviar-cartao')}` : 'Gerar e enviar cartão de pré-natal via WhatsApp'}
                   onClick={() => {
                     if (!gestante) return;
                     setEnviandoWhatsApp('enviar-cartao');
@@ -3064,10 +3096,13 @@ export default function CartaoPrenatal() {
                 >
                   {enviandoWhatsApp === 'enviar-cartao' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : foiEnviada('enviar-cartao') ? (
+                    <CheckCircle2 className="h-4 w-4 text-blue-600" />
                   ) : (
                     <FileText className="h-4 w-4" />
                   )}
                   Enviar Cartão
+                  {foiEnviada('enviar-cartao') && <Check className="h-3 w-3 text-blue-600" />}
                 </Button>
                 {/* Espaço para futuros botões */}
               </div>
