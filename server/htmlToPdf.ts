@@ -1031,8 +1031,9 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     drawSectionTitle('Exames Laboratoriais');
     
     // Sequência canônica de exames (mesma do frontend examesConfig.ts)
+    // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
     const EXAMES_SANGUE = [
-      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
+      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Hemograma', 'Plaquetas',
       'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
       'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
       'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
@@ -1273,23 +1274,18 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       y += 3;
     }
     
-    // Exames extras que não estão na sequência canônica -> classificar por categoria
+    // Exames extras que não estão na sequência canônica -> adicionar à seção de sangue
+    // (todos os exames não canônicos são classificados como sangue por fallback)
     const todosCanonicos = new Set([...EXAMES_SANGUE, ...EXAMES_URINA, ...EXAMES_FEZES, ...EXAMES_OUTROS]);
     const examesExtrasNomes = Array.from(examesPorNome.keys()).filter(n => !todosCanonicos.has(n));
-    // Adicionar extras à categoria correta usando EXAM_CATEGORIES
-    examesExtrasNomes.forEach(nome => {
-      const cat = EXAM_CATEGORIES[nome] || 'sangue';
-      if (cat === 'sangue' && !EXAMES_SANGUE.includes(nome)) {
-        // Desenhar na seção de sangue (após os canônicos)
-        drawExameRow(nome);
-      } else if (cat === 'urina' && !EXAMES_URINA.includes(nome)) {
-        drawExameRow(nome);
-      } else if (cat === 'fezes' && !EXAMES_FEZES.includes(nome)) {
-        drawExameRow(nome);
-      } else if (cat === 'egb' && !EXAMES_OUTROS.includes(nome)) {
-        drawExameRow(nome);
+    if (examesExtrasNomes.length > 0) {
+      // Se não houve seção de sangue ainda, criar uma
+      if (!temExamesSangue) {
+        drawCategoryTitle('Exames de Sangue');
+        rowIndex = 0;
       }
-    });
+      examesExtrasNomes.forEach(drawExameRow);
+    }
   }
 
 

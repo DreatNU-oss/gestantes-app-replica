@@ -2117,3 +2117,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criado shared/examNormalization.ts com mapa de normalização reutilizável
 - [x] Aplicado em htmlToPdf.ts, CartaoPrenatal.tsx, routers.ts, gestante-router.ts
 - [x] Testes unitários (23 testes passando)
+
+## BUG: Exames no PDF - duplicatas e categorização errada (16/03/2026)
+- [x] Hemoglobina, Hematócrito, Hemograma e Plaquetas agora são exames SEPARADOS no PDF
+- [x] Plaquetas aparece como exame separado na seção Exames de Sangue
+- [x] Tipagem sanguínea: normalização corrigida (variações com case-insensitive)
+- [x] Exames extras não canônicos agora vão apenas para seção Sangue (não mais para EGB)
+- [x] Adicionado normalização case-insensitive (vdrl, hiv, tsh, urocultura -> nomes canônicos)
+- [x] Atualizado shared/examNormalization.ts, htmlToPdf.ts, CartaoPrenatal.tsx
+- [x] Testes unitários (23 testes passando)

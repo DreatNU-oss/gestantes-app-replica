@@ -9,12 +9,17 @@ describe('normalizeExamName', () => {
     expect(normalizeExamName('Tipagem sanguínea')).toBe('Tipagem sanguínea ABO/Rh');
   });
 
-  it('normalizes hemoglobina variations', () => {
-    expect(normalizeExamName('hemoglobina_hematocrito')).toBe('Hemoglobina/Hematócrito');
-    expect(normalizeExamName('Hemoglobina')).toBe('Hemoglobina/Hematócrito');
-    expect(normalizeExamName('Hematócrito')).toBe('Hemoglobina/Hematócrito');
-    expect(normalizeExamName('Hemograma')).toBe('Hemoglobina/Hematócrito');
-    expect(normalizeExamName('Hemograma Completo')).toBe('Hemoglobina/Hematócrito');
+  it('normalizes hemoglobina, hematocrito, hemograma as SEPARATE exams', () => {
+    // Hemoglobina stays as Hemoglobina
+    expect(normalizeExamName('Hemoglobina')).toBe('Hemoglobina');
+    // Hematócrito stays as Hematócrito
+    expect(normalizeExamName('Hematócrito')).toBe('Hematócrito');
+    // Hemograma and combined variations -> Hemograma
+    expect(normalizeExamName('hemoglobina_hematocrito')).toBe('Hemograma');
+    expect(normalizeExamName('Hemoglobina/Hematócrito')).toBe('Hemograma');
+    expect(normalizeExamName('Hemograma')).toBe('Hemograma');
+    expect(normalizeExamName('hemograma')).toBe('Hemograma');
+    expect(normalizeExamName('Hemograma Completo')).toBe('Hemograma');
   });
 
   it('normalizes glicemia variations', () => {

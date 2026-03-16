@@ -3,12 +3,16 @@
  * Converte todas as variações encontradas no banco de dados para o nome canônico
  * usado no examesConfig.ts do frontend.
  * 
+ * IMPORTANTE: Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS.
+ * Não devem ser mesclados em um único nome canônico.
+ * 
  * Categorias:
- * - SANGUE: Tipagem sanguínea ABO/Rh, Coombs indireto, Hemoglobina/Hematócrito, Plaquetas,
- *           Glicemia de jejum, VDRL, FTA-ABS IgG, FTA-ABS IgM, HIV, Hepatite B (HBsAg),
- *           Anti-HBs, Hepatite C (Anti-HCV), Toxoplasmose IgG, Toxoplasmose IgM,
- *           Rubéola IgG, Rubéola IgM, Citomegalovírus IgG, Citomegalovírus IgM,
- *           TSH, T4 Livre, Eletroforese de Hemoglobina, Ferritina, Vitamina D (25-OH),
+ * - SANGUE: Tipagem sanguínea ABO/Rh, Coombs indireto, Hemoglobina, Hematócrito,
+ *           Hemograma, Plaquetas, Glicemia de jejum, VDRL, FTA-ABS IgG, FTA-ABS IgM,
+ *           HIV, Hepatite B (HBsAg), Anti-HBs, Hepatite C (Anti-HCV),
+ *           Toxoplasmose IgG, Toxoplasmose IgM, Rubéola IgG, Rubéola IgM,
+ *           Citomegalovírus IgG, Citomegalovírus IgM, TSH, T4 Livre,
+ *           Eletroforese de Hemoglobina, Ferritina, Vitamina D (25-OH),
  *           Vitamina B12, TTGO 75g (Curva Glicêmica)
  * - URINA: EAS (Urina tipo 1), Urocultura, Proteinúria de 24 horas
  * - FEZES: EPF (Parasitológico de Fezes)
@@ -20,20 +24,27 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
   // === TIPAGEM SANGUÍNEA ===
   'Tipagem sanguínea ABO/Rh': 'Tipagem sanguínea ABO/Rh',
   'Tipagem sanguínea': 'Tipagem sanguínea ABO/Rh',
+  'Tipagem Sanguínea': 'Tipagem sanguínea ABO/Rh',
   'tipagem_sanguinea': 'Tipagem sanguínea ABO/Rh',
   'tipoSanguineo': 'Tipagem sanguínea ABO/Rh',
   'Grupo sanguíneo e Rh': 'Tipagem sanguínea ABO/Rh',
 
   // === COOMBS INDIRETO ===
   'Coombs indireto': 'Coombs indireto',
+  'Coombs Indireto': 'Coombs indireto',
 
-  // === HEMOGLOBINA/HEMATÓCRITO ===
-  'Hemoglobina/Hematócrito': 'Hemoglobina/Hematócrito',
-  'hemoglobina_hematocrito': 'Hemoglobina/Hematócrito',
-  'Hemoglobina': 'Hemoglobina/Hematócrito',
-  'Hematócrito': 'Hemoglobina/Hematócrito',
-  'Hemograma': 'Hemoglobina/Hematócrito',
-  'Hemograma Completo': 'Hemoglobina/Hematócrito',
+  // === HEMOGLOBINA (separado) ===
+  'Hemoglobina': 'Hemoglobina',
+
+  // === HEMATÓCRITO (separado) ===
+  'Hematócrito': 'Hematócrito',
+
+  // === HEMOGRAMA (combinado: Hb + Ht + Plaquetas) ===
+  'Hemograma': 'Hemograma',
+  'hemograma': 'Hemograma',
+  'Hemograma Completo': 'Hemograma',
+  'hemoglobina_hematocrito': 'Hemograma',
+  'Hemoglobina/Hematócrito': 'Hemograma',
 
   // === PLAQUETAS ===
   'Plaquetas': 'Plaquetas',
@@ -47,6 +58,7 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
 
   // === VDRL ===
   'VDRL': 'VDRL',
+  'vdrl': 'VDRL',
   'vdrl_sifilis': 'VDRL',
 
   // === FTA-ABS ===
@@ -55,6 +67,7 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
 
   // === HIV ===
   'HIV': 'HIV',
+  'hiv': 'HIV',
 
   // === HEPATITE B ===
   'Hepatite B (HBsAg)': 'Hepatite B (HBsAg)',
@@ -93,6 +106,7 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
 
   // === TSH ===
   'TSH': 'TSH',
+  'tsh': 'TSH',
 
   // === T4 LIVRE ===
   'T4 Livre': 'T4 Livre',
@@ -137,9 +151,11 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
   'eas_urina_tipo_1': 'EAS (Urina tipo 1)',
   'EAS (Urina tipo 1)__Nitrito': 'EAS (Urina tipo 1)',
   'Urina tipo I': 'EAS (Urina tipo 1)',
+  'Urina Tipo I': 'EAS (Urina tipo 1)',
 
   // === UROCULTURA ===
   'Urocultura': 'Urocultura',
+  'urocultura': 'Urocultura',
 
   // === PROTEINÚRIA ===
   'Proteinúria de 24 horas': 'Proteinúria de 24 horas',
@@ -168,7 +184,9 @@ export function normalizeExamName(nome: string): string {
 export const EXAM_CATEGORIES: Record<string, 'sangue' | 'urina' | 'fezes' | 'egb'> = {
   'Tipagem sanguínea ABO/Rh': 'sangue',
   'Coombs indireto': 'sangue',
-  'Hemoglobina/Hematócrito': 'sangue',
+  'Hemoglobina': 'sangue',
+  'Hematócrito': 'sangue',
+  'Hemograma': 'sangue',
   'Plaquetas': 'sangue',
   'Glicemia de jejum': 'sangue',
   'VDRL': 'sangue',
@@ -197,6 +215,11 @@ export const EXAM_CATEGORIES: Record<string, 'sangue' | 'urina' | 'fezes' | 'egb
   'EPF (Parasitológico de Fezes)': 'fezes',
   'Swab vaginal/retal EGB': 'egb',
 };
+
+/**
+ * Set of all canonical exam names for quick lookup
+ */
+export const ALL_CANONICAL_EXAMS = new Set(Object.keys(EXAM_CATEGORIES));
 
 /**
  * Dado um nome de exame (possivelmente variante), retorna a categoria.

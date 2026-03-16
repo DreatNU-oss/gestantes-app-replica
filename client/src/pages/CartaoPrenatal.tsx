@@ -1138,13 +1138,14 @@ export default function CartaoPrenatal() {
         y += 10;
         
         // Sequência canônica de exames (mesma do frontend examesConfig.ts)
+        // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
         const EXAMES_SANGUE_PDF = [
-          'Tipagem sangu\u00ednea ABO/Rh', 'Coombs indireto', 'Hemoglobina/Hemat\u00f3crito', 'Plaquetas',
+          'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Hemograma', 'Plaquetas',
           'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
           'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
-          'Rub\u00e9ola IgG', 'Rub\u00e9ola IgM', 'Citomegalov\u00edrus IgG', 'Citomegalov\u00edrus IgM',
+          'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
           'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
-          'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glic\u00eamica)'
+          'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
         ];
         const EXAMES_URINA_PDF = ['EAS (Urina tipo 1)', 'Urocultura', 'Protein\u00faria de 24 horas'];
         const EXAMES_FEZES_PDF = ['EPF (Parasitol\u00f3gico de Fezes)'];
@@ -1190,13 +1191,17 @@ export default function CartaoPrenatal() {
           drawExameHeaderPdf();
         };
         
-        // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
+          // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
+        // Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS
         const EXAM_NORM: Record<string, string> = {
-          'Tipagem sangu\u00ednea': 'Tipagem sangu\u00ednea ABO/Rh', 'tipagem_sanguinea': 'Tipagem sangu\u00ednea ABO/Rh',
-          'tipoSanguineo': 'Tipagem sangu\u00ednea ABO/Rh', 'Grupo sangu\u00edneo e Rh': 'Tipagem sangu\u00ednea ABO/Rh',
-          'hemoglobina_hematocrito': 'Hemoglobina/Hemat\u00f3crito', 'Hemoglobina': 'Hemoglobina/Hemat\u00f3crito',
-          'Hemat\u00f3crito': 'Hemoglobina/Hemat\u00f3crito', 'Hemograma': 'Hemoglobina/Hemat\u00f3crito',
-          'Hemograma Completo': 'Hemoglobina/Hemat\u00f3crito',
+          'Tipagem sanguínea': 'Tipagem sanguínea ABO/Rh', 'tipagem_sanguinea': 'Tipagem sanguínea ABO/Rh',
+          'Tipagem Sanguínea': 'Tipagem sanguínea ABO/Rh',
+          'tipoSanguineo': 'Tipagem sanguínea ABO/Rh', 'Grupo sanguíneo e Rh': 'Tipagem sanguínea ABO/Rh',
+          'hemoglobina_hematocrito': 'Hemograma', 'Hemoglobina/Hematócrito': 'Hemograma',
+          'Hemograma Completo': 'Hemograma', 'hemograma': 'Hemograma',
+          'Coombs Indireto': 'Coombs indireto',
+          'Urina Tipo I': 'EAS (Urina tipo 1)',
+          'vdrl': 'VDRL', 'hiv': 'HIV', 'tsh': 'TSH', 'urocultura': 'Urocultura',
           'Glicemia jejum': 'Glicemia de jejum', 'glicemia_jejum': 'Glicemia de jejum',
           'glicemiaJejum': 'Glicemia de jejum', 'Glicemia de Jejum': 'Glicemia de jejum',
           'vdrl_sifilis': 'VDRL',
@@ -1424,10 +1429,9 @@ export default function CartaoPrenatal() {
           'Swab vaginal/retal EGB': 'egb',
         };
         const examesExtrasNormalizados = Object.keys(normalizedResults).filter(n => !todosCanonicosPdf.has(n));
-        // Desenhar extras na categoria correta (sem se\u00e7\u00e3o 'Outros Exames')
+        // Desenhar extras apenas na seção de sangue (sem seção 'Outros Exames')
         examesExtrasNormalizados.forEach(n => {
-          const cat = EXAM_CATS[n] || 'sangue';
-          // S\u00f3 desenha se tem resultado
+          // Só desenha se tem resultado
           const r1 = getExameResultado(n, '1');
           const r2 = getExameResultado(n, '2');
           const r3 = getExameResultado(n, '3');
