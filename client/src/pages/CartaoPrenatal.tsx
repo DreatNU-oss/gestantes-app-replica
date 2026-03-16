@@ -527,6 +527,17 @@ export default function CartaoPrenatal() {
     },
   });
 
+  const enviarCartaoMutation = trpc.pdf.enviarCartaoWhatsApp.useMutation({
+    onSuccess: () => {
+      toast.success('Cartão de Pré-Natal enviado com sucesso via WhatsApp!');
+      setEnviandoWhatsApp(null);
+    },
+    onError: (error) => {
+      toast.error(`Erro ao enviar cartão: ${error.message}`);
+      setEnviandoWhatsApp(null);
+    },
+  });
+
   const handleEnviarOrientacao = (tipo: string, mensagem: string, pdfUrl?: string) => {
     if (!gestante) {
       toast.error('Selecione uma gestante primeiro');
@@ -3039,6 +3050,24 @@ export default function CartaoPrenatal() {
                     <UtensilsCrossed className="h-4 w-4" />
                   )}
                   Or. Alimentares 1ª cons
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-blue-200 hover:bg-blue-50 hover:border-blue-400 text-blue-800"
+                  disabled={!gestante.telefone || enviandoWhatsApp === 'enviar-cartao'}
+                  onClick={() => {
+                    if (!gestante) return;
+                    setEnviandoWhatsApp('enviar-cartao');
+                    enviarCartaoMutation.mutate({ gestanteId: gestante.id });
+                  }}
+                >
+                  {enviandoWhatsApp === 'enviar-cartao' ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <FileText className="h-4 w-4" />
+                  )}
+                  Enviar Cartão
                 </Button>
                 {/* Espaço para futuros botões */}
               </div>

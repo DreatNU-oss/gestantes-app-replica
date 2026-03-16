@@ -2649,6 +2649,247 @@ export const appRouter = router({
           filename: `cartao-prenatal-${gestante.nome.replace(/\s+/g, '-').toLowerCase()}.pdf`,
         };
       }),
+
+    enviarCartaoWhatsApp: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const gestanteDb = await import('./gestante-db');
+        const { getGestanteById } = await import('./db');
+        const { gerarPdfComJsPDF } = await import('./htmlToPdf');
+        const { gerarTodosGraficos } = await import('./chartGenerator');
+        const { sendManualMessage } = await import('./whatsapp');
+
+        // Buscar dados da gestante
+        const gestante = await getGestanteById(input.gestanteId);
+        if (!gestante) {
+          throw new Error('Gestante n\u00e3o encontrada');
+        }
+        if (!gestante.telefone) {
+          throw new Error('Gestante n\u00e3o possui telefone cadastrado');
+        }
+
+        // Buscar dados relacionados
+        const consultas = await gestanteDb.getConsultasByGestanteId(input.gestanteId);
+        const ultrassons = await gestanteDb.getUltrassonsByGestanteId(input.gestanteId);
+        const exames = await gestanteDb.getExamesByGestanteId(input.gestanteId);
+        const fatoresRisco = await gestanteDb.getFatoresRiscoByGestanteId(input.gestanteId);
+        const medicamentos = await gestanteDb.getMedicamentosByGestanteId(input.gestanteId);
+
+        // Calcular idade
+        let idade = null;
+        if (gestante.dataNascimento) {
+          const dataNasc = new Date(gestante.dataNascimento);
+          const hoje = new Date();
+          idade = Math.floor((hoje.getTime() - dataNasc.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+        }
+
+        // Calcular DPP
+        let dppDUM = null;
+        if (gestante.dum) {
+          const dum = new Date(gestante.dum);
+          const dpp = new Date(dum);
+          dpp.setDate(dpp.getDate() + 280);
+          dppDUM = dpp.toISOString().split('T')[0];
+        }
+
+        let dppUS = null;
+        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+          const usDate = new Date(gestante.dataUltrassom + 'T12:00:00');
+          const diasRestantes = (40 * 7) - ((gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0));
+          const dppUSDate = new Date(usDate.getTime() + diasRestantes * 24 * 60 * 60 * 1000);
+          dppUS = dppUSDate.toISOString().split('T')[0];
+        }
+
+        // Preparar dados para gr\u00e1ficos
+        const dadosConsultasGraficos = consultas.map((c: any) => ({
+          dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
+          igSemanas: c.igSemanas || c.igDumSemanas,
+          peso: c.peso ? c.peso / 1000 : null,
+          au: c.alturaUterina ? (c.alturaUterina === -1 ? null : c.alturaUterina / 10) : null,
+          paSistolica: c.pressaoSistolica || null,
+          paDiastolica: c.pressaoDiastolica || null,
+        }));
+
+        const graficosGerados = await gerarTodosGraficos(dadosConsultasGraficos);
+
+        const dadosGraficosNativos = {
+          peso: dadosConsultasGraficos
+            .filter(c => c.peso !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, valor: c.peso! })),
+          au: dadosConsultasGraficos
+            .filter(c => c.au !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, valor: c.au! })),
+          pa: dadosConsultasGraficos
+            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas !== undefined)
+            .map(c => ({ igSemanas: c.igSemanas!, sistolica: c.paSistolica!, diastolica: c.paDiastolica! })),
+        };
+
+        // Agrupar exames por trimestre
+        const examesAgrupados: any[] = [];
+        const examesPorNome = new Map<string, any>();
+        exames.forEach((ex: any) => {
+          if (ex.trimestre === 0) return;
+          const nomeExame = ex.nomeExame;
+          if (!examesPorNome.has(nomeExame)) {
+            examesPorNome.set(nomeExame, { nome: nomeExame });
+          }
+          const exameAgrupado = examesPorNome.get(nomeExame)!;
+          const key = `trimestre${ex.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+          if (ex.resultado) {
+            exameAgrupado[key] = {
+              resultado: ex.resultado,
+              data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
+            };
+          }
+        });
+        examesPorNome.forEach((exame) => {
+          if (exame.trimestre1 || exame.trimestre2 || exame.trimestre3) {
+            examesAgrupados.push(exame);
+          }
+        });
+
+        // Calcular marcos
+        let marcos: any[] = [];
+        let dataBase: Date | null = null;
+        let igBaseSemanas = 0;
+        let igBaseDias = 0;
+        if (gestante.dataUltrassom && gestante.igUltrassomSemanas !== null) {
+          dataBase = new Date(gestante.dataUltrassom + 'T12:00:00');
+          igBaseSemanas = gestante.igUltrassomSemanas;
+          igBaseDias = gestante.igUltrassomDias || 0;
+        } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Compat\u00edvel com US') {
+          dataBase = new Date(gestante.dum + 'T12:00:00');
+        }
+        const ehRhNegativo = fatoresRisco.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1);
+
+        if (dataBase) {
+          const marcosDefinidos: Array<{ titulo: string; semanaInicio: number; semanaFim: number | null; diasInicio?: number; diasFim?: number }> = [
+            { titulo: 'Concepcao', semanaInicio: 2, semanaFim: null, diasInicio: 0 },
+            { titulo: '1o Ultrassom', semanaInicio: 6, semanaFim: 9 },
+            { titulo: 'Morfologico 1o Tri', semanaInicio: 11, semanaFim: 14, diasInicio: 5, diasFim: 3 },
+            { titulo: '13 Semanas', semanaInicio: 13, semanaFim: null, diasInicio: 0 },
+            { titulo: 'Morfologico 2o Tri', semanaInicio: 20, semanaFim: 24, diasInicio: 0, diasFim: 6 },
+            { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
+            { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
+            { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: null, diasInicio: 0 },
+            ...(ehRhNegativo ? [{ titulo: 'Vacina Anti-Rh (Imunoglobulina)', semanaInicio: 28, semanaFim: null as number | null, diasInicio: 0 }] : []),
+            { titulo: 'Vacina Bronquiolite', semanaInicio: 32, semanaFim: 36 },
+            { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
+            { titulo: 'Termo Precoce', semanaInicio: 37, semanaFim: null, diasInicio: 0 },
+            { titulo: 'Termo Completo', semanaInicio: 39, semanaFim: null, diasInicio: 0 },
+            { titulo: 'DPP (40 semanas)', semanaInicio: 40, semanaFim: null, diasInicio: 0 },
+          ];
+          marcos = marcosDefinidos.map(m => {
+            const diasInicioOffset = m.diasInicio || 0;
+            const diasAteSemanaInicio = ((m.semanaInicio - igBaseSemanas) * 7) - igBaseDias + diasInicioOffset;
+            const dataEstimada = new Date(dataBase!.getTime() + (diasAteSemanaInicio * 24 * 60 * 60 * 1000));
+            if (m.semanaFim === null) {
+              return {
+                titulo: m.titulo,
+                data: dataEstimada.toISOString().split('T')[0],
+                periodo: `${m.semanaInicio}s`
+              };
+            } else {
+              const diasFimOffset = m.diasFim || 0;
+              const diasAteSemanaFim = ((m.semanaFim - igBaseSemanas) * 7) - igBaseDias + diasFimOffset;
+              const dataFim = new Date(dataBase!.getTime() + (diasAteSemanaFim * 24 * 60 * 60 * 1000));
+              return {
+                titulo: m.titulo,
+                data: dataEstimada.toISOString().split('T')[0],
+                dataFim: dataFim.toISOString().split('T')[0],
+                periodo: `${m.semanaInicio}-${m.semanaFim}s`
+              };
+            }
+          });
+        }
+
+        const dadosPdf = {
+          graficos: {
+            peso: graficosGerados.graficoPeso || undefined,
+            au: graficosGerados.graficoAU || undefined,
+            pa: graficosGerados.graficoPA || undefined,
+          },
+          dadosGraficos: dadosGraficosNativos,
+          gestante: {
+            nome: gestante.nome,
+            idade: idade,
+            dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompat\u00edvel') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
+            dppDUM: dppDUM,
+            dppUS: dppUS,
+            dataUltrassom: gestante.dataUltrassom,
+            igUltrassomSemanas: gestante.igUltrassomSemanas,
+            igUltrassomDias: gestante.igUltrassomDias,
+            gesta: gestante.gesta,
+            para: gestante.para,
+            abortos: gestante.abortos,
+            partosNormais: null,
+            cesareas: gestante.cesareas,
+          },
+          consultas: consultas.map((c: any) => ({
+            dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
+            igDUM: c.igDumSemanas ? `${c.igDumSemanas}s${c.igDumDias || 0}d` : '',
+            igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
+            peso: c.peso,
+            pa: c.pressaoSistolica && c.pressaoDiastolica ? `${c.pressaoSistolica}/${c.pressaoDiastolica}` : null,
+            au: c.alturaUterina,
+            bcf: c.bcf,
+            mf: c.movimentosFetais ? 1 : null,
+            edema: c.edema || null,
+            conduta: c.conduta,
+            condutaComplementacao: c.condutaComplementacao,
+            observacoes: c.observacoes,
+            queixas: c.queixas || null,
+          })),
+          marcos: marcos,
+          ultrassons: ultrassons.map((u: any) => {
+            const dados = u.dados || {};
+            let obs = '';
+            if (dados.observacoes) obs = dados.observacoes;
+            else if (dados.ccn) obs = `CCN: ${dados.ccn}`;
+            else if (dados.tn) obs = `TN: ${dados.tn}`;
+            else if (dados.pesoFetal) obs = `Peso: ${dados.pesoFetal}`;
+            return {
+              data: u.dataExame || '',
+              ig: u.idadeGestacional || '',
+              tipo: u.tipoUltrassom || '',
+              observacoes: obs || null,
+            };
+          }),
+          exames: examesAgrupados,
+          fatoresRisco: fatoresRisco.map((f: any) => ({ tipo: f.tipo })),
+          medicamentos: medicamentos.map((m: any) => ({ tipo: m.tipo, especificacao: m.especificacao })),
+        };
+
+        // Gerar PDF
+        const pdfBuffer = await gerarPdfComJsPDF(dadosPdf);
+
+        // Upload para S3
+        const nomeArquivo = `cartao-prenatal-${gestante.nome.replace(/\s+/g, '-').toLowerCase()}`;
+        const pdfKey = `cartoes-prenatal/${input.gestanteId}/${nomeArquivo}-${Date.now()}.pdf`;
+        const { url: pdfUrl } = await storagePut(pdfKey, pdfBuffer, 'application/pdf');
+
+        // Enviar via WhatsApp
+        const primeiroNome = gestante.nome?.split(' ')[0] || '';
+        const mensagem = `Olá ${primeiroNome}! 🤰\n\nSegue seu *Cartão de Pré-Natal* atualizado da Clínica Mais Mulher.\n\nEste documento contém todas as informações do seu acompanhamento pré-natal. Guarde-o com cuidado!\n\nAbraços da equipe Mais Mulher! 💜`;
+
+        const clinicaId = ctx.user.clinicaId ?? 1;
+        const result = await sendManualMessage(
+          clinicaId,
+          gestante.telefone,
+          mensagem,
+          pdfUrl,
+          gestante.nome,
+          gestante.id,
+        );
+
+        if (!result.success) {
+          throw new Error(result.error || 'Erro ao enviar WhatsApp');
+        }
+
+        return { success: true, pdfUrl };
+      }),
   }),
 
   // Condutas personalizadas

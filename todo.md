@@ -2060,3 +2060,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Botão "Or. Alimentares 1ª cons" que envia PDF via WhatsApp para a paciente (com mensagem personalizada)
 - [x] Reutilizar procedure whatsapp.enviarManual existente (já suporta pdfUrl)
 - [x] Testes unitários (12 testes passando)
+
+## Botão "Enviar Cartão" via WhatsApp (16/03/2026)
+- [x] Adicionar botão "Enviar Cartão" na barra de envio rápido WhatsApp (azul, com ícone FileText)
+- [x] Gerar PDF do cartão de pré-natal, fazer upload para S3, e enviar via WhatsApp (procedure pdf.enviarCartaoWhatsApp)
+- [x] Testes unitários (10 testes passando)
