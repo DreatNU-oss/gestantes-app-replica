@@ -76,7 +76,7 @@ const allConfigMenuItems = [
   { label: "Gerenciar Médicos", path: "/gerenciar-medicos" },
   { label: "Fatores de Risco", path: "/gerenciar-fatores-risco" },
   { label: "Medicamentos", path: "/gerenciar-medicamentos" },
-  { label: "Emails Autorizados", path: "/emails-autorizados" },
+  { label: "Usuários", path: "/emails-autorizados" },
   { label: "Alterar Senha", path: "/alterar-senha" },
   { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
   { label: "Integrações", path: "/integracoes", clinicaOnly: "00001" },
