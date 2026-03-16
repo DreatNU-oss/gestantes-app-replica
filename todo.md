@@ -2019,3 +2019,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar pdfData.ts (calcularMarcos) para incluir marco Anti-Rh apenas para Rh negativo
 - [x] Atualizar routers.ts (PDF cartão pré-natal) para incluir marco Anti-Rh apenas para Rh negativo
 - [x] Testes unitários para a lógica condicional Rh negativo (9 testes passando)
+
+## Campo Telefone no Cadastro de Usuários (15/03/2026)
+- [x] Adicionar campo 'telefone' na tabela de usuários (schema) + migração
+- [x] Atualizar UI de gerenciamento de usuários em Configurações para incluir campo telefone (editável inline)
+- [x] Permitir edição do telefone para todos os tipos de usuários (admin pode editar)
+- [x] Atualizar sistema de templates WhatsApp: nova variável {telefone_medico} + scheduler busca telefone do médico
+- [x] Testes unitários (8 testes passando)

@@ -31,6 +31,8 @@ export const users = mysqlTable("users", {
   role: mysqlEnum("role", ["superadmin", "admin", "obstetra", "secretaria"]).default("obstetra").notNull(),
   clinicaId: int("clinicaId"), // FK para clinicas.id - identifica a qual clínica o usuário pertence
   isSystemOwner: int("isSystemOwner").default(0).notNull(), // 1 = proprietário do sistema (pode gerenciar clínicas)
+  // Campo de telefone para WhatsApp
+  telefone: varchar("telefone", { length: 20 }),
   // Campos para autenticação por senha
   passwordHash: text("passwordHash"),
   passwordResetToken: varchar("passwordResetToken", { length: 128 }),

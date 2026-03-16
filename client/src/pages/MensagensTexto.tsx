@@ -254,6 +254,7 @@ export default function MensagensTexto() {
     preview = preview.replace(/\{ig_dias\}/g, '3');
     preview = preview.replace(/\{dpp\}/g, '15/06/2026');
     preview = preview.replace(/\{medico\}/g, 'Dr. João');
+    preview = preview.replace(/\{telefone_medico\}/g, '(35) 99999-0000');
     setPreviewMessage(preview);
     setShowPreview(true);
   };
@@ -431,6 +432,7 @@ export default function MensagensTexto() {
                   { var: '{ig_dias}', desc: 'Dias de IG' },
                   { var: '{dpp}', desc: 'Data provável do parto' },
                   { var: '{medico}', desc: 'Nome do médico' },
+                  { var: '{telefone_medico}', desc: 'Telefone do médico' },
                 ].map(v => (
                   <Badge key={v.var} variant="secondary" className="cursor-help" title={v.desc}>
                     {v.var} <span className="ml-1 text-xs opacity-60">({v.desc})</span>
@@ -589,7 +591,7 @@ export default function MensagensTexto() {
                 rows={5}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Use variáveis: {'{nome}'}, {'{ig_semanas}'}, {'{ig_dias}'}, {'{dpp}'}, {'{medico}'}
+                Use variáveis: {'{nome}'}, {'{ig_semanas}'}, {'{ig_dias}'}, {'{dpp}'}, {'{medico}'}, {'{telefone_medico}'}
               </p>
             </div>
 

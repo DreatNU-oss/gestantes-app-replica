@@ -44,7 +44,10 @@ import {
   User,
   Shield,
   Stethoscope,
-  ClipboardList
+  ClipboardList,
+  Phone,
+  Check,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -77,6 +80,8 @@ export default function EmailsAutorizados() {
   const [emailParaRemover, setEmailParaRemover] = useState<string | null>(null);
   const [emailParaDesbloquear, setEmailParaDesbloquear] = useState<string | null>(null);
   const [erro, setErro] = useState("");
+  const [editandoTelefone, setEditandoTelefone] = useState<number | null>(null);
+  const [telefoneTemp, setTelefoneTemp] = useState("");
 
   const { data: emails, isLoading, refetch } = trpc.auth.listarEmailsAutorizados.useQuery();
 
@@ -127,6 +132,32 @@ export default function EmailsAutorizados() {
       toast.error(error.message || "Erro ao desbloquear conta");
     },
   });
+
+  const atualizarTelefoneMutation = trpc.auth.atualizarTelefoneUsuario.useMutation({
+    onSuccess: () => {
+      toast.success("Telefone atualizado com sucesso!");
+      setEditandoTelefone(null);
+      setTelefoneTemp("");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Erro ao atualizar telefone");
+    },
+  });
+
+  const handleSalvarTelefone = (userId: number) => {
+    atualizarTelefoneMutation.mutate({ userId, telefone: telefoneTemp || null });
+  };
+
+  const handleEditarTelefone = (userId: number, telefoneAtual: string | null) => {
+    setEditandoTelefone(userId);
+    setTelefoneTemp(telefoneAtual || "");
+  };
+
+  const handleCancelarTelefone = () => {
+    setEditandoTelefone(null);
+    setTelefoneTemp("");
+  };
 
   const handleAdicionar = (e: React.FormEvent) => {
     e.preventDefault();
@@ -377,6 +408,7 @@ export default function EmailsAutorizados() {
                   <TableRow>
                     <TableHead>Email</TableHead>
                     <TableHead>Usuário</TableHead>
+                    <TableHead>Telefone</TableHead>
                     <TableHead>Tipo</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Data de Cadastro</TableHead>
@@ -397,6 +429,53 @@ export default function EmailsAutorizados() {
                             </span>
                           ) : (
                             <span className="text-gray-400 italic">Não cadastrado</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {email.userExists && (email as any).userId ? (
+                            editandoTelefone === (email as any).userId ? (
+                              <div className="flex items-center gap-1">
+                                <Input
+                                  value={telefoneTemp}
+                                  onChange={(e) => setTelefoneTemp(e.target.value)}
+                                  placeholder="(XX) XXXXX-XXXX"
+                                  className="h-7 w-[150px] text-xs border-gray-200"
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSalvarTelefone((email as any).userId);
+                                    if (e.key === 'Escape') handleCancelarTelefone();
+                                  }}
+                                  autoFocus
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleSalvarTelefone((email as any).userId)}
+                                  className="h-7 w-7 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                  disabled={atualizarTelefoneMutation.isPending}
+                                >
+                                  {atualizarTelefoneMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={handleCancelarTelefone}
+                                  className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleEditarTelefone((email as any).userId, (email as any).userTelefone)}
+                                className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#722F37] cursor-pointer transition-colors"
+                                title="Clique para editar telefone"
+                              >
+                                <Phone className="h-3 w-3" />
+                                {(email as any).userTelefone || <span className="italic text-gray-400">Sem telefone</span>}
+                              </button>
+                            )
+                          ) : (
+                            <span className="text-gray-400 italic text-xs">-</span>
                           )}
                         </TableCell>
                         <TableCell>

@@ -35,6 +35,7 @@ export interface GestanteContext {
   igDias?: number;
   dpp?: string;
   medico?: string;
+  telefoneMedico?: string;
   gestanteId?: number;
 }
 
@@ -158,7 +159,7 @@ export function extrairPrimeiroNome(nomeCompleto: string): string {
 
 /**
  * Substitui variáveis no template de mensagem com dados da gestante.
- * Variáveis suportadas: {nome} (primeiro nome), {nome_completo}, {ig_semanas}, {ig_dias}, {dpp}, {medico}
+ * Variáveis suportadas: {nome} (primeiro nome), {nome_completo}, {ig_semanas}, {ig_dias}, {dpp}, {medico}, {telefone_medico}
  */
 export function replaceTemplateVariables(template: string, context: GestanteContext): string {
   let msg = template;
@@ -169,6 +170,7 @@ export function replaceTemplateVariables(template: string, context: GestanteCont
   msg = msg.replace(/\{ig_dias\}/g, String(context.igDias ?? ''));
   msg = msg.replace(/\{dpp\}/g, context.dpp || '');
   msg = msg.replace(/\{medico\}/g, context.medico || '');
+  msg = msg.replace(/\{telefone_medico\}/g, context.telefoneMedico || '');
   return msg;
 }
 

@@ -272,6 +272,8 @@ export async function listAuthorizedEmails(clinicaId?: number | null) {
         ...emailAuth,
         userExists: !!user,
         userName: user?.name || null,
+        userTelefone: user?.telefone || null,
+        userId: user?.id || null,
         isLocked,
         lockedUntil,
         failedAttempts
@@ -318,6 +320,14 @@ export async function updateEmailAutorizadoRole(email: string, role: 'admin' | '
   if (user) {
     await db.update(users).set({ role }).where(eq(users.id, user.id));
   }
+  return true;
+}
+
+// Atualizar telefone de um usuário
+export async function updateUserTelefone(userId: number, telefone: string | null): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  await db.update(users).set({ telefone }).where(eq(users.id, userId));
   return true;
 }
 

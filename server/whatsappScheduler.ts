@@ -16,7 +16,7 @@
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco } from '../drizzle/schema';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users } from '../drizzle/schema';
 import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
 
@@ -211,8 +211,9 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
             const enviada = await jaEnviada(db, clinicaConfig.clinicaId, gestante.id, template.id);
             if (enviada) continue;
 
-            // Buscar médico da gestante
+            // Buscar médico da gestante e seu telefone
             let medicoNome = '';
+            let telefoneMedico = '';
             try {
               if (gestante.medicoId) {
                 const [med] = await db
@@ -221,6 +222,18 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
                   .where(eq(medicos.id, gestante.medicoId))
                   .limit(1);
                 medicoNome = med?.nome || '';
+                // Buscar telefone do usuário que corresponde ao médico (pelo nome)
+                if (medicoNome) {
+                  const [userMedico] = await db
+                    .select({ telefone: users.telefone })
+                    .from(users)
+                    .where(and(
+                      sql`${users.name} LIKE ${medicoNome + '%'}`,
+                      sql`${users.clinicaId} = ${clinicaConfig.clinicaId}`,
+                    ))
+                    .limit(1);
+                  telefoneMedico = userMedico?.telefone || '';
+                }
               }
             } catch { /* ignore */ }
 
@@ -231,6 +244,7 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               igDias: ig.dias,
               dpp: calcularDPP(gestante.dum) || undefined,
               medico: medicoNome,
+              telefoneMedico,
               gestanteId: gestante.id,
             };
 

@@ -4,7 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, ownerProcedure, router } from "./_core/trpc";
 import { gerarPDFCartaoPrenatal } from "./pdf";
 import { checkPdfProtection, unlockPdf } from "./pdfUtils";
-import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount, updateEmailAutorizadoRole } from "./passwordAuth";
+import { loginWithPassword, createPasswordResetToken, validateResetToken, setPassword, listAuthorizedEmails, addAuthorizedEmail, removeAuthorizedEmail, isEmailAuthorized, checkEmailStatus, createUserWithPassword, changePassword, unlockAccount, updateEmailAutorizadoRole, updateUserTelefone } from "./passwordAuth";
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
@@ -317,6 +317,25 @@ export const appRouter = router({
         return { success: true };
       }),
     
+    // Atualizar telefone de um usuário (admin)
+    atualizarTelefoneUsuario: protectedProcedure
+      .input(z.object({ userId: z.number(), telefone: z.string().nullable() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== 'admin' && ctx.user.role !== 'superadmin') {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Apenas administradores podem alterar telefones.' });
+        }
+        // Formatar telefone: adicionar +55 se não tiver código de país
+        let telefoneFormatado = input.telefone;
+        if (telefoneFormatado) {
+          telefoneFormatado = telefoneFormatado.replace(/[^\d+]/g, '');
+          if (telefoneFormatado && !telefoneFormatado.startsWith('+')) {
+            telefoneFormatado = '+55' + telefoneFormatado;
+          }
+        }
+        await updateUserTelefone(input.userId, telefoneFormatado);
+        return { success: true };
+      }),
+
     // Remover email autorizado (admin)
     removerEmailAutorizado: protectedProcedure
       .input(z.object({ email: z.string().email() }))
