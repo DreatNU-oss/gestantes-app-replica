@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { LOGO_MAIS_MULHER_BASE64 } from './logoBase64';
 import { FATORES_RISCO_LABELS, TIPO_ULTRASSOM_LABELS, MEDICAMENTO_LABELS, formatarLabel, sanitizeForPdf } from './htmlToPdf_labels';
+import { normalizeExamName, EXAM_CATEGORIES } from '../shared/examNormalization';
 
 // Logo base64 embutida diretamente no codigo (compativel com esbuild bundle)
 const LOGO_BASE64: string = LOGO_MAIS_MULHER_BASE64;
@@ -1042,9 +1043,20 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     const EXAMES_FEZES = ['EPF (Parasitológico de Fezes)'];
     const EXAMES_OUTROS = ['Swab vaginal/retal EGB'];
     
-    // Criar mapa de exames por nome para acesso rápido
+    // Criar mapa de exames por nome canônico para acesso rápido (normaliza variações)
     const examesPorNome = new Map<string, typeof dados.exames[0]>();
-    dados.exames.forEach(e => examesPorNome.set(e.nome, e));
+    dados.exames.forEach(e => {
+      const nomeCanon = normalizeExamName(e.nome);
+      // Se já existe com esse nome canônico, mesclar trimestres (não sobrescrever)
+      if (examesPorNome.has(nomeCanon)) {
+        const existing = examesPorNome.get(nomeCanon)!;
+        if (e.trimestre1 && !existing.trimestre1) existing.trimestre1 = e.trimestre1;
+        if (e.trimestre2 && !existing.trimestre2) existing.trimestre2 = e.trimestre2;
+        if (e.trimestre3 && !existing.trimestre3) existing.trimestre3 = e.trimestre3;
+      } else {
+        examesPorNome.set(nomeCanon, { ...e, nome: nomeCanon });
+      }
+    });
     
     // Função para desenhar cabeçalho da tabela
     const exameColWidths = [50, 40, 40, 40];
@@ -1261,47 +1273,23 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       y += 3;
     }
     
-    // Exames extras que não estão na sequência canônica
+    // Exames extras que não estão na sequência canônica -> classificar por categoria
     const todosCanonicos = new Set([...EXAMES_SANGUE, ...EXAMES_URINA, ...EXAMES_FEZES, ...EXAMES_OUTROS]);
-    const examesExtras = dados.exames.filter(e => !todosCanonicos.has(e.nome));
-    if (examesExtras.length > 0) {
-      drawCategoryTitle('Outros Exames');
-      rowIndex = 0;
-      examesExtras.forEach(e => {
-        // Inline draw for extras since they're already in the array
-        if (checkNewPage(8)) {
-          drawExameTableHeader();
-        }
-        if (rowIndex % 2 === 0) {
-          doc.setFillColor(250, 250, 250);
-          doc.rect(margin, y - 3, contentWidth, 6, 'F');
-        }
-        rowIndex++;
-        const rowData = [
-          e.nome,
-          e.trimestre1?.resultado || '-',
-          e.trimestre2?.resultado || '-',
-          e.trimestre3?.resultado || '-',
-        ];
-        let x = margin;
-        doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
-        doc.setFontSize(7);
-        rowData.forEach((cell, ci) => {
-          const maxWidth = exameColWidths[ci] - 2;
-          let text = cell;
-          if (ci === 0) doc.setFont('helvetica', 'bold');
-          else doc.setFont('helvetica', 'normal');
-          if (doc.getTextWidth(text) > maxWidth) {
-            while (doc.getTextWidth(text + '...') > maxWidth && text.length > 0) text = text.slice(0, -1);
-            text += '...';
-          }
-          doc.text(sanitizeForPdf(text), x + 1, y);
-          x += exameColWidths[ci];
-        });
-        doc.setFont('helvetica', 'normal');
-        y += 5;
-      });
-    }
+    const examesExtrasNomes = Array.from(examesPorNome.keys()).filter(n => !todosCanonicos.has(n));
+    // Adicionar extras à categoria correta usando EXAM_CATEGORIES
+    examesExtrasNomes.forEach(nome => {
+      const cat = EXAM_CATEGORIES[nome] || 'sangue';
+      if (cat === 'sangue' && !EXAMES_SANGUE.includes(nome)) {
+        // Desenhar na seção de sangue (após os canônicos)
+        drawExameRow(nome);
+      } else if (cat === 'urina' && !EXAMES_URINA.includes(nome)) {
+        drawExameRow(nome);
+      } else if (cat === 'fezes' && !EXAMES_FEZES.includes(nome)) {
+        drawExameRow(nome);
+      } else if (cat === 'egb' && !EXAMES_OUTROS.includes(nome)) {
+        drawExameRow(nome);
+      }
+    });
   }
 
 

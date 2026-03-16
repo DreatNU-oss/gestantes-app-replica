@@ -8,6 +8,7 @@ import { gerarPdfCartaoPrenatal } from "./gerarPdfCartao";
 import { gerarHTMLCartaoCompleto, DadosPdfCompleto } from "./pdfTemplateCompleto";
 import { gerarPdfComJsPDF } from "./htmlToPdf";
 import { gerarTodosGraficos, DadoConsulta } from "./chartGenerator";
+import { normalizeExamName } from "../shared/examNormalization";
 
 // Generate 6-digit verification code
 function generateCode(): string {
@@ -748,7 +749,7 @@ export const gestanteRouter = router({
       const examesPorNome = new Map<string, { nome: string; trimestre1?: { resultado: string; data?: string }; trimestre2?: { resultado: string; data?: string }; trimestre3?: { resultado: string; data?: string } }>();
       
       exames.forEach((ex: any) => {
-        const nomeExame = ex.nomeExame;
+        const nomeExame = normalizeExamName(ex.nomeExame);
         if (!examesPorNome.has(nomeExame)) {
           examesPorNome.set(nomeExame, { nome: nomeExame });
         }

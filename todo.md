@@ -2109,3 +2109,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar destaque vermelho no htmlToPdf.ts (backend PDF)
 - [x] Implementar destaque vermelho no CartaoPrenatal.tsx (frontend PDF)
 - [x] Testes unitários (49 testes passando)
+
+## BUG: Seção "Outros Exames" no PDF confusa (16/03/2026)
+- [x] Remover seção "Outros Exames" do PDF
+- [x] Mapear todos os exames do banco para uma das 4 categorias: Sangue, Urina, Fezes, EGB
+- [x] Eliminar duplicatas via normalização de nomes (80 variações -> 29 nomes canônicos)
+- [x] Criado shared/examNormalization.ts com mapa de normalização reutilizável
+- [x] Aplicado em htmlToPdf.ts, CartaoPrenatal.tsx, routers.ts, gestante-router.ts
+- [x] Testes unitários (23 testes passando)

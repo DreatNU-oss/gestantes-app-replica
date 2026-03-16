@@ -1190,15 +1190,63 @@ export default function CartaoPrenatal() {
           drawExameHeaderPdf();
         };
         
-        // Função para obter resultado de um exame por nome
-        const getExameResultado = (nomeExame: string, trimestre: string): string => {
-          const valor = resultadosExamesLab[nomeExame];
-          if (!valor || typeof valor !== 'object') return '-';
-          const resultado = (valor as Record<string, string>)[trimestre];
-          if (resultado && typeof resultado === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(resultado.trim())) {
-            return resultado;
+        // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
+        const EXAM_NORM: Record<string, string> = {
+          'Tipagem sangu\u00ednea': 'Tipagem sangu\u00ednea ABO/Rh', 'tipagem_sanguinea': 'Tipagem sangu\u00ednea ABO/Rh',
+          'tipoSanguineo': 'Tipagem sangu\u00ednea ABO/Rh', 'Grupo sangu\u00edneo e Rh': 'Tipagem sangu\u00ednea ABO/Rh',
+          'hemoglobina_hematocrito': 'Hemoglobina/Hemat\u00f3crito', 'Hemoglobina': 'Hemoglobina/Hemat\u00f3crito',
+          'Hemat\u00f3crito': 'Hemoglobina/Hemat\u00f3crito', 'Hemograma': 'Hemoglobina/Hemat\u00f3crito',
+          'Hemograma Completo': 'Hemoglobina/Hemat\u00f3crito',
+          'Glicemia jejum': 'Glicemia de jejum', 'glicemia_jejum': 'Glicemia de jejum',
+          'glicemiaJejum': 'Glicemia de jejum', 'Glicemia de Jejum': 'Glicemia de jejum',
+          'vdrl_sifilis': 'VDRL',
+          'Hepatite B HBsAg': 'Hepatite B (HBsAg)', 'hepatiteB': 'Hepatite B (HBsAg)',
+          'Hepatite C Anti-HCV': 'Hepatite C (Anti-HCV)', 'Hepatite C': 'Hepatite C (Anti-HCV)', 'hepatiteC': 'Hepatite C (Anti-HCV)',
+          'toxoplasmose_igg': 'Toxoplasmose IgG', 'toxoplasmose_igm': 'Toxoplasmose IgM', 'toxoplasmose': 'Toxoplasmose IgG',
+          'rubeola_igg': 'Rub\u00e9ola IgG', 'rubeola_igm': 'Rub\u00e9ola IgM', 'rubeola': 'Rub\u00e9ola IgG',
+          'CMV IgG': 'Citomegalov\u00edrus IgG', 'CMV IgM': 'Citomegalov\u00edrus IgM', 'citomegalovirus': 'Citomegalov\u00edrus IgG',
+          'vitamina_d_25_oh': 'Vitamina D (25-OH)', 'vitamina_b12': 'Vitamina B12',
+          'TTGO 75g (Curva Glic\u00eamica) - Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica) - 1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica) - 2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)__Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)__1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)__2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)-Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)-1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (Curva Glic\u00eamica)-2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
+          'ttgo_75g_curva_glicemica_jejum': 'TTGO 75g (Curva Glic\u00eamica)',
+          'ttgo_75g_curva_glicemica_1_hora': 'TTGO 75g (Curva Glic\u00eamica)',
+          'ttgo_75g_curva_glicemica_2_horas': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (0min)': 'TTGO 75g (Curva Glic\u00eamica)', 'TTGO 75g (60min)': 'TTGO 75g (Curva Glic\u00eamica)',
+          'TTGO 75g (120min)': 'TTGO 75g (Curva Glic\u00eamica)', 'TOTG 75g': 'TTGO 75g (Curva Glic\u00eamica)', 'totg': 'TTGO 75g (Curva Glic\u00eamica)',
+          'eas': 'EAS (Urina tipo 1)', 'eas_urina_tipo_1': 'EAS (Urina tipo 1)',
+          'EAS (Urina tipo 1)__Nitrito': 'EAS (Urina tipo 1)', 'Urina tipo I': 'EAS (Urina tipo 1)',
+          'Swab EGB': 'Swab vaginal/retal EGB', 'streptococcusB': 'Swab vaginal/retal EGB',
+          'Estreptococo Grupo B': 'Swab vaginal/retal EGB',
+        };
+        const normExamName = (n: string) => EXAM_NORM[n] || n;
+        
+        // Normalizar resultadosExamesLab: mesclar variações sob nome canônico
+        const normalizedResults: Record<string, Record<string, string>> = {};
+        for (const [rawName, valor] of Object.entries(resultadosExamesLab)) {
+          if (rawName === 'outros_observacoes') continue;
+          const canon = normExamName(rawName);
+          if (!normalizedResults[canon]) normalizedResults[canon] = {};
+          if (valor && typeof valor === 'object') {
+            for (const [tri, res] of Object.entries(valor as Record<string, string>)) {
+              if (res && typeof res === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(res.trim()) && !normalizedResults[canon][tri]) {
+                normalizedResults[canon][tri] = res;
+              }
+            }
           }
-          return '-';
+        }
+        
+        // Função para obter resultado de um exame por nome (usa dados normalizados)
+        const getExameResultado = (nomeExame: string, trimestre: string): string => {
+          const dados = normalizedResults[nomeExame];
+          if (!dados) return '-';
+          return dados[trimestre] || '-';
         };
         
         // Função para verificar se resultado de exame é alterado/anormal
@@ -1369,22 +1417,23 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Exames extras não canônicos
-        const examesExtrasNomes = Object.keys(resultadosExamesLab).filter(n => 
-          n !== 'outros_observacoes' && !todosCanonicosPdf.has(n)
-        );
-        const temExtras = examesExtrasNomes.some(n => {
+        // Exames extras normalizados que não estão nas listas canônicas -> classificar na categoria correta
+        const EXAM_CATS: Record<string, string> = {
+          'EAS (Urina tipo 1)': 'urina', 'Urocultura': 'urina', 'Protein\u00faria de 24 horas': 'urina',
+          'EPF (Parasitol\u00f3gico de Fezes)': 'fezes',
+          'Swab vaginal/retal EGB': 'egb',
+        };
+        const examesExtrasNormalizados = Object.keys(normalizedResults).filter(n => !todosCanonicosPdf.has(n));
+        // Desenhar extras na categoria correta (sem se\u00e7\u00e3o 'Outros Exames')
+        examesExtrasNormalizados.forEach(n => {
+          const cat = EXAM_CATS[n] || 'sangue';
+          // S\u00f3 desenha se tem resultado
           const r1 = getExameResultado(n, '1');
           const r2 = getExameResultado(n, '2');
           const r3 = getExameResultado(n, '3');
-          return r1 !== '-' || r2 !== '-' || r3 !== '-';
+          if (r1 === '-' && r2 === '-' && r3 === '-') return;
+          drawExameRowPdf(n);
         });
-        if (temExtras) {
-          drawCategoriaTituloPdf('Outros Exames');
-          rowIdx = 0;
-          examesExtrasNomes.forEach(drawExameRowPdf);
-          y += 3;
-        }
         
         // Observações gerais
         if (resultadosExamesLab.outros_observacoes && typeof resultadosExamesLab.outros_observacoes === 'string' && resultadosExamesLab.outros_observacoes.trim()) {

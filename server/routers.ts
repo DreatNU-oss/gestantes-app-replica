@@ -8,6 +8,7 @@ import { loginWithPassword, createPasswordResetToken, validateResetToken, setPas
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
+import { normalizeExamName } from "../shared/examNormalization";
 import { z } from "zod";
 import type { GestanteComCalculos } from "../drizzle/schema";
 import { 
@@ -2509,7 +2510,7 @@ export const appRouter = router({
         const examesAgrupados: any[] = [];
         const examesPorNome = new Map<string, any>();
         exames.forEach((ex: any) => {
-          const nomeExame = ex.nomeExame;
+          const nomeExame = normalizeExamName(ex.nomeExame);
           if (!examesPorNome.has(nomeExame)) {
             examesPorNome.set(nomeExame, { nome: nomeExame });
           }
@@ -2740,7 +2741,7 @@ export const appRouter = router({
         const examesAgrupados: any[] = [];
         const examesPorNome = new Map<string, any>();
         exames.forEach((ex: any) => {
-          const nomeExame = ex.nomeExame;
+          const nomeExame = normalizeExamName(ex.nomeExame);
           if (!examesPorNome.has(nomeExame)) {
             examesPorNome.set(nomeExame, { nome: nomeExame });
           }
