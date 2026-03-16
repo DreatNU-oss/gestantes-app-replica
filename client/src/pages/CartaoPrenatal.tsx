@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert, Send, MessageSquare, UtensilsCrossed } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -513,6 +513,38 @@ export default function CartaoPrenatal() {
   });
 
   const gerarPDFMutation = trpc.pdf.gerarCartaoPrenatal.useMutation();
+
+  // ─── Envio Rápido WhatsApp ─────────────────────────────────────────────────
+  const [enviandoWhatsApp, setEnviandoWhatsApp] = useState<string | null>(null);
+  const enviarWhatsAppMutation = trpc.whatsapp.enviarManual.useMutation({
+    onSuccess: () => {
+      toast.success('Mensagem enviada com sucesso via WhatsApp!');
+      setEnviandoWhatsApp(null);
+    },
+    onError: (error) => {
+      toast.error(`Erro ao enviar: ${error.message}`);
+      setEnviandoWhatsApp(null);
+    },
+  });
+
+  const handleEnviarOrientacao = (tipo: string, mensagem: string, pdfUrl?: string) => {
+    if (!gestante) {
+      toast.error('Selecione uma gestante primeiro');
+      return;
+    }
+    if (!gestante.telefone) {
+      toast.error('Gestante não possui telefone cadastrado. Cadastre o telefone primeiro.');
+      return;
+    }
+    setEnviandoWhatsApp(tipo);
+    enviarWhatsAppMutation.mutate({
+      telefone: gestante.telefone,
+      mensagem,
+      pdfUrl,
+      nomeGestante: gestante.nome,
+      gestanteId: gestante.id,
+    });
+  };
 
   const handleGerarPDF = async () => {
     if (!gestante) {
@@ -2969,6 +3001,47 @@ export default function CartaoPrenatal() {
                   })}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Envio Rápido de Orientações via WhatsApp */}
+        {gestanteSelecionada && gestante && (
+          <Card id="envio-rapido-whatsapp">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <MessageSquare className="h-5 w-5 text-green-600" />
+                Envio Rápido de Orientações via WhatsApp
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Envie orientações diretamente para {gestante.nome?.split(' ')[0] || 'a paciente'} durante a consulta
+                {!gestante.telefone && (
+                  <span className="text-red-500 font-medium ml-1">(telefone não cadastrado)</span>
+                )}
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-green-200 hover:bg-green-50 hover:border-green-400 text-green-800"
+                  disabled={!gestante.telefone || enviandoWhatsApp === 'or-alimentares-1a'}
+                  onClick={() => handleEnviarOrientacao(
+                    'or-alimentares-1a',
+                    `Olá ${gestante.nome?.split(' ')[0] || ''}! 🤰\n\nSegue o *Guia de Alimentação para uma Gestação Saudável* da Clínica Mais Mulher.\n\nEste material contém orientações nutricionais importantes para esta fase, incluindo:\n• Princípios de ouro da nutrição na gravidez\n• Alimentos que devem ser evitados\n• Sugestão de cardápio semanal balanceado\n\nLeia com atenção e em caso de dúvidas, converse com seu médico na próxima consulta.\n\nAbraços da equipe Mais Mulher! 💜`,
+                    'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes-alimentares-1a-consulta_bb34a959.pdf'
+                  )}
+                >
+                  {enviandoWhatsApp === 'or-alimentares-1a' ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <UtensilsCrossed className="h-4 w-4" />
+                  )}
+                  Or. Alimentares 1ª cons
+                </Button>
+                {/* Espaço para futuros botões */}
+              </div>
             </CardContent>
           </Card>
         )}

@@ -2053,3 +2053,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Usar mesma API que gera agendamento de cirurgias (ADMIN_SYSTEM_URL + ADMIN_INTEGRATION_API_KEY)
 - [x] Mensagem WhatsApp para funcionárias agora usa seletor ao invés de lógica hardcoded
 - [x] Testes unitários (10 testes passando)
+
+## Botões de Envio Rápido WhatsApp no Cartão de Pré-Natal (16/03/2026)
+- [x] Upload do PDF "Orientações Alimentares 1ª Consulta" para S3 (CDN URL configurada)
+- [x] Criar barra de botões de envio rápido abaixo das consultas no Cartão de Pré-Natal
+- [x] Botão "Or. Alimentares 1ª cons" que envia PDF via WhatsApp para a paciente (com mensagem personalizada)
+- [x] Reutilizar procedure whatsapp.enviarManual existente (já suporta pdfUrl)
+- [x] Testes unitários (12 testes passando)
