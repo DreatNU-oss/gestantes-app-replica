@@ -1032,12 +1032,12 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     
     // Sequência canônica de exames (mesma do frontend examesConfig.ts)
     // Hemoglobina, Hematócrito e Plaquetas separados (Hemograma removido pois é redundante)
-    // IgM de Toxo/Rubéola/CMV removidos pois IgG já contém info de IgM
+    // IgM de Toxo/Rubéola/CMV incluídos como linhas separadas
     const EXAMES_SANGUE = [
       'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
       'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
-      'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG',
-      'Rubéola IgG', 'Citomegalovírus IgG',
+      'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
+      'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
       'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
       'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
     ];
@@ -1275,18 +1275,7 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
       y += 3;
     }
     
-    // Exames extras que não estão na sequência canônica -> adicionar à seção de sangue
-    // (todos os exames não canônicos são classificados como sangue por fallback)
-    const todosCanonicos = new Set([...EXAMES_SANGUE, ...EXAMES_URINA, ...EXAMES_FEZES, ...EXAMES_OUTROS]);
-    const examesExtrasNomes = Array.from(examesPorNome.keys()).filter(n => !todosCanonicos.has(n));
-    if (examesExtrasNomes.length > 0) {
-      // Se não houve seção de sangue ainda, criar uma
-      if (!temExamesSangue) {
-        drawCategoryTitle('Exames de Sangue');
-        rowIndex = 0;
-      }
-      examesExtrasNomes.forEach(drawExameRow);
-    }
+    // Não renderizar extras - todos os exames devem estar em uma das 4 categorias canônicas
   }
 
 

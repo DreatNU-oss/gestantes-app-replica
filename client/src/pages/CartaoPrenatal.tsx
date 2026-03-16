@@ -1138,15 +1138,15 @@ export default function CartaoPrenatal() {
         y += 10;
         
         // Sequência canônica de exames (mesma do frontend examesConfig.ts)
-         // Hemograma removido (redundante com Hb+Ht+Plaq separados), IgM removidos (IgG já contém)
-         const EXAMES_SANGUE_PDF = [
-           'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
-           'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
-           'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG',
-           'Rubéola IgG', 'Citomegalovírus IgG',
-           'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
-          'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
-        ];
+         // Hemograma removido (redundante com Hb+Ht+Plaq separados), IgM incluídos como linhas separadas
+        const EXAMES_SANGUE_PDF = [
+            'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
+            'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+            'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
+            'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
+            'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
+           'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
+         ];
         const EXAMES_URINA_PDF = ['EAS (Urina tipo 1)', 'Urocultura', 'Protein\u00faria de 24 horas'];
         const EXAMES_FEZES_PDF = ['EPF (Parasitol\u00f3gico de Fezes)'];
         const EXAMES_OUTROS_PDF = ['Swab vaginal/retal EGB'];
@@ -1422,22 +1422,7 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Exames extras normalizados que não estão nas listas canônicas -> classificar na categoria correta
-        const EXAM_CATS: Record<string, string> = {
-          'EAS (Urina tipo 1)': 'urina', 'Urocultura': 'urina', 'Protein\u00faria de 24 horas': 'urina',
-          'EPF (Parasitol\u00f3gico de Fezes)': 'fezes',
-          'Swab vaginal/retal EGB': 'egb',
-        };
-        const examesExtrasNormalizados = Object.keys(normalizedResults).filter(n => !todosCanonicosPdf.has(n));
-        // Desenhar extras apenas na seção de sangue (sem seção 'Outros Exames')
-        examesExtrasNormalizados.forEach(n => {
-          // Só desenha se tem resultado
-          const r1 = getExameResultado(n, '1');
-          const r2 = getExameResultado(n, '2');
-          const r3 = getExameResultado(n, '3');
-          if (r1 === '-' && r2 === '-' && r3 === '-') return;
-          drawExameRowPdf(n);
-        });
+        // Não renderizar extras - todos os exames devem estar em uma das 4 categorias canônicas
         
         // Observações gerais
         if (resultadosExamesLab.outros_observacoes && typeof resultadosExamesLab.outros_observacoes === 'string' && resultadosExamesLab.outros_observacoes.trim()) {

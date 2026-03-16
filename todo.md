@@ -2147,3 +2147,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Deduplicação: não reenvia se já enviado antes (whatsappHistorico)
 - [x] Não envia em reagendamento (já tinha cesárea antes)
 - [x] Testes unitários (11 testes passando)
+
+## BUG: Exames extras caindo na seção EGB do PDF (16/03/2026)
+- [x] Adicionar Toxoplasmose IgM, Rubéola IgM, Citomegalovírus IgM à lista canônica de Sangue
+- [x] Hemograma não está na lista canônica do PDF (ignorado automaticamente)
+- [x] Eliminar loop de extras que adiciona exames à seção EGB
+- [x] Seção EGB contém APENAS Swab vaginal/retal EGB
+- [x] Testes unitários (23 testes de normalização passando)
