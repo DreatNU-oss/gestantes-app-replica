@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, nome, igSemanas, igDias, condicaoTipoParto, condicaoMedicoId, pdfUrl, ativo FROM mensagemTemplates WHERE nome LIKE '%esare%' OR nome LIKE '%pré%' OR nome LIKE '%pre%op%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, igSemanas, igDias, condicaoTipoParto, condicaoMedicoId, pdfUrl, ativo FROM mensagemTemplates WHERE nome LIKE '%esare%' OR nome LIKE '%pré%' OR nome LIKE '%pre%op%'",
+  "rows": [
+    {
+      "id": "30003",
+      "nome": "Orientações Pré-operatórias Cesárea - 36 semanas",
+      "igSemanas": "36",
+      "igDias": "0",
+      "condicaoTipoParto": "cesariana",
+      "condicaoMedicoId": "1",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PreOperatorioCesariana.pdf",
+      "ativo": "1"
+    },
+    {
+      "id": "30004",
+      "nome": "Parabéns + Cuidados Pós-Operatórios Cesárea",
+      "igSemanas": "NULL",
+      "igDias": "0",
+      "condicaoTipoParto": "NULL",
+      "condicaoMedicoId": "NULL",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf",
+      "ativo": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tigSemanas\tigDias\tcondicaoTipoParto\tcondicaoMedicoId\tpdfUrl\tativo\n30003\tOrientações Pré-operatórias Cesárea - 36 semanas\t36\t0\tcesariana\t1\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PreOperatorioCesariana.pdf\t1\n30004\tParabéns + Cuidados Pós-Operatórios Cesárea\tNULL\t0\tNULL\tNULL\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf\t1\n",
+  "stderr": "",
+  "execution_time_ms": 415
+}

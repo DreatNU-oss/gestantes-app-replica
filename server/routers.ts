@@ -906,6 +906,90 @@ export const appRouter = router({
           }
         }
         
+        // ─── Envio automático de orientações pré-operatórias de cesárea ───────────
+        // Envia quando: cesárea é agendada pela primeira vez E IG >= 36 semanas
+        // NÃO envia quando: reagendamento (já tinha cesárea antes) OU já foi enviado antes
+        const isNovaCesarea = temDataCesarea && !tinhaDataCesarea;
+        const clinicaIdPreOp = gestante.clinicaId || ctx.user.clinicaId;
+        if (isNovaCesarea && gestante.telefone && clinicaIdPreOp) {
+          (async () => {
+            try {
+              // Calcular IG atual usando US ou DUM
+              let ig: { semanas: number; dias: number; totalDias: number } | null = null;
+              if (gestante.igUltrassomSemanas !== null && gestante.igUltrassomDias !== null && gestante.dataUltrassom) {
+                const igUltrassomDiasTotal = (gestante.igUltrassomSemanas * 7) + gestante.igUltrassomDias;
+                ig = calcularIdadeGestacionalPorUS(igUltrassomDiasTotal, new Date(gestante.dataUltrassom + 'T12:00:00'));
+              } else if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+                ig = calcularIdadeGestacionalPorDUM(gestante.dum);
+              }
+              if (ig && ig.semanas >= 36) {
+                const db = await getDb();
+                if (!db) return;
+                
+                // Buscar template de pré-operatório de cesárea (condicaoTipoParto = 'cesariana')
+                const [templatePreOp] = await db
+                  .select()
+                  .from(mensagemTemplates)
+                  .where(and(
+                    eq(mensagemTemplates.clinicaId, clinicaIdPreOp),
+                    eq(mensagemTemplates.condicaoTipoParto, 'cesariana'),
+                    eq(mensagemTemplates.ativo, 1),
+                    isNotNull(mensagemTemplates.igSemanas),
+                  ))
+                  .limit(1);
+                
+                if (templatePreOp) {
+                  // Verificar se já foi enviada (deduplicação)
+                  const [jaEnviada] = await db
+                    .select({ id: whatsappHistorico.id })
+                    .from(whatsappHistorico)
+                    .where(and(
+                      eq(whatsappHistorico.clinicaId, clinicaIdPreOp),
+                      eq(whatsappHistorico.gestanteId, gestante.id),
+                      eq(whatsappHistorico.templateId, templatePreOp.id),
+                      eq(whatsappHistorico.status, 'enviado'),
+                    ))
+                    .limit(1);
+                  
+                  if (!jaEnviada) {
+                    // Buscar médico para o contexto
+                    let medicoNome = '';
+                    if (gestante.medicoId) {
+                      const [med] = await db
+                        .select({ nome: medicos.nome })
+                        .from(medicos)
+                        .where(eq(medicos.id, gestante.medicoId))
+                        .limit(1);
+                      medicoNome = med?.nome || '';
+                    }
+                    
+                    const context = {
+                      nome: gestante.nome,
+                      telefone: gestante.telefone!,
+                      igSemanas: ig.semanas,
+                      igDias: ig.dias,
+                      medico: medicoNome,
+                      gestanteId: gestante.id,
+                    };
+                    
+                    console.log(`[PreOp Auto] Enviando orientações pré-operatórias para ${gestante.nome} (IG: ${ig.semanas}s${ig.dias}d, cesárea agendada)`);
+                    const result = await sendToGestante(clinicaIdPreOp, templatePreOp.id, context);
+                    if (result.success) {
+                      console.log(`[PreOp Auto] ✅ Orientações pré-operatórias enviadas com sucesso para ${gestante.nome}`);
+                    } else {
+                      console.log(`[PreOp Auto] ❌ Falha ao enviar para ${gestante.nome}: ${result.error}`);
+                    }
+                  } else {
+                    console.log(`[PreOp Auto] Orientações já enviadas anteriormente para ${gestante.nome}, pulando.`);
+                  }
+                }
+              }
+            } catch (err) {
+              console.error('[PreOp Auto] Erro ao enviar orientações pré-operatórias:', err);
+            }
+          })();
+        }
+
         // Sincronizar com bot de WhatsApp (allowlist) - detectar mudanças de nome ou telefone
         const telefoneAntes = gestanteAntes?.telefone || '';
         const telefoneDepois = gestante.telefone || '';

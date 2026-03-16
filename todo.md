@@ -2132,3 +2132,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover linhas separadas de IgM para Toxoplasmose, Rubéola e Citomegalovírus (IgG já contém info de IgM)
 - [x] Atualizado htmlToPdf.ts e CartaoPrenatal.tsx
 - [x] Testes unitários (23 testes passando)
+
+## Envio automático de orientações pré-op cesárea ao agendar (16/03/2026)
+- [ ] Investigar lógica atual de agendamento de cesárea e envio de orientações por IG
+- [ ] Implementar envio automático de orientações pré-op no momento do agendamento da cesárea
+- [ ] Verificar se já foi enviado antes (deduplicação via orientacoesEnviadas)
+- [ ] Não reenviar ao reagendar cesárea
+- [ ] Testes unitários
+
+## Envio automático de orientações pré-op de cesárea (16/03/2026)
+- [x] Investigar lógica atual de agendamento de cesárea e envio de templates
+- [x] Implementar envio automático no momento do agendamento (gestante.update)
+- [x] Verificar IG >= 36 semanas (US prioritário sobre DUM)
+- [x] Deduplicação: não reenvia se já enviado antes (whatsappHistorico)
+- [x] Não envia em reagendamento (já tinha cesárea antes)
+- [x] Testes unitários (11 testes passando)
