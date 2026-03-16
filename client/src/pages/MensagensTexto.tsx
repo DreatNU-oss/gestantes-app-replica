@@ -29,7 +29,9 @@ import {
   XCircle,
   AlertCircle,
   Eye,
+  ArrowLeft,
 } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 const GATILHO_LABELS: Record<string, string> = {
   idade_gestacional: 'Idade Gestacional',
@@ -295,17 +297,29 @@ export default function MensagensTexto() {
     setShowPreview(true);
   };
 
+  const [, setLocation] = useLocation();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <MessageSquare className="h-6 w-6" />
-            Mensagens de Texto
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Configure mensagens automáticas via WhatsApp para suas gestantes
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation('/dashboard')}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <MessageSquare className="h-6 w-6" />
+              Mensagens de Texto
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Configure mensagens automáticas via WhatsApp para suas gestantes
+            </p>
+          </div>
         </div>
         {isAdmin && (
           <Button

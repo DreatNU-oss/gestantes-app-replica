@@ -2177,3 +2177,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Modificar server/whatsapp.ts getApiKey() para rotear por clinicaId (00001 usa WASENDER_API_KEY, demais usam WASENDER_API_KEY_OUTRAS_CLINICAS)
 - [x] Todas as chamadas já passam clinicaId (sendToGestante, sendManualMessage)
 - [x] 5 testes passando (env vars, chaves diferentes, formato válido, normalização telefone)
+
+## BUG: Botão de voltar na página Mensagens de Texto (16/03/2026)
+- [x] Adicionar botão de voltar na página Mensagens de Texto seguindo o padrão das demais páginas
