@@ -16,7 +16,7 @@
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos } from '../drizzle/schema';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco } from '../drizzle/schema';
 import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
 
@@ -189,6 +189,22 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
             }
             if (template.condicaoMedicoId && gestante.medicoId !== template.condicaoMedicoId) {
               continue;
+            }
+
+            // Verificar condição de Rh negativo
+            if (template.condicaoRhNegativo === 1) {
+              const [fatorRh] = await db
+                .select({ id: fatoresRisco.id })
+                .from(fatoresRisco)
+                .where(and(
+                  eq(fatoresRisco.gestanteId, gestante.id),
+                  eq(fatoresRisco.tipo, 'fator_rh_negativo'),
+                  eq(fatoresRisco.ativo, 1),
+                ))
+                .limit(1);
+              if (!fatorRh) {
+                continue; // Gestante não é Rh negativo, pular
+              }
             }
 
             // Verificar se já foi enviada

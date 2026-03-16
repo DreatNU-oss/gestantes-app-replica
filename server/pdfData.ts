@@ -96,7 +96,7 @@ function agruparExamesPorTrimestre(exames: ResultadoExame[]): ExameAgrupado[] {
 /**
  * Calcula marcos importantes baseado na DUM ou ultrassom
  */
-function calcularMarcos(gestante: Gestante): MarcoImportante[] {
+function calcularMarcos(gestante: Gestante, fatoresRiscoList: any[] = []): MarcoImportante[] {
   // Determinar data base para cálculo
   let dataBase: Date | null = null;
   let igBaseSemanas = 0;
@@ -123,6 +123,9 @@ function calcularMarcos(gestante: Gestante): MarcoImportante[] {
   const totalDias = (igBaseSemanas * 7) + igBaseDias + diasDesdeBase;
   const igAtualSemanas = Math.floor(totalDias / 7);
 
+  // Verificar se gestante é Rh negativo
+  const ehRhNegativo = fatoresRiscoList.some((f: any) => f.tipo === 'fator_rh_negativo' && (f.ativo === 1 || f.ativo === undefined));
+
   // Definir marcos
   const marcosDefinidos = [
     { titulo: '1º Ultrassom', semanaInicio: 6, semanaFim: 9 },
@@ -131,6 +134,7 @@ function calcularMarcos(gestante: Gestante): MarcoImportante[] {
     { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
     { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
     { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: 36 },
+    ...(ehRhNegativo ? [{ titulo: 'Vacina Anti-Rh (Imunoglobulina)', semanaInicio: 28, semanaFim: 28 }] : []),
     { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
     { titulo: 'Termo de Gestação', semanaInicio: 37, semanaFim: 42 },
   ];
@@ -177,7 +181,7 @@ export async function buscarDadosCartaoPrenatal(gestanteId: number): Promise<Dad
   const examesAgrupados = agruparExamesPorTrimestre(exames);
 
   // Calcular marcos importantes
-  const marcos = calcularMarcos(gestante);
+  const marcos = calcularMarcos(gestante, fatoresRisco);
 
   return {
     gestante,

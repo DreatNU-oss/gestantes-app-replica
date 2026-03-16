@@ -20,7 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -1380,6 +1380,13 @@ export default function CartaoPrenatal() {
     dtpa.setDate(dtpa.getDate() + 189);
     marcos.push({ titulo: "Vacina dTpa", data: dtpa.toLocaleDateString("pt-BR") });
     
+    // Vacina Anti-Rh (28 semanas) - apenas para gestantes Rh negativo
+    if (fatoresRisco?.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1)) {
+      const antiRh = new Date(concepcao);
+      antiRh.setDate(antiRh.getDate() + 196);
+      marcos.push({ titulo: "Vacina Anti-Rh (Imunoglobulina)", data: antiRh.toLocaleDateString("pt-BR") });
+    }
+    
     // Vacina Bronquiolite (32-36 semanas)
     const bronqInicio = new Date(concepcao);
     bronqInicio.setDate(bronqInicio.getDate() + 224);
@@ -1974,6 +1981,13 @@ export default function CartaoPrenatal() {
       dias: 0,
       color: "bg-orange-100 text-orange-700 border-orange-300",
     },
+    ...(fatoresRisco?.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1) ? [{
+      titulo: "Vacina Anti-Rh (Imunoglobulina)",
+      icon: ShieldAlert,
+      semanas: 28,
+      dias: 0,
+      color: "bg-red-100 text-red-700 border-red-300",
+    }] : []),
     {
       titulo: "Vacina Bronquiolite",
       icon: Syringe,

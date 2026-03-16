@@ -1,7 +1,7 @@
 /**
  * Calcula os marcos importantes da gestação baseado na data do ultrassom e IG
  */
-export function calcularMarcosImportantes(dataUltrassom: string, igUltrassom: string): any[] {
+export function calcularMarcosImportantes(dataUltrassom: string, igUltrassom: string, ehRhNegativo: boolean = false): any[] {
   const dataUS = new Date(dataUltrassom);
   const [semanas, dias] = igUltrassom.split("s").map((s) => parseInt(s.replace("d", "")));
   const totalDiasIG = semanas * 7 + (dias || 0);
@@ -46,6 +46,11 @@ export function calcularMarcosImportantes(dataUltrassom: string, igUltrassom: st
       data: new Date(dppUS.getTime() - (280 - 196) * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR"),
       periodo: "28 semanas",
     },
+    ...(ehRhNegativo ? [{
+      titulo: "Vacina Anti-Rh (Imunoglobulina)",
+      data: new Date(dppUS.getTime() - (280 - 196) * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR"),
+      periodo: "28 semanas",
+    }] : []),
     {
       titulo: "Termo Precoce",
       data: new Date(dppUS.getTime() - (280 - 259) * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR"),

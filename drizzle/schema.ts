@@ -847,6 +847,7 @@ export const mensagemTemplates = mysqlTable("mensagemTemplates", {
   // Condições opcionais para filtrar gestantes (só envia se a gestante atender)
   condicaoTipoParto: mysqlEnum("condicaoTipoParto", ["cesariana", "normal", "a_definir"]), // Só envia para gestantes com este tipo de parto
   condicaoMedicoId: int("condicaoMedicoId"), // Só envia para gestantes deste médico
+  condicaoRhNegativo: int("condicaoRhNegativo").default(0), // 1 = só envia para gestantes com fator Rh negativo
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
   criadoPor: int("criadoPor"), // ID do usuário que criou
   createdAt: timestamp("createdAt").defaultNow().notNull(),

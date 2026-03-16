@@ -59,12 +59,14 @@ interface TemplateForm {
   pdfUrl?: string;
   pdfKey?: string;
   pdfNome?: string;
+  condicaoRhNegativo?: boolean;
 }
 
 const emptyForm: TemplateForm = {
   nome: '',
   mensagem: '',
   gatilhoTipo: 'manual',
+  condicaoRhNegativo: false,
 };
 
 export default function MensagensTexto() {
@@ -182,6 +184,7 @@ export default function MensagensTexto() {
       pdfUrl: template.pdfUrl || undefined,
       pdfKey: template.pdfKey || undefined,
       pdfNome: template.pdfNome || undefined,
+      condicaoRhNegativo: template.condicaoRhNegativo === 1,
     });
     setShowDialog(true);
   };
@@ -210,6 +213,7 @@ export default function MensagensTexto() {
       pdfUrl: form.pdfUrl,
       pdfKey: form.pdfKey,
       pdfNome: form.pdfNome,
+      condicaoRhNegativo: form.condicaoRhNegativo ? 1 : 0,
     };
 
     if (editingId) {
@@ -589,6 +593,22 @@ export default function MensagensTexto() {
               </p>
             </div>
 
+            {/* Condição: Apenas Rh Negativo */}
+            {form.gatilhoTipo === 'idade_gestacional' && (
+              <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <input
+                  type="checkbox"
+                  id="condicaoRhNegativo"
+                  checked={form.condicaoRhNegativo || false}
+                  onChange={e => setForm(prev => ({ ...prev, condicaoRhNegativo: e.target.checked }))}
+                  className="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                />
+                <label htmlFor="condicaoRhNegativo" className="text-sm font-medium text-amber-800 dark:text-amber-200 cursor-pointer">
+                  Enviar apenas para gestantes com Rh negativo
+                </label>
+              </div>
+            )}
+
             {/* PDF Upload */}
             <div>
               <Label>PDF Anexo (opcional)</Label>
@@ -759,6 +779,7 @@ function TemplateCard({
     evento: string | null;
     pdfUrl: string | null;
     pdfNome: string | null;
+    condicaoRhNegativo: number | null;
     ativo: number;
   };
   onEdit: () => void;
@@ -789,6 +810,11 @@ function TemplateCard({
               <Badge variant="outline" className="text-xs gap-1">
                 <FileText className="h-3 w-3" />
                 {template.pdfNome || 'PDF'}
+              </Badge>
+            )}
+            {template.condicaoRhNegativo === 1 && (
+              <Badge variant="outline" className="text-xs gap-1 border-amber-400 text-amber-700 bg-amber-50">
+                Rh-
               </Badge>
             )}
           </div>

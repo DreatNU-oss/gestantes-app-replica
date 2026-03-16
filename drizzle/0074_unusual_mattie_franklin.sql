@@ -1,0 +1,1 @@
+ALTER TABLE `mensagemTemplates` ADD `condicaoRhNegativo` int DEFAULT 0;

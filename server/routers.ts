@@ -2517,6 +2517,9 @@ export const appRouter = router({
         } else if (gestante.dum && gestante.dum !== 'Incerta' && gestante.dum !== 'Compatível com US') {
           dataBase = new Date(gestante.dum + 'T12:00:00');
         }
+        // Verificar se gestante é Rh negativo
+        const ehRhNegativo = fatoresRisco.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1);
+
         if (dataBase) {
           const marcosDefinidos: Array<{ titulo: string; semanaInicio: number; semanaFim: number | null; diasInicio?: number; diasFim?: number }> = [
             { titulo: 'Concepcao', semanaInicio: 2, semanaFim: null, diasInicio: 0 },
@@ -2527,6 +2530,7 @@ export const appRouter = router({
             { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
             { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
             { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: null, diasInicio: 0 },
+            ...(ehRhNegativo ? [{ titulo: 'Vacina Anti-Rh (Imunoglobulina)', semanaInicio: 28, semanaFim: null as number | null, diasInicio: 0 }] : []),
             { titulo: 'Vacina Bronquiolite', semanaInicio: 32, semanaFim: 36 },
             { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
             { titulo: 'Termo Precoce', semanaInicio: 37, semanaFim: null, diasInicio: 0 },
@@ -3671,6 +3675,7 @@ export const appRouter = router({
         pdfUrl: z.string().optional(),
         pdfKey: z.string().optional(),
         pdfNome: z.string().optional(),
+        condicaoRhNegativo: z.number().min(0).max(1).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
@@ -3690,6 +3695,7 @@ export const appRouter = router({
           pdfUrl: input.pdfUrl || null,
           pdfKey: input.pdfKey || null,
           pdfNome: input.pdfNome || null,
+          condicaoRhNegativo: input.condicaoRhNegativo || 0,
           criadoPor: ctx.user.id,
         });
         return { success: true };
@@ -3708,6 +3714,7 @@ export const appRouter = router({
         pdfUrl: z.string().optional(),
         pdfKey: z.string().optional(),
         pdfNome: z.string().optional(),
+        condicaoRhNegativo: z.number().min(0).max(1).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
@@ -3726,6 +3733,7 @@ export const appRouter = router({
           pdfUrl: input.pdfUrl || null,
           pdfKey: input.pdfKey || null,
           pdfNome: input.pdfNome || null,
+          condicaoRhNegativo: input.condicaoRhNegativo ?? 0,
         }).where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
         return { success: true };
       }),

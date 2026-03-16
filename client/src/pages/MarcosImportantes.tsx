@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { trpc } from "@/lib/trpc";
-import React, { useState } from "react";
-import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft, ShieldAlert } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
@@ -29,6 +29,14 @@ export default function MarcosImportantes() {
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();
 
   const gestante = gestantes?.find((g) => g.id.toString() === gestanteSelecionada);
+
+  // Buscar fatores de risco da gestante selecionada para verificar Rh negativo
+  const gestanteIdNum = gestanteSelecionada ? parseInt(gestanteSelecionada) : undefined;
+  const { data: fatoresRiscoList } = trpc.fatoresRisco.list.useQuery(
+    { gestanteId: gestanteIdNum! },
+    { enabled: !!gestanteIdNum }
+  );
+  const ehRhNegativo = fatoresRiscoList?.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1) || false;
 
   const formatDate = (date: Date | null) => {
     if (!date) return "-";
@@ -139,6 +147,14 @@ export default function MarcosImportantes() {
       dias: 0,
       color: "bg-orange-100 text-orange-700 border-orange-300",
     },
+    ...(ehRhNegativo ? [{
+      titulo: "Vacina Anti-Rh (Imunoglobulina)",
+      descricao: "Imunoglobulina anti-Rh para gestantes Rh negativo - 28 semanas",
+      icon: ShieldAlert,
+      semanas: 28,
+      dias: 0,
+      color: "bg-red-100 text-red-700 border-red-300",
+    }] : []),
     {
       titulo: "Vacina Bronquiolite",
       descricao: "Período ideal: 32 semanas a 36 semanas",

@@ -2007,3 +2007,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Bug 1: Tipo Sanguíneo (dropdown) não exige data ao ser primeiro exame sem data anterior
 - [x] Bug 2: Após preencher data manualmente e TAB, data não é auto-copiada para o próximo exame (fallback busca no state React)
 - [x] Bug 3: Hemoglobina/Hematócrito não recebe unidades duplas (g/dL e %) quando valor é "12/36" ou "12 36"
+
+## Vacina Anti-Rh (Imunoglobulina) - Apenas Rh Negativo (15/03/2026)
+- [x] Criar template WhatsApp para lembrete da vacina Anti-Rh às 28 semanas (apenas Rh negativo) - campo condicaoRhNegativo adicionado ao schema e UI
+- [x] Adicionar lógica no scheduler para enviar template Anti-Rh apenas para gestantes com fator Rh negativo
+- [x] Adicionar marco "Vacina Anti-Rh (Imunoglobulina)" em marcos.ts (apenas para Rh negativo)
+- [x] Adicionar marco no menu Marcos Importantes (UI) condicionado ao Rh negativo
+- [x] Adicionar marco na seção Marcos do Cartão de Pré-Natal condicionado ao Rh negativo (UI + PDF)
+- [x] Atualizar API REST (gestante-router.ts marcos endpoint) para incluir marco Anti-Rh apenas para gestantes Rh negativo
+- [x] Atualizar gestante-router.ts (generateMarcos + gerarPdfCartao) para incluir marco Anti-Rh apenas para Rh negativo
+- [x] Atualizar pdfData.ts (calcularMarcos) para incluir marco Anti-Rh apenas para Rh negativo
+- [x] Atualizar routers.ts (PDF cartão pré-natal) para incluir marco Anti-Rh apenas para Rh negativo
+- [x] Testes unitários para a lógica condicional Rh negativo (9 testes passando)

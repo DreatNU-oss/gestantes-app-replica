@@ -58,7 +58,7 @@ function calculateDPPFromUS(dataUS: Date, igSemanas: number, igDias: number): st
 }
 
 // Generate marcos (milestones) based on DPP
-function generateMarcos(dpp: string, dum: Date) {
+function generateMarcos(dpp: string, dum: Date, ehRhNegativo: boolean = false) {
   const dppDate = new Date(dpp);
   
   const addDays = (date: Date, days: number): string => {
@@ -120,6 +120,12 @@ function generateMarcos(dpp: string, dum: Date) {
       semana: 27,
       descricao: "Vacina contra difteria, tétano e coqueluche",
     },
+    ...(ehRhNegativo ? [{
+      nome: "Vacina Anti-Rh (Imunoglobulina)",
+      data: weekToDate(28),
+      semana: 28,
+      descricao: "Imunoglobulina anti-Rh para gestantes com fator Rh negativo",
+    }] : []),
     {
       nome: "Vacina Bronquiolite",
       dataInicio: weekToDate(32),
@@ -630,9 +636,13 @@ export const gestanteRouter = router({
       
       const dumForMarcos = dum || new Date(new Date(dpp).getTime() - 280 * 24 * 60 * 60 * 1000);
       
+      // Verificar se gestante é Rh negativo
+      const fatoresRiscoList = await gestanteDb.getFatoresRiscoByGestanteId(gestante.id);
+      const ehRhNegativo = fatoresRiscoList.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1);
+      
       return {
         dpp,
-        marcos: generateMarcos(dpp, dumForMarcos),
+        marcos: generateMarcos(dpp, dumForMarcos, ehRhNegativo),
       };
     }),
   
@@ -776,6 +786,9 @@ export const gestanteRouter = router({
         dataBase = new Date(gestante.dum + 'T12:00:00');
       }
       
+      // Verificar se gestante é Rh negativo
+      const ehRhNegativo = fatoresRisco.some((f: any) => f.tipo === 'fator_rh_negativo' && f.ativo === 1);
+
       if (dataBase) {
         const marcosDefinidos: Array<{ titulo: string; semanaInicio: number; semanaFim: number | null; diasInicio?: number; diasFim?: number }> = [
           { titulo: 'Concepcao', semanaInicio: 2, semanaFim: null, diasInicio: 0 },
@@ -786,6 +799,7 @@ export const gestanteRouter = router({
           { titulo: 'TOTG 75g', semanaInicio: 24, semanaFim: 28 },
           { titulo: 'Ecocardiograma Fetal', semanaInicio: 24, semanaFim: 28 },
           { titulo: 'Vacina dTpa', semanaInicio: 27, semanaFim: null, diasInicio: 0 },
+          ...(ehRhNegativo ? [{ titulo: 'Vacina Anti-Rh (Imunoglobulina)', semanaInicio: 28, semanaFim: null as number | null, diasInicio: 0 }] : []),
           { titulo: 'Vacina Bronquiolite', semanaInicio: 32, semanaFim: 36 },
           { titulo: 'Estreptococo Grupo B', semanaInicio: 35, semanaFim: 37 },
           { titulo: 'Termo Precoce', semanaInicio: 37, semanaFim: null, diasInicio: 0 },
