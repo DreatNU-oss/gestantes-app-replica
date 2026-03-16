@@ -2483,7 +2483,7 @@ export const appRouter = router({
         // Preparar dados para gráficos
         const dadosConsultasGraficos = consultas.map((c: any) => ({
           dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
-          igSemanas: c.igSemanas || c.igDumSemanas,
+          igSemanas: c.igSemanas || c.igDumSemanas || c.igUltrassomSemanas || null,
           peso: c.peso ? c.peso / 1000 : null,
           au: c.alturaUterina ? (c.alturaUterina === -1 ? null : c.alturaUterina / 10) : null,
           paSistolica: c.pressaoSistolica || null,
@@ -2495,13 +2495,13 @@ export const appRouter = router({
         // Preparar dados brutos para gráficos nativos jsPDF (sem dependência de fontes)
         const dadosGraficosNativos = {
           peso: dadosConsultasGraficos
-            .filter(c => c.peso !== null && c.igSemanas !== undefined)
+            .filter(c => c.peso !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, valor: c.peso! })),
           au: dadosConsultasGraficos
-            .filter(c => c.au !== null && c.igSemanas !== undefined)
+            .filter(c => c.au !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, valor: c.au! })),
           pa: dadosConsultasGraficos
-            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas !== undefined)
+            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, sistolica: c.paSistolica!, diastolica: c.paDiastolica! })),
         };
 
@@ -2613,7 +2613,7 @@ export const appRouter = router({
           consultas: consultas.map((c: any) => ({
             dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
             igDUM: c.igDumSemanas ? `${c.igDumSemanas}s${c.igDumDias || 0}d` : '',
-            igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
+            igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : (c.igUltrassomSemanas ? `${c.igUltrassomSemanas}s${c.igUltrassomDias || 0}d` : null),
             peso: c.peso,
             pa: c.pressaoSistolica && c.pressaoDiastolica ? `${c.pressaoSistolica}/${c.pressaoDiastolica}` : null,
             au: c.alturaUterina,
@@ -2711,7 +2711,7 @@ export const appRouter = router({
         // Preparar dados para gráficos
         const dadosConsultasGraficos = consultas.map((c: any) => ({
           dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
-          igSemanas: c.igSemanas || c.igDumSemanas,
+          igSemanas: c.igSemanas || c.igDumSemanas || c.igUltrassomSemanas || null,
           peso: c.peso ? c.peso / 1000 : null,
           au: c.alturaUterina ? (c.alturaUterina === -1 ? null : c.alturaUterina / 10) : null,
           paSistolica: c.pressaoSistolica || null,
@@ -2722,13 +2722,13 @@ export const appRouter = router({
 
         const dadosGraficosNativos = {
           peso: dadosConsultasGraficos
-            .filter(c => c.peso !== null && c.igSemanas !== undefined)
+            .filter(c => c.peso !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, valor: c.peso! })),
           au: dadosConsultasGraficos
-            .filter(c => c.au !== null && c.igSemanas !== undefined)
+            .filter(c => c.au !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, valor: c.au! })),
           pa: dadosConsultasGraficos
-            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas !== undefined)
+            .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas != null)
             .map(c => ({ igSemanas: c.igSemanas!, sistolica: c.paSistolica!, diastolica: c.paDiastolica! })),
         };
 
@@ -2836,7 +2836,7 @@ export const appRouter = router({
           consultas: consultas.map((c: any) => ({
             dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
             igDUM: c.igDumSemanas ? `${c.igDumSemanas}s${c.igDumDias || 0}d` : '',
-            igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
+            igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : (c.igUltrassomSemanas ? `${c.igUltrassomSemanas}s${c.igUltrassomDias || 0}d` : null),
             peso: c.peso,
             pa: c.pressaoSistolica && c.pressaoDiastolica ? `${c.pressaoSistolica}/${c.pressaoDiastolica}` : null,
             au: c.alturaUterina,

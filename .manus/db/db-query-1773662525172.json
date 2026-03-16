@@ -1,0 +1,73 @@
+{
+  "query": "SELECT id, dataConsulta, igSemanas, igDumSemanas, igUltrassomSemanas, peso, alturaUterina FROM consultasPrenatal WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Ana Clara Borges%') ORDER BY dataConsulta;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataConsulta, igSemanas, igDumSemanas, igUltrassomSemanas, peso, alturaUterina FROM consultasPrenatal WHERE gestanteId = (SELECT id FROM gestantes WHERE nome LIKE '%Ana Clara Borges%') ORDER BY dataConsulta;",
+  "rows": [
+    {
+      "id": "1770020",
+      "dataConsulta": "2025-12-03",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "23",
+      "peso": "69000",
+      "alturaUterina": "240"
+    },
+    {
+      "id": "4800003",
+      "dataConsulta": "2026-01-13",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "29",
+      "peso": "72000",
+      "alturaUterina": "260"
+    },
+    {
+      "id": "6030007",
+      "dataConsulta": "2026-02-09",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "33",
+      "peso": "73000",
+      "alturaUterina": "270"
+    },
+    {
+      "id": "6780005",
+      "dataConsulta": "2026-02-24",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "35",
+      "peso": "75000",
+      "alturaUterina": "280"
+    },
+    {
+      "id": "7470002",
+      "dataConsulta": "2026-03-04",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "36",
+      "peso": "76000",
+      "alturaUterina": "290"
+    },
+    {
+      "id": "7770003",
+      "dataConsulta": "2026-03-10",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "37",
+      "peso": "75700",
+      "alturaUterina": "300"
+    },
+    {
+      "id": "8040002",
+      "dataConsulta": "2026-03-16",
+      "igSemanas": "NULL",
+      "igDumSemanas": "NULL",
+      "igUltrassomSemanas": "38",
+      "peso": "76600",
+      "alturaUterina": "310"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataConsulta\tigSemanas\tigDumSemanas\tigUltrassomSemanas\tpeso\talturaUterina\n1770020\t2025-12-03\tNULL\tNULL\t23\t69000\t240\n4800003\t2026-01-13\tNULL\tNULL\t29\t72000\t260\n6030007\t2026-02-09\tNULL\tNULL\t33\t73000\t270\n6780005\t2026-02-24\tNULL\tNULL\t35\t75000\t280\n7470002\t2026-03-04\tNULL\tNULL\t36\t76000\t290\n7770003\t2026-03-10\tNULL\tNULL\t37\t75700\t300\n8040002\t2026-03-16\tNULL\tNULL\t38\t76600\t310\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}

@@ -2080,3 +2080,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir tratamento de datas em gestante-router.ts (marcos, PDF, curva de peso)
 - [x] Corrigir tratamento de datas em lembretes.ts (cálculo de IG)
 - [x] Testes unitários (21 testes passando)
+
+## BUG: Gráficos do PDF com problemas (16/03/2026)
+- [x] Gráfico de Peso: eixo X mostra "nulls" ao invés da idade gestacional
+- [x] Gráfico de Peso: curva aparece descendente (dados em ordem inversa, mais recente primeiro)
+- [x] Gráfico de Altura Uterina: sem desenho/linha (dados não plotados)
+- [x] Gráfico de Pressão Arterial: eixo X mostra "nulls"
+- [x] Causa raiz: igSemanas é null quando DUM é "Incerta" - adicionado fallback para igUltrassomSemanas
+- [x] Corrigido em routers.ts, gestante-router.ts (3 arquivos, 6 pontos)
+- [x] Testes unitários (14 testes passando)

@@ -851,6 +851,8 @@ export const gestanteRouter = router({
           igSemanas = c.igSemanas;
         } else if (c.igDumSemanas) {
           igSemanas = c.igDumSemanas;
+        } else if (c.igUltrassomSemanas) {
+          igSemanas = c.igUltrassomSemanas;
         }
         return {
           dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
@@ -868,13 +870,13 @@ export const gestanteRouter = router({
       // Preparar dados brutos para gráficos nativos jsPDF (sem dependência de fontes)
       const dadosGraficosNativos = {
         peso: dadosConsultasGraficos
-          .filter(c => c.peso !== null && c.igSemanas !== undefined)
+          .filter(c => c.peso !== null && c.igSemanas != null)
           .map(c => ({ igSemanas: c.igSemanas!, valor: c.peso! })),
         au: dadosConsultasGraficos
-          .filter(c => c.au !== null && c.igSemanas !== undefined)
+          .filter(c => c.au !== null && c.igSemanas != null)
           .map(c => ({ igSemanas: c.igSemanas!, valor: c.au! })),
         pa: dadosConsultasGraficos
-          .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas !== undefined)
+          .filter(c => c.paSistolica !== null && c.paDiastolica !== null && c.igSemanas != null)
           .map(c => ({ igSemanas: c.igSemanas!, sistolica: c.paSistolica!, diastolica: c.paDiastolica! })),
       };
 
