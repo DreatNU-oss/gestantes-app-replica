@@ -67,26 +67,57 @@ export function normalizePhone(phone: string): string {
 // ─── Core Send Function ───────────────────────────────────────────────────────
 
 /**
+ * Código da clínica principal (proprietário do sistema).
+ * Esta clínica usa WASENDER_API_KEY (número exclusivo do proprietário).
+ * Todas as outras clínicas usam WASENDER_API_KEY_OUTRAS_CLINICAS (número compartilhado).
+ */
+const CLINICA_PRINCIPAL_CODIGO = '00001';
+
+/**
  * Obtém a API key do WaSenderAPI para uma clínica.
- * Primeiro tenta a env var global, depois a config por clínica no banco.
+ * 
+ * Roteamento:
+ * - Clínica 00001 (principal): usa WASENDER_API_KEY
+ * - Todas as outras clínicas: usa WASENDER_API_KEY_OUTRAS_CLINICAS
+ * - Fallback: config por clínica no banco (whatsappConfig.apiKey)
  */
 async function getApiKey(clinicaId?: number): Promise<string> {
-  // Primeiro: env var global (para a clínica principal ou config única)
+  const db = await getDb();
+
+  // Se temos clinicaId, verificar qual clínica é para escolher a chave correta
+  if (clinicaId && db) {
+    // Buscar o código da clínica para determinar qual API key usar
+    const { clinicas } = await import('../drizzle/schema');
+    const [clinica] = await db
+      .select({ codigo: clinicas.codigo })
+      .from(clinicas)
+      .where(eq(clinicas.id, clinicaId))
+      .limit(1);
+
+    if (clinica) {
+      if (clinica.codigo === CLINICA_PRINCIPAL_CODIGO) {
+        // Clínica principal: usa a chave do proprietário
+        const key = process.env.WASENDER_API_KEY;
+        if (key) return key;
+      } else {
+        // Outras clínicas: usa a chave compartilhada
+        const key = process.env.WASENDER_API_KEY_OUTRAS_CLINICAS;
+        if (key) return key;
+      }
+    }
+
+    // Fallback: config por clínica no banco
+    const [config] = await db
+      .select()
+      .from(whatsappConfig)
+      .where(and(eq(whatsappConfig.clinicaId, clinicaId), eq(whatsappConfig.ativo, 1)))
+      .limit(1);
+    if (config?.apiKey) return config.apiKey;
+  }
+
+  // Sem clinicaId: fallback para env var global (compatibilidade)
   const envKey = process.env.WASENDER_API_KEY;
   if (envKey) return envKey;
-
-  // Segundo: config por clínica no banco
-  if (clinicaId) {
-    const db = await getDb();
-    if (db) {
-      const [config] = await db
-        .select()
-        .from(whatsappConfig)
-        .where(and(eq(whatsappConfig.clinicaId, clinicaId), eq(whatsappConfig.ativo, 1)))
-        .limit(1);
-      if (config?.apiKey) return config.apiKey;
-    }
-  }
 
   return '';
 }

@@ -2171,3 +2171,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar botão "Or. Ativ. Físicas" na interface de envio WhatsApp
 - [x] Reutiliza handleEnviarOrientacao existente (backend já suporta envio de PDF)
 - [x] Compilando sem erros, TypeScript OK
+
+## Multi-clínica WhatsApp API Key (16/03/2026)
+- [x] Salvar nova chave API (WASENDER_API_KEY_OUTRAS_CLINICAS) como secret
+- [x] Modificar server/whatsapp.ts getApiKey() para rotear por clinicaId (00001 usa WASENDER_API_KEY, demais usam WASENDER_API_KEY_OUTRAS_CLINICAS)
+- [x] Todas as chamadas já passam clinicaId (sendToGestante, sendManualMessage)
+- [x] 5 testes passando (env vars, chaves diferentes, formato válido, normalização telefone)
