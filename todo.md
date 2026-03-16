@@ -2029,3 +2029,19 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Dropdown EGB (15/03/2026)
 - [x] Adicionar dropdown POSITIVO/NEGATIVO para o campo resultado do exame EGB (Pesquisa para EGB) + preenchimento em lote + atalhos 1=Neg, 2=Pos
+
+## Isolamento de Templates por Clínica (16/03/2026)
+- [x] Verificar se mensagemTemplates já tem campo clinicaId - JÁ EXISTIA (schema linha 837)
+- [x] Garantir que criação de templates associe ao clinicaId do usuário - JÁ IMPLEMENTADO (routers.ts linha 3707)
+- [x] Filtrar listagem de templates pelo clinicaId do usuário logado - JÁ IMPLEMENTADO (routers.ts linha 3681)
+- [x] Garantir que scheduler envie apenas templates da clínica correta para cada gestante - JÁ IMPLEMENTADO (whatsappScheduler.ts linhas 133-137)
+- [x] Verificado: exclusão, atualização e toggle também filtram por clinicaId
+
+## Wizard Inteligente para Criação de Templates WhatsApp (16/03/2026)
+- [x] Criar wizard passo a passo para criação de templates (TemplateWizard.tsx)
+- [x] Passo 1: Escolher categoria (Vacinas, Exames, Consultas, Pós-Parto, Alertas, Personalizado)
+- [x] Passo 2: Configurar gatilho + condições + mensagem auto-sugerida + PDF opcional
+- [x] Passo 3: Revisão final com pré-visualização antes de criar
+- [x] 14 sugestões pré-definidas com mensagens completas auto-geradas
+- [x] Integrado no MensagensTexto.tsx ("+ Novo Template" abre wizard, edição mantém dialog simples)
+- [x] Testes unitários (10 testes passando)

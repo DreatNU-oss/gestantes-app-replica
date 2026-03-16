@@ -1,4 +1,5 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
+import TemplateWizard from '@/components/TemplateWizard';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -76,6 +77,7 @@ export default function MensagensTexto() {
 
   const [activeTab, setActiveTab] = useState('templates');
   const [showDialog, setShowDialog] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<TemplateForm>(emptyForm);
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -93,6 +95,7 @@ export default function MensagensTexto() {
     onSuccess: () => {
       toast.success('Template criado com sucesso!');
       setShowDialog(false);
+      setShowWizard(false);
       setForm(emptyForm);
       utils.whatsapp.listarTemplates.invalidate();
     },
@@ -167,10 +170,43 @@ export default function MensagensTexto() {
   }, [templates]);
 
   const handleOpenCreate = () => {
-    setEditingId(null);
-    setForm(emptyForm);
-    setShowDialog(true);
+    setShowWizard(true);
   };
+
+  const handleWizardSave = useCallback((data: {
+    nome: string;
+    mensagem: string;
+    gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual';
+    igSemanas?: number;
+    igDias?: number;
+    evento?: string;
+    pdfUrl?: string;
+    pdfKey?: string;
+    pdfNome?: string;
+    condicaoRhNegativo?: number;
+  }) => {
+    criarMutation.mutate({
+      ...data,
+      evento: data.evento as 'pos_cesarea' | 'pos_parto_normal' | 'cadastro_gestante' | 'primeira_consulta' | undefined,
+    });
+  }, [criarMutation]);
+
+  const handleWizardUploadPdf = useCallback(async (file: File): Promise<{ url: string; key: string }> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = (reader.result as string).split(',')[1];
+        uploadPdfMutation.mutate(
+          { fileName: file.name, fileBase64: base64 },
+          {
+            onSuccess: (data) => resolve({ url: data.url, key: data.key }),
+            onError: (err) => reject(err),
+          }
+        );
+      };
+      reader.readAsDataURL(file);
+    });
+  }, [uploadPdfMutation]);
 
   const handleOpenEdit = (template: NonNullable<typeof templates>[0]) => {
     setEditingId(template.id);
@@ -498,7 +534,17 @@ export default function MensagensTexto() {
         </TabsContent>
       </Tabs>
 
-      {/* ─── Dialog: Criar/Editar Template ─── */}
+      {/* ─── Wizard: Novo Template ─── */}
+      <TemplateWizard
+        open={showWizard}
+        onOpenChange={setShowWizard}
+        onSave={handleWizardSave}
+        onUploadPdf={handleWizardUploadPdf}
+        isSaving={criarMutation.isPending}
+        uploadingPdf={uploadingPdf}
+      />
+
+      {/* ─── Dialog: Editar Template ─── */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
