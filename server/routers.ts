@@ -116,6 +116,7 @@ import { registrarAbortamento, listarAbortamentos, getEstatisticasAbortamentos, 
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
+import { enviarLembreteFloresAdmin } from './flowerReminder';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento } from './whatsappScheduler';
 import { syncPatientToBot, removePatientFromBot, updatePatientOnBot } from './whatsappBotSync';
@@ -2888,6 +2889,7 @@ export const appRouter = router({
         pdfUrl: z.string().optional(),
         pdfKey: z.string().optional(),
         observacoes: z.string().optional(),
+        numeroPartoMedico: z.number().min(1).max(10).optional().default(1),
       }))
       .mutation(async ({ ctx, input }) => {
         const result = await registrarParto(input);
@@ -2928,22 +2930,30 @@ export const appRouter = router({
                 .from(medicos).where(eq(medicos.id, input.medicoId)).limit(1);
               const nomeMedico = medico?.nome || 'médico';
 
-              // Verificar se é o segundo parto com Dr. André (medicoId = 1)
-              let ehSegundoPartoComAndre = false;
-              if (input.medicoId === 1) {
-                const partosAnteriores = await db.select({ id: partosRealizados.id })
-                  .from(partosRealizados)
-                  .where(and(
-                    eq(partosRealizados.medicoId, 1),
-                    eq(partosRealizados.gestanteId, input.gestanteId)
-                  ));
-                // O parto atual já foi inserido, então se count >= 2, é o segundo ou mais
-                ehSegundoPartoComAndre = partosAnteriores.length >= 2;
-              }
+              // Verificar se é o 2º parto ou mais com o mesmo médico (via seletor do formulário)
+              const numParto = input.numeroPartoMedico || 1;
+              const ehPartoRepetido = numParto >= 2;
 
-              const lembreteFlores = ehSegundoPartoComAndre
-                ? '\n\n🌸 *ATENÇÃO:* Este é o segundo parto desta paciente com o Dr. André. Por favor, providencie o envio de flores para ela!'
+              const lembreteFlores = ehPartoRepetido
+                ? `\n\n🌸 *ATENÇÃO:* Este é o ${numParto}º parto desta paciente com ${nomeMedico}. Por favor, providencie o envio de flores para ela!`
                 : '';
+
+              // Enviar lembrete de flores via API administrativa (mesmo sistema do mapa cirúrgico)
+              if (ehPartoRepetido) {
+                enviarLembreteFloresAdmin({
+                  gestanteId: input.gestanteId,
+                  gestanteNome: gestante?.nome || 'Gestante',
+                  medicoNome: nomeMedico,
+                  medicoId: input.medicoId,
+                  numeroPartoMedico: numParto,
+                  dataParto: input.dataParto,
+                  tipoParto: input.tipoParto,
+                }).then(r => {
+                  if (r.success) {
+                    console.log(`[Flores] Lembrete enviado para ${gestante?.nome} - ${numParto}º parto com ${nomeMedico}`);
+                  }
+                }).catch(err => console.error('[Flores] Erro ao enviar lembrete:', err));
+              }
 
               // Contatos das funcionárias
               const funcionarias = [

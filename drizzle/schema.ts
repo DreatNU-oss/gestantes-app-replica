@@ -619,6 +619,7 @@ export const partosRealizados = mysqlTable("partosRealizados", {
   pdfUrl: text("pdfUrl"), // URL do PDF do cartão pré-natal no S3
   pdfKey: text("pdfKey"), // Key do arquivo no S3 para referência
   observacoes: text("observacoes"),
+  numeroPartoMedico: int("numeroPartoMedico").default(1), // Nº do parto deste médico para esta gestante (1º, 2º, 3º...)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

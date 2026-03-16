@@ -1,0 +1,1 @@
+ALTER TABLE `partosRealizados` ADD `numeroPartoMedico` int DEFAULT 1;

@@ -100,6 +100,7 @@ export default function Dashboard() {
   const [partoData, setPartoData] = useState<string>("");
   const [partoTipo, setPartoTipo] = useState<"normal" | "cesarea">("normal");
   const [partoMedicoId, setPartoMedicoId] = useState<string>("");
+  const [partoNumeroMedico, setPartoNumeroMedico] = useState<number>(1);
   
   // Estados para diálogo de confirmação de consulta
   const [showConsultaDialog, setShowConsultaDialog] = useState(false);
@@ -341,6 +342,7 @@ export default function Dashboard() {
   const handleRegistrarParto = (gestanteId: number) => {
     setPartoGestanteId(gestanteId);
     setPartoData(new Date().toISOString().split('T')[0]); // Data de hoje como padrão
+    setPartoNumeroMedico(1);
     setShowPartoModal(true);
   };
 
@@ -355,6 +357,7 @@ export default function Dashboard() {
       dataParto: partoData,
       tipoParto: partoTipo,
       medicoId: parseInt(partoMedicoId),
+      numeroPartoMedico: partoNumeroMedico,
     });
   };
 
@@ -1023,6 +1026,26 @@ export default function Dashboard() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="numeroPartoMedico">Nº do parto deste médico com esta paciente</Label>
+              <Select value={partoNumeroMedico.toString()} onValueChange={(v) => setPartoNumeroMedico(parseInt(v))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1º parto (primeiro)</SelectItem>
+                  <SelectItem value="2">2º parto</SelectItem>
+                  <SelectItem value="3">3º parto</SelectItem>
+                  <SelectItem value="4">4º parto ou mais</SelectItem>
+                </SelectContent>
+              </Select>
+              {partoNumeroMedico >= 2 && (
+                <p className="text-sm text-amber-600 flex items-center gap-1">
+                  🌸 Lembrete de envio de flores será criado automaticamente no sistema administrativo
+                </p>
+              )}
             </div>
           </div>
 

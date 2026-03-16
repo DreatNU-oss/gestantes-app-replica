@@ -16,6 +16,7 @@ export async function registrarParto(input: {
   pdfUrl?: string;
   pdfKey?: string;
   observacoes?: string;
+  numeroPartoMedico?: number;
 }) {
   const db = await getDb();
   if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
@@ -52,6 +53,7 @@ export async function registrarParto(input: {
     pdfUrl,
     pdfKey,
     observacoes: input.observacoes,
+    numeroPartoMedico: input.numeroPartoMedico || 1,
   });
 
   return { success: true, insertId: result[0].insertId, pdfUrl };
@@ -74,6 +76,7 @@ export async function listarPartosRealizados() {
       pdfUrl: partosRealizados.pdfUrl,
       pdfKey: partosRealizados.pdfKey,
       observacoes: partosRealizados.observacoes,
+      numeroPartoMedico: partosRealizados.numeroPartoMedico,
       createdAt: partosRealizados.createdAt,
       // Dados da gestante
       gestanteNome: gestantes.nome,

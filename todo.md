@@ -2045,3 +2045,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] 14 sugestões pré-definidas com mensagens completas auto-geradas
 - [x] Integrado no MensagensTexto.tsx ("+ Novo Template" abre wizard, edição mantém dialog simples)
 - [x] Testes unitários (10 testes passando)
+
+## Seletor de Nº de Partos no Registro de Nascimento + Lembrete Flores (16/03/2026)
+- [x] Adicionar seletor no dialog de registro de nascimento para indicar nº do parto pelo mesmo médico (1º, 2º, 3º, 4º+)
+- [x] Salvar o número do parto no banco de dados (campo `numeroPartoMedico` na tabela partosRealizados)
+- [x] Quando 2º parto ou mais: criar lembrete via API administrativa para envio de flores (flowerReminder.ts)
+- [x] Usar mesma API que gera agendamento de cirurgias (ADMIN_SYSTEM_URL + ADMIN_INTEGRATION_API_KEY)
+- [x] Mensagem WhatsApp para funcionárias agora usa seletor ao invés de lógica hardcoded
+- [x] Testes unitários (10 testes passando)
