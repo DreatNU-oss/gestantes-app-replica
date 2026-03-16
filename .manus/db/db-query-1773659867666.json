@@ -1,0 +1,60 @@
+{
+  "query": "SELECT id, nome, dum FROM gestantes WHERE dum IS NOT NULL AND dum NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dum FROM gestantes WHERE dum IS NOT NULL AND dum NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' LIMIT 10;",
+  "rows": [
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330004",
+      "nome": "Ketlin Pereira Ferreira",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "dum": "Incerta"
+    },
+    {
+      "id": "330012",
+      "nome": "Aline Clara Silva",
+      "dum": "Incerta"
+    },
+    {
+      "id": "330014",
+      "nome": "Amanda Cristina Souza Oliveira",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330018",
+      "nome": "Ana Clara Borges da Silva",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "dum": "Incompatível com US"
+    },
+    {
+      "id": "330020",
+      "nome": "Anna Clara Sousa Borges",
+      "dum": "Incerta"
+    },
+    {
+      "id": "330028",
+      "nome": "Camila Rosa Carvalho",
+      "dum": "Incompatível com US"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\n270001\tRaissa Andrade Gibram\tIncompatível com US\n330004\tKetlin Pereira Ferreira\tIncompatível com US\n330008\tLucíola Viviane Achilles Medeiros Araújo\tIncompatível com US\n330010\tLetícia Aparecida Silveira\tIncerta\n330012\tAline Clara Silva\tIncerta\n330014\tAmanda Cristina Souza Oliveira\tIncompatível com US\n330018\tAna Clara Borges da Silva\tIncompatível com US\n330019\tAndressa Helena Silva Fonseca\tIncompatível com US\n330020\tAnna Clara Sousa Borges\tIncerta\n330028\tCamila Rosa Carvalho\tIncompatível com US\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

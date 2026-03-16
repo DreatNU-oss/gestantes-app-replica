@@ -54,9 +54,11 @@ function obterIGAtual(gestante: GestanteLembrete): { semanas: number; dias: numb
   }
   
   // Prioridade 2: DUM
-  if (gestante.dum) {
-    const dum = typeof gestante.dum === 'string' ? new Date(gestante.dum) : gestante.dum;
-    return calcularIGPorDUM(dum);
+  if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+    const dum = typeof gestante.dum === 'string' ? new Date(gestante.dum + 'T12:00:00') : gestante.dum;
+    if (!isNaN(dum.getTime())) {
+      return calcularIGPorDUM(dum);
+    }
   }
   
   return null;

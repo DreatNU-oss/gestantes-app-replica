@@ -621,8 +621,9 @@ export const gestanteRouter = router({
     .query(async ({ input }) => {
       const gestante = await validateGestanteToken(input.token);
       
-      const dum = gestante.dum ? new Date(gestante.dum) : null;
-      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom) : null;
+      const dumValida = gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível');
+      const dum = dumValida ? new Date(gestante.dum + 'T12:00:00') : null;
+      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom + 'T12:00:00') : null;
       
       let dpp: string;
       
@@ -730,11 +731,13 @@ export const gestanteRouter = router({
         idade = Math.floor((hoje.getTime() - dataNasc.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
       }
       let dppDUM = null;
-      if (gestante.dum) {
-        const dum = new Date(gestante.dum);
-        const dpp = new Date(dum);
-        dpp.setDate(dpp.getDate() + 280);
-        dppDUM = dpp.toISOString().split('T')[0];
+      if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+        const dum = new Date(gestante.dum + 'T12:00:00');
+        if (!isNaN(dum.getTime())) {
+          const dpp = new Date(dum);
+          dpp.setDate(dpp.getDate() + 280);
+          dppDUM = dpp.toISOString().split('T')[0];
+        }
       }
       
       // Agrupar exames por trimestre
@@ -886,7 +889,7 @@ export const gestanteRouter = router({
         gestante: {
           nome: gestante.nome,
           idade: idade,
-          dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompatível') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
+          dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Compatível') || gestante.dum.includes('Incompatível') ? gestante.dum : (() => { const d = new Date(gestante.dum + 'T12:00:00'); return isNaN(d.getTime()) ? gestante.dum : d.toISOString().split('T')[0]; })()) : null,
           dppDUM: dppDUM,
           dppUS: dppUS,
           dataUltrassom: gestante.dataUltrassom,
@@ -958,8 +961,9 @@ export const gestanteRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST", message: "Peso inicial ou altura não cadastrados" });
       }
       
-      const dum = gestante.dum ? new Date(gestante.dum) : null;
-      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom) : null;
+      const dumValida = gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível');
+      const dum = dumValida ? new Date(gestante.dum + 'T12:00:00') : null;
+      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom + 'T12:00:00') : null;
       
       const weightData = calculateWeightCurve(gestante.pesoInicial, gestante.altura);
       

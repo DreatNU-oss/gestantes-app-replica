@@ -2073,3 +2073,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Registrar automaticamente ao enviar (Or. Alimentares 1ª cons, Enviar Cartão, etc.)
 - [x] Tooltip com data/hora do último envio ao passar o mouse sobre botão já enviado
 - [x] Testes unitários (21 testes passando)
+
+## BUG: "Invalid time value" ao registrar orientação enviada (16/03/2026)
+- [x] Investigar erro "Invalid time value" - causa: DUM com valores textuais ("Incerta", "Incompatível com US") sendo parseados como Date
+- [x] Corrigir tratamento de datas em routers.ts (gerarCartaoPrenatal, enviarCartaoWhatsApp, lembretes de conduta)
+- [x] Corrigir tratamento de datas em gestante-router.ts (marcos, PDF, curva de peso)
+- [x] Corrigir tratamento de datas em lembretes.ts (cálculo de IG)
+- [x] Testes unitários (21 testes passando)

@@ -1691,15 +1691,17 @@ export const appRouter = router({
               semanas: Math.floor(diasTotaisHoje / 7),
               dias: diasTotaisHoje % 7,
             };
-          } else if (gestante.dum) {
-            const dum = typeof gestante.dum === 'string' ? new Date(gestante.dum) : gestante.dum;
-            const hoje = new Date();
-            const diffMs = hoje.getTime() - dum.getTime();
-            const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            igAtual = {
-              semanas: Math.floor(diffDias / 7),
-              dias: diffDias % 7,
-            };
+          } else if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+            const dum = typeof gestante.dum === 'string' ? new Date(gestante.dum + 'T12:00:00') : gestante.dum;
+            if (!isNaN(dum.getTime())) {
+              const hoje = new Date();
+              const diffMs = hoje.getTime() - dum.getTime();
+              const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+              igAtual = {
+                semanas: Math.floor(diffDias / 7),
+                dias: diffDias % 7,
+              };
+            }
           }
           
           if (!igAtual) continue;
@@ -2461,11 +2463,13 @@ export const appRouter = router({
 
         // Calcular DPP
         let dppDUM = null;
-        if (gestante.dum) {
-          const dum = new Date(gestante.dum);
-          const dpp = new Date(dum);
-          dpp.setDate(dpp.getDate() + 280);
-          dppDUM = dpp.toISOString().split('T')[0];
+        if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+          const dum = new Date(gestante.dum + 'T12:00:00');
+          if (!isNaN(dum.getTime())) {
+            const dpp = new Date(dum);
+            dpp.setDate(dpp.getDate() + 280);
+            dppDUM = dpp.toISOString().split('T')[0];
+          }
         }
 
         let dppUS = null;
@@ -2594,7 +2598,7 @@ export const appRouter = router({
           gestante: {
             nome: gestante.nome,
             idade: idade,
-            dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompatível') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
+            dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Compatível') || gestante.dum.includes('Incompatível') ? gestante.dum : (() => { const d = new Date(gestante.dum + 'T12:00:00'); return isNaN(d.getTime()) ? gestante.dum : d.toISOString().split('T')[0]; })()) : null,
             dppDUM: dppDUM,
             dppUS: dppUS,
             dataUltrassom: gestante.dataUltrassom,
@@ -2687,11 +2691,13 @@ export const appRouter = router({
 
         // Calcular DPP
         let dppDUM = null;
-        if (gestante.dum) {
-          const dum = new Date(gestante.dum);
-          const dpp = new Date(dum);
-          dpp.setDate(dpp.getDate() + 280);
-          dppDUM = dpp.toISOString().split('T')[0];
+        if (gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível')) {
+          const dum = new Date(gestante.dum + 'T12:00:00');
+          if (!isNaN(dum.getTime())) {
+            const dpp = new Date(dum);
+            dpp.setDate(dpp.getDate() + 280);
+            dppDUM = dpp.toISOString().split('T')[0];
+          }
         }
 
         let dppUS = null;
@@ -2702,7 +2708,7 @@ export const appRouter = router({
           dppUS = dppUSDate.toISOString().split('T')[0];
         }
 
-        // Preparar dados para gr\u00e1ficos
+        // Preparar dados para gráficos
         const dadosConsultasGraficos = consultas.map((c: any) => ({
           dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split('T')[0] : '',
           igSemanas: c.igSemanas || c.igDumSemanas,
@@ -2815,7 +2821,7 @@ export const appRouter = router({
           gestante: {
             nome: gestante.nome,
             idade: idade,
-            dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Incompat\u00edvel') ? gestante.dum : new Date(gestante.dum).toISOString().split('T')[0]) : null,
+            dum: gestante.dum ? (gestante.dum.includes('Incerta') || gestante.dum.includes('Compatível') || gestante.dum.includes('Incompatível') ? gestante.dum : (() => { const d = new Date(gestante.dum + 'T12:00:00'); return isNaN(d.getTime()) ? gestante.dum : d.toISOString().split('T')[0]; })()) : null,
             dppDUM: dppDUM,
             dppUS: dppUS,
             dataUltrassom: gestante.dataUltrassom,
