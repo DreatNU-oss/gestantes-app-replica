@@ -2094,3 +2094,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Eixo X proporcional à idade gestacional real (não equidistante)
 - [x] Adicionar curva de peso ideal baseada no IMC pré-gestacional da paciente (faixa min/max sombreada em verde)
 - [x] Testes unitários (13 testes passando)
+
+## Melhorar seção de Exames Laboratoriais no PDF (16/03/2026)
+- [x] Investigar layout e sequência de exames no menu "Exs Lab" do frontend
+- [x] Investigar seção atual de exames no PDF e identificar problemas (duplicatas, minúsculas, exames faltando)
+- [x] Reescrever seção de exames no PDF para usar mesmo layout e sequência do frontend
+- [x] Incluir tipo sanguíneo e outros exames faltantes (trimestre 0 → 1º Tri)
+- [x] Separar por categorias: Sangue, Urina, Fezes, E.G.B.
+- [x] Corrigido em htmlToPdf.ts, CartaoPrenatal.tsx, routers.ts e gestante-router.ts
+- [x] Testes unitários (16 testes passando)

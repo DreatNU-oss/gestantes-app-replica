@@ -61,6 +61,7 @@ interface DadosPdf {
     trimestre1?: { resultado: string; data?: string };
     trimestre2?: { resultado: string; data?: string };
     trimestre3?: { resultado: string; data?: string };
+    categoria?: string; // 'sangue' | 'urina' | 'fezes' | 'outros'
   }>;
   fatoresRisco: Array<{ tipo: string }>;
   medicamentos: Array<{ tipo: string; especificacao?: string }>;
@@ -1028,44 +1029,69 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(40);
     drawSectionTitle('Exames Laboratoriais');
     
+    // Sequência canônica de exames (mesma do frontend examesConfig.ts)
+    const EXAMES_SANGUE = [
+      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
+      'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+      'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
+      'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
+      'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
+      'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
+    ];
+    const EXAMES_URINA = ['EAS (Urina tipo 1)', 'Urocultura', 'Proteinúria de 24 horas'];
+    const EXAMES_FEZES = ['EPF (Parasitológico de Fezes)'];
+    const EXAMES_OUTROS = ['Swab vaginal/retal EGB'];
+    
+    // Criar mapa de exames por nome para acesso rápido
+    const examesPorNome = new Map<string, typeof dados.exames[0]>();
+    dados.exames.forEach(e => examesPorNome.set(e.nome, e));
+    
+    // Função para desenhar cabeçalho da tabela
     const exameColWidths = [50, 40, 40, 40];
-    const exameHeaders = ['Exame', '1º Tri', '2º Tri', '3º Tri'];
+    const exameHeaders = ['Exame', '1\u00ba Tri', '2\u00ba Tri', '3\u00ba Tri'];
     
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    doc.setFillColor(245, 245, 245);
-    doc.rect(margin, y - 3, contentWidth, 7, 'F');
+    const drawExameTableHeader = () => {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setFillColor(245, 245, 245);
+      doc.rect(margin, y - 3, contentWidth, 7, 'F');
+      let x = margin;
+      exameHeaders.forEach((header, i) => {
+        doc.text(sanitizeForPdf(header), x + 1, y);
+        x += exameColWidths[i];
+      });
+      y += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+    };
     
-    let x = margin;
-    exameHeaders.forEach((header, i) => {
-      doc.text(header, x + 1, y);
-      x += exameColWidths[i];
-    });
-    y += 6;
+    // Função para desenhar título de categoria
+    const drawCategoryTitle = (titulo: string) => {
+      checkNewPage(20);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(corPrimaria[0], corPrimaria[1], corPrimaria[2]);
+      doc.text(sanitizeForPdf(titulo), margin + 1, y);
+      doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+      y += 5;
+      drawExameTableHeader();
+    };
     
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    
-    dados.exames.forEach((exame, index) => {
+    // Função para desenhar uma linha de exame
+    let rowIndex = 0;
+    const drawExameRow = (nomeExame: string) => {
+      const exame = examesPorNome.get(nomeExame);
+      if (!exame) return; // Exame não tem resultados, pular
+      
       if (checkNewPage(8)) {
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'bold');
-        doc.setFillColor(245, 245, 245);
-        doc.rect(margin, y - 3, contentWidth, 7, 'F');
-        let x = margin;
-        exameHeaders.forEach((header, i) => {
-          doc.text(header, x + 1, y);
-          x += exameColWidths[i];
-        });
-        y += 6;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
+        drawExameTableHeader();
       }
       
-      if (index % 2 === 0) {
+      if (rowIndex % 2 === 0) {
         doc.setFillColor(250, 250, 250);
         doc.rect(margin, y - 3, contentWidth, 6, 'F');
       }
+      rowIndex++;
       
       const rowData = [
         exame.nome,
@@ -1074,11 +1100,19 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         exame.trimestre3?.resultado || '-',
       ];
       
-      x = margin;
+      let x = margin;
       doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+      doc.setFontSize(7);
+      
       rowData.forEach((cell, i) => {
         const maxWidth = exameColWidths[i] - 2;
         let text = cell;
+        // Nome do exame em negrito
+        if (i === 0) {
+          doc.setFont('helvetica', 'bold');
+        } else {
+          doc.setFont('helvetica', 'normal');
+        }
         if (doc.getTextWidth(text) > maxWidth) {
           while (doc.getTextWidth(text + '...') > maxWidth && text.length > 0) {
             text = text.slice(0, -1);
@@ -1088,8 +1122,88 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         doc.text(sanitizeForPdf(text), x + 1, y);
         x += exameColWidths[i];
       });
+      doc.setFont('helvetica', 'normal');
       y += 5;
-    });
+    };
+    
+    // Renderizar por categoria na sequência do frontend
+    // Exames de Sangue
+    const temExamesSangue = EXAMES_SANGUE.some(n => examesPorNome.has(n));
+    if (temExamesSangue) {
+      drawCategoryTitle('Exames de Sangue');
+      rowIndex = 0;
+      EXAMES_SANGUE.forEach(drawExameRow);
+      y += 3;
+    }
+    
+    // Exames de Urina
+    const temExamesUrina = EXAMES_URINA.some(n => examesPorNome.has(n));
+    if (temExamesUrina) {
+      drawCategoryTitle('Exames de Urina');
+      rowIndex = 0;
+      EXAMES_URINA.forEach(drawExameRow);
+      y += 3;
+    }
+    
+    // Exames de Fezes
+    const temExamesFezes = EXAMES_FEZES.some(n => examesPorNome.has(n));
+    if (temExamesFezes) {
+      drawCategoryTitle('Exames de Fezes');
+      rowIndex = 0;
+      EXAMES_FEZES.forEach(drawExameRow);
+      y += 3;
+    }
+    
+    // Pesquisa para E.G.B.
+    const temExamesOutros = EXAMES_OUTROS.some(n => examesPorNome.has(n));
+    if (temExamesOutros) {
+      drawCategoryTitle('Pesquisa para E.G.B.');
+      rowIndex = 0;
+      EXAMES_OUTROS.forEach(drawExameRow);
+      y += 3;
+    }
+    
+    // Exames extras que não estão na sequência canônica
+    const todosCanonicos = new Set([...EXAMES_SANGUE, ...EXAMES_URINA, ...EXAMES_FEZES, ...EXAMES_OUTROS]);
+    const examesExtras = dados.exames.filter(e => !todosCanonicos.has(e.nome));
+    if (examesExtras.length > 0) {
+      drawCategoryTitle('Outros Exames');
+      rowIndex = 0;
+      examesExtras.forEach(e => {
+        // Inline draw for extras since they're already in the array
+        if (checkNewPage(8)) {
+          drawExameTableHeader();
+        }
+        if (rowIndex % 2 === 0) {
+          doc.setFillColor(250, 250, 250);
+          doc.rect(margin, y - 3, contentWidth, 6, 'F');
+        }
+        rowIndex++;
+        const rowData = [
+          e.nome,
+          e.trimestre1?.resultado || '-',
+          e.trimestre2?.resultado || '-',
+          e.trimestre3?.resultado || '-',
+        ];
+        let x = margin;
+        doc.setTextColor(corTexto[0], corTexto[1], corTexto[2]);
+        doc.setFontSize(7);
+        rowData.forEach((cell, ci) => {
+          const maxWidth = exameColWidths[ci] - 2;
+          let text = cell;
+          if (ci === 0) doc.setFont('helvetica', 'bold');
+          else doc.setFont('helvetica', 'normal');
+          if (doc.getTextWidth(text) > maxWidth) {
+            while (doc.getTextWidth(text + '...') > maxWidth && text.length > 0) text = text.slice(0, -1);
+            text += '...';
+          }
+          doc.text(sanitizeForPdf(text), x + 1, y);
+          x += exameColWidths[ci];
+        });
+        doc.setFont('helvetica', 'normal');
+        y += 5;
+      });
+    }
   }
 
 

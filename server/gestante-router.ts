@@ -748,19 +748,18 @@ export const gestanteRouter = router({
       const examesPorNome = new Map<string, { nome: string; trimestre1?: { resultado: string; data?: string }; trimestre2?: { resultado: string; data?: string }; trimestre3?: { resultado: string; data?: string } }>();
       
       exames.forEach((ex: any) => {
-        // Ignorar observações gerais (trimestre 0)
-        if (ex.trimestre === 0) return;
-        
         const nomeExame = ex.nomeExame;
         if (!examesPorNome.has(nomeExame)) {
           examesPorNome.set(nomeExame, { nome: nomeExame });
         }
         
         const exameAgrupado = examesPorNome.get(nomeExame)!;
-        const key = `trimestre${ex.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+        // Trimestre 0 = exame sem trimestre (ex: Tipagem sanguínea) -> mostrar no 1º Tri
+        const triNum = ex.trimestre === 0 ? 1 : ex.trimestre;
+        const key = `trimestre${triNum}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
         
-        // Só adicionar se tiver resultado
-        if (ex.resultado) {
+        // Só adicionar se tiver resultado e não sobrescrever existente
+        if (ex.resultado && !exameAgrupado[key]) {
           exameAgrupado[key] = {
             resultado: ex.resultado,
             data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined

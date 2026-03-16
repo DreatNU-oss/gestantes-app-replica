@@ -2509,14 +2509,15 @@ export const appRouter = router({
         const examesAgrupados: any[] = [];
         const examesPorNome = new Map<string, any>();
         exames.forEach((ex: any) => {
-          if (ex.trimestre === 0) return;
           const nomeExame = ex.nomeExame;
           if (!examesPorNome.has(nomeExame)) {
             examesPorNome.set(nomeExame, { nome: nomeExame });
           }
           const exameAgrupado = examesPorNome.get(nomeExame)!;
-          const key = `trimestre${ex.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
-          if (ex.resultado) {
+          // Trimestre 0 = exame sem trimestre (ex: Tipagem sanguínea) -> mostrar no 1º Tri
+          const triNum = ex.trimestre === 0 ? 1 : ex.trimestre;
+          const key = `trimestre${triNum}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+          if (ex.resultado && !exameAgrupado[key]) {
             exameAgrupado[key] = {
               resultado: ex.resultado,
               data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
@@ -2739,14 +2740,15 @@ export const appRouter = router({
         const examesAgrupados: any[] = [];
         const examesPorNome = new Map<string, any>();
         exames.forEach((ex: any) => {
-          if (ex.trimestre === 0) return;
           const nomeExame = ex.nomeExame;
           if (!examesPorNome.has(nomeExame)) {
             examesPorNome.set(nomeExame, { nome: nomeExame });
           }
           const exameAgrupado = examesPorNome.get(nomeExame)!;
-          const key = `trimestre${ex.trimestre}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
-          if (ex.resultado) {
+          // Trimestre 0 = exame sem trimestre (ex: Tipagem sanguínea) -> mostrar no 1º Tri
+          const triNum = ex.trimestre === 0 ? 1 : ex.trimestre;
+          const key = `trimestre${triNum}` as 'trimestre1' | 'trimestre2' | 'trimestre3';
+          if (ex.resultado && !exameAgrupado[key]) {
             exameAgrupado[key] = {
               resultado: ex.resultado,
               data: ex.dataExame ? new Date(ex.dataExame).toISOString().split('T')[0] : undefined
