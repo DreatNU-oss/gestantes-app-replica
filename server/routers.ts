@@ -121,7 +121,7 @@ import { enviarLembreteFloresAdmin } from './flowerReminder';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento } from './whatsappScheduler';
 import { syncPatientToBot, removePatientFromBot, updatePatientOnBot } from './whatsappBotSync';
-import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados, orientacoesEnviadas } from '../drizzle/schema';
+import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados, orientacoesEnviadas, clinicas } from '../drizzle/schema';
 
 // Função auxiliar para converter string de data (YYYY-MM-DD) para Date sem problemas de fuso horário
 // Retorna a string diretamente para o MySQL interpretar como DATE local
@@ -3948,6 +3948,18 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    // Ativar/desativar serviço WhatsApp para uma clínica
+    toggleWhatsapp: ownerProcedure
+      .input(z.object({ id: z.number(), autorizado: z.boolean() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Erro de conexão com o banco.' });
+        const { clinicas } = await import('../drizzle/schema');
+        
+        await db.update(clinicas).set({ whatsappAutorizado: input.autorizado ? 1 : 0 }).where(eq(clinicas.id, input.id));
+        return { success: true };
+      }),
+
     // Listar usuários de uma clínica
     listarUsuarios: ownerProcedure
       .input(z.object({ clinicaId: z.number() }))
@@ -4023,6 +4035,16 @@ export const appRouter = router({
 
   // ─── WhatsApp Mensagens ─────────────────────────────────────────────────
   whatsapp: router({
+    // Verificar se o serviço WhatsApp está autorizado para a clínica do usuário
+    verificarAutorizacao: protectedProcedure.query(async ({ ctx }) => {
+      if (!ctx.user.clinicaId) return { autorizado: false };
+      const db = await getDb();
+      if (!db) return { autorizado: false };
+      const [clinica] = await db.select({ whatsappAutorizado: clinicas.whatsappAutorizado })
+        .from(clinicas).where(eq(clinicas.id, ctx.user.clinicaId)).limit(1);
+      return { autorizado: clinica?.whatsappAutorizado === 1 };
+    }),
+
     // Listar templates de mensagem da clínica
     listarTemplates: protectedProcedure.query(async ({ ctx }) => {
       if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });

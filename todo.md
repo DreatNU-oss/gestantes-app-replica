@@ -2221,3 +2221,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Causa raiz: envios simultâneos (paciente + funcionárias) sem delay
 - [x] Correção: retry automático com backoff para 429 + envio sequencial com 6s entre msgs
 - [x] Reenvio manual: Vivian (200 OK) e Crislaine (200 OK)
+
+## Controle de autorização WhatsApp por clínica (17/03/2026)
+- [x] Adicionar campo whatsappAutorizado na tabela clinicas (default 0, 00001 = 1)
+- [x] Migrar banco de dados
+- [x] Bloquear acesso ao menu Mensagens de Texto para clínicas não autorizadas (tela de contratação)
+- [x] Owner sempre tem acesso independente da autorização da clínica
+- [x] Endpoint verificarAutorizacao no backend
+- [x] Toggle WhatsApp no Admin Clínicas com badge visual (WhatsApp / WhatsApp Off)
+- [x] 10 testes unitários passando

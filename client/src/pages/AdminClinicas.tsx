@@ -26,6 +26,7 @@ import {
   ShieldOff,
   Eye,
   Image,
+  MessageSquare,
 } from "lucide-react";
 
 type ClinicaComStats = {
@@ -35,6 +36,7 @@ type ClinicaComStats = {
   logoUrl: string | null;
   integracaoApiAtiva: number;
   ativa: number;
+  whatsappAutorizado: number;
   corFundo: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -97,6 +99,14 @@ export default function AdminClinicas() {
   const toggleAtivaMutation = trpc.adminClinicas.toggleAtiva.useMutation({
     onSuccess: () => {
       toast.success("Status da clínica alterado!");
+      utils.adminClinicas.listar.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const toggleWhatsappMutation = trpc.adminClinicas.toggleWhatsapp.useMutation({
+    onSuccess: () => {
+      toast.success("Autorização WhatsApp atualizada!");
       utils.adminClinicas.listar.invalidate();
     },
     onError: (err) => toast.error(err.message),
@@ -319,6 +329,17 @@ export default function AdminClinicas() {
                         {clinica.integracaoApiAtiva === 1 && (
                           <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">API Ativa</Badge>
                         )}
+                        {clinica.whatsappAutorizado === 1 ? (
+                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                            <MessageSquare className="h-3 w-3 mr-1" />
+                            WhatsApp
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            <MessageSquare className="h-3 w-3 mr-1" />
+                            WhatsApp Off
+                          </Badge>
+                        )}
                       </CardDescription>
                     </div>
                   </div>
@@ -342,6 +363,18 @@ export default function AdminClinicas() {
                   </div>
                 </div>
                 <Separator className="mb-4" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-green-600" />
+                    <span className="text-sm">WhatsApp Autorizado</span>
+                  </div>
+                  <Switch
+                    checked={clinica.whatsappAutorizado === 1}
+                    onCheckedChange={(checked) =>
+                      toggleWhatsappMutation.mutate({ id: clinica.id, autorizado: checked })
+                    }
+                  />
+                </div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs text-muted-foreground">Cor de fundo:</span>
                   <div

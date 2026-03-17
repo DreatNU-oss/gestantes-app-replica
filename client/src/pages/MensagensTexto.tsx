@@ -75,7 +75,11 @@ const emptyForm: TemplateForm = {
 export default function MensagensTexto() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
+  const isOwner = !!(user as any)?.isOwner;
   const utils = trpc.useUtils();
+
+  // Verificar se o serviço WhatsApp está autorizado para esta clínica
+  const { data: autorizacao, isLoading: loadingAutorizacao } = trpc.whatsapp.verificarAutorizacao.useQuery();
 
   const [activeTab, setActiveTab] = useState('templates');
   const [showDialog, setShowDialog] = useState(false);
@@ -87,10 +91,11 @@ export default function MensagensTexto() {
   const [previewMessage, setPreviewMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Queries
-  const { data: templates, isLoading: loadingTemplates } = trpc.whatsapp.listarTemplates.useQuery();
-  const { data: historico, isLoading: loadingHistorico } = trpc.whatsapp.historico.useQuery({ limit: 100 });
-  const { data: config } = trpc.whatsapp.getConfig.useQuery(undefined, { enabled: isAdmin });
+  // Queries - só carregar se autorizado ou owner
+  const whatsappHabilitado = autorizacao?.autorizado || isOwner;
+  const { data: templates, isLoading: loadingTemplates } = trpc.whatsapp.listarTemplates.useQuery(undefined, { enabled: !!whatsappHabilitado });
+  const { data: historico, isLoading: loadingHistorico } = trpc.whatsapp.historico.useQuery({ limit: 100 }, { enabled: !!whatsappHabilitado });
+  const { data: config } = trpc.whatsapp.getConfig.useQuery(undefined, { enabled: isAdmin && !!whatsappHabilitado });
 
   // Mutations
   const criarMutation = trpc.whatsapp.criarTemplate.useMutation({
@@ -299,6 +304,52 @@ export default function MensagensTexto() {
   };
 
   const [, setLocation] = useLocation();
+
+  // Tela de bloqueio para clínicas não autorizadas
+  if (!loadingAutorizacao && !whatsappHabilitado) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation('/dashboard')}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Mensagens de Texto</h1>
+            <p className="text-muted-foreground">Envio automático via WhatsApp</p>
+          </div>
+        </div>
+
+        <Card className="max-w-2xl mx-auto mt-12">
+          <CardContent className="py-12 text-center space-y-6">
+            <div className="mx-auto w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center">
+              <Zap className="h-10 w-10 text-amber-600" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold">Serviço não contratado</h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                O envio automático de mensagens via WhatsApp é um serviço adicional que deve ser contratado à parte.
+              </p>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm font-medium mb-1">Interessado?</p>
+              <p className="text-sm text-muted-foreground">
+                Entre em contato com a equipe de <strong>Suporte</strong> para conhecer os planos disponíveis e contratar o serviço de mensagens automáticas para sua clínica.
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => setLocation('/dashboard')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar ao Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
