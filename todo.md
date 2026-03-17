@@ -2260,3 +2260,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] T4 Livre disponível em todos os 3 trimestres
 - [x] Eletroforese de Hemoglobina disponível em todos os 3 trimestres
 - [x] EPF (Parasitológico de Fezes) disponível em todos os 3 trimestres
+
+## Botão Apagar Ultrassom (17/03/2026)
+- [x] Adicionar botão de apagar ultrassom após o laudo de cada tipo de US no menu Ultrassons
+- [x] Implementar confirmação antes de apagar
+- [x] Procedure backend para deletar ultrassom (já existia)

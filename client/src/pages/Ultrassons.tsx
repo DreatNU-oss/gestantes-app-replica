@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { TextareaComAutocomplete } from '@/components/TextareaComAutocomplete';
 import { Separator } from '@/components/ui/separator';
-import { Loader2, Save, ArrowLeft, Sparkles, Check } from 'lucide-react';
+import { Loader2, Save, ArrowLeft, Sparkles, Check, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useInstantSave } from '@/hooks/useInstantSave';
 import { toast } from 'sonner';
@@ -158,6 +159,65 @@ export default function Ultrassons() {
     },
   });
   
+  // Mutation para deletar ultrassom
+  const deletarMutation = trpc.ultrassons.deletar.useMutation({
+    onSuccess: () => {
+      toast.success('🗑️ Ultrassom apagado com sucesso!', {
+        description: 'Os dados do ultrassom foram removidos.',
+        duration: 4000,
+      });
+      refetchUltrassons();
+    },
+    onError: (error) => {
+      toast.error('❌ Erro ao apagar ultrassom', {
+        description: error.message,
+        duration: 5000,
+      });
+    },
+  });
+
+  // Função para apagar ultrassom por tipo
+  const handleApagar = async (tipoUltrassom: string) => {
+    if (!ultrassons) return;
+    const us = ultrassons.find((u: any) => u.tipoUltrassom === tipoUltrassom);
+    if (!us) {
+      toast.error('⚠️ Nenhum ultrassom salvo para apagar', {
+        description: 'Este tipo de ultrassom ainda não foi salvo.',
+        duration: 4000,
+      });
+      return;
+    }
+    await deletarMutation.mutateAsync({ id: us.id });
+    // Limpar o formulário correspondente
+    switch (tipoUltrassom) {
+      case 'primeiro_ultrassom':
+        setPrimeiroUS({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', sacoVitelino: '', hematoma: '', corpoLuteo: '', coloUterino: '', dpp: '' });
+        primeiroUSAutoSave.clearDraft();
+        break;
+      case 'morfologico_1tri':
+        setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+        morfo1TriAutoSave.clearDraft();
+        break;
+      case 'ultrassom_obstetrico':
+        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+        usObstetricoAutoSave.clearDraft();
+        break;
+      case 'morfologico_2tri':
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        morfo2TriAutoSave.clearDraft();
+        break;
+      case 'ecocardiograma_fetal':
+        setEcocardiograma({ dataExame: '', conclusao: '' });
+        ecocardiogramaAutoSave.clearDraft();
+        break;
+      case 'ultrassom_seguimento':
+        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
+        usSeguimentoAutoSave.clearDraft();
+        break;
+    }
+    limparDestaquesIA(tipoUltrassom);
+  };
+
   // Mutation para salvar histórico de interpretações
   const salvarHistoricoMutation = trpc.historicoInterpretacoes.salvar.useMutation();
   
@@ -674,14 +734,36 @@ export default function Ultrassons() {
                 </div>
               </div>
               
-              <Button onClick={() => handleSalvar('primeiro_ultrassom', primeiroUS)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('primeiro_ultrassom', primeiroUS)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar 1º Ultrassom'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'primeiro_ultrassom') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar 1º Ultrassom?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('primeiro_ultrassom')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar 1º Ultrassom'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
           
@@ -796,14 +878,36 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <Button onClick={() => handleSalvar('morfologico_1tri', morfo1Tri)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('morfologico_1tri', morfo1Tri)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 1º Tri'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'morfologico_1tri') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar Morfológico 1º Trimestre?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('morfologico_1tri')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 1º Tri'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
           
@@ -889,14 +993,36 @@ export default function Ultrassons() {
                 </div>
               </div>
               
-              <Button onClick={() => handleSalvar('ultrassom_obstetrico', usObstetrico)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('ultrassom_obstetrico', usObstetrico)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom Obstétrico'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ultrassom_obstetrico') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar Ultrassom Obstétrico?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ultrassom_obstetrico')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom Obstétrico'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
           
@@ -1046,14 +1172,36 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <Button onClick={() => handleSalvar('morfologico_2tri', morfo2Tri)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('morfologico_2tri', morfo2Tri)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 2º Tri'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'morfologico_2tri') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar Morfológico 2º Trimestre?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('morfologico_2tri')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 2º Tri'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
           
@@ -1096,14 +1244,36 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <Button onClick={() => handleSalvar('ecocardiograma_fetal', ecocardiograma)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('ecocardiograma_fetal', ecocardiograma)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ecocardiograma'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ecocardiograma_fetal') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar Ecocardiograma Fetal?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ecocardiograma_fetal')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ecocardiograma'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
           
@@ -1249,14 +1419,36 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <Button onClick={() => handleSalvar('ultrassom_seguimento', usSeguimento)} disabled={salvarMutation.isPending}>
-                {salvarMutation.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => handleSalvar('ultrassom_seguimento', usSeguimento)} disabled={salvarMutation.isPending}>
+                  {salvarMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
+                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom de Seguimento'}
+                </Button>
+                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ultrassom_seguimento') && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
+                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Apagar
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Apagar Ultrassom de Seguimento?</AlertDialogTitle>
+                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ultrassom_seguimento')}>Apagar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom de Seguimento'}
-              </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
