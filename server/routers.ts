@@ -3244,33 +3244,17 @@ export const appRouter = router({
                 telefone: gestantes.telefone,
               }).from(gestantes).where(eq(gestantes.id, input.gestanteId)).limit(1);
 
-              if (gestante?.telefone) {
-                const evento = input.tipoParto === 'cesarea' ? 'pos_cesarea' : 'pos_parto_normal';
-                processarMensagemEvento(ctx.user.clinicaId, evento, {
-                  nome: gestante.nome,
-                  telefone: gestante.telefone,
-                  gestanteId: input.gestanteId,
-                }).then(r => {
-                  if (r.enviadas > 0) {
-                    console.log(`[WhatsApp] Pós-parto (${input.tipoParto}) enviado para ${gestante.nome}`);
-                  }
-                }).catch(err => console.error(`[WhatsApp] Erro ao enviar pós-parto (${input.tipoParto}):`, err));
-              }
-
-              // ── Notificar funcionárias da clínica sobre o parto ──
+              // ── Preparar dados para notificações ──
               const nomeGestante = gestante?.nome?.split(' ')[0] || 'Gestante';
-              // Capitalizar: primeira letra maiúscula, resto minúsculo
               const nomeGestanteFormatado = nomeGestante.charAt(0).toUpperCase() + nomeGestante.slice(1).toLowerCase();
               const tipoPartoLabel = input.tipoParto === 'cesarea' ? 'Cesárea' : 'Normal';
-              const dataParto = input.dataParto; // YYYY-MM-DD
+              const dataParto = input.dataParto;
               const dataFormatada = dataParto.split('-').reverse().join('/');
 
-              // Buscar nome do médico
               const [medico] = await db.select({ nome: medicos.nome })
                 .from(medicos).where(eq(medicos.id, input.medicoId)).limit(1);
               const nomeMedico = medico?.nome || 'médico';
 
-              // Verificar se é o 2º parto ou mais com o mesmo médico (via seletor do formulário)
               const numParto = input.numeroPartoMedico || 1;
               const ehPartoRepetido = numParto >= 2;
 
@@ -3278,7 +3262,7 @@ export const appRouter = router({
                 ? `\n\n🌸 *ATENÇÃO:* Este é o ${numParto}º parto desta paciente com ${nomeMedico}. Por favor, providencie o envio de flores para ela!`
                 : '';
 
-              // Enviar lembrete de flores via API administrativa (mesmo sistema do mapa cirúrgico)
+              // Enviar lembrete de flores via API administrativa
               if (ehPartoRepetido) {
                 enviarLembreteFloresAdmin({
                   gestanteId: input.gestanteId,
@@ -3302,8 +3286,26 @@ export const appRouter = router({
                 { nome: 'Jenifer', telefone: '5535988156771' },
               ];
 
-              // Enviar mensagem personalizada para cada funcionária (com delay entre envios)
-              const enviarParaFuncionarias = async () => {
+              // ── Envio SEQUENCIAL: primeiro paciente, depois funcionárias (com delays de 6s) ──
+              const enviarTodosSequencial = async () => {
+                const { delay } = await import('./whatsapp');
+
+                // 1) Enviar mensagem pós-parto para a PACIENTE primeiro
+                if (gestante?.telefone) {
+                  const evento = input.tipoParto === 'cesarea' ? 'pos_cesarea' : 'pos_parto_normal';
+                  const r = await processarMensagemEvento(ctx.user.clinicaId!, evento, {
+                    nome: gestante.nome,
+                    telefone: gestante.telefone,
+                    gestanteId: input.gestanteId,
+                  });
+                  if (r.enviadas > 0) {
+                    console.log(`[WhatsApp] Pós-parto (${input.tipoParto}) enviado para ${gestante.nome}`);
+                  }
+                  // Aguardar 6s antes de enviar para funcionárias
+                  await delay(6000);
+                }
+
+                // 2) Enviar para cada funcionária com delay de 6s entre envios
                 for (let i = 0; i < funcionarias.length; i++) {
                   const func = funcionarias[i];
                   const msg = `Olá ${func.nome}! 👋\n\nInformamos que a gestante *${nomeGestanteFormatado}* ganhou bebê!\n\n🏥 Tipo de parto: *${tipoPartoLabel}*\n📅 Data: *${dataFormatada}*\n👨‍⚕️ Médico: *${nomeMedico}*\n\nPor favor, agende a consulta puerperal para ela o mais breve possível.${lembreteFlores}\n\nObrigado!`;
@@ -3319,16 +3321,16 @@ export const appRouter = router({
                     console.error(`[WhatsApp] Erro ao notificar ${func.nome}:`, err);
                   }
 
-                  // Aguardar 2 segundos entre envios para evitar rate limit
+                  // Aguardar 6s entre envios para respeitar rate limit
                   if (i < funcionarias.length - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await delay(6000);
                   }
                 }
               };
 
               // Executar assincronamente para não bloquear o registro
-              enviarParaFuncionarias().catch(err =>
-                console.error('[WhatsApp] Erro ao notificar funcionárias:', err)
+              enviarTodosSequencial().catch(err =>
+                console.error('[WhatsApp] Erro ao processar envios pós-parto:', err)
               );
 
               // Remover do bot de WhatsApp (allowlist) - bebê nasceu

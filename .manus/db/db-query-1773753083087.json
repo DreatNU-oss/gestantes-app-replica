@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, nome, gatilhoTipo, evento, mensagem, pdfUrl, ativo, clinicaId FROM mensagemTemplates WHERE evento = 'pos_parto_normal' OR evento = 'pos_cesarea';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, gatilhoTipo, evento, mensagem, pdfUrl, ativo, clinicaId FROM mensagemTemplates WHERE evento = 'pos_parto_normal' OR evento = 'pos_cesarea';",
+  "rows": [
+    {
+      "id": "30004",
+      "nome": "Parabéns + Cuidados Pós-Operatórios Cesárea",
+      "gatilhoTipo": "evento",
+      "evento": "pos_cesarea",
+      "mensagem": "Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estou à disposição!",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf",
+      "ativo": "1",
+      "clinicaId": "1"
+    },
+    {
+      "id": "30005",
+      "nome": "Parabéns + Cuidados Pós-Parto Normal",
+      "gatilhoTipo": "evento",
+      "evento": "pos_parto_normal",
+      "mensagem": "Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, estouà disposição!",
+      "pdfUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosPartoNormal.pdf",
+      "ativo": "1",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tgatilhoTipo\tevento\tmensagem\tpdfUrl\tativo\tclinicaId\n30004\tParabéns + Cuidados Pós-Operatórios Cesárea\tevento\tpos_cesarea\tOlá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estou à disposição!\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosOperatorioCesariana.pdf\t1\t1\n30005\tParabéns + Cuidados Pós-Parto Normal\tevento\tpos_parto_normal\tOlá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, estouà disposição!\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes/PosPartoNormal.pdf\t1\t1\n",
+  "stderr": "",
+  "execution_time_ms": 661
+}

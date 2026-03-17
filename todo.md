@@ -2214,3 +2214,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Menu no topo da lista (primeiro item) para Secretárias com ícone ClipboardPlus
 - [x] Secretária pode adicionar e editar pré-cadastros
 - [x] 24 testes unitários passando
+
+## BUG: Mensagens WhatsApp não enviadas após parto da Vivian (17/03/2026)
+- [x] Verificar números de telefone da Vivian e Crislaine no banco
+- [x] Verificar logs do servidor: erro HTTP 429 (rate limit - 1 msg a cada 5s)
+- [x] Causa raiz: envios simultâneos (paciente + funcionárias) sem delay
+- [x] Correção: retry automático com backoff para 429 + envio sequencial com 6s entre msgs
+- [x] Reenvio manual: Vivian (200 OK) e Crislaine (200 OK)

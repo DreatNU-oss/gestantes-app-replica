@@ -123,46 +123,79 @@ async function getApiKey(clinicaId?: number): Promise<string> {
 }
 
 /**
+ * Delay helper - aguarda N milissegundos.
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
  * Send a single WhatsApp message via WaSenderAPI.
  * Never throws — always returns a result object.
+ * Inclui retry automático para erros HTTP 429 (rate limit) com backoff progressivo.
  */
-export async function sendWhatsApp(message: WhatsAppMessage, clinicaId?: number): Promise<WhatsAppResult> {
+export async function sendWhatsApp(message: WhatsAppMessage, clinicaId?: number, maxRetries = 3): Promise<WhatsAppResult> {
   const apiKey = await getApiKey(clinicaId);
   
   if (!apiKey) {
     return { success: false, error: 'WASENDER_API_KEY não configurada para esta clínica' };
   }
 
-  try {
-    // Always normalize phone number to ensure +55 country code
-    const normalizedTo = normalizePhone(message.to) || message.to;
-    const body: Record<string, string> = {
-      to: normalizedTo,
-      text: message.text,
-    };
-    if (message.documentUrl) body.documentUrl = message.documentUrl;
+  // Always normalize phone number to ensure +55 country code
+  const normalizedTo = normalizePhone(message.to) || message.to;
+  const body: Record<string, string> = {
+    to: normalizedTo,
+    text: message.text,
+  };
+  if (message.documentUrl) body.documentUrl = message.documentUrl;
 
-    const response = await fetch(WASENDER_API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(WASENDER_API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
 
-    if (!response.ok) {
+      if (response.ok) {
+        return { success: true };
+      }
+
       const errorText = await response.text();
-      return { success: false, error: `HTTP ${response.status}: ${errorText}` };
-    }
 
-    return { success: true };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erro desconhecido',
-    };
+      // HTTP 429 (rate limit): retry com backoff progressivo
+      if (response.status === 429 && attempt < maxRetries) {
+        // Extrair retry_after do body se disponível, senão usar backoff padrão
+        let waitMs = (attempt + 1) * 6000; // 6s, 12s, 18s
+        try {
+          const errJson = JSON.parse(errorText);
+          if (errJson.retry_after) {
+            waitMs = (errJson.retry_after + 1) * 1000; // retry_after em segundos + 1s margem
+          }
+        } catch { /* ignore parse error */ }
+        console.log(`[WhatsApp] Rate limit (429) para ${normalizedTo}, tentativa ${attempt + 1}/${maxRetries}, aguardando ${waitMs}ms...`);
+        await delay(waitMs);
+        continue;
+      }
+
+      return { success: false, error: `HTTP ${response.status}: ${errorText}` };
+    } catch (error) {
+      if (attempt < maxRetries) {
+        console.log(`[WhatsApp] Erro de rede para ${normalizedTo}, tentativa ${attempt + 1}/${maxRetries}, retentando...`);
+        await delay((attempt + 1) * 3000);
+        continue;
+      }
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+      };
+    }
   }
+
+  return { success: false, error: 'Máximo de tentativas excedido' };
 }
 
 // ─── Template Variable Replacement ───────────────────────────────────────────
