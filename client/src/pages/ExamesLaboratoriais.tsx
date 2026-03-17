@@ -880,7 +880,7 @@ export default function ExamesLaboratoriais() {
             onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           >
             <SelectTrigger 
-              className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : ''}`}
+              className={`w-full ${ehAlterado ? 'border-orange-500 bg-orange-50 text-orange-900' : valor === 'Normal' ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
               data-field-type="resultado"
               data-trimestre={trimestre}
               onKeyDown={(e) => {
@@ -940,7 +940,7 @@ export default function ExamesLaboratoriais() {
             onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
           >
             <SelectTrigger 
-              className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
+              className={`w-full ${ehPositiva ? 'border-red-500 bg-red-50 text-red-900' : valor === 'Negativa' ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
               data-field-type="resultado"
               data-trimestre={trimestre}
               onKeyDown={(e) => {

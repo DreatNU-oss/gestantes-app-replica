@@ -2240,3 +2240,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Opção "Pós-Consulta (por Conduta)" no TemplateWizard com seletor de conduta e dias
 - [x] Sugestões pré-configuradas: Lembrete Rotina Lab 1º/2º/3º Tri (14 dias cada)
 - [x] 18 testes unitários passando
+
+## BUG: Pré-cadastro não aparece na lista de gestantes (17/03/2026)
+- [ ] Investigar por que Aline Cássia Fernandes (pré-cadastro pela Bruna) não aparece na lista de gestantes do médico
+- [ ] Corrigir a causa raiz
+- [x] Fix EAS and Urocultura dropdowns to show green when Normal/Negativa (matching other exam fields pattern)
