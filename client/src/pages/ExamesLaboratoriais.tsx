@@ -196,6 +196,8 @@ export default function ExamesLaboratoriais() {
   React.useEffect(() => {
     if (gestanteAtiva) {
       setGestanteSelecionada(gestanteAtiva.id);
+      // Limpar resultados ao trocar de gestante para evitar dados residuais
+      setResultados({});
     }
   }, [gestanteAtiva]);
   const [resultados, setResultados] = useState<Record<string, Record<string, string> | string>>({});

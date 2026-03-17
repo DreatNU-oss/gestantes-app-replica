@@ -2245,3 +2245,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [ ] Investigar por que Aline Cássia Fernandes (pré-cadastro pela Bruna) não aparece na lista de gestantes do médico
 - [ ] Corrigir a causa raiz
 - [x] Fix EAS and Urocultura dropdowns to show green when Normal/Negativa (matching other exam fields pattern)
+
+## BUG: Ultrassons page shows stale data when switching patients (17/03/2026)
+- [x] Investigate why ultrasound data from previous patient persists when switching to a new patient
+- [x] Fix data clearing/reset logic when gestante selection changes (Ultrassons.tsx + ExamesLaboratoriais.tsx)
+- [x] Verify fix works correctly

@@ -30,6 +30,80 @@ export default function Ultrassons() {
     if (gestanteAtiva) {
       setGestanteSelecionada(gestanteAtiva.id);
       setBusca(gestanteAtiva.nome); // Pré-preencher campo de busca com nome da gestante
+      
+      // Limpar todos os formulários de ultrassom ao trocar de gestante
+      setPrimeiroUS({
+        dataExame: '',
+        idadeGestacional: '',
+        ccn: '',
+        bcf: '',
+        sacoVitelino: '',
+        hematoma: '',
+        corpoLuteo: '',
+        coloUterino: '',
+        dpp: '',
+      });
+      setMorfo1Tri({
+        dataExame: '',
+        idadeGestacional: '',
+        tn: '',
+        dv: '',
+        valvaTricuspide: '',
+        dopplerUterinas: '',
+        incisuraPresente: '',
+        colo: '',
+        riscoTrissomias: '',
+      });
+      setUsObstetrico({
+        dataExame: '',
+        idadeGestacional: '',
+        pesoFetal: '',
+        placentaLocalizacao: '',
+        placentaGrau: '',
+        coloUterinoMedida: '',
+      });
+      setMorfo2Tri({
+        dataExame: '',
+        idadeGestacional: '',
+        biometria: '',
+        pesoFetal: '',
+        placentaLocalizacao: '',
+        placentaGrau: '',
+        liquidoAmniotico: '',
+        coloUterino: '',
+        avaliacaoAnatomica: '',
+        dopplers: '',
+        sexoFetal: '',
+        observacoes: '',
+      });
+      setEcocardiograma({
+        dataExame: '',
+        conclusao: '',
+      });
+      setUsSeguimento({
+        dataExame: '',
+        idadeGestacional: '',
+        pesoFetal: '',
+        percentilPeso: '',
+        liquidoAmniotico: '',
+        placentaLocalizacao: '',
+        placentaGrau: '',
+        coloUterino: '',
+        movimentosFetais: '',
+        apresentacaoFetal: '',
+        dopplers: '',
+        observacoes: '',
+      });
+      
+      // Limpar destaques de IA
+      setCamposPreenchidosIA({
+        primeiro_ultrassom: new Set(),
+        morfologico_1tri: new Set(),
+        ultrassom_obstetrico: new Set(),
+        morfologico_2tri: new Set(),
+        ecocardiograma: new Set(),
+        ultrassom_seguimento: new Set(),
+      });
     }
   }, [gestanteAtiva]);
   const [busca, setBusca] = useState(gestanteAtiva?.nome || '');
