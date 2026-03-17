@@ -39,12 +39,14 @@ interface TemplateSuggestion {
   bgColor: string;
   nome: string;
   descricao: string;
-  gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual';
+  gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual' | 'pos_consulta_conduta';
   igSemanas?: number;
   igDias?: number;
   evento?: string;
   condicaoRhNegativo?: boolean;
   condicaoMedicamento?: string;
+  condutaGatilho?: string;
+  diasAposConsulta?: number;
   mensagem: string;
 }
 
@@ -439,6 +441,46 @@ Você está com {ig_semanas} semanas de gestação e se aproximando do momento d
 Atenciosamente,
 Equipe de Pré-Natal`,
   },
+  // Pós-Consulta
+  {
+    id: 'lembrete_rotina_lab_1tri',
+    categoria: 'Pós-Consulta',
+    icon: TestTube,
+    iconColor: 'text-teal-600',
+    bgColor: 'bg-teal-50 border-teal-200 hover:bg-teal-100',
+    nome: 'Lembrete Colher Exames 1º Trimestre',
+    descricao: 'Lembrete 14 dias após solicitar Rotina Lab 1º Trim na consulta',
+    gatilhoTipo: 'pos_consulta_conduta' as any,
+    condutaGatilho: 'Rotina Laboratorial 1º Trimestre',
+    diasAposConsulta: 14,
+    mensagem: `Olá, {nome}! 🔬\n\nNa sua última consulta de pré-natal, foram solicitados os *exames laboratoriais de rotina do 1º trimestre*.\n\nEste é um lembrete para que você colha os exames o mais breve possível e leve os resultados na próxima consulta de pré-natal.\n\n📋 Caso ainda não tenha colhido, procure o laboratório com o pedido de exames em mãos.\n\nEm caso de dúvidas, entre em contato com {medico}.\n\nAtenciosamente,\nEquipe de Pré-Natal`,
+  },
+  {
+    id: 'lembrete_rotina_lab_2tri',
+    categoria: 'Pós-Consulta',
+    icon: TestTube,
+    iconColor: 'text-teal-600',
+    bgColor: 'bg-teal-50 border-teal-200 hover:bg-teal-100',
+    nome: 'Lembrete Colher Exames 2º Trimestre',
+    descricao: 'Lembrete 14 dias após solicitar Rotina Lab 2º Trim na consulta',
+    gatilhoTipo: 'pos_consulta_conduta' as any,
+    condutaGatilho: 'Rotina Laboratorial 2º Trimestre',
+    diasAposConsulta: 14,
+    mensagem: `Olá, {nome}! 🔬\n\nNa sua última consulta de pré-natal, foram solicitados os *exames laboratoriais de rotina do 2º trimestre*.\n\nEste é um lembrete para que você colha os exames o mais breve possível e leve os resultados na próxima consulta de pré-natal.\n\n📋 Caso ainda não tenha colhido, procure o laboratório com o pedido de exames em mãos.\n\nEm caso de dúvidas, entre em contato com {medico}.\n\nAtenciosamente,\nEquipe de Pré-Natal`,
+  },
+  {
+    id: 'lembrete_rotina_lab_3tri',
+    categoria: 'Pós-Consulta',
+    icon: TestTube,
+    iconColor: 'text-teal-600',
+    bgColor: 'bg-teal-50 border-teal-200 hover:bg-teal-100',
+    nome: 'Lembrete Colher Exames 3º Trimestre',
+    descricao: 'Lembrete 14 dias após solicitar Rotina Lab 3º Trim na consulta',
+    gatilhoTipo: 'pos_consulta_conduta' as any,
+    condutaGatilho: 'Rotina Laboratorial 3º Trimestre',
+    diasAposConsulta: 14,
+    mensagem: `Olá, {nome}! 🔬\n\nNa sua última consulta de pré-natal, foram solicitados os *exames laboratoriais de rotina do 3º trimestre*.\n\nEste é um lembrete para que você colha os exames o mais breve possível e leve os resultados na próxima consulta de pré-natal.\n\n📋 Caso ainda não tenha colhido, procure o laboratório com o pedido de exames em mãos.\n\nEm caso de dúvidas, entre em contato com {medico}.\n\nAtenciosamente,\nEquipe de Pré-Natal`,
+  },
   // Medicamentos
   {
     id: 'suspensao_aas',
@@ -467,7 +509,7 @@ Abraços da equipe Mais Mulher! 💜`,
 ];
 
 // Group suggestions by category
-const CATEGORIAS = ['Vacinas', 'Exames', 'Consultas', 'Medicamentos', 'Pós-Parto', 'Alertas'];
+const CATEGORIAS = ['Vacinas', 'Exames', 'Consultas', 'Pós-Consulta', 'Medicamentos', 'Pós-Parto', 'Alertas'];
 
 const CATEGORIA_ICONS: Record<string, { icon: typeof Syringe; color: string }> = {
   'Vacinas': { icon: Syringe, color: 'text-blue-600' },
@@ -475,6 +517,7 @@ const CATEGORIA_ICONS: Record<string, { icon: typeof Syringe; color: string }> =
   'Consultas': { icon: Calendar, color: 'text-green-600' },
   'Pós-Parto': { icon: Baby, color: 'text-pink-600' },
   'Alertas': { icon: AlertTriangle, color: 'text-amber-600' },
+  'Pós-Consulta': { icon: FileText, color: 'text-teal-600' },
   'Medicamentos': { icon: Pill, color: 'text-orange-600' },
 };
 
@@ -493,7 +536,7 @@ interface TemplateWizardProps {
   onSave: (data: {
     nome: string;
     mensagem: string;
-    gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual';
+    gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual' | 'pos_consulta_conduta';
     igSemanas?: number;
     igDias?: number;
     evento?: string;
@@ -502,6 +545,8 @@ interface TemplateWizardProps {
     pdfNome?: string;
     condicaoRhNegativo?: number;
     condicaoMedicamento?: string;
+    condutaGatilho?: string;
+    diasAposConsulta?: number;
   }) => void;
   onUploadPdf: (file: File) => Promise<{ url: string; key: string }>;
   isSaving: boolean;
@@ -525,7 +570,9 @@ export default function TemplateWizard({
   // Form state
   const [nome, setNome] = useState('');
   const [mensagem, setMensagem] = useState('');
-  const [gatilhoTipo, setGatilhoTipo] = useState<'idade_gestacional' | 'evento' | 'manual'>('manual');
+  const [gatilhoTipo, setGatilhoTipo] = useState<'idade_gestacional' | 'evento' | 'manual' | 'pos_consulta_conduta'>('manual');
+  const [condutaGatilho, setCondutaGatilho] = useState<string>('');
+  const [diasAposConsulta, setDiasAposConsulta] = useState<number>(14);
   const [igSemanas, setIgSemanas] = useState<number | undefined>();
   const [igDias, setIgDias] = useState<number>(0);
   const [evento, setEvento] = useState<string>('');
@@ -549,6 +596,8 @@ export default function TemplateWizard({
     setIgSemanas(undefined);
     setIgDias(0);
     setEvento('');
+    setCondutaGatilho('');
+    setDiasAposConsulta(14);
     setCondicaoRhNegativo(false);
     setCondicaoMedicamento(undefined);
     setPdfUrl(undefined);
@@ -572,6 +621,8 @@ export default function TemplateWizard({
     setEvento(suggestion.evento || '');
     setCondicaoRhNegativo(suggestion.condicaoRhNegativo || false);
     setCondicaoMedicamento(suggestion.condicaoMedicamento || undefined);
+    setCondutaGatilho(suggestion.condutaGatilho || '');
+    setDiasAposConsulta(suggestion.diasAposConsulta || 14);
     setStep(2);
   };
 
@@ -619,6 +670,10 @@ export default function TemplateWizard({
       toast.error('Selecione o evento.');
       return;
     }
+    if (gatilhoTipo === 'pos_consulta_conduta' && !condutaGatilho) {
+      toast.error('Selecione a conduta que dispara o envio.');
+      return;
+    }
 
     onSave({
       nome: nome.trim(),
@@ -632,6 +687,8 @@ export default function TemplateWizard({
       pdfNome,
       condicaoRhNegativo: condicaoRhNegativo ? 1 : 0,
       condicaoMedicamento: condicaoMedicamento || undefined,
+      condutaGatilho: gatilhoTipo === 'pos_consulta_conduta' ? condutaGatilho : undefined,
+      diasAposConsulta: gatilhoTipo === 'pos_consulta_conduta' ? diasAposConsulta : undefined,
     });
 
     resetWizard();
@@ -787,6 +844,7 @@ export default function TemplateWizard({
                 <SelectContent>
                   <SelectItem value="idade_gestacional">Por Idade Gestacional</SelectItem>
                   <SelectItem value="evento">Por Evento</SelectItem>
+                  <SelectItem value="pos_consulta_conduta">Pós-Consulta (por Conduta)</SelectItem>
                   <SelectItem value="manual">Envio Manual</SelectItem>
                 </SelectContent>
               </Select>
@@ -833,6 +891,49 @@ export default function TemplateWizard({
                     <SelectItem value="primeira_consulta">Primeira Consulta</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            )}
+
+            {gatilhoTipo === 'pos_consulta_conduta' && (
+              <div className="space-y-3">
+                <div className="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                  <p className="text-sm text-teal-800 font-medium mb-2">
+                    A mensagem será agendada automaticamente quando a conduta selecionada for marcada em uma consulta.
+                  </p>
+                </div>
+                <div>
+                  <Label>Conduta que dispara o envio</Label>
+                  <Select value={condutaGatilho} onValueChange={setCondutaGatilho}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a conduta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Rotina Laboratorial 1º Trimestre">Rotina Laboratorial 1º Trimestre</SelectItem>
+                      <SelectItem value="Rotina Laboratorial 2º Trimestre">Rotina Laboratorial 2º Trimestre</SelectItem>
+                      <SelectItem value="Rotina Laboratorial 3º Trimestre">Rotina Laboratorial 3º Trimestre</SelectItem>
+                      <SelectItem value="Outros Exames Laboratoriais Específicos">Outros Exames Laboratoriais Específicos</SelectItem>
+                      <SelectItem value="US Obstétrico Endovaginal">US Obstétrico Endovaginal</SelectItem>
+                      <SelectItem value="US Morfológico 1º Trimestre">US Morfológico 1º Trimestre</SelectItem>
+                      <SelectItem value="US Morfológico 2º Trimestre">US Morfológico 2º Trimestre</SelectItem>
+                      <SelectItem value="US Obstétrico com Doppler">US Obstétrico com Doppler</SelectItem>
+                      <SelectItem value="Ecocardiograma Fetal">Ecocardiograma Fetal</SelectItem>
+                      <SelectItem value="Colhido Cultura para EGB">Colhido Cultura para EGB</SelectItem>
+                      <SelectItem value="Vacinas (Prescrevo ou Oriento)">Vacinas (Prescrevo ou Oriento)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Dias após a consulta para enviar</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={90}
+                    placeholder="Ex: 14"
+                    value={diasAposConsulta}
+                    onChange={e => setDiasAposConsulta(parseInt(e.target.value) || 14)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">A mensagem será enviada {diasAposConsulta} dia(s) após a consulta.</p>
+                </div>
               </div>
             )}
 
@@ -973,6 +1074,7 @@ export default function TemplateWizard({
                   <p className="font-medium text-sm">
                     {gatilhoTipo === 'idade_gestacional' && `IG: ${igSemanas}s${igDias ? `+${igDias}d` : ''}`}
                     {gatilhoTipo === 'evento' && EVENTO_LABELS[evento]}
+                    {gatilhoTipo === 'pos_consulta_conduta' && `Pós-Consulta (+${diasAposConsulta}d)`}
                     {gatilhoTipo === 'manual' && 'Envio Manual'}
                   </p>
                 </CardContent>
@@ -990,6 +1092,12 @@ export default function TemplateWizard({
                 <Badge variant="outline" className="border-orange-400 text-orange-700 bg-orange-50 gap-1">
                   <Pill className="h-3 w-3" />
                   Apenas com {condicaoMedicamento.toUpperCase()}
+                </Badge>
+              )}
+              {condutaGatilho && (
+                <Badge variant="outline" className="border-teal-400 text-teal-700 bg-teal-50 gap-1">
+                  <TestTube className="h-3 w-3" />
+                  Conduta: {condutaGatilho}
                 </Badge>
               )}
               {pdfUrl && (

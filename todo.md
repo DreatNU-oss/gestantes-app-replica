@@ -2230,3 +2230,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Endpoint verificarAutorizacao no backend
 - [x] Toggle WhatsApp no Admin Clínicas com badge visual (WhatsApp / WhatsApp Off)
 - [x] 10 testes unitários passando
+
+## Template pós-consulta por conduta (17/03/2026)
+- [x] Analisar schema de consultas e condutas
+- [x] Criar novo tipo de gatilho 'pos_consulta_conduta' no schema + campos condutaGatilho e diasAposConsulta
+- [x] Criar tabela mensagensAgendadas para fila de envio futuro
+- [x] Implementar agendamento automático ao salvar consulta (agendarMensagensPosConsulta)
+- [x] Scheduler processa fila de mensagens agendadas diariamente (processarMensagensAgendadas)
+- [x] Opção "Pós-Consulta (por Conduta)" no TemplateWizard com seletor de conduta e dias
+- [x] Sugestões pré-configuradas: Lembrete Rotina Lab 1º/2º/3º Tri (14 dias cada)
+- [x] 18 testes unitários passando

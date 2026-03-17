@@ -843,7 +843,7 @@ export const mensagemTemplates = mysqlTable("mensagemTemplates", {
   pdfKey: text("pdfKey"), // Key do PDF no S3
   pdfNome: varchar("pdfNome", { length: 255 }), // Nome original do arquivo PDF
   // Gatilho por idade gestacional
-  gatilhoTipo: mysqlEnum("gatilhoTipo", ["idade_gestacional", "evento", "manual"]).notNull().default("manual"),
+  gatilhoTipo: mysqlEnum("gatilhoTipo", ["idade_gestacional", "evento", "manual", "pos_consulta_conduta"]).notNull().default("manual"),
   igSemanas: int("igSemanas"), // Semana gestacional para disparo (ex: 28 para vacina DTPa)
   igDias: int("igDias").default(0), // Dias adicionais (ex: semana 28 + 0 dias)
   // Gatilho por evento
@@ -853,6 +853,9 @@ export const mensagemTemplates = mysqlTable("mensagemTemplates", {
   condicaoMedicoId: int("condicaoMedicoId"), // Só envia para gestantes deste médico
   condicaoRhNegativo: int("condicaoRhNegativo").default(0), // 1 = só envia para gestantes com fator Rh negativo
   condicaoMedicamento: varchar("condicaoMedicamento", { length: 100 }), // Só envia para gestantes que usam este medicamento (ex: "aas", "calcio")
+  // Gatilho pós-consulta por conduta
+  condutaGatilho: varchar("condutaGatilho", { length: 255 }), // Nome da conduta que dispara o envio (ex: "Rotina lab 1o trim")
+  diasAposConsulta: int("diasAposConsulta"), // Dias após a consulta para enviar (ex: 14 = 2 semanas)
   ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = inativo
   criadoPor: int("criadoPor"), // ID do usuário que criou
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -861,6 +864,26 @@ export const mensagemTemplates = mysqlTable("mensagemTemplates", {
 
 export type MensagemTemplate = typeof mensagemTemplates.$inferSelect;
 export type InsertMensagemTemplate = typeof mensagemTemplates.$inferInsert;
+
+/**
+ * Fila de mensagens WhatsApp agendadas para envio futuro.
+ * Criadas automaticamente quando uma consulta é salva com conduta que tem template pos_consulta_conduta.
+ */
+export const mensagensAgendadas = mysqlTable("mensagensAgendadas", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId").notNull(),
+  gestanteId: int("gestanteId").notNull(),
+  templateId: int("templateId").notNull(), // FK para mensagemTemplates.id
+  consultaId: int("consultaId").notNull(), // FK para consultasPrenatal.id
+  dataEnvio: date("dataEnvio").notNull(), // Data prevista para envio
+  status: mysqlEnum("status", ["pendente", "enviado", "cancelado", "falhou"]).notNull().default("pendente"),
+  erroMensagem: text("erroMensagem"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  processedAt: timestamp("processedAt"),
+});
+
+export type MensagemAgendada = typeof mensagensAgendadas.$inferSelect;
+export type InsertMensagemAgendada = typeof mensagensAgendadas.$inferInsert;
 
 /**
  * Configuração WhatsApp por clínica (API key e status)

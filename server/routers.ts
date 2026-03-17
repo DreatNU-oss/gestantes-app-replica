@@ -119,7 +119,7 @@ import { TRPCError } from '@trpc/server';
 import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
 import { enviarLembreteFloresAdmin } from './flowerReminder';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
-import { processarMensagemEvento } from './whatsappScheduler';
+import { processarMensagemEvento, agendarMensagensPosConsulta } from './whatsappScheduler';
 import { syncPatientToBot, removePatientFromBot, updatePatientOnBot } from './whatsappBotSync';
 import { mensagemTemplates, whatsappConfig, whatsappHistorico, medicos, partosRealizados, orientacoesEnviadas, clinicas } from '../drizzle/schema';
 
@@ -1260,6 +1260,47 @@ export const appRouter = router({
           // Condutas da consulta de urgência
           if (input.condutaUrgencia) {
             await criarLembretesCondutaUrgencia(input.gestanteId, consultaId, input.condutaUrgencia, input.outraCondutaDescricao);
+          }
+          
+          // Agendar mensagens WhatsApp pós-consulta por conduta
+          try {
+            // Buscar clinicaId da gestante
+            const dbAgenda = await getDb();
+            const [gest] = await dbAgenda!.select({ clinicaId: gestantes.clinicaId }).from(gestantes)
+              .where(eq(gestantes.id, input.gestanteId)).limit(1);
+            if (gest?.clinicaId) {
+              const todasCondutas: string[] = [];
+              // Condutas de rotina (array JSON)
+              if (input.conduta) {
+                try {
+                  const parsed = JSON.parse(input.conduta);
+                  if (Array.isArray(parsed)) todasCondutas.push(...parsed);
+                } catch { /* ignore */ }
+              }
+              // Condutas da 1ª consulta (checkboxes com valor true)
+              if (input.condutaCheckboxes) {
+                for (const [key, val] of Object.entries(input.condutaCheckboxes)) {
+                  if (val) todasCondutas.push(key);
+                }
+              }
+              // Condutas de urgência (checkboxes com valor true)
+              if (input.condutaUrgencia) {
+                for (const [key, val] of Object.entries(input.condutaUrgencia)) {
+                  if (val) todasCondutas.push(key);
+                }
+              }
+              if (todasCondutas.length > 0) {
+                await agendarMensagensPosConsulta(
+                  gest.clinicaId,
+                  input.gestanteId,
+                  consultaId,
+                  todasCondutas,
+                  input.dataConsulta,
+                );
+              }
+            }
+          } catch (e) {
+            console.error('[Consulta] Erro ao agendar mensagens pós-consulta:', e);
           }
         }
         
@@ -4061,7 +4102,7 @@ export const appRouter = router({
       .input(z.object({
         nome: z.string().min(1).max(255),
         mensagem: z.string().min(1),
-        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual']),
+        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual', 'pos_consulta_conduta']),
         igSemanas: z.number().min(1).max(45).optional(),
         igDias: z.number().min(0).max(6).optional(),
         evento: z.enum(['pos_cesarea', 'pos_parto_normal', 'cadastro_gestante', 'primeira_consulta']).optional(),
@@ -4070,6 +4111,8 @@ export const appRouter = router({
         pdfNome: z.string().optional(),
         condicaoRhNegativo: z.number().min(0).max(1).optional(),
         condicaoMedicamento: z.string().max(100).optional(),
+        condutaGatilho: z.string().max(255).optional(),
+        diasAposConsulta: z.number().min(1).max(90).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Clínica não identificada.' });
@@ -4091,6 +4134,8 @@ export const appRouter = router({
           pdfNome: input.pdfNome || null,
           condicaoRhNegativo: input.condicaoRhNegativo || 0,
           condicaoMedicamento: input.condicaoMedicamento || null,
+          condutaGatilho: input.condutaGatilho || null,
+          diasAposConsulta: input.diasAposConsulta || null,
           criadoPor: ctx.user.id,
         });
         return { success: true };
@@ -4102,7 +4147,7 @@ export const appRouter = router({
         id: z.number(),
         nome: z.string().min(1).max(255),
         mensagem: z.string().min(1),
-        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual']),
+        gatilhoTipo: z.enum(['idade_gestacional', 'evento', 'manual', 'pos_consulta_conduta']),
         igSemanas: z.number().min(1).max(45).optional(),
         igDias: z.number().min(0).max(6).optional(),
         evento: z.enum(['pos_cesarea', 'pos_parto_normal', 'cadastro_gestante', 'primeira_consulta']).optional(),
@@ -4111,6 +4156,8 @@ export const appRouter = router({
         pdfNome: z.string().optional(),
         condicaoRhNegativo: z.number().min(0).max(1).optional(),
         condicaoMedicamento: z.string().max(100).optional(),
+        condutaGatilho: z.string().max(255).optional(),
+        diasAposConsulta: z.number().min(1).max(90).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         if (!ctx.user.clinicaId) throw new TRPCError({ code: 'BAD_REQUEST' });
@@ -4131,6 +4178,8 @@ export const appRouter = router({
           pdfNome: input.pdfNome || null,
           condicaoRhNegativo: input.condicaoRhNegativo ?? 0,
           condicaoMedicamento: input.condicaoMedicamento || null,
+          condutaGatilho: input.condutaGatilho || null,
+          diasAposConsulta: input.diasAposConsulta || null,
         }).where(and(eq(mensagemTemplates.id, input.id), eq(mensagemTemplates.clinicaId, ctx.user.clinicaId)));
         return { success: true };
       }),

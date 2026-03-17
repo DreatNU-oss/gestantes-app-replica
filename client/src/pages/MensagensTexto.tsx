@@ -37,6 +37,7 @@ const GATILHO_LABELS: Record<string, string> = {
   idade_gestacional: 'Idade Gestacional',
   evento: 'Evento',
   manual: 'Manual',
+  pos_consulta_conduta: 'Pós-Consulta',
 };
 
 const EVENTO_LABELS: Record<string, string> = {
@@ -55,7 +56,7 @@ const STATUS_CONFIG: Record<string, { label: string; icon: typeof CheckCircle; c
 interface TemplateForm {
   nome: string;
   mensagem: string;
-  gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual';
+  gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual' | 'pos_consulta_conduta';
   igSemanas?: number;
   igDias?: number;
   evento?: string;
@@ -63,6 +64,8 @@ interface TemplateForm {
   pdfKey?: string;
   pdfNome?: string;
   condicaoRhNegativo?: boolean;
+  condutaGatilho?: string;
+  diasAposConsulta?: number;
 }
 
 const emptyForm: TemplateForm = {
@@ -183,7 +186,7 @@ export default function MensagensTexto() {
   const handleWizardSave = useCallback((data: {
     nome: string;
     mensagem: string;
-    gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual';
+    gatilhoTipo: 'idade_gestacional' | 'evento' | 'manual' | 'pos_consulta_conduta';
     igSemanas?: number;
     igDias?: number;
     evento?: string;
@@ -192,6 +195,8 @@ export default function MensagensTexto() {
     pdfNome?: string;
     condicaoRhNegativo?: number;
     condicaoMedicamento?: string;
+    condutaGatilho?: string;
+    diasAposConsulta?: number;
   }) => {
     criarMutation.mutate({
       ...data,
@@ -246,6 +251,10 @@ export default function MensagensTexto() {
       toast.error('Selecione o evento gatilho.');
       return;
     }
+    if (form.gatilhoTipo === 'pos_consulta_conduta' && !form.condutaGatilho) {
+      toast.error('Selecione a conduta gatilho.');
+      return;
+    }
 
     const payload = {
       nome: form.nome.trim(),
@@ -258,6 +267,8 @@ export default function MensagensTexto() {
       pdfKey: form.pdfKey,
       pdfNome: form.pdfNome,
       condicaoRhNegativo: form.condicaoRhNegativo ? 1 : 0,
+      condutaGatilho: form.gatilhoTipo === 'pos_consulta_conduta' ? form.condutaGatilho : undefined,
+      diasAposConsulta: form.gatilhoTipo === 'pos_consulta_conduta' ? form.diasAposConsulta : undefined,
     };
 
     if (editingId) {
@@ -895,6 +906,8 @@ function TemplateCard({
     pdfNome: string | null;
     condicaoRhNegativo: number | null;
     condicaoMedicamento: string | null;
+    condutaGatilho?: string | null;
+    diasAposConsulta?: number | null;
     ativo: number;
   };
   onEdit: () => void;
@@ -906,7 +919,7 @@ function TemplateCard({
     <Card className={template.ativo ? '' : 'opacity-60'}>
       <CardContent className="py-3 flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="font-medium text-sm">{template.nome}</span>
             <Badge variant="outline" className="text-xs">
               {GATILHO_LABELS[template.gatilhoTipo] || template.gatilhoTipo}
@@ -919,6 +932,12 @@ function TemplateCard({
             {template.gatilhoTipo === 'evento' && template.evento && (
               <Badge variant="secondary" className="text-xs">
                 {EVENTO_LABELS[template.evento] || template.evento}
+              </Badge>
+            )}
+            {template.gatilhoTipo === 'pos_consulta_conduta' && template.condutaGatilho && (
+              <Badge variant="secondary" className="text-xs gap-1 border-teal-400 text-teal-700 bg-teal-50">
+                {template.condutaGatilho}
+                {template.diasAposConsulta ? ` (+${template.diasAposConsulta}d)` : ''}
               </Badge>
             )}
             {template.pdfUrl && (

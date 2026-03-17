@@ -16,7 +16,7 @@
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users, medicamentosGestacao } from '../drizzle/schema';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users, medicamentosGestacao, mensagensAgendadas } from '../drizzle/schema';
 import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
 
@@ -339,6 +339,243 @@ export async function processarMensagemEvento(
   return { enviadas, erros };
 }
 
+// ─── Processar Mensagens Agendadas (pós-consulta por conduta) ───────────
+
+/**
+ * Processa a fila de mensagens agendadas cujo dataEnvio é hoje ou anterior (pendentes).
+ * Chamado diariamente pelo scheduler junto com processarMensagensIG.
+ */
+export async function processarMensagensAgendadas(): Promise<{ enviadas: number; erros: number }> {
+  const db = await withRetry(() => getDb());
+  if (!db) {
+    console.error('[WhatsApp Scheduler] Falha ao conectar ao banco para mensagens agendadas');
+    return { enviadas: 0, erros: 0 };
+  }
+
+  let enviadas = 0;
+  let erros = 0;
+
+  try {
+    // Buscar mensagens pendentes cuja data de envio é hoje ou anterior
+    const hoje = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const pendentes = await withRetry(() =>
+      db.select()
+        .from(mensagensAgendadas)
+        .where(and(
+          eq(mensagensAgendadas.status, 'pendente'),
+          sql`${mensagensAgendadas.dataEnvio} <= ${hoje}`,
+        ))
+    );
+
+    console.log(`[WhatsApp Scheduler] ${pendentes.length} mensagem(ns) agendada(s) pendente(s)`);
+
+    for (const agendada of pendentes) {
+      try {
+        // Buscar template
+        const [template] = await db
+          .select()
+          .from(mensagemTemplates)
+          .where(and(
+            eq(mensagemTemplates.id, agendada.templateId),
+            eq(mensagemTemplates.ativo, 1),
+          ))
+          .limit(1);
+
+        if (!template) {
+          // Template desativado ou removido, cancelar
+          await db.update(mensagensAgendadas)
+            .set({ status: 'cancelado', erroMensagem: 'Template desativado ou removido', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          continue;
+        }
+
+        // Verificar se WhatsApp está ativo para a clínica
+        const [config] = await db
+          .select()
+          .from(whatsappConfig)
+          .where(and(eq(whatsappConfig.clinicaId, agendada.clinicaId), eq(whatsappConfig.ativo, 1)))
+          .limit(1);
+
+        if (!config) {
+          await db.update(mensagensAgendadas)
+            .set({ status: 'cancelado', erroMensagem: 'WhatsApp não ativo para a clínica', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          continue;
+        }
+
+        // Verificar se gestante ainda está ativa (sem parto/abortamento)
+        const [parto] = await db.select({ id: partosRealizados.id }).from(partosRealizados)
+          .where(eq(partosRealizados.gestanteId, agendada.gestanteId)).limit(1);
+        const [aborto] = await db.select({ id: abortamentos.id }).from(abortamentos)
+          .where(eq(abortamentos.gestanteId, agendada.gestanteId)).limit(1);
+
+        if (parto || aborto) {
+          await db.update(mensagensAgendadas)
+            .set({ status: 'cancelado', erroMensagem: 'Gestante já teve parto ou abortamento', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          continue;
+        }
+
+        // Buscar dados da gestante
+        const [gestante] = await db.select().from(gestantes)
+          .where(eq(gestantes.id, agendada.gestanteId)).limit(1);
+
+        if (!gestante || !gestante.telefone) {
+          await db.update(mensagensAgendadas)
+            .set({ status: 'cancelado', erroMensagem: 'Gestante sem telefone cadastrado', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          continue;
+        }
+
+        // Calcular IG atual
+        const ig = calcularIGAtual(gestante.dum, gestante.igUltrassomSemanas, gestante.igUltrassomDias, gestante.dataUltrassom);
+
+        // Buscar médico
+        let medicoNome = '';
+        let telefoneMedico = '';
+        try {
+          if (gestante.medicoId) {
+            const [med] = await db.select({ nome: medicos.nome }).from(medicos)
+              .where(eq(medicos.id, gestante.medicoId)).limit(1);
+            medicoNome = med?.nome || '';
+            if (medicoNome) {
+              const [userMedico] = await db.select({ telefone: users.telefone }).from(users)
+                .where(and(sql`${users.name} LIKE ${medicoNome + '%'}`, sql`${users.clinicaId} = ${agendada.clinicaId}`))
+                .limit(1);
+              telefoneMedico = userMedico?.telefone || '';
+            }
+          }
+        } catch { /* ignore */ }
+
+        const context: GestanteContext = {
+          nome: gestante.nome,
+          telefone: gestante.telefone,
+          igSemanas: ig?.semanas || 0,
+          igDias: ig?.dias || 0,
+          dpp: calcularDPP(gestante.dum) || undefined,
+          medico: medicoNome,
+          telefoneMedico,
+          gestanteId: gestante.id,
+        };
+
+        console.log(`[WhatsApp Scheduler] Enviando agendada "${template.nome}" para ${gestante.nome}`);
+
+        const result = await sendToGestante(agendada.clinicaId, template.id, context);
+        if (result.success) {
+          enviadas++;
+          await db.update(mensagensAgendadas)
+            .set({ status: 'enviado', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          console.log(`[WhatsApp Scheduler] ✅ Agendada enviada para ${gestante.nome}`);
+        } else {
+          erros++;
+          await db.update(mensagensAgendadas)
+            .set({ status: 'falhou', erroMensagem: result.error || 'Erro desconhecido', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          console.log(`[WhatsApp Scheduler] ❌ Falha agendada para ${gestante.nome}: ${result.error}`);
+        }
+
+        // Delay de 6 segundos entre envios
+        await new Promise(resolve => setTimeout(resolve, 6000));
+
+      } catch (error: any) {
+        erros++;
+        await db.update(mensagensAgendadas)
+          .set({ status: 'falhou', erroMensagem: error?.message || 'Erro inesperado', processedAt: new Date() })
+          .where(eq(mensagensAgendadas.id, agendada.id));
+        console.error(`[WhatsApp Scheduler] Erro ao processar agendada ${agendada.id}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error('[WhatsApp Scheduler] Erro ao processar mensagens agendadas:', error);
+  }
+
+  console.log(`[WhatsApp Scheduler] Agendadas: ${enviadas} enviadas, ${erros} erros`);
+  return { enviadas, erros };
+}
+
+// ─── Agendar Mensagem Pós-Consulta ──────────────────────────────────
+
+/**
+ * Verifica se alguma conduta da consulta tem template pos_consulta_conduta ativo
+ * e agenda a mensagem para X dias após a consulta.
+ */
+export async function agendarMensagensPosConsulta(
+  clinicaId: number,
+  gestanteId: number,
+  consultaId: number,
+  condutas: string[],
+  dataConsulta: string, // YYYY-MM-DD
+): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+
+  let agendadas = 0;
+
+  try {
+    // Buscar templates pos_consulta_conduta ativos desta clínica
+    const templates = await db.select().from(mensagemTemplates).where(and(
+      eq(mensagemTemplates.clinicaId, clinicaId),
+      eq(mensagemTemplates.gatilhoTipo, 'pos_consulta_conduta'),
+      eq(mensagemTemplates.ativo, 1),
+      isNotNull(mensagemTemplates.condutaGatilho),
+      isNotNull(mensagemTemplates.diasAposConsulta),
+    ));
+
+    if (!templates.length) return 0;
+
+    // Normalizar condutas para comparação case-insensitive
+    const condutasLower = condutas.map(c => c.toLowerCase().trim());
+
+    for (const template of templates) {
+      if (!template.condutaGatilho || !template.diasAposConsulta) continue;
+
+      // Verificar se a conduta do template está entre as condutas da consulta
+      const condutaTemplateLower = template.condutaGatilho.toLowerCase().trim();
+      const match = condutasLower.some(c => c.includes(condutaTemplateLower) || condutaTemplateLower.includes(c));
+
+      if (!match) continue;
+
+      // Verificar se já existe agendamento pendente para esta gestante + template
+      const [existente] = await db.select({ id: mensagensAgendadas.id })
+        .from(mensagensAgendadas)
+        .where(and(
+          eq(mensagensAgendadas.gestanteId, gestanteId),
+          eq(mensagensAgendadas.templateId, template.id),
+          eq(mensagensAgendadas.status, 'pendente'),
+        ))
+        .limit(1);
+
+      if (existente) {
+        console.log(`[WhatsApp Scheduler] Já existe agendamento pendente para gestante ${gestanteId} template ${template.id}`);
+        continue;
+      }
+
+      // Calcular data de envio
+      const dataConsultaDate = new Date(dataConsulta + 'T12:00:00');
+      dataConsultaDate.setDate(dataConsultaDate.getDate() + template.diasAposConsulta);
+      const dataEnvioStr = dataConsultaDate.toISOString().split('T')[0];
+
+      // Inserir na fila
+      await db.insert(mensagensAgendadas).values({
+        clinicaId,
+        gestanteId,
+        templateId: template.id,
+        consultaId,
+        dataEnvio: dataConsultaDate,
+        status: 'pendente',
+      });
+
+      agendadas++;
+      console.log(`[WhatsApp Scheduler] Agendada "${template.nome}" para gestante ${gestanteId} em ${dataEnvioStr} (${template.diasAposConsulta} dias após consulta)`);
+    }
+  } catch (error) {
+    console.error('[WhatsApp Scheduler] Erro ao agendar mensagens pós-consulta:', error);
+  }
+
+  return agendadas;
+}
+
 // ─── Calcular ms até próxima execução às 9:00 BRT ──────────────────────────
 
 /**
@@ -384,11 +621,13 @@ function agendarProximaExecucao() {
   schedulerTimeout = setTimeout(async () => {
     console.log(`[WhatsApp Scheduler] Executando às 9:00 AM BRT...`);
     await processarMensagensIG().catch(console.error);
+    await processarMensagensAgendadas().catch(console.error);
     
     // Após executar, agendar para o dia seguinte (24h)
     schedulerInterval = setInterval(async () => {
       console.log(`[WhatsApp Scheduler] Executando às 9:00 AM BRT...`);
       await processarMensagensIG().catch(console.error);
+      await processarMensagensAgendadas().catch(console.error);
     }, 24 * 60 * 60 * 1000); // A cada 24h
   }, ms);
 }
