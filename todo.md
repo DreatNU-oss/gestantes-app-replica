@@ -2265,3 +2265,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar botão de apagar ultrassom após o laudo de cada tipo de US no menu Ultrassons
 - [x] Implementar confirmação antes de apagar
 - [x] Procedure backend para deletar ultrassom (já existia)
+
+## Pré-Consulta para Secretárias (17/03/2026)
+- [x] Criar tabela preConsulta no banco (gestanteId, peso, pressaoArterial, tipoConsulta, createdAt, usedAt)
+- [x] Criar procedures backend para CRUD de pré-consulta
+- [x] Criar página Pré-Consulta com formulário de Peso e PA (campos obrigatórios)
+- [x] Menu Pré-Consulta visível apenas para secretárias (2º lugar na sidebar)
+- [x] Integrar dados de pré-consulta na página de Consulta (auto-fill peso e PA)
+- [x] Testes unitários

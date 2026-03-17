@@ -936,3 +936,26 @@ export const orientacoesEnviadas = mysqlTable("orientacoesEnviadas", {
 
 export type OrientacaoEnviada = typeof orientacoesEnviadas.$inferSelect;
 export type InsertOrientacaoEnviada = typeof orientacoesEnviadas.$inferInsert;
+
+/**
+ * Tabela de pré-consulta (dados registrados pela secretária antes da consulta)
+ * A secretária registra peso e pressão arterial para agilizar o atendimento.
+ * Quando o médico abre uma nova consulta, esses dados são pré-preenchidos automaticamente.
+ */
+export const preConsulta = mysqlTable("preConsulta", {
+  id: int("id").autoincrement().primaryKey(),
+  gestanteId: int("gestanteId").notNull(),
+  clinicaId: int("clinicaId"), // FK para clinicas.id
+  peso: varchar("peso", { length: 20 }).notNull(), // peso em kg (ex: "72.5")
+  pressaoArterial: varchar("pressaoArterial", { length: 20 }).notNull(), // ex: "120/80"
+  tipoConsulta: mysqlEnum("tipoConsulta", ["1a_consulta", "consulta_rotina", "consulta_urgencia"]).notNull(),
+  registradoPorId: int("registradoPorId"), // FK para users.id (secretária que registrou)
+  registradoPorNome: varchar("registradoPorNome", { length: 255 }),
+  utilizado: int("utilizado").default(0).notNull(), // 1 = já foi utilizado na consulta, 0 = pendente
+  utilizadoEm: timestamp("utilizadoEm"), // quando foi consumido pelo médico
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PreConsulta = typeof preConsulta.$inferSelect;
+export type InsertPreConsulta = typeof preConsulta.$inferInsert;

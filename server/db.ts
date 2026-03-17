@@ -68,7 +68,10 @@ import {
   InsertClinica,
   procedimentos,
   Procedimento,
-  InsertProcedimento
+  InsertProcedimento,
+  preConsulta,
+  PreConsulta,
+  InsertPreConsulta
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -1524,3 +1527,82 @@ export async function criarLembretesCondutaUrgencia(
     }
   }
 }
+
+
+// ===== Pré-Consulta (Secretária) =====
+
+export const preConsultaDb = {
+  async criar(data: InsertPreConsulta) {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    const result = await db.insert(preConsulta).values(data);
+    return result;
+  },
+
+  async listarPorGestante(gestanteId: number) {
+    const db = await getDb();
+    if (!db) return [];
+    return db.select()
+      .from(preConsulta)
+      .where(eq(preConsulta.gestanteId, gestanteId))
+      .orderBy(desc(preConsulta.createdAt));
+  },
+
+  async listarPendentes(clinicaId?: number) {
+    const db = await getDb();
+    if (!db) return [];
+    const conditions = [eq(preConsulta.utilizado, 0)];
+    if (clinicaId) {
+      conditions.push(eq(preConsulta.clinicaId, clinicaId));
+    }
+    return db.select()
+      .from(preConsulta)
+      .where(and(...conditions))
+      .orderBy(desc(preConsulta.createdAt));
+  },
+
+  async listarPendentesPorGestante(gestanteId: number) {
+    const db = await getDb();
+    if (!db) return [];
+    return db.select()
+      .from(preConsulta)
+      .where(and(
+        eq(preConsulta.gestanteId, gestanteId),
+        eq(preConsulta.utilizado, 0)
+      ))
+      .orderBy(desc(preConsulta.createdAt));
+  },
+
+  async buscarPorId(id: number) {
+    const db = await getDb();
+    if (!db) return null;
+    const result = await db.select()
+      .from(preConsulta)
+      .where(eq(preConsulta.id, id))
+      .limit(1);
+    return result[0] || null;
+  },
+
+  async atualizar(id: number, data: Partial<InsertPreConsulta>) {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    await db.update(preConsulta)
+      .set({ ...data })
+      .where(eq(preConsulta.id, id));
+  },
+
+  async marcarUtilizado(id: number) {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    await db.update(preConsulta)
+      .set({ utilizado: 1, utilizadoEm: new Date() })
+      .where(eq(preConsulta.id, id));
+  },
+
+  async deletar(id: number) {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    await db.delete(preConsulta)
+      .where(eq(preConsulta.id, id));
+  },
+};

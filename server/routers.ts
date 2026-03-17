@@ -103,7 +103,8 @@ import {
   criarLembretesCondutaWizard,
   criarLembretesCondutaUrgencia,
   listarLembretesPendentes,
-  resolverLembretes
+  resolverLembretes,
+  preConsultaDb
 } from "./db";
 import { calcularConsultasSugeridas, salvarAgendamentos, buscarAgendamentos, atualizarStatusAgendamento, remarcarAgendamento } from './agendamento';
 
@@ -4407,6 +4408,76 @@ export const appRouter = router({
         if (!result.success) {
           throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: result.error || 'Erro ao enviar mensagem de teste.' });
         }
+        return { success: true };
+      }),
+  }),
+
+  // ===== Pré-Consulta (Secretária) =====
+  preConsulta: router({
+    criar: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+        peso: z.string().min(1, "Peso é obrigatório"),
+        pressaoArterial: z.string().min(1, "Pressão arterial é obrigatória"),
+        tipoConsulta: z.enum(["1a_consulta", "consulta_rotina", "consulta_urgencia"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await preConsultaDb.criar({
+          gestanteId: input.gestanteId,
+          clinicaId: ctx.user.clinicaId,
+          peso: input.peso,
+          pressaoArterial: input.pressaoArterial,
+          tipoConsulta: input.tipoConsulta,
+          registradoPorId: ctx.user.id,
+          registradoPorNome: ctx.user.name || undefined,
+        });
+        return { success: true };
+      }),
+
+    listarPorGestante: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(async ({ input }) => {
+        return preConsultaDb.listarPorGestante(input.gestanteId);
+      }),
+
+    listarPendentes: protectedProcedure
+      .query(async ({ ctx }) => {
+        return preConsultaDb.listarPendentes(ctx.user.clinicaId ?? undefined);
+      }),
+
+    listarPendentesPorGestante: protectedProcedure
+      .input(z.object({ gestanteId: z.number() }))
+      .query(async ({ input }) => {
+        return preConsultaDb.listarPendentesPorGestante(input.gestanteId);
+      }),
+
+    atualizar: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        peso: z.string().min(1, "Peso é obrigatório"),
+        pressaoArterial: z.string().min(1, "Pressão arterial é obrigatória"),
+        tipoConsulta: z.enum(["1a_consulta", "consulta_rotina", "consulta_urgencia"]),
+      }))
+      .mutation(async ({ input }) => {
+        await preConsultaDb.atualizar(input.id, {
+          peso: input.peso,
+          pressaoArterial: input.pressaoArterial,
+          tipoConsulta: input.tipoConsulta,
+        });
+        return { success: true };
+      }),
+
+    marcarUtilizado: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await preConsultaDb.marcarUtilizado(input.id);
+        return { success: true };
+      }),
+
+    deletar: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await preConsultaDb.deletar(input.id);
         return { success: true };
       }),
   }),
