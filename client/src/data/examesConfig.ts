@@ -21,10 +21,10 @@ export const examesSangue: ExameConfig[] = [
   { nome: "VDRL", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "FTA-ABS IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "HIV", trimestres: { primeiro: true, segundo: false, terceiro: true } },
-  { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: false, terceiro: true } },
+  { nome: "HIV", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+  { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Anti-HBs", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+  { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Toxoplasmose IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Toxoplasmose IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Rubéola IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
@@ -32,8 +32,8 @@ export const examesSangue: ExameConfig[] = [
   { nome: "Citomegalovírus IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Citomegalovírus IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "TSH", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-  { nome: "T4 Livre", trimestres: { primeiro: true, segundo: false, terceiro: false } },
-  { nome: "Eletroforese de Hemoglobina", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+  { nome: "T4 Livre", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+  { nome: "Eletroforese de Hemoglobina", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Ferritina", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Vitamina D (25-OH)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
   { nome: "Vitamina B12", trimestres: { primeiro: true, segundo: true, terceiro: true } },
@@ -51,7 +51,7 @@ export const examesUrina: ExameConfig[] = [
 ];
 
 export const examesFezes: ExameConfig[] = [
-  { nome: "EPF (Parasitológico de Fezes)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+  { nome: "EPF (Parasitológico de Fezes)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
 ];
 
 export const outrosExames: ExameConfig[] = [

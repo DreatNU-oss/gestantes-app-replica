@@ -1167,6 +1167,11 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
         }
       }
       
+      // VDRL com titulação (qualquer valor diferente de "Não Reagente" é anormal)
+      if (nomeExame.toLowerCase().includes('vdrl')) {
+        if (r.match(/1\s*:\s*\d+/)) return true; // Titulação como 1:1, 1:2, etc.
+      }
+      
       // Urocultura positiva
       if (nomeExame.toLowerCase().includes('urocultura')) {
         if (r.includes('positiv') || r.includes('crescimento')) return true;

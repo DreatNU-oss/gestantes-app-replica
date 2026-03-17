@@ -2250,3 +2250,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigate why ultrasound data from previous patient persists when switching to a new patient
 - [x] Fix data clearing/reset logic when gestante selection changes (Ultrassons.tsx + ExamesLaboratoriais.tsx)
 - [x] Verify fix works correctly
+
+## Melhorias Exames Laboratoriais (17/03/2026)
+- [x] Criar dropdown para VDRL com opções de titulação (Não Reagente, 1:1, 1:2, 1:4, 1:8, 1:16, 1:32, 1:64, 1:128, 1:256)
+- [x] Hep B (Anti-HBs) disponível em todos os 3 trimestres
+- [x] HIV disponível em todos os 3 trimestres
+- [x] Hep C disponível em todos os 3 trimestres
+- [x] TSH disponível em todos os 3 trimestres
+- [x] T4 Livre disponível em todos os 3 trimestres
+- [x] Eletroforese de Hemoglobina disponível em todos os 3 trimestres
+- [x] EPF (Parasitológico de Fezes) disponível em todos os 3 trimestres

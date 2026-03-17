@@ -590,6 +590,15 @@ export default function ExamesLaboratoriais() {
           valorAlterado: "Positivo"
         });
       }
+      // VDRL
+      else if (exame.nome === "VDRL") {
+        examesQualitativos.push({
+          nome: exame.nome,
+          tipo: "vdrl",
+          valorNormal: "Não Reagente",
+          valorAlterado: "1:1"
+        });
+      }
     }
     
     return examesQualitativos;
@@ -759,8 +768,47 @@ export default function ExamesLaboratoriais() {
     // Verificar se é Swab vaginal/retal EGB
     const ehEGB = nomeExame === "Swab vaginal/retal EGB";
     
+    // Verificar se é VDRL
+    const ehVDRL = nomeExame === "VDRL";
+    
     // Verificar se é Tipagem sanguínea ABO/Rh
     const ehTipagem = nomeExame === "Tipagem sanguínea ABO/Rh";
+    
+    // Renderizar dropdown para VDRL com opções de titulação
+    if (ehVDRL) {
+      const opcoesVDRL = ["Não Reagente", "1:1", "1:2", "1:4", "1:8", "1:16", "1:32", "1:64", "1:128", "1:256"];
+      const ehNaoReagente = valor === "Não Reagente";
+      const ehReagente = valor && valor !== "Não Reagente" && opcoesVDRL.includes(valor);
+      
+      return (
+        <Select
+          value={valor || ""}
+          onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
+        >
+          <SelectTrigger 
+            className={`w-full ${ehReagente ? 'border-red-500 bg-red-50 text-red-900 font-bold' : ehNaoReagente ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
+            data-field-type="resultado"
+            data-trimestre={trimestre}
+            onKeyDown={(e) => {
+              if (e.key === 'Tab' && !e.shiftKey) {
+                const navegou = navegarParaProximoResultado(trimestre);
+                if (navegou === true || navegou === 'need-date') {
+                  e.preventDefault();
+                }
+              }
+            }}
+            title="Selecione o resultado do VDRL"
+          >
+            <SelectValue placeholder="Selecione" />
+          </SelectTrigger>
+          <SelectContent>
+            {opcoesVDRL.map((opcao) => (
+              <SelectItem key={opcao} value={opcao}>{opcao}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
     
     // Renderizar dropdown para Tipagem sanguínea ABO/Rh
     if (ehTipagem) {
@@ -1809,6 +1857,25 @@ export default function ExamesLaboratoriais() {
                         }
                         if (valorLower.includes('negativa') || valorLower.includes('negativo')) {
                           return { valorNormalizado: 'Negativa' };
+                        }
+                      }
+                      
+                      // VDRL: Não Reagente ou titulação (1:1, 1:2, etc.)
+                      if (nomeExame === 'VDRL') {
+                        if (valorLower.includes('não reagente') || valorLower.includes('nao reagente') || valorLower.includes('negativo')) {
+                          return { valorNormalizado: 'Não Reagente' };
+                        }
+                        // Tentar extrair titulação (1:1, 1:2, 1:4, etc.)
+                        const matchTitulacao = valor.match(/1\s*:\s*(\d+)/);
+                        if (matchTitulacao) {
+                          const titulo = parseInt(matchTitulacao[1]);
+                          const opcoesValidas = [1, 2, 4, 8, 16, 32, 64, 128, 256];
+                          if (opcoesValidas.includes(titulo)) {
+                            return { valorNormalizado: `1:${titulo}` };
+                          }
+                        }
+                        if (valorLower.includes('reagente') || valorLower.includes('positivo')) {
+                          return { valorNormalizado: '1:1' };
                         }
                       }
                       

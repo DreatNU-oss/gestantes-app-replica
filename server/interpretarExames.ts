@@ -137,12 +137,18 @@ export async function interpretarExamesComIA(
    - Para exames de contagem: extraia o valor com unidade (ex: "12.5 g/dL", "191.000 /mm³")
    - Para resultados qualitativos: use "Reagente", "Não Reagente", "Positivo", "Negativo"
    
-   **REGRA CRÍTICA PARA SOROLOGIAS (IgG, IgM, VDRL, HIV, Hepatites, Anti-HBs, Coombs):**
+   **REGRA CRÍTICA PARA SOROLOGIAS (IgG, IgM, HIV, Hepatites, Anti-HBs, Coombs):**
    - O valor DEVE SEMPRE conter a interpretação qualitativa (Reagente/Não Reagente/Indeterminado)
    - Se houver valor numérico, inclua-o JUNTO com a interpretação: "0.08 (Não Reagente)"
    - NUNCA retorne apenas o valor numérico sem a interpretação qualitativa
    - Compare o valor numérico com os valores de referência do laudo para determinar a interpretação
    - Exemplo correto: "0.08 (Não Reagente)" - Exemplo ERRADO: "0.08" ou "0,08"
+   
+   **REGRA CRÍTICA PARA VDRL:**
+   - Se Não Reagente: retorne "Não Reagente"
+   - Se Reagente COM titulação: retorne a titulação exata (ex: "1:2", "1:4", "1:8", "1:16", "1:32", "1:64", "1:128", "1:256")
+   - Se Reagente SEM titulação: retorne "1:1"
+   - Exemplo correto: "1:4" - Exemplo ERRADO: "Reagente" (sem titulação)
 
 4. **UROCULTURA - ATENÇÃO ESPECIAL:**
    - Se encontrar "Urocultura" ou "Cultura de Urina":
@@ -445,10 +451,10 @@ function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "ter
     { nome: "VDRL", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "FTA-ABS IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-    { nome: "HIV", trimestres: { primeiro: true, segundo: false, terceiro: true } },
-    { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: false, terceiro: true } },
+    { nome: "HIV", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+    { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Anti-HBs", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-    { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+    { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Toxoplasmose IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Toxoplasmose IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Rubéola IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
@@ -456,8 +462,8 @@ function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "ter
     { nome: "Citomegalovírus IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Citomegalovírus IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "TSH", trimestres: { primeiro: true, segundo: true, terceiro: true } },
-    { nome: "T4 Livre", trimestres: { primeiro: true, segundo: false, terceiro: false } },
-    { nome: "Eletroforese de Hemoglobina", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+    { nome: "T4 Livre", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+    { nome: "Eletroforese de Hemoglobina", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Ferritina", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Vitamina D (25-OH)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Vitamina B12", trimestres: { primeiro: true, segundo: true, terceiro: true } },
@@ -467,7 +473,7 @@ function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "ter
     { nome: "Urocultura", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Proteinúria de 24 horas", trimestres: { primeiro: false, segundo: false, terceiro: true } },
     // Exames de Fezes
-    { nome: "EPF (Parasitológico de Fezes)", trimestres: { primeiro: true, segundo: false, terceiro: false } },
+    { nome: "EPF (Parasitológico de Fezes)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     // Outros Exames
     { nome: "Swab vaginal/retal EGB", trimestres: { primeiro: false, segundo: false, terceiro: true } },
   ];
