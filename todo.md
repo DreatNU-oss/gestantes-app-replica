@@ -2199,3 +2199,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## BUG: React hooks order error in FatoresRiscoManager (17/03/2026)
 - [x] Mover useMemo hooks para antes do early return (isLoading) para respeitar regras dos React Hooks
+
+## Campos obrigatórios na edição de paciente (17/03/2026)
+- [x] Tornar e-mail, telefone, nome, data de nascimento, peso e altura obrigatórios ao editar registro
+- [x] Validação impede salvar se campos obrigatórios não preenchidos
+
+## Menu Pré-Cadastro exclusivo para Secretárias (17/03/2026)
+- [x] Criar página PreCadastro.tsx com formulário simplificado
+- [x] Campos: Nome Completo, Data de Nascimento, Telefone, E-mail, Plano de Saúde, Altura, Peso ao engravidar
+- [x] Alerta muito evidente sobre peso ao engravidar (não peso atual) - banner amber com ícone Scale
+- [x] Todos os campos obrigatórios - não permitir salvar sem preencher tudo
+- [x] Dados preenchidos aparecem automaticamente no cadastro completo (usa mesma tabela gestantes)
+- [x] Menu "Pré-Cadastro" visível APENAS para Secretárias (roles: ['secretaria'])
+- [x] Menu no topo da lista (primeiro item) para Secretárias com ícone ClipboardPlus
+- [x] Secretária pode adicionar e editar pré-cadastros
+- [x] 24 testes unitários passando

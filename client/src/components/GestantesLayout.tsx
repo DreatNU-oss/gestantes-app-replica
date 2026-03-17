@@ -41,7 +41,8 @@ import {
   ClipboardList,
   AlertTriangle,
   Building2,
-  MessageSquare
+  MessageSquare,
+  ClipboardPlus
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -57,6 +58,7 @@ import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
 // Definição de menus com controle de acesso por role
 // roles: quais roles podem ver este item. Se vazio/undefined, todos podem ver.
 const allMenuItems = [
+  { icon: ClipboardPlus, label: "Pré-Cadastro", path: "/pre-cadastro", roles: ['secretaria'] },
   { icon: Users, label: "Gestantes", path: "/dashboard", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: FileText, label: "Exames Laboratoriais", path: "/exames", roles: ['superadmin', 'admin', 'obstetra'] },

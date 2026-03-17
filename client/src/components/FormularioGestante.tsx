@@ -101,6 +101,9 @@ export default function FormularioGestante({
     nome?: string;
     dataNascimento?: string;
     email?: string;
+    telefone?: string;
+    altura?: string;
+    pesoInicial?: string;
   }>({});
   
   // Estados para confirmação ao sair
@@ -449,6 +452,21 @@ export default function FormularioGestante({
       errors.email = 'E-mail inválido';
     }
     
+    // Validar telefone (obrigatório)
+    if (!formData.telefone || formData.telefone.trim() === '') {
+      errors.telefone = 'Telefone é obrigatório';
+    }
+    
+    // Validar altura (obrigatório)
+    if (!formData.altura || formData.altura.trim() === '') {
+      errors.altura = 'Altura é obrigatória';
+    }
+    
+    // Validar peso inicial (obrigatório)
+    if (!formData.pesoInicial || formData.pesoInicial.trim() === '') {
+      errors.pesoInicial = 'Peso ao engravidar é obrigatório';
+    }
+    
     setFieldErrors(errors);
     
     // Se houver erros, mostrar toast e retornar false
@@ -633,14 +651,21 @@ export default function FormularioGestante({
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="telefone">Telefone</Label>
+                <Label htmlFor="telefone">Telefone <span className="text-red-500">*</span></Label>
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
                     <PhoneInput
                       id="telefone"
                       value={formData.telefone}
-                      onChange={(value) => setFormData({ ...formData, telefone: value })}
+                      onChange={(value) => {
+                        setFormData({ ...formData, telefone: value });
+                        if (fieldErrors.telefone) setFieldErrors(prev => ({ ...prev, telefone: undefined }));
+                      }}
+                      className={fieldErrors.telefone ? "border-red-500 focus-visible:ring-red-500" : ""}
                     />
+                    {fieldErrors.telefone && (
+                      <p className="text-sm text-red-500 mt-1">{fieldErrors.telefone}</p>
+                    )}
                   </div>
                   {gestanteId && formData.telefone && (
                     <Button
@@ -895,7 +920,7 @@ export default function FormularioGestante({
               {/* Segunda linha: Altura e Peso Inicial */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="altura">Altura (cm)</Label>
+                  <Label htmlFor="altura">Altura (cm) <span className="text-red-500">*</span></Label>
                   <Input
                     id="altura"
                     type="number"
@@ -903,9 +928,15 @@ export default function FormularioGestante({
                     max="250"
                     placeholder="Ex: 165"
                     value={formData.altura}
-                    onChange={(e) => setFormData({ ...formData, altura: e.target.value })}
-                    className={alertaAltura.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
+                    onChange={(e) => {
+                      setFormData({ ...formData, altura: e.target.value });
+                      if (fieldErrors.altura) setFieldErrors(prev => ({ ...prev, altura: undefined }));
+                    }}
+                    className={fieldErrors.altura ? "border-red-500 focus-visible:ring-red-500" : alertaAltura.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
                   />
+                  {fieldErrors.altura && (
+                    <p className="text-sm text-red-500">{fieldErrors.altura}</p>
+                  )}
                   {alertaAltura.show && (
                     <p className="text-sm text-amber-600 flex items-start gap-1">
                       <span className="mt-0.5">{alertaAltura.mensagem}</span>
@@ -913,7 +944,7 @@ export default function FormularioGestante({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="pesoInicial">Peso Inicial (kg)</Label>
+                  <Label htmlFor="pesoInicial">Peso Inicial (kg) <span className="text-red-500">*</span></Label>
                   <Input
                     id="pesoInicial"
                     type="text"
@@ -924,10 +955,14 @@ export default function FormularioGestante({
                       const v = e.target.value.replace(",", ".");
                       if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
                         setFormData({ ...formData, pesoInicial: v });
+                        if (fieldErrors.pesoInicial) setFieldErrors(prev => ({ ...prev, pesoInicial: undefined }));
                       }
                     }}
-                    className={alertaPeso.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
+                    className={fieldErrors.pesoInicial ? "border-red-500 focus-visible:ring-red-500" : alertaPeso.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
                   />
+                  {fieldErrors.pesoInicial && (
+                    <p className="text-sm text-red-500">{fieldErrors.pesoInicial}</p>
+                  )}
                   {alertaPeso.show ? (
                     <p className="text-sm text-amber-600 flex items-start gap-1">
                       <span className="mt-0.5">{alertaPeso.mensagem}</span>
