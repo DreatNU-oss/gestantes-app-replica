@@ -53,12 +53,14 @@ describe('Alerta Pré-eclâmpsia sem AAS', () => {
     expect(medicamentosQueryIndex).toBeLessThan(earlyReturnIndex);
   });
 
-  it('useMemo para fatoresPreEclampsia e usaAAS devem estar após early return (são derivados, não hooks)', () => {
-    // fatoresPreEclampsia e usaAAS usam useMemo que depende de fatoresAtivos
-    // fatoresAtivos é calculado após o early return, então os useMemo ficam depois
-    // Isso é OK porque useMemo é chamado incondicionalmente no fluxo de render
-    const fatoresAtivosIndex = source.indexOf('const fatoresAtivos = fatores.filter');
+  it('todos os useMemo devem estar antes do early return (regra dos hooks)', () => {
+    const earlyReturnIndex = source.indexOf('if (isLoading) {');
+    const fatoresAtivosIndex = source.indexOf('const fatoresAtivos = useMemo');
     const fatoresPreEclampsiaIndex = source.indexOf('const fatoresPreEclampsia = useMemo');
-    expect(fatoresPreEclampsiaIndex).toBeGreaterThan(fatoresAtivosIndex);
+    const usaAASIndex = source.indexOf('const usaAAS = useMemo');
+    // Todos os useMemo devem estar ANTES do early return
+    expect(fatoresAtivosIndex).toBeLessThan(earlyReturnIndex);
+    expect(fatoresPreEclampsiaIndex).toBeLessThan(earlyReturnIndex);
+    expect(usaAASIndex).toBeLessThan(earlyReturnIndex);
   });
 });

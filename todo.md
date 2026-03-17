@@ -2196,3 +2196,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Criar alerta visual vermelho no FatoresRiscoManager quando risco de PE e sem AAS
 - [x] Exibir fatores específicos e orientação de prescrição (AAS 100-150mg/dia)
 - [x] 9 testes unitários passando
+
+## BUG: React hooks order error in FatoresRiscoManager (17/03/2026)
+- [x] Mover useMemo hooks para antes do early return (isLoading) para respeitar regras dos React Hooks

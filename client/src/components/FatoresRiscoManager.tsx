@@ -180,6 +180,41 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
     }
   }, [imcGestante, fatores, isLoading, gestanteId]);
 
+  // Fatores de risco associados a pré-eclâmpsia (constante fora do render)
+  const FATORES_PRE_ECLAMPSIA = useMemo(() => [
+    'fator_preditivo_dheg',
+    'historico_familiar_dheg',
+    'hipertensao',
+    'sobrepeso_obesidade',
+    'diabetes_tipo_1',
+    'diabetes_tipo2',
+    'trombofilia',
+    'fiv_nesta_gestacao',
+    'gemelar',
+  ], []);
+
+  const fatoresAtivos = useMemo(() => fatores.filter(f => f.ativo === 1), [fatores]);
+
+  // Verificar se tem fatores de risco relevantes (excluindo "Alergia a medicamento")
+  const temFatoresRelevantes = useMemo(() => fatoresAtivos.some(f => 
+    f.descricao?.toLowerCase() !== 'alergia a medicamento' &&
+    f.descricao?.toLowerCase() !== 'alergia a medicamentos'
+  ), [fatoresAtivos]);
+
+  const fatoresPreEclampsia = useMemo(() => {
+    return fatoresAtivos.filter(f => FATORES_PRE_ECLAMPSIA.includes(f.tipo));
+  }, [fatoresAtivos, FATORES_PRE_ECLAMPSIA]);
+
+  const temRiscoPreEclampsia = fatoresPreEclampsia.length > 0;
+
+  const usaAAS = useMemo(() => {
+    return medicamentosGestante.some(
+      (m: any) => m.tipo === 'aas' && m.ativo === 1
+    );
+  }, [medicamentosGestante]);
+
+  const alertaAAS = temRiscoPreEclampsia && !usaAAS;
+
   const handleAddFator = () => {
     if (!novoFator.tipo) {
       toast.error("Selecione um tipo de fator de risco");
@@ -207,41 +242,6 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
   if (isLoading) {
     return <div className="text-sm text-muted-foreground">Carregando fatores de risco...</div>;
   }
-
-  const fatoresAtivos = fatores.filter(f => f.ativo === 1);
-  
-  // Verificar se tem fatores de risco relevantes (excluindo "Alergia a medicamento")
-  const temFatoresRelevantes = fatoresAtivos.some(f => 
-    f.descricao?.toLowerCase() !== 'alergia a medicamento' &&
-    f.descricao?.toLowerCase() !== 'alergia a medicamentos'
-  );
-
-  // Fatores de risco associados a pré-eclâmpsia
-  const FATORES_PRE_ECLAMPSIA = [
-    'fator_preditivo_dheg',
-    'historico_familiar_dheg',
-    'hipertensao',
-    'sobrepeso_obesidade',
-    'diabetes_tipo_1',
-    'diabetes_tipo2',
-    'trombofilia',
-    'fiv_nesta_gestacao',
-    'gemelar',
-  ];
-
-  const fatoresPreEclampsia = useMemo(() => {
-    return fatoresAtivos.filter(f => FATORES_PRE_ECLAMPSIA.includes(f.tipo));
-  }, [fatoresAtivos]);
-
-  const temRiscoPreEclampsia = fatoresPreEclampsia.length > 0;
-
-  const usaAAS = useMemo(() => {
-    return medicamentosGestante.some(
-      (m: any) => m.tipo === 'aas' && m.ativo === 1
-    );
-  }, [medicamentosGestante]);
-
-  const alertaAAS = temRiscoPreEclampsia && !usaAAS;
 
   return (
     <Card>
