@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, nome, gatilhoTipo, ativo FROM mensagemTemplates WHERE nome LIKE '%Troca de Medicamento%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, gatilhoTipo, ativo FROM mensagemTemplates WHERE nome LIKE '%Troca de Medicamento%';",
+  "rows": [
+    {
+      "id": "90001",
+      "nome": "Troca de Medicamento - Ácido Fólico para Polivitamínico",
+      "gatilhoTipo": "manual",
+      "ativo": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tgatilhoTipo\tativo\n90001\tTroca de Medicamento - Ácido Fólico para Polivitamínico\tmanual\t1\n",
+  "stderr": "",
+  "execution_time_ms": 376
+}

@@ -2308,3 +2308,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizado limiar na Pré-Consulta da secretária (130/90)
 - [x] Função isBPElevated para valores numéricos separados
 - [x] 24 testes unitários passando
+
+## Template WhatsApp - Troca de Medicamento (18/03/2026)
+- [x] Implementar template "Troca de Medicamento - Ácido Fólico para Polivitamínico" no sistema de mensagens (ID: 90001, tipo: manual)
+- [x] Guardar regra: não usar ícones de coração nos templates (médico é homem)

@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, clinicaId, nome, gatilhoTipo, igSemanas, ativo FROM mensagemTemplates WHERE clinicaId = 1 ORDER BY id DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, clinicaId, nome, gatilhoTipo, igSemanas, ativo FROM mensagemTemplates WHERE clinicaId = 1 ORDER BY id DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "60001",
+      "clinicaId": "1",
+      "nome": "Lembrete: Curva Glicêmica",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "24",
+      "ativo": "1"
+    },
+    {
+      "id": "30005",
+      "clinicaId": "1",
+      "nome": "Parabéns + Cuidados Pós-Parto Normal",
+      "gatilhoTipo": "evento",
+      "igSemanas": "NULL",
+      "ativo": "1"
+    },
+    {
+      "id": "30004",
+      "clinicaId": "1",
+      "nome": "Parabéns + Cuidados Pós-Operatórios Cesárea",
+      "gatilhoTipo": "evento",
+      "igSemanas": "NULL",
+      "ativo": "1"
+    },
+    {
+      "id": "30003",
+      "clinicaId": "1",
+      "nome": "Orientações Pré-operatórias Cesárea - 36 semanas",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "36",
+      "ativo": "1"
+    },
+    {
+      "id": "30001",
+      "clinicaId": "1",
+      "nome": "Orientações Alimentares - 1ª Consulta",
+      "gatilhoTipo": "evento",
+      "igSemanas": "NULL",
+      "ativo": "1"
+    },
+    {
+      "id": "5",
+      "clinicaId": "1",
+      "nome": "Lembrete: Morfológico 2º Tri (1 semana)",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "19",
+      "ativo": "1"
+    },
+    {
+      "id": "4",
+      "clinicaId": "1",
+      "nome": "Lembrete: Morfológico 2º Tri (2 semanas)",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "18",
+      "ativo": "1"
+    },
+    {
+      "id": "3",
+      "clinicaId": "1",
+      "nome": "Lembrete: Morfológico 1º Trimestre",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "10",
+      "ativo": "1"
+    },
+    {
+      "id": "2",
+      "clinicaId": "1",
+      "nome": "Lembrete: Vacina Bronquiolite",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "32",
+      "ativo": "1"
+    },
+    {
+      "id": "1",
+      "clinicaId": "1",
+      "nome": "Lembrete: Vacina dTpa",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "27",
+      "ativo": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclinicaId\tnome\tgatilhoTipo\tigSemanas\tativo\n60001\t1\tLembrete: Curva Glicêmica\tidade_gestacional\t24\t1\n30005\t1\tParabéns + Cuidados Pós-Parto Normal\tevento\tNULL\t1\n30004\t1\tParabéns + Cuidados Pós-Operatórios Cesárea\tevento\tNULL\t1\n30003\t1\tOrientações Pré-operatórias Cesárea - 36 semanas\tidade_gestacional\t36\t1\n30001\t1\tOrientações Alimentares - 1ª Consulta\tevento\tNULL\t1\n5\t1\tLembrete: Morfológico 2º Tri (1 semana)\tidade_gestacional\t19\t1\n4\t1\tLembrete: Morfológico 2º Tri (2 semanas)\tidade_gestacional\t18\t1\n3\t1\tLembrete: Morfológico 1º Trimestre\tidade_gestacional\t10\t1\n2\t1\tLembrete: Vacina Bronquiolite\tidade_gestacional\t32\t1\n1\t1\tLembrete: Vacina dTpa\tidade_gestacional\t27\t1\n",
+  "stderr": "",
+  "execution_time_ms": 363
+}

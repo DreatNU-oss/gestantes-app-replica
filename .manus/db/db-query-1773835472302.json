@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, name, email, role, clinicaId FROM users WHERE role = 'secretaria' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, name, email, role, clinicaId FROM users WHERE role = 'secretaria' LIMIT 10;",
+  "rows": [
+    {
+      "id": "930027",
+      "name": "Crislaine Borges",
+      "email": "crislaineluciano256@gmail.com",
+      "role": "secretaria",
+      "clinicaId": "1"
+    },
+    {
+      "id": "2790001",
+      "name": "jenifertc",
+      "email": "jenifertc@hotmail.com",
+      "role": "secretaria",
+      "clinicaId": "1"
+    },
+    {
+      "id": "10650236",
+      "name": "Brunna.avellino",
+      "email": "Brunna.avellino@gmail.com",
+      "role": "secretaria",
+      "clinicaId": "1"
+    },
+    {
+      "id": "12600357",
+      "name": "brunna.avellino",
+      "email": "brunna.avellino@icloud.com",
+      "role": "secretaria",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tclinicaId\n930027\tCrislaine Borges\tcrislaineluciano256@gmail.com\tsecretaria\t1\n2790001\tjenifertc\tjenifertc@hotmail.com\tsecretaria\t1\n10650236\tBrunna.avellino\tBrunna.avellino@gmail.com\tsecretaria\t1\n12600357\tbrunna.avellino\tbrunna.avellino@icloud.com\tsecretaria\t1\n",
+  "stderr": "",
+  "execution_time_ms": 360
+}
