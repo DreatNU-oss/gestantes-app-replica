@@ -1,0 +1,90 @@
+{
+  "query": "SELECT g.nome, s.createdAt FROM sessoesGestante s LEFT JOIN gestantes g ON s.gestanteId = g.id ORDER BY s.createdAt DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.nome, s.createdAt FROM sessoesGestante s LEFT JOIN gestantes g ON s.gestanteId = g.id ORDER BY s.createdAt DESC LIMIT 20;",
+  "rows": [
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:29"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:29"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:29"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:29"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:29"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:10"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:10"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:09"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:09"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:21:09"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:34"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:34"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:34"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:34"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:34"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:15"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:15"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:15"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:15"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "createdAt": "2026-03-17 21:20:15"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\tcreatedAt\nTESTE TESTE\t2026-03-17 21:21:29\nTESTE TESTE\t2026-03-17 21:21:29\nTESTE TESTE\t2026-03-17 21:21:29\nTESTE TESTE\t2026-03-17 21:21:29\nTESTE TESTE\t2026-03-17 21:21:29\nTESTE TESTE\t2026-03-17 21:21:10\nTESTE TESTE\t2026-03-17 21:21:10\nTESTE TESTE\t2026-03-17 21:21:09\nTESTE TESTE\t2026-03-17 21:21:09\nTESTE TESTE\t2026-03-17 21:21:09\nTESTE TESTE\t2026-03-17 21:20:34\nTESTE TESTE\t2026-03-17 21:20:34\nTESTE TESTE\t2026-03-17 21:20:34\nTESTE TESTE\t2026-03-17 21:20:34\nTESTE TESTE\t2026-03-17 21:20:34\nTESTE TESTE\t2026-03-17 21:20:15\nTESTE TESTE\t2026-03-17 21:20:15\nTESTE TESTE\t2026-03-17 21:20:15\nTESTE TESTE\t2026-03-17 21:20:15\nTESTE TESTE\t2026-03-17 21:20:15\n",
+  "stderr": "",
+  "execution_time_ms": 534
+}

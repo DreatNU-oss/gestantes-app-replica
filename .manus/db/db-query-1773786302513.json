@@ -1,0 +1,311 @@
+{
+  "query": "SELECT g.nome AS nomeGestante, c.destino AS email, COUNT(*) AS totalSolicitacoes, SUM(c.usado) AS codigosUsados, MAX(c.createdAt) AS ultimaSolicitacao FROM codigosAcessoGestante c LEFT JOIN gestantes g ON c.gestanteId = g.id GROUP BY c.gestanteId, g.nome, c.destino ORDER BY ultimaSolicitacao DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.nome AS nomeGestante, c.destino AS email, COUNT(*) AS totalSolicitacoes, SUM(c.usado) AS codigosUsados, MAX(c.createdAt) AS ultimaSolicitacao FROM codigosAcessoGestante c LEFT JOIN gestantes g ON c.gestanteId = g.id GROUP BY c.gestanteId, g.nome, c.destino ORDER BY ultimaSolicitacao DESC;",
+  "rows": [
+    {
+      "nomeGestante": "Monalisa Mafra Gonçalves de Oliveira",
+      "email": "monalisamafra12@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-17 20:19:39"
+    },
+    {
+      "nomeGestante": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "totalSolicitacoes": "33",
+      "codigosUsados": "0",
+      "ultimaSolicitacao": "2026-03-17 18:06:47"
+    },
+    {
+      "nomeGestante": "Lívia Caldas Marins",
+      "email": "marins.livia@outlook.com",
+      "totalSolicitacoes": "3",
+      "codigosUsados": "2",
+      "ultimaSolicitacao": "2026-03-17 00:06:56"
+    },
+    {
+      "nomeGestante": "Crisilane Aparecida da Costa Soares",
+      "email": "crislaineacsmg@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 19:05:00"
+    },
+    {
+      "nomeGestante": "Andressa Cristina Gonçalves",
+      "email": "andressacristinabio@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 17:26:19"
+    },
+    {
+      "nomeGestante": "Fernanda Aparecida Lemes",
+      "email": "nandalemesaz.fl@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 17:17:09"
+    },
+    {
+      "nomeGestante": "Leticia Petrin",
+      "email": "peetrinleticia@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 16:57:42"
+    },
+    {
+      "nomeGestante": "Rosimeire Pereira de Paiva",
+      "email": "jessicarigaard@icloud.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 11:47:47"
+    },
+    {
+      "nomeGestante": "Jéssica Adriana Morais Lopes",
+      "email": "adrianajessicalopes@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-16 10:51:35"
+    },
+    {
+      "nomeGestante": "Bruna do Carmo Cunha",
+      "email": "brunaccunha6@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-15 13:30:44"
+    },
+    {
+      "nomeGestante": "Raissa Andrade Gibram",
+      "email": "raissa@palmilhado.com.br",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-15 03:06:36"
+    },
+    {
+      "nomeGestante": "Camila Cristina Luiz da Silva",
+      "email": "Camilacris1808lc@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-15 01:12:29"
+    },
+    {
+      "nomeGestante": "Amanda Tavares Amado",
+      "email": "tavaresamanda492@gmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "0",
+      "ultimaSolicitacao": "2026-03-15 00:18:54"
+    },
+    {
+      "nomeGestante": "Taciana Ribeiro Rios de Abreu",
+      "email": "tacianapsic@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 23:29:50"
+    },
+    {
+      "nomeGestante": "Lara De Souza Silverio",
+      "email": "lara_souza@icloud.com",
+      "totalSolicitacoes": "3",
+      "codigosUsados": "2",
+      "ultimaSolicitacao": "2026-03-14 22:28:56"
+    },
+    {
+      "nomeGestante": "Luana Maria Oliveira Ribeiro Bernardes",
+      "email": "luanaoliveira.97@hotmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 21:36:49"
+    },
+    {
+      "nomeGestante": "Elisa Matias Jorge Souza",
+      "email": "elisahelenamatias@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 20:29:37"
+    },
+    {
+      "nomeGestante": "Fernanda Angélica Mafra",
+      "email": "angelicamafra@yahoo.com.br",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 20:27:21"
+    },
+    {
+      "nomeGestante": "Jenilda Aparecida Souza Santos",
+      "email": "jenildasouzasantos@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 20:15:24"
+    },
+    {
+      "nomeGestante": "Ellen Aparecida Ferreira Batista",
+      "email": "ellenfbatista05@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 19:38:14"
+    },
+    {
+      "nomeGestante": "Ellen Aparecida Ferreira Batista",
+      "email": "ellenfbatista04@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "0",
+      "ultimaSolicitacao": "2026-03-14 19:35:10"
+    },
+    {
+      "nomeGestante": "Lara de Souza Gomes",
+      "email": "laragomesj5@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 19:22:32"
+    },
+    {
+      "nomeGestante": "Ellem Ribeiro Lemes",
+      "email": "ribeirolemese@yahoo.com.br",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 19:05:28"
+    },
+    {
+      "nomeGestante": "Mariá Raíssa Loureira Rodrigues",
+      "email": "maria_rlrodrigues@hotmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "2",
+      "ultimaSolicitacao": "2026-03-14 18:48:11"
+    },
+    {
+      "nomeGestante": "Bianca Fonseca Moreno da Cruz",
+      "email": "bm98678@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:26:05"
+    },
+    {
+      "nomeGestante": "Letícia Aparecida Silveira",
+      "email": "leticiaas@hotmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:21:12"
+    },
+    {
+      "nomeGestante": "Yanka Moreira Távora",
+      "email": "yanka.t@hotmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:20:55"
+    },
+    {
+      "nomeGestante": "Luciany Aparecida Vilela",
+      "email": "lucianyvilela@gmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:19:30"
+    },
+    {
+      "nomeGestante": "Chaiane Priscila da Silva Carvalho",
+      "email": "chaianepriscila7@gmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:17:59"
+    },
+    {
+      "nomeGestante": "Gabriela dos Santos Batista Figueiredo",
+      "email": "gabrieladsbatista@hotmail.com",
+      "totalSolicitacoes": "2",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 18:17:38"
+    },
+    {
+      "nomeGestante": "Lorenza Silva Pereira",
+      "email": "pereiralorenza02@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 17:40:31"
+    },
+    {
+      "nomeGestante": "Ana Clara Borges da Silva",
+      "email": "anaclarab11@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 17:20:38"
+    },
+    {
+      "nomeGestante": "Bruna Ribeiro Costa",
+      "email": "brunaribeiro211211@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 17:17:23"
+    },
+    {
+      "nomeGestante": "Adrieli Rezende Barros",
+      "email": "adrieli_rezende_@hotmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 16:42:29"
+    },
+    {
+      "nomeGestante": "Ana Laura Marinho Amaral",
+      "email": "analaura.alma@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 16:35:14"
+    },
+    {
+      "nomeGestante": "Tassiana Tonioli Craveiro Chagas",
+      "email": "ttassiana@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 15:58:55"
+    },
+    {
+      "nomeGestante": "Sophy Marie Ferreira Martins",
+      "email": "sophymarief@hotmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 15:54:56"
+    },
+    {
+      "nomeGestante": "Ana Carolini Almeida de Souza",
+      "email": "anacarolini.als@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-14 15:50:27"
+    },
+    {
+      "nomeGestante": "Helena Resende Andrade",
+      "email": "helenaresende2309@gmail.com",
+      "totalSolicitacoes": "4",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-10 18:06:17"
+    },
+    {
+      "nomeGestante": "NULL",
+      "email": "dreatnu@yahoo.com",
+      "totalSolicitacoes": "7",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-01-05 19:06:56"
+    },
+    {
+      "nomeGestante": "NULL",
+      "email": "teste@gestantesapp.com",
+      "totalSolicitacoes": "14",
+      "codigosUsados": "9",
+      "ultimaSolicitacao": "2025-12-31 11:14:29"
+    },
+    {
+      "nomeGestante": "Cecília de Salles Amaral Olímpio",
+      "email": "ceciliadesallesamaral@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2025-12-30 19:56:01"
+    },
+    {
+      "nomeGestante": "NULL",
+      "email": "dreatnu@yahoo.com",
+      "totalSolicitacoes": "11",
+      "codigosUsados": "5",
+      "ultimaSolicitacao": "2025-12-18 20:15:10"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeGestante\temail\ttotalSolicitacoes\tcodigosUsados\tultimaSolicitacao\nMonalisa Mafra Gonçalves de Oliveira\tmonalisamafra12@gmail.com\t1\t1\t2026-03-17 20:19:39\nTESTE TESTE\tdreatnu@yahoo.com\t33\t0\t2026-03-17 18:06:47\nLívia Caldas Marins\tmarins.livia@outlook.com\t3\t2\t2026-03-17 00:06:56\nCrisilane Aparecida da Costa Soares\tcrislaineacsmg@gmail.com\t1\t1\t2026-03-16 19:05:00\nAndressa Cristina Gonçalves\tandressacristinabio@gmail.com\t1\t1\t2026-03-16 17:26:19\nFernanda Aparecida Lemes\tnandalemesaz.fl@gmail.com\t1\t1\t2026-03-16 17:17:09\nLeticia Petrin\tpeetrinleticia@gmail.com\t1\t1\t2026-03-16 16:57:42\nRosimeire Pereira de Paiva\tjessicarigaard@icloud.com\t1\t1\t2026-03-16 11:47:47\nJéssica Adriana Morais Lopes\tadrianajessicalopes@gmail.com\t1\t1\t2026-03-16 10:51:35\nBruna do Carmo Cunha\tbrunaccunha6@gmail.com\t1\t1\t2026-03-15 13:30:44\nRaissa Andrade Gibram\traissa@palmilhado.com.br\t1\t1\t2026-03-15 03:06:36\nCamila Cristina Luiz da Silva\tCamilacris1808lc@gmail.com\t1\t1\t2026-03-15 01:12:29\nAmanda Tavares Amado\ttavaresamanda492@gmail.com\t2\t0\t2026-03-15 00:18:54\nTaciana Ribeiro Rios de Abreu\ttacianapsic@gmail.com\t1\t1\t2026-03-14 23:29:50\nLara De Souza Silverio\tlara_souza@icloud.com\t3\t2\t2026-03-14 22:28:56\nLuana Maria Oliveira Ribeiro Bernardes\tluanaoliveira.97@hotmail.com\t1\t1\t2026-03-14 21:36:49\nElisa Matias Jorge Souza\telisahelenamatias@gmail.com\t1\t1\t2026-03-14 20:29:37\nFernanda Angélica Mafra\tangelicamafra@yahoo.com.br\t1\t1\t2026-03-14 20:27:21\nJenilda Aparecida Souza Santos\tjenildasouzasantos@gmail.com\t1\t1\t2026-03-14 20:15:24\nEllen Aparecida Ferreira Batista\tellenfbatista05@gmail.com\t1\t1\t2026-03-14 19:38:14\nEllen Aparecida Ferreira Batista\tellenfbatista04@gmail.com\t1\t0\t2026-03-14 19:35:10\nLara de Souza Gomes\tlaragomesj5@gmail.com\t1\t1\t2026-03-14 19:22:32\nEllem Ribeiro Lemes\tribeirolemese@yahoo.com.br\t1\t1\t2026-03-14 19:05:28\nMariá Raíssa Loureira Rodrigues\tmaria_rlrodrigues@hotmail.com\t2\t2\t2026-03-14 18:48:11\nBianca Fonseca Moreno da Cruz\tbm98678@gmail.com\t1\t1\t2026-03-14 18:26:05\nLetícia Aparecida Silveira\tleticiaas@hotmail.com\t1\t1\t2026-03-14 18:21:12\nYanka Moreira Távora\tyanka.t@hotmail.com\t2\t1\t2026-03-14 18:20:55\nLuciany Aparecida Vilela\tlucianyvilela@gmail.com\t2\t1\t2026-03-14 18:19:30\nChaiane Priscila da Silva Carvalho\tchaianepriscila7@gmail.com\t2\t1\t2026-03-14 18:17:59\nGabriela dos Santos Batista Figueiredo\tgabrieladsbatista@hotmail.com\t2\t1\t2026-03-14 18:17:38\nLorenza Silva Pereira\tpereiralorenza02@gmail.com\t1\t1\t2026-03-14 17:40:31\nAna Clara Borges da Silva\tanaclarab11@gmail.com\t1\t1\t2026-03-14 17:20:38\nBruna Ribeiro Costa\tbrunaribeiro211211@gmail.com\t1\t1\t2026-03-14 17:17:23\nAdrieli Rezende Barros\tadrieli_rezende_@hotmail.com\t1\t1\t2026-03-14 16:42:29\nAna Laura Marinho Amaral\tanalaura.alma@gmail.com\t1\t1\t2026-03-14 16:35:14\nTassiana Tonioli Craveiro Chagas\tttassiana@gmail.com\t1\t1\t2026-03-14 15:58:55\nSophy Marie Ferreira Martins\tsophymarief@hotmail.com\t1\t1\t2026-03-14 15:54:56\nAna Carolini Almeida de Souza\tanacarolini.als@gmail.com\t1\t1\t2026-03-14 15:50:27\nHelena Resende Andrade\thelenaresende2309@gmail.com\t4\t1\t2026-03-10 18:06:17\nNULL\tdreatnu@yahoo.com\t7\t1\t2026-01-05 19:06:56\nNULL\tteste@gestantesapp.com\t14\t9\t2025-12-31 11:14:29\nCecília de Salles Amaral Olímpio\tceciliadesallesamaral@gmail.com\t1\t1\t2025-12-30 19:56:01\nNULL\tdreatnu@yahoo.com\t11\t5\t2025-12-18 20:15:10\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}

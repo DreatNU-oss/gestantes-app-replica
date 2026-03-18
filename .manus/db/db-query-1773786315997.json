@@ -1,0 +1,45 @@
+{
+  "query": "SELECT g.nome AS nomeGestante, c.destino AS email, COUNT(*) AS totalSolicitacoes, SUM(c.usado) AS codigosUsados, MAX(c.createdAt) AS ultimaSolicitacao FROM codigosAcessoGestante c LEFT JOIN gestantes g ON c.gestanteId = g.id GROUP BY c.gestanteId, g.nome, c.destino ORDER BY ultimaSolicitacao ASC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.nome AS nomeGestante, c.destino AS email, COUNT(*) AS totalSolicitacoes, SUM(c.usado) AS codigosUsados, MAX(c.createdAt) AS ultimaSolicitacao FROM codigosAcessoGestante c LEFT JOIN gestantes g ON c.gestanteId = g.id GROUP BY c.gestanteId, g.nome, c.destino ORDER BY ultimaSolicitacao ASC LIMIT 5;",
+  "rows": [
+    {
+      "nomeGestante": "NULL",
+      "email": "dreatnu@yahoo.com",
+      "totalSolicitacoes": "11",
+      "codigosUsados": "5",
+      "ultimaSolicitacao": "2025-12-18 20:15:10"
+    },
+    {
+      "nomeGestante": "Cecília de Salles Amaral Olímpio",
+      "email": "ceciliadesallesamaral@gmail.com",
+      "totalSolicitacoes": "1",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2025-12-30 19:56:01"
+    },
+    {
+      "nomeGestante": "NULL",
+      "email": "teste@gestantesapp.com",
+      "totalSolicitacoes": "14",
+      "codigosUsados": "9",
+      "ultimaSolicitacao": "2025-12-31 11:14:29"
+    },
+    {
+      "nomeGestante": "NULL",
+      "email": "dreatnu@yahoo.com",
+      "totalSolicitacoes": "7",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-01-05 19:06:56"
+    },
+    {
+      "nomeGestante": "Helena Resende Andrade",
+      "email": "helenaresende2309@gmail.com",
+      "totalSolicitacoes": "4",
+      "codigosUsados": "1",
+      "ultimaSolicitacao": "2026-03-10 18:06:17"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeGestante\temail\ttotalSolicitacoes\tcodigosUsados\tultimaSolicitacao\nNULL\tdreatnu@yahoo.com\t11\t5\t2025-12-18 20:15:10\nCecília de Salles Amaral Olímpio\tceciliadesallesamaral@gmail.com\t1\t1\t2025-12-30 19:56:01\nNULL\tteste@gestantesapp.com\t14\t9\t2025-12-31 11:14:29\nNULL\tdreatnu@yahoo.com\t7\t1\t2026-01-05 19:06:56\nHelena Resende Andrade\thelenaresende2309@gmail.com\t4\t1\t2026-03-10 18:06:17\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}

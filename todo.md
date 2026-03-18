@@ -2273,3 +2273,17 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Menu Pré-Consulta visível apenas para secretárias (2º lugar na sidebar)
 - [x] Integrar dados de pré-consulta na página de Consulta (auto-fill peso e PA)
 - [x] Testes unitários
+
+## Atualizar Landing Page para Comercialização (18/03/2026)
+- [x] Atualizar página inicial com todas as funcionalidades do app (WhatsApp, IA, PDF, etc.)
+- [x] Design comercial atrativo para futura venda do sistema
+- [x] Listar todas as capacidades atuais do sistema
+- [x] Seção Hero com badges de IA e WhatsApp
+- [x] 18 funcionalidades detalhadas em grid
+- [x] Seção dedicada ao WhatsApp automatizado com mockup de conversa
+- [x] Seção dedicada à IA com mockup de interpretação de exames
+- [x] Seção do App Mobile com mockup de celular
+- [x] Seção de perfis de acesso (Obstetra, Admin, Secretária)
+- [x] Carrossel de depoimentos
+- [x] Seção de planos e preços (Essencial, Profissional, Enterprise)
+- [x] CTA final e footer completo
