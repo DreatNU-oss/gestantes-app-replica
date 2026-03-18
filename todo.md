@@ -2347,3 +2347,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Mostrar formulários completos de cada ultrassom salvo (sem lista compacta com botão Editar)
 - [x] Ordenar ultrassons do mesmo tipo cronologicamente (mais antigo acima, mais recente abaixo)
 - [x] Atualizar teste ultrassomMultiple.test.ts para usar UltrassomFormularioSalvo ao invés de UltrassomRegistrosSalvos
+- [x] Auto-preencher campo de dias do ultrassom com "0" quando deixado vazio

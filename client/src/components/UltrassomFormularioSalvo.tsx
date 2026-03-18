@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { TextareaComAutocomplete } from '@/components/TextareaComAutocomplete';
 import { Separator } from '@/components/ui/separator';
 import { Loader2, Save, Trash2, Calendar, Clock } from 'lucide-react';
+import { normalizarIdadeGestacional } from '@shared/igNormalization';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -133,6 +134,10 @@ export function UltrassomFormularioSalvo({
                   placeholder={field.placeholder || ''}
                   value={formData[field.key] || ''}
                   onChange={(e) => updateField(field.key, e.target.value)}
+                  onBlur={field.key === 'idadeGestacional' ? (e) => {
+                    const normalizado = normalizarIdadeGestacional(e.target.value);
+                    if (normalizado !== e.target.value) updateField(field.key, normalizado);
+                  } : undefined}
                 />
               )}
             </div>

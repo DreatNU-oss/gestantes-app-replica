@@ -20,6 +20,7 @@ import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModa
 import { UltrassomFormularioSalvo } from '@/components/UltrassomFormularioSalvo';
 import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
 import { normalizeDadosDatas } from '@shared/dateNormalization';
+import { normalizarIdadeGestacional } from '@shared/igNormalization';
 
 
 export default function Ultrassons() {
@@ -299,12 +300,14 @@ export default function Ultrassons() {
       });
       return;
     }
+    // Normalizar IG: se só tem semanas (ex: "12s" ou "12"), adiciona "0d"
+    const igNormalizada = normalizarIdadeGestacional(idadeGestacional || '');
     await salvarMutation.mutateAsync({
       id: _editingId,
       gestanteId: gestanteSelecionada,
       tipoUltrassom: tipoUltrassom as any,
       dataExame: dataExame || undefined,
-      idadeGestacional: idadeGestacional || undefined,
+      idadeGestacional: igNormalizada || undefined,
       dados: camposDados,
     });
   };
@@ -514,6 +517,11 @@ export default function Ultrassons() {
     // Normalizar datas antes de aplicar
     const dadosNormalizados = normalizeDadosDatas(dados);
     
+    // Normalizar IG: se só tem semanas (ex: "12s" ou "12"), adiciona "0d"
+    if (dadosNormalizados.idadeGestacional) {
+      dadosNormalizados.idadeGestacional = normalizarIdadeGestacional(dadosNormalizados.idadeGestacional);
+    }
+    
     // Marcar campos que foram preenchidos pela IA para destaque visual
     const camposPreenchidos = new Set(Object.keys(dadosNormalizados).filter(key => dadosNormalizados[key] && dadosNormalizados[key].trim() !== ''));
     setCamposPreenchidosIA(prev => ({
@@ -610,6 +618,9 @@ export default function Ultrassons() {
     
     const { dataExame, idadeGestacional, ...camposDados } = dados;
     
+    // Normalizar IG: se só tem semanas (ex: "12s" ou "12"), adiciona "0d"
+    const igNormalizada = normalizarIdadeGestacional(idadeGestacional || '');
+    
     const editingId = editingIds[tipoUltrassom];
     
     await salvarMutation.mutateAsync({
@@ -617,7 +628,7 @@ export default function Ultrassons() {
       gestanteId: gestanteSelecionada,
       tipoUltrassom: tipoUltrassom as any,
       dataExame: dataExame || undefined,
-      idadeGestacional: idadeGestacional || undefined,
+      idadeGestacional: igNormalizada || undefined,
       dados: camposDados,
     });
     
@@ -776,6 +787,7 @@ export default function Ultrassons() {
                     className={getInputClassName('primeiro_ultrassom', 'idadeGestacional')}
                     value={primeiroUS.idadeGestacional}
                     onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'idadeGestacional'); setPrimeiroUS({ ...primeiroUS, idadeGestacional: e.target.value }); }}
+                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setPrimeiroUS(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -929,6 +941,7 @@ export default function Ultrassons() {
                     className={getInputClassName('morfologico_1tri', 'idadeGestacional')}
                     value={morfo1Tri.idadeGestacional}
                     onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'idadeGestacional'); setMorfo1Tri({ ...morfo1Tri, idadeGestacional: e.target.value }); }}
+                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setMorfo1Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -1077,6 +1090,7 @@ export default function Ultrassons() {
                     className={getInputClassName('ultrassom_obstetrico', 'idadeGestacional')}
                     value={usObstetrico.idadeGestacional}
                     onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'idadeGestacional'); setUsObstetrico({ ...usObstetrico, idadeGestacional: e.target.value }); }}
+                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setUsObstetrico(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -1202,6 +1216,7 @@ export default function Ultrassons() {
                     className={getInputClassName('morfologico_2tri', 'idadeGestacional')}
                     value={morfo2Tri.idadeGestacional}
                     onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'idadeGestacional'); setMorfo2Tri({ ...morfo2Tri, idadeGestacional: e.target.value }); }}
+                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setMorfo2Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -1463,6 +1478,7 @@ export default function Ultrassons() {
                     className={getInputClassName('ultrassom_seguimento', 'idadeGestacional')}
                     value={usSeguimento.idadeGestacional}
                     onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'idadeGestacional'); setUsSeguimento({ ...usSeguimento, idadeGestacional: e.target.value }); }}
+                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setUsSeguimento(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
