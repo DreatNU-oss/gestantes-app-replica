@@ -2300,3 +2300,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Campos obrigatórios com validação completa (tipo, peso, PA)
 - [x] Alerta automático de PA elevada (≥140/90)
 - [x] Verificar integração com auto-fill na página de Consulta (já funcionando)
+
+## Destaque visual PA elevada na consulta (18/03/2026)
+- [x] Adicionar cor diferente no registro da consulta quando PA sistólica ≥ 130mmHg OU diastólica ≥ 90mmHg
+- [x] Fundo vermelho claro + texto bold + ícone alerta na tabela de consultas
+- [x] Destaque em tempo real no campo de input da PA no formulário de consulta
+- [x] Atualizado limiar na Pré-Consulta da secretária (130/90)
+- [x] Função isBPElevated para valores numéricos separados
+- [x] 24 testes unitários passando

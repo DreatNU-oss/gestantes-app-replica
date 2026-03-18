@@ -441,7 +441,7 @@ export default function PreConsulta() {
 
                   {/* Alerta de PA alta */}
                   {pressaoSistolica && pressaoDiastolica && (
-                    parseInt(pressaoSistolica) >= 140 || parseInt(pressaoDiastolica) >= 90
+                    parseInt(pressaoSistolica) >= 130 || parseInt(pressaoDiastolica) >= 90
                   ) && (
                     <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2 text-red-700">
                       <Activity className="h-5 w-5 shrink-0" />

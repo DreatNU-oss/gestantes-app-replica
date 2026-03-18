@@ -54,7 +54,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { isAUAbnormal } from "@/lib/auReferenceData";
-import { isBPAbnormal } from "@/lib/bpValidation";
+import { isBPAbnormal, isBPElevated } from "@/lib/bpValidation";
 import { validarDataCesarea, type DadosReferencia } from "@/lib/cesareanValidation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -2713,7 +2713,14 @@ export default function CartaoPrenatal() {
                       value={formData.pressaoArterial}
                       onChange={(e) => setFormData({ ...formData, pressaoArterial: e.target.value })}
                       placeholder="Ex: 120/80 ou 120x80"
+                      className={isBPAbnormal(formData.pressaoArterial) ? 'border-red-500 bg-red-50 text-red-900 font-bold dark:bg-red-950/30 dark:text-red-300 dark:border-red-700' : ''}
                     />
+                    {isBPAbnormal(formData.pressaoArterial) && (
+                      <p className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                        <AlertTriangle className="h-3 w-3" />
+                        PA elevada (≥130/90 mmHg)
+                      </p>
+                    )}
                   </div>
                   {!isUrgencia && (
                     <>
@@ -3188,14 +3195,16 @@ export default function CartaoPrenatal() {
                         </TableCell>
                         <TableCell>{consulta.peso ? `${(consulta.peso / 1000).toFixed(1)} kg` : "-"}</TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
+                          <div className={`flex items-center gap-2 ${
+                            (isBPElevated(consulta.pressaoSistolica, consulta.pressaoDiastolica) || isBPAbnormal(consulta.pressaoArterial))
+                              ? 'bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300 rounded-md px-2 py-1 font-bold'
+                              : ''
+                          }`}>
                             {consulta.pressaoSistolica && consulta.pressaoDiastolica 
                               ? `${consulta.pressaoSistolica}/${consulta.pressaoDiastolica}`
                               : consulta.pressaoArterial || "-"}
-                            {((consulta.pressaoSistolica && consulta.pressaoSistolica >= 140) || 
-                              (consulta.pressaoDiastolica && consulta.pressaoDiastolica >= 90) ||
-                              isBPAbnormal(consulta.pressaoArterial)) && (
-                              <span title="Pressão arterial ≥140/90 mmHg">
+                            {(isBPElevated(consulta.pressaoSistolica, consulta.pressaoDiastolica) || isBPAbnormal(consulta.pressaoArterial)) && (
+                              <span title="Pressão arterial elevada (≥130/90 mmHg)">
                                 <AlertTriangle className="h-4 w-4 text-red-600" />
                               </span>
                             )}
