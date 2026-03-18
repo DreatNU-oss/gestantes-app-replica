@@ -2287,3 +2287,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Carrossel de depoimentos
 - [x] Seção de planos e preços (Essencial, Profissional, Enterprise)
 - [x] CTA final e footer completo
+
+## Lembrete de Ecocardiograma Fetal na Consulta de Rotina (18/03/2026)
+- [x] Detectar TN > 2,5mm ou Ducto Venoso com onda A negativa no morfológico 1º trimestre
+- [x] Exibir lembrete automático na janela de consulta de rotina para solicitar Ecocardiograma Fetal (via sistema de lembretes existente)
+- [x] Lembrete só desaparece quando obstetra marcar "Ecocardiograma" nas Condutas da consulta (auto-resolve)
+- [x] Testes unitários (24 testes passando)

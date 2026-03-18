@@ -1263,6 +1263,37 @@ export const appRouter = router({
             await criarLembretesCondutaUrgencia(input.gestanteId, consultaId, input.condutaUrgencia, input.outraCondutaDescricao);
           }
           
+          // Auto-resolver lembrete de Ecocardiograma Fetal se a conduta foi marcada
+          try {
+            if (input.conduta) {
+              const condutasParsed = JSON.parse(input.conduta);
+              if (Array.isArray(condutasParsed) && condutasParsed.some((c: string) => c.toLowerCase().includes('ecocardiograma'))) {
+                // Buscar e resolver lembretes pendentes de ecocardiograma
+                const dbEco = await getDb();
+                if (dbEco) {
+                  const { lembretesConduta: lembretesCondutaTable } = await import('../drizzle/schema');
+                  const pendentes = await dbEco.select()
+                    .from(lembretesCondutaTable)
+                    .where(and(
+                      eq(lembretesCondutaTable.gestanteId, input.gestanteId),
+                      eq(lembretesCondutaTable.resolvido, 0)
+                    ));
+                  for (const l of pendentes) {
+                    if (l.conduta.includes('Ecocardiograma Fetal') && l.conduta.includes('Morfológico')) {
+                      await dbEco.update(lembretesCondutaTable)
+                        .set({
+                          resolvido: 1,
+                          resolvidoNaConsultaId: consultaId,
+                          resolvidoEm: new Date(),
+                        })
+                        .where(eq(lembretesCondutaTable.id, l.id));
+                    }
+                  }
+                }
+              }
+            }
+          } catch (e) { /* ignore */ }
+          
           // Agendar mensagens WhatsApp pós-consulta por conduta
           try {
             // Buscar clinicaId da gestante
@@ -2499,8 +2530,16 @@ export const appRouter = router({
         dados: z.any(),
       }))
       .mutation(async ({ input }) => {
-        const { salvarUltrassom } = await import('./ultrassons');
+        const { salvarUltrassom, verificarIndicacaoEcocardiograma } = await import('./ultrassons');
         const result = await salvarUltrassom(input);
+        
+        // Verificar se o morfológico 1º tri indica Ecocardiograma Fetal
+        await verificarIndicacaoEcocardiograma(
+          input.gestanteId,
+          input.tipoUltrassom,
+          input.dados
+        );
+        
         return result;
       }),
 

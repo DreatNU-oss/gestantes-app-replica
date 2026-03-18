@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getDb } from "./db";
-import { ultrassons, type InsertUltrassom } from "../drizzle/schema";
+import { ultrassons, lembretesConduta, type InsertUltrassom } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 
 /**
@@ -143,6 +143,92 @@ export async function salvarUltrassom(input: z.infer<typeof insertUltrassomSchem
       .limit(1);
     
     return { success: true, ultrassom: inserted[0] };
+  }
+}
+
+/**
+ * Verificar se o morfológico 1º tri tem indicação de Ecocardiograma Fetal
+ * Critérios: TN > 2.5mm ou Ducto Venoso com onda A negativa
+ */
+export async function verificarIndicacaoEcocardiograma(
+  gestanteId: number,
+  tipoUltrassom: string,
+  dados: any
+): Promise<void> {
+  if (tipoUltrassom !== 'morfologico_1tri') return;
+  
+  const db = await getDb();
+  if (!db) return;
+  
+  let indicacao = false;
+  let motivos: string[] = [];
+  
+  // Verificar TN > 2.5mm
+  if (dados.tn) {
+    const tnStr = String(dados.tn).replace(',', '.').replace(/[^0-9.]/g, '');
+    const tnValue = parseFloat(tnStr);
+    if (!isNaN(tnValue) && tnValue > 2.5) {
+      indicacao = true;
+      motivos.push(`TN = ${dados.tn} (> 2,5mm)`);
+    }
+  }
+  
+  // Verificar Ducto Venoso com onda A negativa
+  if (dados.dv) {
+    const dvStr = String(dados.dv).toLowerCase();
+    if (
+      dvStr.includes('negativ') ||
+      dvStr.includes('onda a negativ') ||
+      dvStr.includes('revers') ||
+      dvStr.includes('alterado')
+    ) {
+      indicacao = true;
+      motivos.push(`Ducto Venoso: ${dados.dv}`);
+    }
+  }
+  
+  if (!indicacao) {
+    // Se não há indicação, verificar se existe um lembrete pendente e removê-lo
+    // (caso o ultrassom tenha sido editado e os valores corrigidos)
+    const existente = await db.select()
+      .from(lembretesConduta)
+      .where(and(
+        eq(lembretesConduta.gestanteId, gestanteId),
+        eq(lembretesConduta.resolvido, 0)
+      ));
+    
+    // Remover lembretes de ecocardiograma gerados por ultrassom
+    for (const l of existente) {
+      if (l.conduta.includes('Ecocardiograma Fetal') && l.conduta.includes('Morfológico')) {
+        await db.update(lembretesConduta)
+          .set({ resolvido: 1, resolvidoEm: new Date() })
+          .where(eq(lembretesConduta.id, l.id));
+      }
+    }
+    return;
+  }
+  
+  // Verificar se já existe um lembrete pendente de ecocardiograma para esta gestante
+  const existente = await db.select()
+    .from(lembretesConduta)
+    .where(and(
+      eq(lembretesConduta.gestanteId, gestanteId),
+      eq(lembretesConduta.resolvido, 0)
+    ));
+  
+  const jaTemLembrete = existente.some(l => 
+    l.conduta.includes('Ecocardiograma Fetal') && l.conduta.includes('Morfológico')
+  );
+  
+  if (!jaTemLembrete) {
+    // Criar lembrete automático
+    const condutaTexto = `⚠️ Solicitar Ecocardiograma Fetal — Morfológico 1ºTri: ${motivos.join('; ')}`;
+    
+    await db.insert(lembretesConduta).values({
+      gestanteId,
+      consultaOrigemId: 0, // Gerado pelo ultrassom, não por uma consulta
+      conduta: condutaTexto,
+    });
   }
 }
 
