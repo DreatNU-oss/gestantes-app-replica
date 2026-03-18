@@ -17,9 +17,7 @@ import Estatisticas from "./pages/Estatisticas";
 import GerenciarPlanos from "./pages/GerenciarPlanos";
 import GerenciarMedicos from "./pages/GerenciarMedicos";
 import AgendamentoConsultas from "./pages/AgendamentoConsultas";
-import GerenciarEmails from "./pages/GerenciarEmails";
 import Ultrassons from "./pages/Ultrassons";
-import LogsEmails from "./pages/LogsEmails";
 import PartosRealizados from "./pages/PartosRealizados";
 import EstatisticasPartos from "./pages/EstatisticasPartos";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
@@ -114,12 +112,6 @@ function Router() {
       </Route>
       <Route path={"/emails-autorizados"}>
         <RoleGuard allowedRoles={[...CONFIG_ROLES]}><EmailsAutorizados /></RoleGuard>
-      </Route>
-      <Route path={"/gerenciar-emails"}>
-        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><GerenciarEmails /></RoleGuard>
-      </Route>
-      <Route path={"/logs-emails"}>
-        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><LogsEmails /></RoleGuard>
       </Route>
       <Route path={"/integracoes"}>
         <RoleGuard allowedRoles={[...CONFIG_ROLES]}><Integracoes /></RoleGuard>

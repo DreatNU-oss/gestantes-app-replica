@@ -2342,3 +2342,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover ícones de coração dos botões de envio de WhatsApp no cartão pré-natal
 - [x] Trocar primeira pessoa do plural por singular nas mensagens do cartão pré-natal
 - [x] Adicionar mensagem de boas-vindas antes do PDF de orientação alimentar
+- [x] Remover LogsEmails.tsx e GerenciarEmails.tsx para resolver erros de TypeScript restantes
