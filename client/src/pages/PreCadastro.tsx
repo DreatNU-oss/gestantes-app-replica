@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 import GestantesLayout from "@/components/GestantesLayout";
+import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
 interface PreCadastroFormData {
   nome: string;
@@ -49,6 +50,7 @@ const EMPTY_FORM: PreCadastroFormData = {
 
 export default function PreCadastro() {
   const [, setLocation] = useLocation();
+  const { setGestanteAtiva } = useGestanteAtiva();
   const [mode, setMode] = useState<"list" | "add" | "edit">("list");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,10 +76,24 @@ export default function PreCadastro() {
   }, [gestantes, searchTerm]);
 
   const createMutation = trpc.gestantes.create.useMutation({
-    onSuccess: () => {
-      toast.success("Pré-cadastro realizado com sucesso!");
+    onSuccess: (data) => {
+      toast.success("Pré-cadastro realizado com sucesso!", {
+        description: "Redirecionando para a pré-consulta...",
+        duration: 3000,
+      });
       refetch();
-      resetForm();
+      // Definir a gestante recém-criada como ativa e redirecionar para pré-consulta
+      if (data && (data as any).id) {
+        setGestanteAtiva({ id: (data as any).id, nome: (data as any).nome || formData.nome });
+        setFormData({ ...EMPTY_FORM });
+        setFieldErrors({});
+        setMode("list");
+        setEditingId(null);
+        // Redirecionar para página de pré-consulta
+        setLocation("/pre-consulta");
+      } else {
+        resetForm();
+      }
     },
     onError: (error) => {
       toast.error("Erro ao salvar", { description: error.message });

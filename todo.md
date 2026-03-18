@@ -2335,3 +2335,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Auto-preencher Peso e PA da pré-consulta na consulta de rotina (remover aviso azul)
 - [x] Auto-preencher Peso e PA da pré-consulta na consulta de urgência (remover aviso azul)
 - [x] Remover arquivo órfão MonitoramentoEmails.tsx para resolver erros de build
+- [x] Redirecionar secretária para pré-consulta após salvar pré-cadastro (com gestante pré-selecionada)
