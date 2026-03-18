@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mensagemTemplates SET mensagem = 'Olá {nome}! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nSeja bem-vinda ao acompanhamento pré-natal! Segue em anexo o Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.\\n\\nQualquer dúvida, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 30001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE mensagemTemplates SET mensagem = 'Olá {nome}! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nSeja bem-vinda ao acompanhamento pré-natal! Segue em anexo o Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.\\n\\nQualquer dúvida, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 30001;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 368
+}

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mensagemTemplates SET mensagem = 'Olá *{nome}*! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nVocê está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.\\n\\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\\n\\nEste é um dos exames mais importantes da gestação para:\\n• Avaliação detalhada da anatomia fetal\\n• Detecção de malformações\\n• Avaliação do crescimento fetal\\n• Análise da placenta e líquido amniótico\\n\\n📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*\\n\\n📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._\\n\\nEm caso de dúvidas, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 4;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE mensagemTemplates SET mensagem = 'Olá *{nome}*! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nVocê está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.\\n\\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\\n\\nEste é um dos exames mais importantes da gestação para:\\n• Avaliação detalhada da anatomia fetal\\n• Detecção de malformações\\n• Avaliação do crescimento fetal\\n• Análise da placenta e líquido amniótico\\n\\n📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*\\n\\n📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._\\n\\nEm caso de dúvidas, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 4;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 376
+}

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mensagemTemplates SET mensagem = 'Olá *{nome}*! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nVocê está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).\\n\\nEsta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.\\n\\n💉 *Procure uma clínica de vacinação para agendar sua vacina.*\\n\\n🏥 Esta vacina também está disponível gratuitamente pelo SUS.\\n\\nEm caso de dúvidas, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE mensagemTemplates SET mensagem = 'Olá *{nome}*! 👋\\n\\nAqui é o Dr(a). {medico}.\\n\\nVocê está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).\\n\\nEsta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.\\n\\n💉 *Procure uma clínica de vacinação para agendar sua vacina.*\\n\\n🏥 Esta vacina também está disponível gratuitamente pelo SUS.\\n\\nEm caso de dúvidas, entre em contato comigo.\\n\\nUm abraço! 🤰\\nDr(a). {medico}' WHERE id = 1;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 364
+}

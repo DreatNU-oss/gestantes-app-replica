@@ -2312,3 +2312,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Template WhatsApp - Troca de Medicamento (18/03/2026)
 - [x] Implementar template "Troca de Medicamento - Ácido Fólico para Polivitamínico" no sistema de mensagens (ID: 90001, tipo: manual)
 - [x] Guardar regra: não usar ícones de coração nos templates (médico é homem)
+
+## Atualizar Templates - Tom Pessoal (18/03/2026)
+- [x] Alterar todos os 11 templates para primeira pessoa (eu ao invés de nós/equipe)
+- [x] Trocar assinatura "Equipe Mais Mulher" por "Dr(a). {medico}" pessoal
+- [x] Remover todos os ícones de coração (💚) e substituir por ícones médicos (🏥)
+- [x] Tom mais pessoal em todos os templates - "entre em contato comigo" ao invés de "estamos à disposição"

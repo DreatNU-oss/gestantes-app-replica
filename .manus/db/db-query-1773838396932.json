@@ -1,0 +1,117 @@
+{
+  "query": "SELECT id, nome, mensagem FROM mensagemTemplates WHERE clinicaId = 1 AND ativo = 1 ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, mensagem FROM mensagemTemplates WHERE clinicaId = 1 AND ativo = 1 ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Lembrete: Vacina dTpa",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "2",
+      "nome": "Lembrete: Vacina Bronquiolite",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "3",
+      "nome": "Lembrete: Morfológico 1º Trimestre",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "4",
+      "nome": "Lembrete: Morfológico 2º Tri (2 semanas)",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "5",
+      "nome": "Lembrete: Morfológico 2º Tri (1 semana)",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "30001",
+      "nome": "Orientações Alimentares - 1ª Consulta",
+      "mensagem": "Olá {nome}! Seja bem-vinda ao acompanhamento pré-natal da Clínica Mais Mulher! Segue em anexo o nosso Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.  Qualquer dúvida, estou à disposição!"
+    },
+    {
+      "id": "30003",
+      "nome": "Orientações Pré-operatórias Cesárea - 36 semanas",
+      "mensagem": "Olá {nome}! Sua cesariana já está chegando! Segue em anexo orientações para sua internação."
+    },
+    {
+      "id": "30004",
+      "nome": "Parabéns + Cuidados Pós-Operatórios Cesárea",
+      "mensagem": "Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estou à disposição!"
+    },
+    {
+      "id": "30005",
+      "nome": "Parabéns + Cuidados Pós-Parto Normal",
+      "mensagem": "Olá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, estouà disposição!"
+    },
+    {
+      "id": "60001",
+      "nome": "Lembrete: Curva Glicêmica",
+      "mensagem": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "90001",
+      "nome": "Troca de Medicamento - Ácido Fólico para Polivitamínico",
+      "mensagem": "Olá, {nome}! 👋"
+    }
+  ],
+  "messages": [
+    "Você está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).",
+    "Esta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.",
+    "💉 *Procure uma clínica de vacinação para agendar sua vacina.*",
+    "💚 Esta vacina também está disponível gratuitamente pelo SUS.",
+    "Você está com *{ig_semanas} semanas de gestação* e está no período ideal para tomar a *vacina contra bronquiolite* (VSR - Vírus Sincicial Respiratório).",
+    "Esta vacina protege seu bebê contra infecções respiratórias graves nos primeiros meses de vida.",
+    "📅 *Período recomendado:* entre 32 e 36 semanas de gestação.",
+    "💉 *Procure uma clínica de vacinação para agendar sua vacina.*",
+    "💚 Esta vacina também está disponível gratuitamente pelo SUS.",
+    "Você está com *{ig_semanas} semanas de gestação* e está próximo do período ideal para realizar o *ultrassom morfológico do 1º trimestre*.",
+    "📅 *Período recomendado:* entre 11 e 14 semanas de gestação.",
+    "Este exame é importante para:",
+    "• Avaliar a anatomia fetal inicial",
+    "• Medir a translucência nucal",
+    "• Rastreamento de anomalias cromossômicas",
+    "📞 *Por favor, agende seu exame com antecedência.*",
+    "📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._",
+    "Você está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.",
+    "📅 *Período recomendado:* entre 20 e 24 semanas de gestação.",
+    "Este é um dos exames mais importantes da gestação para:",
+    "• Avaliação detalhada da anatomia fetal",
+    "• Detecção de malformações",
+    "• Avaliação do crescimento fetal",
+    "• Análise da placenta e líquido amniótico",
+    "📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*",
+    "📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._",
+    "Você está com *{ig_semanas} semanas de gestação* e falta *1 semana* para o período ideal do *ultrassom morfológico do 2º trimestre*.",
+    "📅 *Período recomendado:* entre 20 e 24 semanas de gestação.",
+    "Este é um dos exames mais importantes da gestação para:",
+    "• Avaliação detalhada da anatomia fetal",
+    "• Detecção de malformações",
+    "• Avaliação do crescimento fetal",
+    "• Análise da placenta e líquido amniótico",
+    "📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*",
+    "📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._",
+    "Você está com *{ig_semanas} semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).",
+    "Este exame é muito importante para detectar o *diabetes gestacional*, que pode trazer complicações para você e para o bebê se não for identificado a tempo.",
+    "📅 *Período recomendado:* entre 24 e 28 semanas de gestação.",
+    "🔬 *Procure um laboratório para agendar seu exame.*",
+    "⚠️ *Importante:* O exame requer jejum de 8 a 12 horas. Agende preferencialmente para o período da manhã.",
+    "📌 _Caso você já tenha agendado ou realizado este exame, por favor desconsidere esta mensagem._",
+    "Aqui é o Dr(a). {medico}.",
+    "Estou entrando em contato para orientá-la sobre uma troca importante na sua suplementação.",
+    "Até agora, você vinha tomando *ácido fólico/metilfolato* (como Regenesis Pré ou Ofolato D). A partir de agora, é hora de trocar por um *polivitamínico mais completo*, que será utilizado *ATÉ O PARTO*. As opções mais indicadas são:",
+    "- Regenesis Premium - 02cps por dia",
+    "- Feminis - 01cp por dia",
+    "- Omater Gest - 01cp por dia",
+    "- Materplena DHA - 01cp por dia",
+    "⚠️ *Atenção:* Se você ainda estiver com *náuseas*, *não faça a troca agora*. O polivitamínico pode piorar esse sintoma. Nesse caso, continue com o medicamento atual e converse com seu médico na próxima consulta para definir o melhor momento para a troca.",
+    "Em caso de dúvidas, entre em contato comigo.",
+    "Um abraço! 🤰"
+  ],
+  "stdout": "id\tnome\tmensagem\n1\tLembrete: Vacina dTpa\tOlá *{nome}*! 👋\n\nVocê está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).\n\nEsta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.\n\n💉 *Procure uma clínica de vacinação para agendar sua vacina.*\n\n💚 Esta vacina também está disponível gratuitamente pelo SUS.\n\n2\tLembrete: Vacina Bronquiolite\tOlá *{nome}*! 👋\n\nVocê está com *{ig_semanas} semanas de gestação* e está no período ideal para tomar a *vacina contra bronquiolite* (VSR - Vírus Sincicial Respiratório).\n\nEsta vacina protege seu bebê contra infecções respiratórias graves nos primeiros meses de vida.\n\n📅 *Período recomendado:* entre 32 e 36 semanas de gestação.\n\n💉 *Procure uma clínica de vacinação para agendar sua vacina.*\n\n💚 Esta vacina também está disponível gratuitamente pelo SUS.\n\n3\tLembrete: Morfológico 1º Trimestre\tOlá *{nome}*! 👋\n\nVocê está com *{ig_semanas} semanas de gestação* e está próximo do período ideal para realizar o *ultrassom morfológico do 1º trimestre*.\n\n📅 *Período recomendado:* entre 11 e 14 semanas de gestação.\n\nEste exame é importante para:\n• Avaliar a anatomia fetal inicial\n• Medir a translucência nucal\n• Rastreamento de anomalias cromossômicas\n\n📞 *Por favor, agende seu exame com antecedência.*\n\n📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._\n\n4\tLembrete: Morfológico 2º Tri (2 semanas)\tOlá *{nome}*! 👋\n\nVocê está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.\n\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\n\nEste é um dos exames mais importantes da gestação para:\n• Avaliação detalhada da anatomia fetal\n• Detecção de malformações\n• Avaliação do crescimento fetal\n• Análise da placenta e líquido amniótico\n\n📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*\n\n📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._\n\n5\tLembrete: Morfológico 2º Tri (1 semana)\tOlá *{nome}*! 👋\n\nVocê está com *{ig_semanas} semanas de gestação* e falta *1 semana* para o período ideal do *ultrassom morfológico do 2º trimestre*.\n\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\n\nEste é um dos exames mais importantes da gestação para:\n• Avaliação detalhada da anatomia fetal\n• Detecção de malformações\n• Avaliação do crescimento fetal\n• Análise da placenta e líquido amniótico\n\n📞 *Por favor, agende seu exame com antecedência para garantir uma vaga no período ideal.*\n\n📌 _Caso você já tenha agendado seu ultrassom morfológico, por favor desconsidere esta mensagem._\n\n30001\tOrientações Alimentares - 1ª Consulta\tOlá {nome}! Seja bem-vinda ao acompanhamento pré-natal da Clínica Mais Mulher! Segue em anexo o nosso Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.  Qualquer dúvida, estou à disposição!\n30003\tOrientações Pré-operatórias Cesárea - 36 semanas\tOlá {nome}! Sua cesariana já está chegando! Segue em anexo orientações para sua internação.\n30004\tParabéns + Cuidados Pós-Operatórios Cesárea\tOlá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, estou à disposição!\n30005\tParabéns + Cuidados Pós-Parto Normal\tOlá {nome}! Parabéns pelo nascimento do seu bebê! 🎉👶 Desejo muita saúde e felicidade para vocês! Segue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, estouà disposição!\n60001\tLembrete: Curva Glicêmica\tOlá *{nome}*! 👋\nVocê está com *{ig_semanas} semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).\n\nEste exame é muito importante para detectar o *diabetes gestacional*, que pode trazer complicações para você e para o bebê se não for identificado a tempo.\n\n📅 *Período recomendado:* entre 24 e 28 semanas de gestação.\n\n🔬 *Procure um laboratório para agendar seu exame.*\n\n⚠️ *Importante:* O exame requer jejum de 8 a 12 horas. Agende preferencialmente para o período da manhã.\n\n📌 _Caso você já tenha agendado ou realizado este exame, por favor desconsidere esta mensagem._\n90001\tTroca de Medicamento - Ácido Fólico para Polivitamínico\tOlá, {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nEstou entrando em contato para orientá-la sobre uma troca importante na sua suplementação.\n\nAté agora, você vinha tomando *ácido fólico/metilfolato* (como Regenesis Pré ou Ofolato D). A partir de agora, é hora de trocar por um *polivitamínico mais completo*, que será utilizado *ATÉ O PARTO*. As opções mais indicadas são:\n\n- Regenesis Premium - 02cps por dia\n- Feminis - 01cp por dia\n- Omater Gest - 01cp por dia\n- Materplena DHA - 01cp por dia\n\n⚠️ *Atenção:* Se você ainda estiver com *náuseas*, *não faça a troca agora*. O polivitamínico pode piorar esse sintoma. Nesse caso, continue com o medicamento atual e converse com seu médico na próxima consulta para definir o melhor momento para a troca.\n\nEm caso de dúvidas, entre em contato comigo.\n\nUm abraço! 🤰\n",
+  "stderr": "",
+  "execution_time_ms": 458
+}
