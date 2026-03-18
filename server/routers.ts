@@ -2278,6 +2278,7 @@ export const appRouter = router({
   ultrassons: router({
     salvar: protectedProcedure
       .input(z.object({
+        id: z.number().optional(),
         gestanteId: z.number(),
         tipoUltrassom: z.enum([
           "primeiro_ultrassom",

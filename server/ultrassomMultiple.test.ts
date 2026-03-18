@@ -126,13 +126,13 @@ describe("Ultrassom - Multiple Records Support", () => {
       expect(code).toContain("Novo {tipoLabel}");
     });
 
-    it("should use UltrassomRegistrosSalvos in all ultrasound cards", () => {
+    it("should use UltrassomFormularioSalvo in all ultrasound cards", () => {
       const code = readFileSync(
         resolve(__dirname, "../client/src/pages/Ultrassons.tsx"),
         "utf-8"
       );
-      // Count occurrences of UltrassomRegistrosSalvos
-      const matches = code.match(/UltrassomRegistrosSalvos/g);
+      // Count occurrences of UltrassomFormularioSalvo (full form display)
+      const matches = code.match(/UltrassomFormularioSalvo/g);
       // Should be imported (1) + used in 6 cards (6) = at least 7
       expect(matches).not.toBeNull();
       expect(matches!.length).toBeGreaterThanOrEqual(7);

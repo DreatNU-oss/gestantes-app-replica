@@ -2344,3 +2344,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar mensagem de boas-vindas antes do PDF de orientação alimentar
 - [x] Remover LogsEmails.tsx e GerenciarEmails.tsx para resolver erros de TypeScript restantes
 - [x] Tornar nome do médico dinâmico na mensagem de boas-vindas do WhatsApp (buscar do cadastro)
+- [x] Mostrar formulários completos de cada ultrassom salvo (sem lista compacta com botão Editar)
+- [x] Ordenar ultrassons do mesmo tipo cronologicamente (mais antigo acima, mais recente abaixo)
+- [x] Atualizar teste ultrassomMultiple.test.ts para usar UltrassomFormularioSalvo ao invés de UltrassomRegistrosSalvos

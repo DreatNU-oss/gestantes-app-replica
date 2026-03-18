@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
-import { UltrassomRegistrosSalvos } from '@/components/UltrassomRegistrosSalvos';
+import { UltrassomFormularioSalvo } from '@/components/UltrassomFormularioSalvo';
 import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
 import { normalizeDadosDatas } from '@shared/dateNormalization';
 
@@ -281,10 +281,32 @@ export default function Ultrassons() {
     return ultrassons
       .filter((u: any) => u.tipoUltrassom === tipo)
       .sort((a: any, b: any) => {
-        // Ordenar por data do exame (mais recente primeiro)
-        if (a.dataExame && b.dataExame) return b.dataExame.localeCompare(a.dataExame);
-        return (b.id || 0) - (a.id || 0);
+        // Ordenar cronologicamente (mais antigo primeiro)
+        if (a.dataExame && b.dataExame) return a.dataExame.localeCompare(b.dataExame);
+        return (a.id || 0) - (b.id || 0);
       });
+  };
+
+  // Handler para salvar registro existente via UltrassomFormularioSalvo
+  const handleSalvarRegistroSalvo = async (tipoUltrassom: string, dados: any) => {
+    if (!gestanteSelecionada) return;
+    const { _editingId, dataExame, idadeGestacional, ...camposDados } = dados;
+    const validacao = validarCamposObrigatorios(tipoUltrassom, dados);
+    if (!validacao.valido) {
+      toast.error('❌ Campos obrigatórios não preenchidos', {
+        description: validacao.mensagem,
+        duration: 5000,
+      });
+      return;
+    }
+    await salvarMutation.mutateAsync({
+      id: _editingId,
+      gestanteId: gestanteSelecionada,
+      tipoUltrassom: tipoUltrassom as any,
+      dataExame: dataExame || undefined,
+      idadeGestacional: idadeGestacional || undefined,
+      dados: camposDados,
+    });
   };
 
   // Estados para cada tipo de ultrassom
@@ -710,16 +732,33 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('primeiro_ultrassom')}
-                editingId={editingIds.primeiro_ultrassom}
-                tipoUltrassom="primeiro_ultrassom"
-                tipoLabel="1º Ultrassom"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('primeiro_ultrassom')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('primeiro_ultrassom').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="primeiro_ultrassom"
+                  tipoLabel="1º Ultrassom"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 8s 3d', required: true },
+                    { key: 'ccn', label: 'CCN (Comprimento Cabeça-Nádegas)', placeholder: 'Ex: 1.5 cm' },
+                    { key: 'bcf', label: 'BCF (Batimento Cardíaco Fetal)', placeholder: 'Ex: 150 bpm' },
+                    { key: 'sacoVitelino', label: 'Saco Vitelino', placeholder: 'Presente/Ausente' },
+                    { key: 'hematoma', label: 'Presença de Hematoma/Coleções', placeholder: 'Sim/Não' },
+                    { key: 'corpoLuteo', label: 'Identificação do Corpo Lúteo', placeholder: 'Presente/Ausente' },
+                    { key: 'coloUterino', label: 'Colo Uterino', placeholder: 'Ex: 3.9 cm, OI fechado' },
+                    { key: 'dpp', label: 'Data Provável do Parto (DPP)', type: 'date' },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('primeiro_ultrassom').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo 1º Ultrassom</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -846,16 +885,33 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('morfologico_1tri')}
-                editingId={editingIds.morfologico_1tri}
-                tipoUltrassom="morfologico_1tri"
-                tipoLabel="Morfológico 1º Tri"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('morfologico_1tri')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('morfologico_1tri').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="morfologico_1tri"
+                  tipoLabel="Morfológico 1º Tri"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 12s 3d', required: true },
+                    { key: 'tn', label: 'Translucência Nucal (TN)', placeholder: 'Ex: 1.5 mm' },
+                    { key: 'dv', label: 'Ducto Venoso (DV)', placeholder: 'Ex: Onda A positiva' },
+                    { key: 'valvaTricuspide', label: 'Valva Tricúspide', placeholder: 'Normal/Regurgitação' },
+                    { key: 'dopplerUterinas', label: 'Doppler de Uterinas', placeholder: 'Ex: IP médio 1.2' },
+                    { key: 'incisuraPresente', label: 'Incisura Presente', placeholder: 'Sim/Não' },
+                    { key: 'colo', label: 'Colo Uterino', placeholder: 'Ex: 35 mm' },
+                    { key: 'riscoTrissomias', label: 'Risco de Trissomias', placeholder: 'Ex: Baixo risco', colSpan: 3, type: 'textarea', rows: 2 },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('morfologico_1tri').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo Morfológico 1º Tri</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -980,16 +1036,30 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('ultrassom_obstetrico')}
-                editingId={editingIds.ultrassom_obstetrico}
-                tipoUltrassom="ultrassom_obstetrico"
-                tipoLabel="US Obstétrico"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('ultrassom_obstetrico')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('ultrassom_obstetrico').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="ultrassom_obstetrico"
+                  tipoLabel="US Obstétrico"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 20s 1d', required: true },
+                    { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 350g', colSpan: 3 },
+                    { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Anterior' },
+                    { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: 0' },
+                    { key: 'coloUterinoMedida', label: 'Colo Uterino', placeholder: 'Ex: 28.8 mm' },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('ultrassom_obstetrico').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo US Obstétrico</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -1085,16 +1155,36 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('morfologico_2tri')}
-                editingId={editingIds.morfologico_2tri}
-                tipoUltrassom="morfologico_2tri"
-                tipoLabel="Morfológico 2º Tri"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('morfologico_2tri')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('morfologico_2tri').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="morfologico_2tri"
+                  tipoLabel="Morfológico 2º Tri"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 22s 0d', required: true },
+                    { key: 'biometria', label: 'Biometria Fetal', placeholder: 'DBP, CC, CA, CF...', colSpan: 3 },
+                    { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 500g' },
+                    { key: 'sexoFetal', label: 'Sexo Fetal', placeholder: 'Masculino/Feminino' },
+                    { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Posterior' },
+                    { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: 0' },
+                    { key: 'liquidoAmniotico', label: 'Líquido Amniótico', placeholder: 'Ex: Normal' },
+                    { key: 'coloUterino', label: 'Colo Uterino', placeholder: 'Ex: 35 mm' },
+                    { key: 'avaliacaoAnatomica', label: 'Avaliação Anatômica', placeholder: 'Detalhes da avaliação...', colSpan: 3, type: 'textarea', rows: 3 },
+                    { key: 'dopplers', label: 'Dopplers', placeholder: 'Valores dos dopplers...', colSpan: 3 },
+                    { key: 'observacoes', label: 'Observações', placeholder: 'Observações adicionais...', colSpan: 3, type: 'textarea', rows: 3 },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('morfologico_2tri').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo Morfológico 2º Tri</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -1254,16 +1344,26 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('ecocardiograma_fetal')}
-                editingId={editingIds.ecocardiograma_fetal}
-                tipoUltrassom="ecocardiograma_fetal"
-                tipoLabel="Ecocardiograma"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('ecocardiograma_fetal')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('ecocardiograma_fetal').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="ecocardiograma_fetal"
+                  tipoLabel="Ecocardiograma"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'conclusao', label: 'Conclusão', placeholder: 'Conclusão do ecocardiograma fetal...', type: 'textarea', rows: 5, colSpan: 3, autocompleteType: 'eco_conclusao' },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('ecocardiograma_fetal').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo Ecocardiograma</p>
               <div>
                 <Label>Data do Exame <span className="text-red-500">*</span></Label>
                 <Input
@@ -1316,16 +1416,36 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <UltrassomRegistrosSalvos
-                registros={getUltrassonsPorTipo('ultrassom_seguimento')}
-                editingId={editingIds.ultrassom_seguimento}
-                tipoUltrassom="ultrassom_seguimento"
-                tipoLabel="US Seguimento"
-                onEditar={carregarNoFormulario}
-                onNovo={() => prepararNovo('ultrassom_seguimento')}
-                onApagar={handleApagar}
-                isDeleting={deletarMutation.isPending}
-              />
+              {/* Registros salvos - formulários completos */}
+              {getUltrassonsPorTipo('ultrassom_seguimento').map((reg: any, idx: number) => (
+                <UltrassomFormularioSalvo
+                  key={reg.id}
+                  registro={reg}
+                  tipoUltrassom="ultrassom_seguimento"
+                  tipoLabel="US Seguimento"
+                  index={idx + 1}
+                  fields={[
+                    { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
+                    { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 32s 1d', required: true },
+                    { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 2100g' },
+                    { key: 'percentilPeso', label: 'Percentil do Peso Fetal', placeholder: 'Ex: P50' },
+                    { key: 'liquidoAmniotico', label: 'Líquido Amniótico (ILA ou subjetivo)', placeholder: 'Ex: 10cm ou Normal', colSpan: 3 },
+                    { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Anterior' },
+                    { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: II' },
+                    { key: 'coloUterino', label: 'Colo Uterino', placeholder: 'Ex: 35 mm, OI fechado' },
+                    { key: 'movimentosFetais', label: 'Movimentos Fetais', placeholder: 'Presentes/Ausentes' },
+                    { key: 'apresentacaoFetal', label: 'Apresentação Fetal', placeholder: 'Cefálica/Pélvica/Transversa' },
+                    { key: 'dopplers', label: 'Dopplers (AU, ACM, DV se indicado)', placeholder: 'Valores dos dopplers...', colSpan: 3 },
+                    { key: 'observacoes', label: 'Observações', placeholder: 'Observações adicionais...', colSpan: 3, type: 'textarea', rows: 3, autocompleteType: 'us_seguimento_observacoes' },
+                  ]}
+                  onSalvar={handleSalvarRegistroSalvo}
+                  onApagar={handleApagar}
+                  isSaving={salvarMutation.isPending}
+                  isDeleting={deletarMutation.isPending}
+                />
+              ))}
+              {getUltrassonsPorTipo('ultrassom_seguimento').length > 0 && <Separator className="my-4" />}
+              <p className="text-sm font-medium text-muted-foreground">Novo US Seguimento</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
