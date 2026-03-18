@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM preConsulta WHERE gestanteId = 1560002 AND peso = '68.5' AND pressaoArterial = '120/80';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute DELETE FROM preConsulta WHERE gestanteId = 1560002 AND peso = '68.5' AND pressaoArterial = '120/80';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 371
+}

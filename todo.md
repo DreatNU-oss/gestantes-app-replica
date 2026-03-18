@@ -2336,3 +2336,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Auto-preencher Peso e PA da pré-consulta na consulta de urgência (remover aviso azul)
 - [x] Remover arquivo órfão MonitoramentoEmails.tsx para resolver erros de build
 - [x] Redirecionar secretária para pré-consulta após salvar pré-cadastro (com gestante pré-selecionada)
+- [x] Bug: Peso e PA da pré-consulta não aparecem pré-preenchidos no pop-up da 1ª consulta (testado e confirmado funcionando)
+- [x] Verificar nome da paciente no laudo do US vs nome no cadastro (alerta se diferente)
+- [x] Permitir múltiplos ultrassons do mesmo tipo sem apagar o anterior

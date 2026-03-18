@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO preConsulta (gestanteId, clinicaId, peso, pressaoArterial, tipoConsulta, utilizado) VALUES (1560002, 1, '68.5', '120/80', '1a_consulta', 0);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO preConsulta (gestanteId, clinicaId, peso, pressaoArterial, tipoConsulta, utilizado) VALUES (1560002, 1, '68.5', '120/80', '1a_consulta', 0);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 362
+}

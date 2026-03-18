@@ -116,24 +116,29 @@ function gerarPromptDetalhado(tipoUltrassom: TipoUltrassom): string {
 
 1. Analise TODAS as páginas/imagens do documento com atenção.
 
-2. **DATA DO EXAME (dataExame)** - CAMPO MAIS IMPORTANTE:
+2. **NOME DA PACIENTE (nomePacienteLaudo)** - OBRIGATÓRIO:
+   - Procure o nome da paciente em QUALQUER lugar do documento: cabeçalho, campo "Paciente:", "Nome:", "Gestante:".
+   - Retorne o nome completo exatamente como aparece no laudo.
+   - Se não encontrar, retorne string vazia.
+
+3. **DATA DO EXAME (dataExame)** - CAMPO MAIS IMPORTANTE:
    - Procure em QUALQUER lugar: cabeçalho, rodapé, corpo, assinatura, carimbos.
    - Padrões comuns: "DATA: dd/mm/aaaa", "Data do exame: dd/mm/aaaa", "Realizado em dd/mm/aaaa", "dd de mês de aaaa".
    - Se encontrar apenas dia e mês sem ano, use o ano mais recente.
    - NUNCA retorne este campo vazio se houver qualquer data no documento.
 
-3. **DPP (Data Provável do Parto)** - MUITO IMPORTANTE:
+4. **DPP (Data Provável do Parto)** - MUITO IMPORTANTE:
    - Procure por "DPP:", "Data Provável do Parto", "data provável de parto", "DPP estimada".
    - Geralmente aparece na CONCLUSÃO ou HIPÓTESE DIAGNÓSTICA.
    - Formato: DD/MM/AAAA.
 
-4. Para campos binários (hematoma, incisura, etc.):
+5. Para campos binários (hematoma, incisura, etc.):
    - Se o laudo NÃO menciona o achado, retorne "Não" (ausência = negativo).
    - Só retorne "Sim" se explicitamente descrito como presente.
 
-5. Extraia TODOS os campos listados abaixo. Para cada campo, siga a REGRA específica.
+6. Extraia TODOS os campos listados abaixo. Para cada campo, siga a REGRA específica.
 
-6. Se um campo realmente não puder ser determinado pelo laudo (não há informação suficiente), omita-o do resultado.
+7. Se um campo realmente não puder ser determinado pelo laudo (não há informação suficiente), omita-o do resultado.
 
 **CAMPOS A EXTRAIR:**
 
@@ -311,6 +316,11 @@ REGRAS OBRIGATÓRIAS:
       if (dadosExtraidos[campo] !== undefined && dadosExtraidos[campo] !== null && dadosExtraidos[campo] !== '') {
         dadosFiltrados[campo] = String(dadosExtraidos[campo]);
       }
+    }
+    
+    // Sempre incluir nomePacienteLaudo se extraído (não faz parte dos campos do formulário)
+    if (dadosExtraidos.nomePacienteLaudo) {
+      dadosFiltrados.nomePacienteLaudo = String(dadosExtraidos.nomePacienteLaudo);
     }
 
     // Post-processing: garantir que campos binários tenham valor padrão

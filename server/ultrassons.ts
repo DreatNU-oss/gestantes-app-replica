@@ -68,6 +68,7 @@ const dadosUltrassomSeguimentoSchema = z.object({
  * Schema de validação para inserção de ultrassom
  */
 export const insertUltrassomSchema = z.object({
+  id: z.number().optional(),
   gestanteId: z.number(),
   tipoUltrassom: z.enum([
     "primeiro_ultrassom",
@@ -93,22 +94,11 @@ export const insertUltrassomSchema = z.object({
  * Salvar ultrassom (cria novo ou atualiza existente)
  */
 export async function salvarUltrassom(input: z.infer<typeof insertUltrassomSchema>) {
-  // Verificar se já existe ultrassom do mesmo tipo para a gestante
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const existente = await db
-    .select()
-    .from(ultrassons)
-    .where(
-      and(
-        eq(ultrassons.gestanteId, input.gestanteId),
-        eq(ultrassons.tipoUltrassom, input.tipoUltrassom)
-      )
-    )
-    .limit(1);
 
-  if (existente.length > 0) {
-    // Atualizar existente
+  // Se um ID específico foi fornecido, atualizar esse registro
+  if (input.id) {
     await db
       .update(ultrassons)
       .set({
@@ -117,33 +107,33 @@ export async function salvarUltrassom(input: z.infer<typeof insertUltrassomSchem
         dados: input.dados as any,
         updatedAt: new Date(),
       })
-      .where(eq(ultrassons.id, existente[0].id));
+      .where(eq(ultrassons.id, input.id));
     
     const updated = await db
       .select()
       .from(ultrassons)
-      .where(eq(ultrassons.id, existente[0].id))
+      .where(eq(ultrassons.id, input.id))
       .limit(1);
     
     return { success: true, ultrassom: updated[0] };
-  } else {
-    // Criar novo
-    const result = await db.insert(ultrassons).values({
-      gestanteId: input.gestanteId,
-      tipoUltrassom: input.tipoUltrassom,
-      dataExame: input.dataExame,
-      idadeGestacional: input.idadeGestacional,
-      dados: input.dados as any,
-    });
-    
-    const inserted = await db
-      .select()
-      .from(ultrassons)
-      .where(eq(ultrassons.id, result[0].insertId))
-      .limit(1);
-    
-    return { success: true, ultrassom: inserted[0] };
   }
+
+  // Sempre criar novo registro (permite múltiplos ultrassons do mesmo tipo)
+  const result = await db.insert(ultrassons).values({
+    gestanteId: input.gestanteId,
+    tipoUltrassom: input.tipoUltrassom,
+    dataExame: input.dataExame,
+    idadeGestacional: input.idadeGestacional,
+    dados: input.dados as any,
+  });
+  
+  const inserted = await db
+    .select()
+    .from(ultrassons)
+    .where(eq(ultrassons.id, result[0].insertId))
+    .limit(1);
+  
+  return { success: true, ultrassom: inserted[0] };
 }
 
 /**

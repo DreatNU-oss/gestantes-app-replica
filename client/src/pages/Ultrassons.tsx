@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { useLocation } from 'wouter';
 import { useGestanteAtiva } from '@/contexts/GestanteAtivaContext';
 import { InterpretarUltrassomModal } from '@/components/InterpretarUltrassomModal';
+import { UltrassomRegistrosSalvos } from '@/components/UltrassomRegistrosSalvos';
 import { HistoricoInterpretacoes } from '@/components/HistoricoInterpretacoes';
 import { normalizeDadosDatas } from '@shared/dateNormalization';
 
@@ -176,18 +177,22 @@ export default function Ultrassons() {
     },
   });
 
-  // Função para apagar ultrassom por tipo
-  const handleApagar = async (tipoUltrassom: string) => {
+  // Função para apagar ultrassom por ID específico
+  const handleApagar = async (tipoUltrassom: string, usId?: number) => {
     if (!ultrassons) return;
-    const us = ultrassons.find((u: any) => u.tipoUltrassom === tipoUltrassom);
-    if (!us) {
-      toast.error('⚠️ Nenhum ultrassom salvo para apagar', {
-        description: 'Este tipo de ultrassom ainda não foi salvo.',
+    const targetId = usId || editingIds[tipoUltrassom];
+    if (!targetId) {
+      toast.error('⚠️ Nenhum ultrassom selecionado para apagar', {
+        description: 'Selecione um ultrassom para editar antes de apagar.',
         duration: 4000,
       });
       return;
     }
-    await deletarMutation.mutateAsync({ id: us.id });
+    await deletarMutation.mutateAsync({ id: targetId });
+    // Limpar editingId se era o registro sendo editado
+    if (editingIds[tipoUltrassom] === targetId) {
+      setEditingIds(prev => ({ ...prev, [tipoUltrassom]: null }));
+    }
     // Limpar o formulário correspondente
     switch (tipoUltrassom) {
       case 'primeiro_ultrassom':
@@ -260,6 +265,28 @@ export default function Ultrassons() {
       : '';
   };
   
+  // Estado para rastrear qual registro está sendo editado (null = novo)
+  const [editingIds, setEditingIds] = useState<Record<string, number | null>>({
+    primeiro_ultrassom: null,
+    morfologico_1tri: null,
+    ultrassom_obstetrico: null,
+    morfologico_2tri: null,
+    ecocardiograma_fetal: null,
+    ultrassom_seguimento: null,
+  });
+
+  // Helper para obter ultrassons salvos de um tipo específico
+  const getUltrassonsPorTipo = (tipo: string) => {
+    if (!ultrassons) return [];
+    return ultrassons
+      .filter((u: any) => u.tipoUltrassom === tipo)
+      .sort((a: any, b: any) => {
+        // Ordenar por data do exame (mais recente primeiro)
+        if (a.dataExame && b.dataExame) return b.dataExame.localeCompare(a.dataExame);
+        return (b.id || 0) - (a.id || 0);
+      });
+  };
+
   // Estados para cada tipo de ultrassom
   const [primeiroUS, setPrimeiroUS] = useState({
     dataExame: '',
@@ -363,59 +390,98 @@ export default function Ultrassons() {
     return sanitized;
   };
 
+  // Função para carregar um ultrassom específico no formulário
+  const carregarNoFormulario = (us: any) => {
+    const dados = sanitizeDados(us.dados || {});
+    setEditingIds(prev => ({ ...prev, [us.tipoUltrassom]: us.id }));
+    
+    switch (us.tipoUltrassom) {
+      case 'primeiro_ultrassom':
+        setPrimeiroUS(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          idadeGestacional: us.idadeGestacional || '',
+          ...dados,
+        }));
+        break;
+      case 'morfologico_1tri':
+        setMorfo1Tri(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          idadeGestacional: us.idadeGestacional || '',
+          ...dados,
+        }));
+        break;
+      case 'ultrassom_obstetrico':
+        setUsObstetrico(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          idadeGestacional: us.idadeGestacional || '',
+          ...dados,
+        }));
+        break;
+      case 'morfologico_2tri':
+        setMorfo2Tri(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          idadeGestacional: us.idadeGestacional || '',
+          ...dados,
+        }));
+        break;
+      case 'ecocardiograma_fetal':
+        setEcocardiograma(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          ...dados,
+        }));
+        break;
+      case 'ultrassom_seguimento':
+        setUsSeguimento(prev => ({
+          ...prev,
+          dataExame: us.dataExame || '',
+          idadeGestacional: us.idadeGestacional || '',
+          ...dados,
+        }));
+        break;
+    }
+  };
+
+  // Função para limpar formulário e preparar para novo registro
+  const prepararNovo = (tipoUltrassom: string) => {
+    setEditingIds(prev => ({ ...prev, [tipoUltrassom]: null }));
+    switch (tipoUltrassom) {
+      case 'primeiro_ultrassom':
+        setPrimeiroUS({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', sacoVitelino: '', hematoma: '', corpoLuteo: '', coloUterino: '', dpp: '' });
+        break;
+      case 'morfologico_1tri':
+        setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+        break;
+      case 'ultrassom_obstetrico':
+        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+        break;
+      case 'morfologico_2tri':
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        break;
+      case 'ecocardiograma_fetal':
+        setEcocardiograma({ dataExame: '', conclusao: '' });
+        break;
+      case 'ultrassom_seguimento':
+        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
+        break;
+    }
+    limparDestaquesIA(tipoUltrassom);
+  };
+
   useEffect(() => {
     if (ultrassons && ultrassons.length > 0) {
-      ultrassons.forEach((us: any) => {
-        const dados = sanitizeDados(us.dados || {});
-        
-        switch (us.tipoUltrassom) {
-          case 'primeiro_ultrassom':
-            setPrimeiroUS(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              idadeGestacional: us.idadeGestacional || '',
-              ...dados,
-            }));
-            break;
-          case 'morfologico_1tri':
-            setMorfo1Tri(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              idadeGestacional: us.idadeGestacional || '',
-              ...dados,
-            }));
-            break;
-          case 'ultrassom_obstetrico':
-            setUsObstetrico(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              idadeGestacional: us.idadeGestacional || '',
-              ...dados,
-            }));
-            break;
-          case 'morfologico_2tri':
-            setMorfo2Tri(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              idadeGestacional: us.idadeGestacional || '',
-              ...dados,
-            }));
-            break;
-          case 'ecocardiograma_fetal':
-            setEcocardiograma(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              ...dados,
-            }));
-            break;
-          case 'ultrassom_seguimento':
-            setUsSeguimento(prev => ({
-              ...prev,
-              dataExame: us.dataExame || '',
-              idadeGestacional: us.idadeGestacional || '',
-              ...dados,
-            }));
-            break;
+      // Para cada tipo, carregar o mais recente no formulário (apenas se não está editando)
+      const tipos = ['primeiro_ultrassom', 'morfologico_1tri', 'ultrassom_obstetrico', 'morfologico_2tri', 'ecocardiograma_fetal', 'ultrassom_seguimento'];
+      tipos.forEach(tipo => {
+        const registros = ultrassons.filter((u: any) => u.tipoUltrassom === tipo);
+        if (registros.length > 0 && !editingIds[tipo]) {
+          // Carregar o mais recente
+          const maisRecente = registros.sort((a: any, b: any) => (b.id || 0) - (a.id || 0))[0];
+          carregarNoFormulario(maisRecente);
         }
       });
     }
@@ -522,13 +588,19 @@ export default function Ultrassons() {
     
     const { dataExame, idadeGestacional, ...camposDados } = dados;
     
+    const editingId = editingIds[tipoUltrassom];
+    
     await salvarMutation.mutateAsync({
+      ...(editingId ? { id: editingId } : {}),
       gestanteId: gestanteSelecionada,
       tipoUltrassom: tipoUltrassom as any,
       dataExame: dataExame || undefined,
       idadeGestacional: idadeGestacional || undefined,
       dados: camposDados,
     });
+    
+    // Após salvar, limpar o editingId (voltar para modo "novo")
+    setEditingIds(prev => ({ ...prev, [tipoUltrassom]: null }));
   };
   
   // Filtrar gestantes pela busca
@@ -638,6 +710,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('primeiro_ultrassom')}
+                editingId={editingIds.primeiro_ultrassom}
+                tipoUltrassom="primeiro_ultrassom"
+                tipoLabel="1º Ultrassom"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('primeiro_ultrassom')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -741,28 +823,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar 1º Ultrassom'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.primeiro_ultrassom ? 'Atualizar 1º Ultrassom' : 'Salvar Novo 1º Ultrassom'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'primeiro_ultrassom') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar 1º Ultrassom?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('primeiro_ultrassom')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -784,6 +846,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('morfologico_1tri')}
+                editingId={editingIds.morfologico_1tri}
+                tipoUltrassom="morfologico_1tri"
+                tipoLabel="Morfológico 1º Tri"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('morfologico_1tri')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -885,28 +957,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 1º Tri'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.morfologico_1tri ? 'Atualizar Morfológico 1º Tri' : 'Salvar Novo Morfológico 1º Tri'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'morfologico_1tri') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar Morfológico 1º Trimestre?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('morfologico_1tri')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -928,6 +980,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('ultrassom_obstetrico')}
+                editingId={editingIds.ultrassom_obstetrico}
+                tipoUltrassom="ultrassom_obstetrico"
+                tipoLabel="US Obstétrico"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('ultrassom_obstetrico')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -1000,28 +1062,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom Obstétrico'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.ultrassom_obstetrico ? 'Atualizar US Obstétrico' : 'Salvar Novo US Obstétrico'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ultrassom_obstetrico') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar Ultrassom Obstétrico?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ultrassom_obstetrico')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -1043,6 +1085,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('morfologico_2tri')}
+                editingId={editingIds.morfologico_2tri}
+                tipoUltrassom="morfologico_2tri"
+                tipoLabel="Morfológico 2º Tri"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('morfologico_2tri')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -1179,28 +1231,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Morfológico 2º Tri'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.morfologico_2tri ? 'Atualizar Morfológico 2º Tri' : 'Salvar Novo Morfológico 2º Tri'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'morfologico_2tri') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar Morfológico 2º Trimestre?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('morfologico_2tri')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -1222,6 +1254,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('ecocardiograma_fetal')}
+                editingId={editingIds.ecocardiograma_fetal}
+                tipoUltrassom="ecocardiograma_fetal"
+                tipoLabel="Ecocardiograma"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('ecocardiograma_fetal')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div>
                 <Label>Data do Exame <span className="text-red-500">*</span></Label>
                 <Input
@@ -1251,28 +1293,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ecocardiograma'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.ecocardiograma_fetal ? 'Atualizar Ecocardiograma' : 'Salvar Novo Ecocardiograma'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ecocardiograma_fetal') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar Ecocardiograma Fetal?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ecocardiograma_fetal')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -1294,6 +1316,16 @@ export default function Ultrassons() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UltrassomRegistrosSalvos
+                registros={getUltrassonsPorTipo('ultrassom_seguimento')}
+                editingId={editingIds.ultrassom_seguimento}
+                tipoUltrassom="ultrassom_seguimento"
+                tipoLabel="US Seguimento"
+                onEditar={carregarNoFormulario}
+                onNovo={() => prepararNovo('ultrassom_seguimento')}
+                onApagar={handleApagar}
+                isDeleting={deletarMutation.isPending}
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Data do Exame <span className="text-red-500">*</span></Label>
@@ -1426,28 +1458,8 @@ export default function Ultrassons() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {salvarMutation.isPending ? 'Salvando...' : 'Salvar Ultrassom de Seguimento'}
+                  {salvarMutation.isPending ? 'Salvando...' : editingIds.ultrassom_seguimento ? 'Atualizar US Seguimento' : 'Salvar Novo US Seguimento'}
                 </Button>
-                {ultrassons?.some((u: any) => u.tipoUltrassom === 'ultrassom_seguimento') && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700" disabled={deletarMutation.isPending}>
-                        {deletarMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Apagar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Apagar Ultrassom de Seguimento?</AlertDialogTitle>
-                        <AlertDialogDescription>Esta ação não pode ser desfeita. Todos os dados deste ultrassom serão removidos permanentemente.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleApagar('ultrassom_seguimento')}>Apagar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -1459,6 +1471,7 @@ export default function Ultrassons() {
         open={modalInterpretarAberto}
         onClose={() => setModalInterpretarAberto(false)}
         onDadosExtraidos={handleDadosExtraidos}
+        nomeGestante={gestanteAtiva?.nome || busca}
       />
       </div>
     </GestantesLayout>

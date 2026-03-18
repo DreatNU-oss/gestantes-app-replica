@@ -12,6 +12,7 @@ interface InterpretarUltrassomModalProps {
   open: boolean;
   onClose: () => void;
   onDadosExtraidos: (tipo: string, dados: Record<string, string>, arquivosProcessados?: number) => void;
+  nomeGestante?: string;
 }
 
 interface FileWithStatus {
@@ -34,7 +35,10 @@ const tiposUltrassom = [
   { value: 'ultrassom_seguimento', label: 'Ultrassom de Seguimento' },
 ];
 
-export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: InterpretarUltrassomModalProps) {
+export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos, nomeGestante }: InterpretarUltrassomModalProps) {
+  const [showNameMismatch, setShowNameMismatch] = useState(false);
+  const [nomeLaudo, setNomeLaudo] = useState('');
+  const [pendingDados, setPendingDados] = useState<{ tipo: string; dados: Record<string, string>; count: number } | null>(null);
   const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -243,14 +247,57 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
     setIsProcessing(false);
 
     if (successCount > 0) {
-      // Aguardar um pouco para mostrar os status antes de fechar
+      // Verificar se o nome da paciente no laudo confere com o cadastro
+      const nomePacienteLaudo = combinedDados.nomePacienteLaudo || '';
+      // Remover nomePacienteLaudo dos dados antes de passar ao formulário
+      const { nomePacienteLaudo: _, ...dadosSemNome } = combinedDados;
+      
+      if (nomePacienteLaudo && nomeGestante) {
+        const nomeGestanteNorm = nomeGestante.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        const nomeLaudoNorm = nomePacienteLaudo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        
+        // Verificar se os nomes são suficientemente diferentes
+        const nomesConferem = nomeGestanteNorm === nomeLaudoNorm || 
+          nomeGestanteNorm.includes(nomeLaudoNorm) || 
+          nomeLaudoNorm.includes(nomeGestanteNorm) ||
+          // Comparar primeiro e último nome
+          (nomeGestanteNorm.split(' ')[0] === nomeLaudoNorm.split(' ')[0] && 
+           nomeGestanteNorm.split(' ').pop() === nomeLaudoNorm.split(' ').pop());
+        
+        if (!nomesConferem) {
+          // Nomes não conferem - mostrar diálogo de confirmação
+          setNomeLaudo(nomePacienteLaudo);
+          setPendingDados({ tipo: tipoSelecionado, dados: dadosSemNome, count: successCount });
+          setShowNameMismatch(true);
+          return;
+        }
+      }
+      
+      // Nomes conferem ou não foi possível verificar - prosseguir normalmente
       setTimeout(() => {
-        onDadosExtraidos(tipoSelecionado, combinedDados, successCount);
+        onDadosExtraidos(tipoSelecionado, dadosSemNome, successCount);
         handleClose();
       }, 1500);
     } else {
       setError('Nenhum arquivo foi processado com sucesso');
     }
+  };
+
+  const handleConfirmNameMismatch = () => {
+    if (pendingDados) {
+      onDadosExtraidos(pendingDados.tipo, pendingDados.dados, pendingDados.count);
+    }
+    setShowNameMismatch(false);
+    setPendingDados(null);
+    setNomeLaudo('');
+    handleClose();
+  };
+
+  const handleCancelNameMismatch = () => {
+    setShowNameMismatch(false);
+    setPendingDados(null);
+    setNomeLaudo('');
+    toast.info('Interpretação cancelada. Verifique se o laudo é da paciente correta.');
   };
 
   const handleClose = () => {
@@ -265,10 +312,14 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
     setError('');
     setIsProcessing(false);
     setCurrentFileIndex(0);
+    setShowNameMismatch(false);
+    setPendingDados(null);
+    setNomeLaudo('');
     onClose();
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
@@ -485,5 +536,44 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos }: I
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Diálogo de confirmação quando nome não confere */}
+    <Dialog open={showNameMismatch} onOpenChange={() => handleCancelNameMismatch()}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle className="text-amber-600 flex items-center gap-2">
+            <AlertCircle className="h-5 w-5" />
+            Nome da Paciente Não Confere
+          </DialogTitle>
+          <DialogDescription>
+            O nome encontrado no laudo do ultrassom não corresponde ao nome da paciente no cadastro.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="bg-muted rounded-lg p-4 space-y-3">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Nome no Cadastro:</p>
+              <p className="text-base font-semibold">{nomeGestante}</p>
+            </div>
+            <div className="border-t pt-3">
+              <p className="text-sm font-medium text-muted-foreground">Nome no Laudo:</p>
+              <p className="text-base font-semibold text-amber-600">{nomeLaudo}</p>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Deseja continuar mesmo assim? Os dados serão preenchidos no formulário da paciente selecionada.
+          </p>
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={handleCancelNameMismatch}>
+            Cancelar
+          </Button>
+          <Button variant="default" className="bg-amber-600 hover:bg-amber-700" onClick={handleConfirmNameMismatch}>
+            Continuar Mesmo Assim
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
