@@ -2293,3 +2293,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir lembrete automático na janela de consulta de rotina para solicitar Ecocardiograma Fetal (via sistema de lembretes existente)
 - [x] Lembrete só desaparece quando obstetra marcar "Ecocardiograma" nas Condutas da consulta (auto-resolve)
 - [x] Testes unitários (24 testes passando)
+
+## Fix Pré-Consulta - Campos não aparecem (18/03/2026)
+- [x] Investigar por que os campos de Peso e PA não aparecem na página Pré-Consulta (formulário estava oculto atrás de botão)
+- [x] Reescrever formulário com campos grandes e visíveis (PA separada em sistólica/diastólica)
+- [x] Campos obrigatórios com validação completa (tipo, peso, PA)
+- [x] Alerta automático de PA elevada (≥140/90)
+- [x] Verificar integração com auto-fill na página de Consulta (já funcionando)

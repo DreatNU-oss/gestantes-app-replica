@@ -43,6 +43,7 @@ import {
   Scale,
   Check,
   Clock,
+  Activity,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import GestantesLayout from "@/components/GestantesLayout";
@@ -59,12 +60,13 @@ export default function PreConsulta() {
   const { gestanteAtiva, setGestanteAtiva } = useGestanteAtiva();
   const [gestanteSelecionada, setGestanteSelecionada] = useState<number | null>(gestanteAtiva?.id ?? null);
   const [busca, setBusca] = useState("");
-  const [modo, setModo] = useState<"lista" | "formulario">("lista");
   const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [mostrarHistorico, setMostrarHistorico] = useState(false);
 
   // Form state
   const [peso, setPeso] = useState("");
-  const [pressaoArterial, setPressaoArterial] = useState("");
+  const [pressaoSistolica, setPressaoSistolica] = useState("");
+  const [pressaoDiastolica, setPressaoDiastolica] = useState("");
   const [tipoConsulta, setTipoConsulta] = useState<string>("");
 
   // Sync com gestante ativa
@@ -89,7 +91,6 @@ export default function PreConsulta() {
         duration: 4000,
       });
       limparFormulario();
-      setModo("lista");
       refetchPreConsultas();
     },
     onError: (error) => {
@@ -104,7 +105,6 @@ export default function PreConsulta() {
     onSuccess: () => {
       toast.success("Pré-consulta atualizada com sucesso!");
       limparFormulario();
-      setModo("lista");
       refetchPreConsultas();
     },
     onError: (error) => {
@@ -130,7 +130,8 @@ export default function PreConsulta() {
 
   const limparFormulario = () => {
     setPeso("");
-    setPressaoArterial("");
+    setPressaoSistolica("");
+    setPressaoDiastolica("");
     setTipoConsulta("");
     setEditandoId(null);
   };
@@ -138,32 +139,47 @@ export default function PreConsulta() {
   const handleSelecionarGestante = (g: any) => {
     setGestanteSelecionada(g.id);
     setGestanteAtiva({ id: g.id, nome: g.nome });
-    setModo("lista");
     limparFormulario();
   };
 
   const handleEditar = (preConsultaItem: any) => {
     setEditandoId(preConsultaItem.id);
     setPeso(preConsultaItem.peso);
-    setPressaoArterial(preConsultaItem.pressaoArterial);
+    // Parse pressão arterial (formato "120/80" ou "120x80")
+    const paMatch = preConsultaItem.pressaoArterial?.match(/^(\d{2,3})\s*[\/xX]\s*(\d{2,3})$/);
+    if (paMatch) {
+      setPressaoSistolica(paMatch[1]);
+      setPressaoDiastolica(paMatch[2]);
+    } else {
+      setPressaoSistolica("");
+      setPressaoDiastolica("");
+    }
     setTipoConsulta(preConsultaItem.tipoConsulta);
-    setModo("formulario");
+    setMostrarHistorico(false);
+    // Scroll to top of form
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validação
-    if (!peso.trim()) {
-      toast.error("Peso é obrigatório");
-      return;
-    }
-    if (!pressaoArterial.trim()) {
-      toast.error("Pressão arterial é obrigatória");
-      return;
-    }
     if (!tipoConsulta) {
-      toast.error("Tipo de consulta é obrigatório");
+      toast.error("Tipo de consulta é obrigatório", {
+        description: "Selecione se é 1ª Consulta, Rotina ou Urgência.",
+      });
+      return;
+    }
+    if (!peso.trim()) {
+      toast.error("Peso é obrigatório", {
+        description: "Preencha o peso da gestante em kg.",
+      });
+      return;
+    }
+    if (!pressaoSistolica.trim() || !pressaoDiastolica.trim()) {
+      toast.error("Pressão arterial é obrigatória", {
+        description: "Preencha a pressão sistólica e diastólica.",
+      });
       return;
     }
     if (!gestanteSelecionada) {
@@ -172,7 +188,7 @@ export default function PreConsulta() {
     }
 
     // Validar formato do peso (número decimal)
-    const pesoNum = parseFloat(peso);
+    const pesoNum = parseFloat(peso.replace(",", "."));
     if (isNaN(pesoNum) || pesoNum <= 0 || pesoNum > 300) {
       toast.error("Peso inválido", {
         description: "Insira um peso válido em kg (ex: 72.5)",
@@ -180,27 +196,36 @@ export default function PreConsulta() {
       return;
     }
 
-    // Validar formato da pressão arterial (ex: 120/80 ou 120x80)
-    const paMatch = pressaoArterial.match(/^(\d{2,3})\s*[\/xX]\s*(\d{2,3})$/);
-    if (!paMatch) {
-      toast.error("Pressão arterial inválida", {
-        description: "Use o formato 120/80 ou 120x80",
+    // Validar pressão arterial
+    const sistolica = parseInt(pressaoSistolica);
+    const diastolica = parseInt(pressaoDiastolica);
+    if (isNaN(sistolica) || sistolica < 50 || sistolica > 300) {
+      toast.error("Pressão sistólica inválida", {
+        description: "Insira um valor entre 50 e 300 mmHg",
+      });
+      return;
+    }
+    if (isNaN(diastolica) || diastolica < 30 || diastolica > 200) {
+      toast.error("Pressão diastólica inválida", {
+        description: "Insira um valor entre 30 e 200 mmHg",
       });
       return;
     }
 
+    const pressaoArterial = `${sistolica}/${diastolica}`;
+
     if (editandoId) {
       atualizarMutation.mutate({
         id: editandoId,
-        peso: peso.trim(),
-        pressaoArterial: pressaoArterial.trim(),
+        peso: peso.trim().replace(",", "."),
+        pressaoArterial,
         tipoConsulta: tipoConsulta as any,
       });
     } else {
       criarMutation.mutate({
         gestanteId: gestanteSelecionada,
-        peso: peso.trim(),
-        pressaoArterial: pressaoArterial.trim(),
+        peso: peso.trim().replace(",", "."),
+        pressaoArterial,
         tipoConsulta: tipoConsulta as any,
       });
     }
@@ -212,6 +237,10 @@ export default function PreConsulta() {
   ) || [];
 
   const gestanteInfo = gestantes?.find((g: any) => g.id === gestanteSelecionada);
+
+  // Contar pendentes
+  const pendentes = preConsultas?.filter((pc: any) => pc.utilizado === 0) || [];
+  const utilizados = preConsultas?.filter((pc: any) => pc.utilizado === 1) || [];
 
   if (loadingGestantes) {
     return (
@@ -302,151 +331,172 @@ export default function PreConsulta() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setGestanteSelecionada(null);
-                        setGestanteAtiva(null);
-                        limparFormulario();
-                        setModo("lista");
-                      }}
-                    >
-                      Trocar Gestante
-                    </Button>
-                    {modo === "lista" && (
-                      <Button
-                        onClick={() => {
-                          limparFormulario();
-                          setModo("formulario");
-                        }}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Nova Pré-Consulta
-                      </Button>
-                    )}
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setGestanteSelecionada(null);
+                      setGestanteAtiva(null);
+                      limparFormulario();
+                    }}
+                  >
+                    Trocar Gestante
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Formulário */}
-            {modo === "formulario" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {editandoId ? "Editar Pré-Consulta" : "Nova Pré-Consulta"}
-                  </CardTitle>
-                  <CardDescription>
-                    Todos os campos são obrigatórios
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {/* Tipo de Consulta */}
-                      <div>
-                        <Label>
-                          Tipo de Consulta <span className="text-red-500">*</span>
-                        </Label>
-                        <Select
-                          value={tipoConsulta}
-                          onValueChange={setTipoConsulta}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione o tipo..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1a_consulta">1ª Consulta</SelectItem>
-                            <SelectItem value="consulta_rotina">Consulta de Rotina</SelectItem>
-                            <SelectItem value="consulta_urgencia">Consulta de Urgência</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {/* Peso */}
-                      <div>
-                        <Label>
-                          Peso (kg) <span className="text-red-500">*</span>
-                        </Label>
-                        <div className="relative">
-                          <Scale className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="text"
-                            inputMode="decimal"
-                            placeholder="Ex: 72.5"
-                            value={peso}
-                            onChange={(e) => setPeso(e.target.value)}
-                            className="pl-10"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Pressão Arterial */}
-                      <div>
-                        <Label>
-                          Pressão Arterial <span className="text-red-500">*</span>
-                        </Label>
-                        <div className="relative">
-                          <Heart className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            type="text"
-                            placeholder="Ex: 120/80"
-                            value={pressaoArterial}
-                            onChange={(e) => setPressaoArterial(e.target.value)}
-                            className="pl-10"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Button
-                        type="submit"
-                        disabled={criarMutation.isPending || atualizarMutation.isPending}
-                      >
-                        {(criarMutation.isPending || atualizarMutation.isPending) ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <Check className="mr-2 h-4 w-4" />
-                        )}
-                        {editandoId ? "Atualizar" : "Registrar"} Pré-Consulta
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          limparFormulario();
-                          setModo("lista");
-                        }}
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Lista de pré-consultas */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Pré-Consultas Registradas</CardTitle>
-                <CardDescription>
-                  Registros de pré-consulta para {gestanteInfo.nome}
+            {/* Formulário SEMPRE visível */}
+            <Card className="border-2 border-pink-200 bg-pink-50/30">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Activity className="h-5 w-5 text-pink-600" />
+                  {editandoId ? "Editar Pré-Consulta" : "Registrar Pré-Consulta"}
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Preencha <strong>todos os campos</strong> abaixo. Eles são obrigatórios.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {!preConsultas || preConsultas.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium">Nenhuma pré-consulta registrada</p>
-                    <p className="text-sm mt-1">
-                      Clique em "Nova Pré-Consulta" para registrar peso e pressão arterial
-                    </p>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Tipo de Consulta */}
+                  <div>
+                    <Label className="text-base font-semibold mb-2 block">
+                      Tipo de Consulta <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={tipoConsulta}
+                      onValueChange={setTipoConsulta}
+                    >
+                      <SelectTrigger className="h-12 text-base bg-white">
+                        <SelectValue placeholder="Selecione o tipo de consulta..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1a_consulta">1ª Consulta</SelectItem>
+                        <SelectItem value="consulta_rotina">Consulta de Rotina</SelectItem>
+                        <SelectItem value="consulta_urgencia">Consulta de Urgência</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                ) : (
+
+                  {/* Peso e PA lado a lado */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Peso */}
+                    <div className="space-y-2">
+                      <Label className="text-base font-semibold flex items-center gap-2">
+                        <Scale className="h-4 w-4 text-blue-600" />
+                        Peso Hoje (kg) <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="Ex: 72.5"
+                        value={peso}
+                        onChange={(e) => setPeso(e.target.value)}
+                        className="h-14 text-2xl font-bold text-center bg-white"
+                      />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Peso em quilogramas
+                      </p>
+                    </div>
+
+                    {/* Pressão Arterial */}
+                    <div className="space-y-2">
+                      <Label className="text-base font-semibold flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-red-600" />
+                        Pressão Arterial (mmHg) <span className="text-red-500">*</span>
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="120"
+                          value={pressaoSistolica}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, "");
+                            if (val.length <= 3) setPressaoSistolica(val);
+                          }}
+                          className="h-14 text-2xl font-bold text-center bg-white"
+                          maxLength={3}
+                        />
+                        <span className="text-3xl font-bold text-muted-foreground">/</span>
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="80"
+                          value={pressaoDiastolica}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, "");
+                            if (val.length <= 3) setPressaoDiastolica(val);
+                          }}
+                          className="h-14 text-2xl font-bold text-center bg-white"
+                          maxLength={3}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground text-center">
+                        Sistólica / Diastólica
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Alerta de PA alta */}
+                  {pressaoSistolica && pressaoDiastolica && (
+                    parseInt(pressaoSistolica) >= 140 || parseInt(pressaoDiastolica) >= 90
+                  ) && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2 text-red-700">
+                      <Activity className="h-5 w-5 shrink-0" />
+                      <span className="text-sm font-medium">
+                        Atenção: Pressão arterial elevada ({pressaoSistolica}/{pressaoDiastolica} mmHg). Informar o médico.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Botões */}
+                  <div className="flex items-center gap-3 pt-2">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="flex-1 h-12 text-base"
+                      disabled={criarMutation.isPending || atualizarMutation.isPending}
+                    >
+                      {(criarMutation.isPending || atualizarMutation.isPending) ? (
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      ) : (
+                        <Check className="mr-2 h-5 w-5" />
+                      )}
+                      {editandoId ? "Atualizar Pré-Consulta" : "Salvar Pré-Consulta"}
+                    </Button>
+                    {editandoId && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="lg"
+                        onClick={limparFormulario}
+                      >
+                        Cancelar Edição
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* Pré-consultas pendentes */}
+            {pendentes.length > 0 && (
+              <Card className="border-amber-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Clock className="h-5 w-5 text-amber-600" />
+                    Pré-Consultas Pendentes
+                    <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50 ml-2">
+                      {pendentes.length}
+                    </Badge>
+                  </CardTitle>
+                  <CardDescription>
+                    Aguardando utilização pelo médico na consulta
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -455,12 +505,11 @@ export default function PreConsulta() {
                         <TableHead>Peso</TableHead>
                         <TableHead>PA</TableHead>
                         <TableHead>Registrado por</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead className="text-right">Ações</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {preConsultas.map((pc: any) => (
+                      {pendentes.map((pc: any) => (
                         <TableRow key={pc.id}>
                           <TableCell>
                             {new Date(pc.createdAt).toLocaleDateString("pt-BR")}{" "}
@@ -476,74 +525,146 @@ export default function PreConsulta() {
                               {TIPO_CONSULTA_LABELS[pc.tipoConsulta] || pc.tipoConsulta}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-medium">{pc.peso} kg</TableCell>
-                          <TableCell className="font-medium">{pc.pressaoArterial}</TableCell>
+                          <TableCell className="font-bold text-lg">{pc.peso} kg</TableCell>
+                          <TableCell className="font-bold text-lg">{pc.pressaoArterial}</TableCell>
                           <TableCell className="text-muted-foreground text-sm">
                             {pc.registradoPorNome || "-"}
                           </TableCell>
-                          <TableCell>
-                            {pc.utilizado === 1 ? (
-                              <Badge variant="outline" className="border-green-300 text-green-700 bg-green-50">
-                                <Check className="h-3 w-3 mr-1" />
-                                Utilizado
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50">
-                                <Clock className="h-3 w-3 mr-1" />
-                                Pendente
-                              </Badge>
-                            )}
-                          </TableCell>
                           <TableCell className="text-right">
-                            {pc.utilizado === 0 && (
-                              <div className="flex items-center justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleEditar(pc)}
-                                  title="Editar"
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                      title="Remover"
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEditar(pc)}
+                                title="Editar"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    title="Remover"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Remover pré-consulta?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta ação não pode ser desfeita. Os dados de peso e pressão arterial serão removidos.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      className="bg-red-600 hover:bg-red-700"
+                                      onClick={() => deletarMutation.mutate({ id: pc.id })}
                                     >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Remover pré-consulta?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Esta ação não pode ser desfeita. Os dados de peso e pressão arterial serão removidos.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                      <AlertDialogAction
-                                        className="bg-red-600 hover:bg-red-700"
-                                        onClick={() => deletarMutation.mutate({ id: pc.id })}
-                                      >
-                                        Remover
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </div>
-                            )}
+                                      Remover
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Histórico de pré-consultas utilizadas */}
+            {utilizados.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Check className="h-5 w-5 text-green-600" />
+                      Histórico
+                      <Badge variant="outline" className="border-green-300 text-green-700 bg-green-50 ml-2">
+                        {utilizados.length} utilizado{utilizados.length > 1 ? "s" : ""}
+                      </Badge>
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setMostrarHistorico(!mostrarHistorico)}
+                    >
+                      {mostrarHistorico ? "Ocultar" : "Ver Histórico"}
+                    </Button>
+                  </div>
+                </CardHeader>
+                {mostrarHistorico && (
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Data/Hora</TableHead>
+                          <TableHead>Tipo</TableHead>
+                          <TableHead>Peso</TableHead>
+                          <TableHead>PA</TableHead>
+                          <TableHead>Registrado por</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {utilizados.map((pc: any) => (
+                          <TableRow key={pc.id} className="opacity-60">
+                            <TableCell>
+                              {new Date(pc.createdAt).toLocaleDateString("pt-BR")}{" "}
+                              <span className="text-muted-foreground text-xs">
+                                {new Date(pc.createdAt).toLocaleTimeString("pt-BR", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">
+                                {TIPO_CONSULTA_LABELS[pc.tipoConsulta] || pc.tipoConsulta}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{pc.peso} kg</TableCell>
+                            <TableCell>{pc.pressaoArterial}</TableCell>
+                            <TableCell className="text-muted-foreground text-sm">
+                              {pc.registradoPorNome || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="border-green-300 text-green-700 bg-green-50">
+                                <Check className="h-3 w-3 mr-1" />
+                                Utilizado
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
                 )}
-              </CardContent>
-            </Card>
+              </Card>
+            )}
+
+            {/* Mensagem quando não há registros */}
+            {(!preConsultas || preConsultas.length === 0) && (
+              <Card>
+                <CardContent className="py-8">
+                  <div className="text-center text-muted-foreground">
+                    <Clock className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                    <p className="text-sm">
+                      Nenhuma pré-consulta registrada ainda para esta gestante.
+                      <br />
+                      Preencha o formulário acima para registrar.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </>
         )}
       </div>
