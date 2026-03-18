@@ -1,0 +1,59 @@
+{
+  "query": "\nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt\nFROM whatsappHistorico wh\nWHERE wh.id BETWEEN 360004 AND 360010\nORDER BY wh.id\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt\nFROM whatsappHistorico wh\nWHERE wh.id BETWEEN 360004 AND 360010\nORDER BY wh.id\n",
+  "rows": [
+    {
+      "id": "360004",
+      "gestanteId": "330021",
+      "templateId": "NULL",
+      "nomeGestante": "Bianca Aparecida Marcolino do Carmo",
+      "sentAt": "2026-03-18 11:57:04"
+    },
+    {
+      "id": "360005",
+      "gestanteId": "2610002",
+      "templateId": "5",
+      "nomeGestante": "Luciana Valim",
+      "sentAt": "2026-03-18 12:00:03"
+    },
+    {
+      "id": "360006",
+      "gestanteId": "330008",
+      "templateId": "60001",
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:09"
+    },
+    {
+      "id": "360007",
+      "gestanteId": "330008",
+      "templateId": "60001",
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:19"
+    },
+    {
+      "id": "360008",
+      "gestanteId": "1620002",
+      "templateId": "4",
+      "nomeGestante": "Lara de Souza Gomes",
+      "sentAt": "2026-03-18 12:00:21"
+    },
+    {
+      "id": "360009",
+      "gestanteId": "330080",
+      "templateId": "NULL",
+      "nomeGestante": "Natália da Silva Silveira",
+      "sentAt": "2026-03-18 12:20:54"
+    },
+    {
+      "id": "360010",
+      "gestanteId": "2610024",
+      "templateId": "NULL",
+      "nomeGestante": "Nathalia Amélia Martins",
+      "sentAt": "2026-03-18 12:49:48"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttemplateId\tnomeGestante\tsentAt\n360004\t330021\tNULL\tBianca Aparecida Marcolino do Carmo\t2026-03-18 11:57:04\n360005\t2610002\t5\tLuciana Valim\t2026-03-18 12:00:03\n360006\t330008\t60001\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:09\n360007\t330008\t60001\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:19\n360008\t1620002\t4\tLara de Souza Gomes\t2026-03-18 12:00:21\n360009\t330080\tNULL\tNatália da Silva Silveira\t2026-03-18 12:20:54\n360010\t2610024\tNULL\tNathalia Amélia Martins\t2026-03-18 12:49:48\n",
+  "stderr": "",
+  "execution_time_ms": 380
+}

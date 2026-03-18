@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT * FROM whatsappConfig WHERE clinicaId = 1\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT * FROM whatsappConfig WHERE clinicaId = 1\n",
+  "rows": [
+    {
+      "id": "1",
+      "clinicaId": "1",
+      "apiKey": "1e96943f71a7fbc99798088ec5e2815f895aca7723858dd1f70e3d77100942e5",
+      "ativo": "1",
+      "createdAt": "2026-03-13 00:05:04",
+      "updatedAt": "2026-03-13 00:05:04"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclinicaId\tapiKey\tativo\tcreatedAt\tupdatedAt\n1\t1\t1e96943f71a7fbc99798088ec5e2815f895aca7723858dd1f70e3d77100942e5\t1\t2026-03-13 00:05:04\t2026-03-13 00:05:04\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

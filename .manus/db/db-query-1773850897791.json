@@ -1,0 +1,17 @@
+{
+  "query": "\nSELECT wh.nomeGestante, wh.templateId, COUNT(*) as total, \n       MIN(wh.sentAt) as primeiroEnvio, MAX(wh.sentAt) as ultimoEnvio\nFROM whatsappHistorico wh\nWHERE wh.templateId = 60001\nAND DATE(wh.sentAt) = CURDATE()\nGROUP BY wh.nomeGestante, wh.templateId\nHAVING COUNT(*) > 1\nORDER BY total DESC\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.nomeGestante, wh.templateId, COUNT(*) as total, \n       MIN(wh.sentAt) as primeiroEnvio, MAX(wh.sentAt) as ultimoEnvio\nFROM whatsappHistorico wh\nWHERE wh.templateId = 60001\nAND DATE(wh.sentAt) = CURDATE()\nGROUP BY wh.nomeGestante, wh.templateId\nHAVING COUNT(*) > 1\nORDER BY total DESC\n",
+  "rows": [
+    {
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "templateId": "60001",
+      "total": "2",
+      "primeiroEnvio": "2026-03-18 12:00:09",
+      "ultimoEnvio": "2026-03-18 12:00:19"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeGestante\ttemplateId\ttotal\tprimeiroEnvio\tultimoEnvio\nLucíola Viviane Achilles Medeiros Araújo\t60001\t2\t2026-03-18 12:00:09\t2026-03-18 12:00:19\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

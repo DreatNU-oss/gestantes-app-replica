@@ -1,0 +1,738 @@
+{
+  "query": "\nSELECT g.id, g.nome, g.telefone, g.clinicaId, m.nome as medicoNome\nFROM gestantes g\nLEFT JOIN partosRealizados pr ON pr.gestanteId = g.id\nLEFT JOIN medicos m ON m.id = g.medicoId\nWHERE g.clinicaId = (SELECT id FROM clinicas WHERE codigo = '00001')\nAND g.telefone IS NOT NULL \nAND g.telefone != ''\nAND pr.id IS NULL\nORDER BY g.nome\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT g.id, g.nome, g.telefone, g.clinicaId, m.nome as medicoNome\nFROM gestantes g\nLEFT JOIN partosRealizados pr ON pr.gestanteId = g.id\nLEFT JOIN medicos m ON m.id = g.medicoId\nWHERE g.clinicaId = (SELECT id FROM clinicas WHERE codigo = '00001')\nAND g.telefone IS NOT NULL \nAND g.telefone != ''\nAND pr.id IS NULL\nORDER BY g.nome\n",
+  "rows": [
+    {
+      "id": "30001",
+      "nome": "Adrieli Rezende Barros",
+      "telefone": "(35) 99228-9660",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1350002",
+      "nome": "Alexandra Maria Silva Souza ",
+      "telefone": "(35) 99126-8626",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2580004",
+      "nome": "Aline Cassia Fernandes",
+      "telefone": "(35) 98824-0095",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330013",
+      "nome": "Aline Cristina Soares Gallo",
+      "telefone": "(35) 98842-2584",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330016",
+      "nome": "Amanda Paula da Costa Silva",
+      "telefone": "(35) 98856-8114",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1500002",
+      "nome": "Amanda Ribeiro Freitas",
+      "telefone": "(35) 99931-1810",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330017",
+      "nome": "Amanda Tavares Amado",
+      "telefone": "(35) 99775-4348",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1140002",
+      "nome": "Ana Beatriz de Oliveira Salles",
+      "telefone": "(35) 99985-2307",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2190002",
+      "nome": "Ana Carolini Almeida de Souza",
+      "telefone": "(14) 99635-7688",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330018",
+      "nome": "Ana Clara Borges da Silva",
+      "telefone": "(35) 98889-2511",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1890002",
+      "nome": "Ana Laura Marinho Amaral",
+      "telefone": "(31) 98252-2303",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1170003",
+      "nome": "Andressa Cristina Gonçalves",
+      "telefone": "(35) 99912-6437",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "telefone": "(35) 99849-3185",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "telefone": "(35) 99904-0233",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "telefone": "(35) 99147-0014",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330023",
+      "nome": "Bruna do Carmo Cunha",
+      "telefone": "(35) 98407-1855",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330025",
+      "nome": "Bruna Ribeiro Costa",
+      "telefone": "(35) 99705-0080",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330026",
+      "nome": "Bruna Tertuliano de Souza",
+      "telefone": "(35) 99112-1923",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1650002",
+      "nome": "Camila Cristina Luiz da Silva",
+      "telefone": "(35) 98435-1550",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330027",
+      "nome": "Camila Dias Vicente",
+      "telefone": "(35) 99909-0827",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "720002",
+      "nome": "Camila Paiva do Nascimento",
+      "telefone": "(35) 98427-6768",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330028",
+      "nome": "Camila Rosa Carvalho",
+      "telefone": "(35) 98864-0766",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "telefone": "(35) 99179-1204",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2160002",
+      "nome": "Camily De Souza Junqueira Costa",
+      "telefone": "(35) 98441-1782",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1860002",
+      "nome": "Chaiane Priscila da Silva Carvalho",
+      "telefone": "(35) 98859-4161",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330034",
+      "nome": "Crisilane Aparecida da Costa Soares",
+      "telefone": "(35) 99932-7688",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330035",
+      "nome": "Crislayne Eleniz de Andrade",
+      "telefone": "(35) 98702-9492",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1770002",
+      "nome": "Damaris Pereira Arlindo",
+      "telefone": "(35) 99123-4544",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330038",
+      "nome": "Denise Bittencourt Siqueira",
+      "telefone": "(14) 98100-0879",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330040",
+      "nome": "Eliana Gomes de Noronha",
+      "telefone": "(35) 99853-9531",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1920002",
+      "nome": "Elisa Matias Jorge Souza",
+      "telefone": "(35) 99961-0388",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "720001",
+      "nome": "Elisangela da Silva",
+      "telefone": "(35) 99200-9797",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330042",
+      "nome": "Ellem Ribeiro Lemes",
+      "telefone": "(35) 98407-4122",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "330043",
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "telefone": "(35) 99126-5151",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330044",
+      "nome": "Erica Aparecida Luz",
+      "telefone": "(35) 99935-9659",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "1560003",
+      "nome": "Estefane Alvarenga Cardoso",
+      "telefone": "(35) 99860-3176",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "1980002",
+      "nome": "Fabiana Aparecida Fonseca",
+      "telefone": "(35) 98701-6463",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "840001",
+      "nome": "Fernanda Angélica Mafra",
+      "telefone": "(35) 98866-8363",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1380002",
+      "nome": "Fernanda Aparecida Lemes",
+      "telefone": "(35) 99923-3153",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330046",
+      "nome": "Fernanda Carmem de Souza",
+      "telefone": "(35) 99993-0821",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "telefone": "(35) 99949-4671",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1230002",
+      "nome": "Flávia Helena Felizardo Pereira",
+      "telefone": "(35) 98821-7940",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330048",
+      "nome": "Gabriela das Graças Arantes Lemos",
+      "telefone": "(35) 99861-8174",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "330049",
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "telefone": "(35) 99269-0286",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1500003",
+      "nome": "Gabriella da Silva leite",
+      "telefone": "(35) 99931-8438",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330050",
+      "nome": "Giovanna Alexsandra Mecia",
+      "telefone": "(35) 99111-5958",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "330051",
+      "nome": "Gisele Silva Batista",
+      "telefone": "(35) 98831-4210",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2130003",
+      "nome": "Gussiê Vitória Tavares Santos",
+      "telefone": "(35) 98831-0359",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330052",
+      "nome": "Helena Resende Andrade",
+      "telefone": "(35) 99891-9065",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330054",
+      "nome": "Iara Silva Miguel",
+      "telefone": "(12) 99612-7694",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330055",
+      "nome": "Iris Fonseca de Morais",
+      "telefone": "(35) 99713-7696",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "2310002",
+      "nome": "Jacqueline Mantovani Dos Santos Viana De Paula",
+      "telefone": "(35) 98842-0545",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330057",
+      "nome": "Janaína Helena Machado",
+      "telefone": "(35) 98892-5227",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "690018",
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "telefone": "(35) 99248-0745",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330009",
+      "nome": "Jenilda Aparecida Souza Santos",
+      "telefone": "(35) 98832-8459",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1740002",
+      "nome": "Jéssica Adriana Morais Lopes",
+      "telefone": "(35) 98889-4868",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1950003",
+      "nome": "Joane Lopes Andrade",
+      "telefone": "(31) 99790-6488",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330060",
+      "nome": "Juliana da Silva Tavares",
+      "telefone": "(35) 98812-3752",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330061",
+      "nome": "Kassiara Batista Borges",
+      "telefone": "(35) 99130-0554",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "330062",
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "telefone": "(35) 98800-1074",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330064",
+      "nome": "Lara Carolyne Miguel de Paula",
+      "telefone": "(35) 98709-6389",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1620002",
+      "nome": "Lara de Souza Gomes",
+      "telefone": "(35) 99815-4273",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2190003",
+      "nome": "Lara De Souza Silverio",
+      "telefone": "(35) 98712-5973",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2610025",
+      "nome": "Larissa Santos Santana",
+      "telefone": "(11) 96707-3720",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330010",
+      "nome": "Letícia Aparecida Silveira",
+      "telefone": "(35) 99208-7701",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330070",
+      "nome": "Letícia Dias de Souza",
+      "telefone": "(35) 98456-4541",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "780001",
+      "nome": "Leticia Petrin",
+      "telefone": "(35) 98813-5747",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330075",
+      "nome": "Lívia Caldas Marins",
+      "telefone": "(35) 99952-9318",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330072",
+      "nome": "Lorena Luísa da Costa",
+      "telefone": "(35) 99824-1549",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1530002",
+      "nome": "Lorenza Silva Pereira",
+      "telefone": "(35) 99198-8651",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "810001",
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "telefone": "(35) 98814-4033",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330073",
+      "nome": "Luciana Maria Silva",
+      "telefone": "(35) 98809-1543",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "2610002",
+      "nome": "Luciana Valim",
+      "telefone": "(35) 98891-7100",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330074",
+      "nome": "Luciany Aparecida Vilela",
+      "telefone": "(35) 99911-0116",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "telefone": "(35) 98885-5312",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330076",
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "telefone": "(35) 98412-6224",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1440002",
+      "nome": "Marcela Bellato Reis",
+      "telefone": "(35) 98408-7562",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2580006",
+      "nome": "Marcelly De Oliveira Rezende ",
+      "telefone": "(35) 98427-2947",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "990003",
+      "nome": "Maria da Glória Barros Pires Ferrari",
+      "telefone": "(35) 99832-6366",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1170002",
+      "nome": "Maria Eduarda da Silva Souza",
+      "telefone": "(18) 98194-0809",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1530003",
+      "nome": "Mariá Raíssa Loureira Rodrigues",
+      "telefone": "(35) 98847-3761",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "660001",
+      "nome": "Meireceli Batista Teixeira",
+      "telefone": "(35) 99128-5764",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330077",
+      "nome": "Meirielen Santiago Levy de Souza",
+      "telefone": "(35) 98404-4719",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330078",
+      "nome": "Milene de Souza Braga",
+      "telefone": "(35) 98864-6143",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2580005",
+      "nome": "Monalisa Mafra Gonçalves de Oliveira",
+      "telefone": "(35) 98845-9422",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330080",
+      "nome": "Natália da Silva Silveira",
+      "telefone": "(35) 99208-2487",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2610024",
+      "nome": "Nathalia Amélia Martins",
+      "telefone": "(21) 98322-5558",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "270001",
+      "nome": "Raissa Andrade Gibram",
+      "telefone": "(35) 99137-5232",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2250002",
+      "nome": "Raissa Silva Gabriel",
+      "telefone": "(35) 98833-2186",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330084",
+      "nome": "Rayane Aparecida Zanin",
+      "telefone": "(35) 99158-3690",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "1470002",
+      "nome": "Roberta Lopes Rodrigues ",
+      "telefone": "(35) 99939-7164",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "2310003",
+      "nome": "Rosemeire Furtado de Paiva",
+      "telefone": "(35) 99970-3857",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2490008",
+      "nome": "Rosimeire Pereira de Paiva",
+      "telefone": "(35) 99873-7334",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1590002",
+      "nome": "Sandra Cristina Pereira Camargo",
+      "telefone": "(35) 98801-9803",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330089",
+      "nome": "Sophy Marie Ferreira Martins",
+      "telefone": "(35) 99764-9027",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330090",
+      "nome": "Suelen Gandza Gomes",
+      "telefone": "(35) 98894-2521",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1260002",
+      "nome": "Suzane Catarine da Silva Bisi",
+      "telefone": "(35) 99938-7723",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "2220002",
+      "nome": "Taciana Ribeiro Rios de Abreu",
+      "telefone": "(35) 98875-6556",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330098",
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "telefone": "(35) 99752-5058",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "telefone": "5535991156028",
+      "clinicaId": "1",
+      "medicoNome": "NULL"
+    },
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "telefone": "(35) 98706-0390",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330100",
+      "nome": "Thaiane Massarim do Nascimento",
+      "telefone": "(35) 99179-8324",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    },
+    {
+      "id": "330101",
+      "nome": "Thainá Batista Valim",
+      "telefone": "(35) 98409-0424",
+      "clinicaId": "1",
+      "medicoNome": "Plantonista do SUS"
+    },
+    {
+      "id": "1200002",
+      "nome": "Yanka Moreira Távora",
+      "telefone": "(35) 99155-9782",
+      "clinicaId": "1",
+      "medicoNome": "Dr. André"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\tclinicaId\tmedicoNome\n30001\tAdrieli Rezende Barros\t(35) 99228-9660\t1\tDr. André\n1350002\tAlexandra Maria Silva Souza \t(35) 99126-8626\t1\tDr. André\n2580004\tAline Cassia Fernandes\t(35) 98824-0095\t1\tNULL\n330013\tAline Cristina Soares Gallo\t(35) 98842-2584\t1\tDr. André\n330016\tAmanda Paula da Costa Silva\t(35) 98856-8114\t1\tDr. André\n1500002\tAmanda Ribeiro Freitas\t(35) 99931-1810\t1\tDr. André\n330017\tAmanda Tavares Amado\t(35) 99775-4348\t1\tDr. André\n1140002\tAna Beatriz de Oliveira Salles\t(35) 99985-2307\t1\tDr. André\n2190002\tAna Carolini Almeida de Souza\t(14) 99635-7688\t1\tNULL\n330018\tAna Clara Borges da Silva\t(35) 98889-2511\t1\tDr. André\n1890002\tAna Laura Marinho Amaral\t(31) 98252-2303\t1\tNULL\n1170003\tAndressa Cristina Gonçalves\t(35) 99912-6437\t1\tDr. André\n330019\tAndressa Helena Silva Fonseca\t(35) 99849-3185\t1\tDr. André\n330021\tBianca Aparecida Marcolino do Carmo\t(35) 99904-0233\t1\tDr. André\n330022\tBianca Fonseca Moreno da Cruz\t(35) 99147-0014\t1\tDr. André\n330023\tBruna do Carmo Cunha\t(35) 98407-1855\t1\tDr. André\n330025\tBruna Ribeiro Costa\t(35) 99705-0080\t1\tDr. André\n330026\tBruna Tertuliano de Souza\t(35) 99112-1923\t1\tNULL\n1650002\tCamila Cristina Luiz da Silva\t(35) 98435-1550\t1\tDr. André\n330027\tCamila Dias Vicente\t(35) 99909-0827\t1\tNULL\n720002\tCamila Paiva do Nascimento\t(35) 98427-6768\t1\tDr. André\n330028\tCamila Rosa Carvalho\t(35) 98864-0766\t1\tDr. André\n330007\tCamila Soares Ferreira Sidrin\t(35) 99179-1204\t1\tDr. André\n2160002\tCamily De Souza Junqueira Costa\t(35) 98441-1782\t1\tDr. André\n1860002\tChaiane Priscila da Silva Carvalho\t(35) 98859-4161\t1\tDr. André\n330034\tCrisilane Aparecida da Costa Soares\t(35) 99932-7688\t1\tDr. André\n330035\tCrislayne Eleniz de Andrade\t(35) 98702-9492\t1\tNULL\n1770002\tDamaris Pereira Arlindo\t(35) 99123-4544\t1\tNULL\n330038\tDenise Bittencourt Siqueira\t(14) 98100-0879\t1\tDr. André\n330040\tEliana Gomes de Noronha\t(35) 99853-9531\t1\tDr. André\n1920002\tElisa Matias Jorge Souza\t(35) 99961-0388\t1\tNULL\n720001\tElisangela da Silva\t(35) 99200-9797\t1\tDr. André\n330042\tEllem Ribeiro Lemes\t(35) 98407-4122\t1\tPlantonista do SUS\n330043\tEllen Aparecida Ferreira Batista\t(35) 99126-5151\t1\tDr. André\n330044\tErica Aparecida Luz\t(35) 99935-9659\t1\tPlantonista do SUS\n1560003\tEstefane Alvarenga Cardoso\t(35) 99860-3176\t1\tPlantonista do SUS\n1980002\tFabiana Aparecida Fonseca\t(35) 98701-6463\t1\tNULL\n840001\tFernanda Angélica Mafra\t(35) 98866-8363\t1\tDr. André\n1380002\tFernanda Aparecida Lemes\t(35) 99923-3153\t1\tDr. André\n330046\tFernanda Carmem de Souza\t(35) 99993-0821\t1\tDr. André\n330047\tFernanda Luciano Santos Gonçalves\t(35) 99949-4671\t1\tDr. André\n1230002\tFlávia Helena Felizardo Pereira\t(35) 98821-7940\t1\tDr. André\n330048\tGabriela das Graças Arantes Lemos\t(35) 99861-8174\t1\tPlantonista do SUS\n330049\tGabriela dos Santos Batista Figueiredo\t(35) 99269-0286\t1\tDr. André\n1500003\tGabriella da Silva leite\t(35) 99931-8438\t1\tDr. André\n330050\tGiovanna Alexsandra Mecia\t(35) 99111-5958\t1\tPlantonista do SUS\n330051\tGisele Silva Batista\t(35) 98831-4210\t1\tDr. André\n2130003\tGussiê Vitória Tavares Santos\t(35) 98831-0359\t1\tDr. André\n330052\tHelena Resende Andrade\t(35) 99891-9065\t1\tDr. André\n330054\tIara Silva Miguel\t(12) 99612-7694\t1\tDr. André\n330055\tIris Fonseca de Morais\t(35) 99713-7696\t1\tNULL\n2310002\tJacqueline Mantovani Dos Santos Viana De Paula\t(35) 98842-0545\t1\tDr. André\n330057\tJanaína Helena Machado\t(35) 98892-5227\t1\tDr. André\n690018\tJeniffer Catrine Alves de Souza\t(35) 99248-0745\t1\tDr. André\n330009\tJenilda Aparecida Souza Santos\t(35) 98832-8459\t1\tDr. André\n1740002\tJéssica Adriana Morais Lopes\t(35) 98889-4868\t1\tDr. André\n1950003\tJoane Lopes Andrade\t(31) 99790-6488\t1\tNULL\n330060\tJuliana da Silva Tavares\t(35) 98812-3752\t1\tNULL\n330061\tKassiara Batista Borges\t(35) 99130-0554\t1\tPlantonista do SUS\n330062\tKayane Ketnny Gomes Branquinho\t(35) 98800-1074\t1\tDr. André\n330064\tLara Carolyne Miguel de Paula\t(35) 98709-6389\t1\tDr. André\n1620002\tLara de Souza Gomes\t(35) 99815-4273\t1\tDr. André\n2190003\tLara De Souza Silverio\t(35) 98712-5973\t1\tDr. André\n2610025\tLarissa Santos Santana\t(11) 96707-3720\t1\tDr. André\n330010\tLetícia Aparecida Silveira\t(35) 99208-7701\t1\tDr. André\n330070\tLetícia Dias de Souza\t(35) 98456-4541\t1\tNULL\n780001\tLeticia Petrin\t(35) 98813-5747\t1\tDr. André\n330075\tLívia Caldas Marins\t(35) 99952-9318\t1\tDr. André\n330072\tLorena Luísa da Costa\t(35) 99824-1549\t1\tDr. André\n1530002\tLorenza Silva Pereira\t(35) 99198-8651\t1\tNULL\n810001\tLuana Maria Oliveira Ribeiro Bernardes\t(35) 98814-4033\t1\tDr. André\n330073\tLuciana Maria Silva\t(35) 98809-1543\t1\tPlantonista do SUS\n2610002\tLuciana Valim\t(35) 98891-7100\t1\tNULL\n330074\tLuciany Aparecida Vilela\t(35) 99911-0116\t1\tDr. André\n330008\tLucíola Viviane Achilles Medeiros Araújo\t(35) 98885-5312\t1\tDr. André\n330076\tMakisleide Ferreira de Souza Santos\t(35) 98412-6224\t1\tDr. André\n1440002\tMarcela Bellato Reis\t(35) 98408-7562\t1\tDr. André\n2580006\tMarcelly De Oliveira Rezende \t(35) 98427-2947\t1\tNULL\n990003\tMaria da Glória Barros Pires Ferrari\t(35) 99832-6366\t1\tNULL\n1170002\tMaria Eduarda da Silva Souza\t(18) 98194-0809\t1\tNULL\n1530003\tMariá Raíssa Loureira Rodrigues\t(35) 98847-3761\t1\tDr. André\n660001\tMeireceli Batista Teixeira\t(35) 99128-5764\t1\tDr. André\n330077\tMeirielen Santiago Levy de Souza\t(35) 98404-4719\t1\tDr. André\n330078\tMilene de Souza Braga\t(35) 98864-6143\t1\tDr. André\n2580005\tMonalisa Mafra Gonçalves de Oliveira\t(35) 98845-9422\t1\tDr. André\n330080\tNatália da Silva Silveira\t(35) 99208-2487\t1\tDr. André\n2610024\tNathalia Amélia Martins\t(21) 98322-5558\t1\tDr. André\n270001\tRaissa Andrade Gibram\t(35) 99137-5232\t1\tDr. André\n2250002\tRaissa Silva Gabriel\t(35) 98833-2186\t1\tNULL\n330084\tRayane Aparecida Zanin\t(35) 99158-3690\t1\tNULL\n1470002\tRoberta Lopes Rodrigues \t(35) 99939-7164\t1\tNULL\n2310003\tRosemeire Furtado de Paiva\t(35) 99970-3857\t1\tDr. André\n2490008\tRosimeire Pereira de Paiva\t(35) 99873-7334\t1\tDr. André\n1590002\tSandra Cristina Pereira Camargo\t(35) 98801-9803\t1\tDr. André\n330089\tSophy Marie Ferreira Martins\t(35) 99764-9027\t1\tDr. André\n330090\tSuelen Gandza Gomes\t(35) 98894-2521\t1\tDr. André\n1260002\tSuzane Catarine da Silva Bisi\t(35) 99938-7723\t1\tDr. André\n2220002\tTaciana Ribeiro Rios de Abreu\t(35) 98875-6556\t1\tDr. André\n330098\tTassiana Tonioli Craveiro Chagas\t(35) 99752-5058\t1\tDr. André\n1560002\tTESTE TESTE\t5535991156028\t1\tNULL\n330006\tThabata Aline de Oliveira Costa\t(35) 98706-0390\t1\tDr. André\n330100\tThaiane Massarim do Nascimento\t(35) 99179-8324\t1\tDr. André\n330101\tThainá Batista Valim\t(35) 98409-0424\t1\tPlantonista do SUS\n1200002\tYanka Moreira Távora\t(35) 99155-9782\t1\tDr. André\n",
+  "stderr": "",
+  "execution_time_ms": 490
+}

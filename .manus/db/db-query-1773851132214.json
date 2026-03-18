@@ -1,0 +1,42 @@
+{
+  "query": "\nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt,\n       TIMESTAMPDIFF(SECOND, LAG(wh.sentAt) OVER (ORDER BY wh.sentAt), wh.sentAt) as seconds_since_prev\nFROM whatsappHistorico wh\nWHERE DATE(wh.sentAt) = CURDATE()\nAND wh.templateId IS NOT NULL\nAND TIME(wh.sentAt) BETWEEN '11:59:50' AND '12:00:30'\nORDER BY wh.sentAt\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt,\n       TIMESTAMPDIFF(SECOND, LAG(wh.sentAt) OVER (ORDER BY wh.sentAt), wh.sentAt) as seconds_since_prev\nFROM whatsappHistorico wh\nWHERE DATE(wh.sentAt) = CURDATE()\nAND wh.templateId IS NOT NULL\nAND TIME(wh.sentAt) BETWEEN '11:59:50' AND '12:00:30'\nORDER BY wh.sentAt\n",
+  "rows": [
+    {
+      "id": "360005",
+      "gestanteId": "2610002",
+      "templateId": "5",
+      "nomeGestante": "Luciana Valim",
+      "sentAt": "2026-03-18 12:00:03",
+      "seconds_since_prev": "NULL"
+    },
+    {
+      "id": "360006",
+      "gestanteId": "330008",
+      "templateId": "60001",
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:09",
+      "seconds_since_prev": "6"
+    },
+    {
+      "id": "360007",
+      "gestanteId": "330008",
+      "templateId": "60001",
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:19",
+      "seconds_since_prev": "10"
+    },
+    {
+      "id": "360008",
+      "gestanteId": "1620002",
+      "templateId": "4",
+      "nomeGestante": "Lara de Souza Gomes",
+      "sentAt": "2026-03-18 12:00:21",
+      "seconds_since_prev": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttemplateId\tnomeGestante\tsentAt\tseconds_since_prev\n360005\t2610002\t5\tLuciana Valim\t2026-03-18 12:00:03\tNULL\n360006\t330008\t60001\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:09\t6\n360007\t330008\t60001\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:19\t10\n360008\t1620002\t4\tLara de Souza Gomes\t2026-03-18 12:00:21\t2\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

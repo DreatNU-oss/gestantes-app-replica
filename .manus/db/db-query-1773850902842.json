@@ -1,0 +1,20 @@
+{
+  "query": "\nSELECT wh.nomeGestante, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.templateId = 60001\nAND DATE(wh.sentAt) = CURDATE()\nORDER BY wh.sentAt\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.nomeGestante, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.templateId = 60001\nAND DATE(wh.sentAt) = CURDATE()\nORDER BY wh.sentAt\n",
+  "rows": [
+    {
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:09",
+      "status": "enviado"
+    },
+    {
+      "nomeGestante": "Lucíola Viviane Achilles Medeiros Araújo",
+      "sentAt": "2026-03-18 12:00:19",
+      "status": "enviado"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeGestante\tsentAt\tstatus\nLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:09\tenviado\nLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:19\tenviado\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

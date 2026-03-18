@@ -96,6 +96,32 @@ async function jaEnviada(db: any, clinicaId: number, gestanteId: number, templat
   return !!existing;
 }
 
+// ─── Lock de Execução (previne execução concorrente) ────────────────────────
+
+/**
+ * Tenta adquirir um lock no banco de dados para evitar que múltiplas instâncias
+ * do scheduler (ex: produção + dev sandbox) rodem ao mesmo tempo.
+ * Usa GET_LOCK do MySQL com timeout de 0 (non-blocking).
+ */
+async function acquireSchedulerLock(db: any, lockName: string = 'whatsapp_scheduler_ig'): Promise<boolean> {
+  try {
+    const result = await db.execute(sql`SELECT GET_LOCK(${lockName}, 0) as acquired`);
+    const acquired = result?.rows?.[0]?.acquired ?? result?.[0]?.[0]?.acquired ?? result?.[0]?.acquired;
+    return acquired === 1 || acquired === '1';
+  } catch (error) {
+    console.error(`[WhatsApp Scheduler] Erro ao adquirir lock ${lockName}:`, error);
+    return false;
+  }
+}
+
+async function releaseSchedulerLock(db: any, lockName: string = 'whatsapp_scheduler_ig'): Promise<void> {
+  try {
+    await db.execute(sql`SELECT RELEASE_LOCK(${lockName})`);
+  } catch (error) {
+    console.error(`[WhatsApp Scheduler] Erro ao liberar lock ${lockName}:`, error);
+  }
+}
+
 // ─── Processar Templates por IG ──────────────────────────────────────────────
 
 export async function processarMensagensIG(): Promise<{ enviadas: number; erros: number }> {
@@ -104,6 +130,15 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
     console.error('[WhatsApp Scheduler] Falha ao conectar ao banco de dados após retries');
     return { enviadas: 0, erros: 0 };
   }
+
+  // Tentar adquirir lock para evitar execução concorrente (ex: produção + dev sandbox)
+  const lockName = 'whatsapp_scheduler_ig';
+  const lockAcquired = await acquireSchedulerLock(db, lockName);
+  if (!lockAcquired) {
+    console.log('[WhatsApp Scheduler] Outra instância já está executando processarMensagensIG. Abortando para evitar duplicatas.');
+    return { enviadas: 0, erros: 0 };
+  }
+  console.log('[WhatsApp Scheduler] Lock IG adquirido com sucesso.');
 
   let enviadas = 0;
   let erros = 0;
@@ -264,6 +299,13 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               gestanteId: gestante.id,
             };
 
+            // Re-verificar duplicata imediatamente antes de enviar (segunda camada de proteção)
+            const jaEnviadaRecheck = await jaEnviada(db, clinicaConfig.clinicaId, gestante.id, template.id);
+            if (jaEnviadaRecheck) {
+              console.log(`[WhatsApp Scheduler] ⚠️ Duplicata detectada no re-check para ${gestante.nome} template ${template.id}. Pulando.`);
+              continue;
+            }
+
             console.log(`[WhatsApp Scheduler] Enviando "${template.nome}" para ${gestante.nome} (IG: ${ig.semanas}s${ig.dias}d, template IG: ${template.igSemanas}s)`);
 
             const result = await sendToGestante(clinicaConfig.clinicaId, template.id, context);
@@ -283,9 +325,13 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
     }
   } catch (error) {
     console.error('[WhatsApp Scheduler] Erro ao processar mensagens:', error);
+  } finally {
+    // Sempre liberar o lock ao terminar
+    await releaseSchedulerLock(db, lockName);
+    console.log('[WhatsApp Scheduler] Lock IG liberado.');
   }
 
-  console.log(`[WhatsApp Scheduler] Processamento concluído: ${enviadas} enviadas, ${erros} erros`);
+  console.log(`[WhatsApp Scheduler] Processamento conclu\u00eddo: ${enviadas} enviadas, ${erros} erros`);
 
   return { enviadas, erros };
 }
@@ -349,6 +395,14 @@ export async function processarMensagensAgendadas(): Promise<{ enviadas: number;
   const db = await withRetry(() => getDb());
   if (!db) {
     console.error('[WhatsApp Scheduler] Falha ao conectar ao banco para mensagens agendadas');
+    return { enviadas: 0, erros: 0 };
+  }
+
+  // Tentar adquirir lock para evitar execução concorrente
+  const lockNameAgendadas = 'whatsapp_scheduler_agendadas';
+  const lockAcquired = await acquireSchedulerLock(db, lockNameAgendadas);
+  if (!lockAcquired) {
+    console.log('[WhatsApp Scheduler] Outra instância já está executando agendadas. Abortando.');
     return { enviadas: 0, erros: 0 };
   }
 
@@ -488,6 +542,8 @@ export async function processarMensagensAgendadas(): Promise<{ enviadas: number;
     }
   } catch (error) {
     console.error('[WhatsApp Scheduler] Erro ao processar mensagens agendadas:', error);
+  } finally {
+    await releaseSchedulerLock(db, lockNameAgendadas);
   }
 
   console.log(`[WhatsApp Scheduler] Agendadas: ${enviadas} enviadas, ${erros} erros`);

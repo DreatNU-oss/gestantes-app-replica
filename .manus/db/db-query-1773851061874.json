@@ -1,0 +1,17 @@
+{
+  "query": "\nSELECT wc.id, wc.clinicaId, wc.ativo, c.codigo, c.nome\nFROM whatsappConfig wc\nJOIN clinicas c ON c.id = wc.clinicaId\nWHERE wc.ativo = 1\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wc.id, wc.clinicaId, wc.ativo, c.codigo, c.nome\nFROM whatsappConfig wc\nJOIN clinicas c ON c.id = wc.clinicaId\nWHERE wc.ativo = 1\n",
+  "rows": [
+    {
+      "id": "1",
+      "clinicaId": "1",
+      "ativo": "1",
+      "codigo": "00001",
+      "nome": "Clínica Mais Mulher"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tclinicaId\tativo\tcodigo\tnome\n1\t1\t1\t00001\tClínica Mais Mulher\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

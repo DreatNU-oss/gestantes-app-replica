@@ -1,0 +1,13 @@
+{
+  "query": "\nSELECT COUNT(*) as total FROM gestantes g\nLEFT JOIN partosRealizados pr ON pr.gestanteId = g.id\nLEFT JOIN abortamentos ab ON ab.gestanteId = g.id\nWHERE g.clinicaId = (SELECT id FROM clinicas WHERE codigo = '00001')\nAND g.telefone IS NOT NULL \nAND g.telefone != ''\nAND pr.id IS NULL\nAND ab.id IS NULL\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT COUNT(*) as total FROM gestantes g\nLEFT JOIN partosRealizados pr ON pr.gestanteId = g.id\nLEFT JOIN abortamentos ab ON ab.gestanteId = g.id\nWHERE g.clinicaId = (SELECT id FROM clinicas WHERE codigo = '00001')\nAND g.telefone IS NOT NULL \nAND g.telefone != ''\nAND pr.id IS NULL\nAND ab.id IS NULL\n",
+  "rows": [
+    {
+      "total": "104"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\n104\n",
+  "stderr": "",
+  "execution_time_ms": 364
+}

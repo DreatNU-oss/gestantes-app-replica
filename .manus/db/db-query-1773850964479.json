@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT id, nome, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom\nFROM gestantes WHERE id = 330008\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT id, nome, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom\nFROM gestantes WHERE id = 330008\n",
+  "rows": [
+    {
+      "id": "330008",
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "dum": "Incompatível com US",
+      "igUltrassomSemanas": "5",
+      "igUltrassomDias": "6",
+      "dataUltrassom": "2025-11-11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tigUltrassomSemanas\tigUltrassomDias\tdataUltrassom\n330008\tLucíola Viviane Achilles Medeiros Araújo\tIncompatível com US\t5\t6\t2025-11-11\n",
+  "stderr": "",
+  "execution_time_ms": 340
+}

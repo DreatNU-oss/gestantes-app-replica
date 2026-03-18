@@ -2325,3 +2325,5 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir a integração entre pré-consulta e CartaoPrenatal
   - Adicionado clearDraft() antes de preencher dados da pré-consulta
   - Adicionado guard no useEffect de rascunho para não carregar quando preConsultaUsadaId existe
+- [x] Create WhatsApp template for Android app update and send to all gestantes
+- [x] Investigar e corrigir envio duplicado de WhatsApp de curva glicêmica para Lucíola

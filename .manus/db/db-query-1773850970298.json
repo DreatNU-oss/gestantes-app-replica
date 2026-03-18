@@ -1,0 +1,22 @@
+{
+  "query": "\nSELECT wh.id, wh.templateId, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.gestanteId = 330008\nAND wh.templateId = 60001\nORDER BY wh.sentAt\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.id, wh.templateId, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.gestanteId = 330008\nAND wh.templateId = 60001\nORDER BY wh.sentAt\n",
+  "rows": [
+    {
+      "id": "360006",
+      "templateId": "60001",
+      "sentAt": "2026-03-18 12:00:09",
+      "status": "enviado"
+    },
+    {
+      "id": "360007",
+      "templateId": "60001",
+      "sentAt": "2026-03-18 12:00:19",
+      "status": "enviado"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttemplateId\tsentAt\tstatus\n360006\t60001\t2026-03-18 12:00:09\tenviado\n360007\t60001\t2026-03-18 12:00:19\tenviado\n",
+  "stderr": "",
+  "execution_time_ms": 360
+}

@@ -1,0 +1,19 @@
+{
+  "query": "\nSELECT id, nome, gatilhoTipo, igSemanas, igDias, ativo, clinicaId\nFROM mensagemTemplates\nWHERE nome LIKE '%Curva%' OR nome LIKE '%glic%'\nORDER BY id\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT id, nome, gatilhoTipo, igSemanas, igDias, ativo, clinicaId\nFROM mensagemTemplates\nWHERE nome LIKE '%Curva%' OR nome LIKE '%glic%'\nORDER BY id\n",
+  "rows": [
+    {
+      "id": "60001",
+      "nome": "Lembrete: Curva Glicêmica",
+      "gatilhoTipo": "idade_gestacional",
+      "igSemanas": "24",
+      "igDias": "0",
+      "ativo": "1",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tgatilhoTipo\tigSemanas\tigDias\tativo\tclinicaId\n60001\tLembrete: Curva Glicêmica\tidade_gestacional\t24\t0\t1\t1\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

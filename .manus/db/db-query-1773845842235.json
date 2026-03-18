@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT id, nome, telefone FROM gestantes \nWHERE clinicaId = 1 AND nome LIKE '%TESTE%'\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT id, nome, telefone FROM gestantes \nWHERE clinicaId = 1 AND nome LIKE '%TESTE%'\n",
+  "rows": [
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "telefone": "5535991156028"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\n1560002\tTESTE TESTE\t5535991156028\n",
+  "stderr": "",
+  "execution_time_ms": 354
+}

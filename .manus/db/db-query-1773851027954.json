@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.gestanteId = 2610024 AND wh.templateId = 30003\nORDER BY wh.sentAt\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.id, wh.gestanteId, wh.templateId, wh.nomeGestante, wh.sentAt, wh.status\nFROM whatsappHistorico wh\nWHERE wh.gestanteId = 2610024 AND wh.templateId = 30003\nORDER BY wh.sentAt\n",
+  "rows": [
+    {
+      "id": "360012",
+      "gestanteId": "2610024",
+      "templateId": "30003",
+      "nomeGestante": "Nathalia Amélia Martins",
+      "sentAt": "2026-03-18 13:37:51",
+      "status": "enviado"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttemplateId\tnomeGestante\tsentAt\tstatus\n360012\t2610024\t30003\tNathalia Amélia Martins\t2026-03-18 13:37:51\tenviado\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

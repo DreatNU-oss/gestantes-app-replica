@@ -1,0 +1,20 @@
+{
+  "query": "\nSELECT wh.id, wh.gestanteId, wh.templateId, wh.telefone, wh.status, wh.nomeGestante, wh.sentAt, \n       LEFT(wh.mensagem, 200) as mensagemPreview,\n       wh.erroMensagem\nFROM whatsappHistorico wh\nWHERE wh.nomeGestante LIKE '%Luc%ola%'\nAND DATE(wh.sentAt) = CURDATE()\nORDER BY wh.sentAt DESC\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT wh.id, wh.gestanteId, wh.templateId, wh.telefone, wh.status, wh.nomeGestante, wh.sentAt, \n       LEFT(wh.mensagem, 200) as mensagemPreview,\n       wh.erroMensagem\nFROM whatsappHistorico wh\nWHERE wh.nomeGestante LIKE '%Luc%ola%'\nAND DATE(wh.sentAt) = CURDATE()\nORDER BY wh.sentAt DESC\n",
+  "rows": [],
+  "messages": [
+    "390074\t330008\tNULL\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 15:29:24\tOlá, Lucíola! 👋",
+    "Aqui é o Dr. André.",
+    "Se você utiliza celular *Android*, tenho uma ótima notícia: nosso aplicativo de acompanhamento pré-natal acaba de receber uma *atualização importante*! 📲",
+    "Para at\tNULL",
+    "360007\t330008\t60001\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:19\tOlá *Lucíola*! 👋",
+    "Você está com *24 semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).",
+    "Este exame é muito importante para d\tNULL",
+    "360006\t330008\t60001\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:09\tOlá *Lucíola*! 👋",
+    "Você está com *24 semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).",
+    "Este exame é muito importante para d\tNULL"
+  ],
+  "stdout": "id\tgestanteId\ttemplateId\ttelefone\tstatus\tnomeGestante\tsentAt\tmensagemPreview\terroMensagem\n390074\t330008\tNULL\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 15:29:24\tOlá, Lucíola! 👋\n\nAqui é o Dr. André.\n\nSe você utiliza celular *Android*, tenho uma ótima notícia: nosso aplicativo de acompanhamento pré-natal acaba de receber uma *atualização importante*! 📲\n\nPara at\tNULL\n360007\t330008\t60001\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:19\tOlá *Lucíola*! 👋\nVocê está com *24 semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).\n\nEste exame é muito importante para d\tNULL\n360006\t330008\t60001\t5535988855312\tenviado\tLucíola Viviane Achilles Medeiros Araújo\t2026-03-18 12:00:09\tOlá *Lucíola*! 👋\nVocê está com *24 semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).\n\nEste exame é muito importante para d\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}
