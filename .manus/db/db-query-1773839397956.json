@@ -1,0 +1,24 @@
+{
+  "query": "SELECT g.id, g.nome, g.email, g.telefone, g.clinicaId FROM gestantes g WHERE g.nome LIKE '%Nathalia%' OR g.nome LIKE '%Natalia%' ORDER BY g.nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, g.email, g.telefone, g.clinicaId FROM gestantes g WHERE g.nome LIKE '%Nathalia%' OR g.nome LIKE '%Natalia%' ORDER BY g.nome;",
+  "rows": [
+    {
+      "id": "330080",
+      "nome": "Natália da Silva Silveira",
+      "email": "natalia_ssilveira@yahoo.com",
+      "telefone": "(35) 99208-2487",
+      "clinicaId": "1"
+    },
+    {
+      "id": "2610024",
+      "nome": "Nathalia Amélia Martins",
+      "email": "nathalia-amelia@hotmail.com",
+      "telefone": "(21) 98322-5558",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\temail\ttelefone\tclinicaId\n330080\tNatália da Silva Silveira\tnatalia_ssilveira@yahoo.com\t(35) 99208-2487\t1\n2610024\tNathalia Amélia Martins\tnathalia-amelia@hotmail.com\t(21) 98322-5558\t1\n",
+  "stderr": "",
+  "execution_time_ms": 482
+}

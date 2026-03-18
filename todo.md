@@ -2318,3 +2318,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Trocar assinatura "Equipe Mais Mulher" por "Dr(a). {medico}" pessoal
 - [x] Remover todos os ícones de coração (💚) e substituir por ícones médicos (🏥)
 - [x] Tom mais pessoal em todos os templates - "entre em contato comigo" ao invés de "estamos à disposição"
+
+## BUG: Pré-consulta não pré-preenche dados na consulta (18/03/2026)
+- [x] Investigar por que peso e PA da pré-consulta não estão sendo pré-preenchidos na janela de 1ª consulta
+  - Causa: race condition - useEffect de rascunho (draft) sobrescrevia os dados da pré-consulta
+- [x] Corrigir a integração entre pré-consulta e CartaoPrenatal
+  - Adicionado clearDraft() antes de preencher dados da pré-consulta
+  - Adicionado guard no useEffect de rascunho para não carregar quando preConsultaUsadaId existe

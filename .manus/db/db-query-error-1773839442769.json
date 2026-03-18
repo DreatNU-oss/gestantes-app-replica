@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO codigosAcessoGestante (id, gestanteId, codigo, tipo, destino, usado, expiraEm, createdAt) VALUES (1620003, 2610024, '738291', 'email', 'nathalia-amelia@hotmail.com', 0, DATE_ADD(NOW(), INTERVAL 30 MINUTE), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO codigosAcessoGestante (id, gestanteId, codigo, tipo, destino, usado, expiraEm, createdAt) VALUES (1620003, 2610024, '738291', 'email', 'nathalia-amelia@hotmail.com', 0, DATE_ADD(NOW(), INTERVAL 30 MINUTE), NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1062 (23000) at line 1: Duplicate entry '?' for key 'codigosAcessoGestante.PRIMARY'"
+  ]
+}

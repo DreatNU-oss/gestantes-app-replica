@@ -272,9 +272,14 @@ export default function CartaoPrenatal() {
   useInstantSave(`consulta-data-${gestanteSelecionada}`, formData.dataConsulta, mostrarFormulario);
   useInstantSave(`consulta-peso-${gestanteSelecionada}`, formData.peso, mostrarFormulario);
 
-  // Carregar rascunho ao abrir o formulário
+  // Carregar rascunho ao abrir o formulário (mas não sobrescrever dados da pré-consulta)
   useEffect(() => {
     if (mostrarFormulario && !consultaEditando) {
+      // Se há pré-consulta pendente, os dados já foram preenchidos pelo botão Nova Consulta
+      // Não carregar rascunho para não sobrescrever peso e PA da pré-consulta
+      if (preConsultaUsadaId) {
+        return;
+      }
       const draft = loadDraft();
       if (draft) {
         // Sempre usar a data atual para novas consultas, ignorando a data do rascunho
@@ -2450,6 +2455,8 @@ export default function CartaoPrenatal() {
               // Auto-fill from preConsulta if available
               if (preConsultasPendentes && preConsultasPendentes.length > 0) {
                 const pc = preConsultasPendentes[0] as any;
+                // Limpar rascunho anterior para evitar que sobrescreva os dados da pré-consulta
+                clearDraft();
                 setFormData(prev => ({
                   ...prev,
                   peso: pc.peso || "",

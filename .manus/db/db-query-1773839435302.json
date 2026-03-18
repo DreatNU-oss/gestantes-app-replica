@@ -1,0 +1,30 @@
+{
+  "query": "SELECT * FROM codigosAcessoGestante WHERE gestanteId = 2610024 ORDER BY createdAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM codigosAcessoGestante WHERE gestanteId = 2610024 ORDER BY createdAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "1620002",
+      "gestanteId": "2610024",
+      "codigo": "464313",
+      "tipo": "email",
+      "destino": "nathalia-amelia@hotmail.com",
+      "usado": "0",
+      "expiraEm": "2026-03-18 13:24:42",
+      "createdAt": "2026-03-18 13:09:42"
+    },
+    {
+      "id": "1620001",
+      "gestanteId": "2610024",
+      "codigo": "546397",
+      "tipo": "email",
+      "destino": "nathalia-amelia@hotmail.com",
+      "usado": "0",
+      "expiraEm": "2026-03-18 13:18:14",
+      "createdAt": "2026-03-18 13:03:13"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tcodigo\ttipo\tdestino\tusado\texpiraEm\tcreatedAt\n1620002\t2610024\t464313\temail\tnathalia-amelia@hotmail.com\t0\t2026-03-18 13:24:42\t2026-03-18 13:09:42\n1620001\t2610024\t546397\temail\tnathalia-amelia@hotmail.com\t0\t2026-03-18 13:18:14\t2026-03-18 13:03:13\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}
