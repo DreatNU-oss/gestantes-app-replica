@@ -22,7 +22,6 @@ import Ultrassons from "./pages/Ultrassons";
 import LogsEmails from "./pages/LogsEmails";
 import PartosRealizados from "./pages/PartosRealizados";
 import EstatisticasPartos from "./pages/EstatisticasPartos";
-// import MonitoramentoEmails from "./pages/MonitoramentoEmails"; // [REMOVIDO] Envio automático de e-mails desativado
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import GerenciarFatoresRisco from "./pages/GerenciarFatoresRisco";
 import GerenciarMedicamentosConfig from "./pages/GerenciarMedicamentos";
@@ -122,7 +121,6 @@ function Router() {
       <Route path={"/logs-emails"}>
         <RoleGuard allowedRoles={[...CONFIG_ROLES]}><LogsEmails /></RoleGuard>
       </Route>
-      {/* [REMOVIDO] Monitoramento de E-mails desativado */}
       <Route path={"/integracoes"}>
         <RoleGuard allowedRoles={[...CONFIG_ROLES]}><Integracoes /></RoleGuard>
       </Route>
