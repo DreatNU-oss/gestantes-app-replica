@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 
 import { Button } from "@/components/ui/button";
@@ -130,6 +130,27 @@ export default function WizardPrimeiraConsulta({
   const [observacoes, setObservacoes] = useState("");
 
   const createConsulta = trpc.consultasPrenatal.create.useMutation();
+
+  // Buscar pré-consulta pendente para auto-fill de peso e PA
+  const { data: preConsultasPendentes } = trpc.preConsulta.listarPendentesPorGestante.useQuery(
+    { gestanteId: gestante.id },
+    { enabled: open }
+  );
+  const marcarPreConsultaUtilizada = trpc.preConsulta.marcarUtilizado.useMutation();
+  const [preConsultaUsadaId, setPreConsultaUsadaId] = useState<number | null>(null);
+
+  // Auto-preencher peso e PA da pré-consulta quando o dialog abrir
+  useEffect(() => {
+    if (open && preConsultasPendentes && preConsultasPendentes.length > 0 && !preConsultaUsadaId) {
+      const pc = preConsultasPendentes[0] as any;
+      setExameFisico(prev => ({
+        ...prev,
+        peso: pc.peso || prev.peso,
+        pressaoArterial: pc.pressaoArterial || prev.pressaoArterial,
+      }));
+      setPreConsultaUsadaId(pc.id);
+    }
+  }, [open, preConsultasPendentes]);
 
   // Queixas personalizadas com ordenação por frequência
   const { data: queixasPersonalizadas, refetch: refetchQueixas } = trpc.queixas.list.useQuery();
@@ -382,6 +403,12 @@ export default function WizardPrimeiraConsulta({
       setTextoPEP(pep);
       
       toast.success("1ª Consulta registrada com sucesso!");
+
+      // Marcar pré-consulta como utilizada
+      if (preConsultaUsadaId) {
+        marcarPreConsultaUtilizada.mutate({ id: preConsultaUsadaId });
+        setPreConsultaUsadaId(null);
+      }
       
       // Redirecionar para o cartão pré-natal com modal PEP aberto
       onOpenChange(false);

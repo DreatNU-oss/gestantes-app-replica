@@ -2434,23 +2434,6 @@ export default function CartaoPrenatal() {
         <div id="nova-consulta">
         {gestanteSelecionada && !mostrarFormulario && (
           <div className="flex flex-col gap-3">
-            {preConsultasPendentes && preConsultasPendentes.length > 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-950/20 dark:border-blue-800">
-                <div className="flex items-center gap-2 mb-2">
-                  <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="font-medium text-blue-800 dark:text-blue-200">Pré-consulta registrada pela secretária</span>
-                </div>
-                {preConsultasPendentes.map((pc: any) => (
-                  <div key={pc.id} className="text-sm text-blue-700 dark:text-blue-300 ml-7">
-                    <span className="font-medium">Peso:</span> {pc.peso} kg | <span className="font-medium">PA:</span> {pc.pressaoArterial} | <span className="font-medium">Tipo:</span> {pc.tipoConsulta === '1a_consulta' ? '1ª Consulta' : pc.tipoConsulta === 'consulta_urgencia' ? 'Urgência' : 'Rotina'}
-                    <span className="text-blue-500 ml-2">({new Date(pc.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })})</span>
-                  </div>
-                ))}
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 ml-7">Os dados serão pré-preenchidos ao abrir a nova consulta.</p>
-              </div>
-            )}
             <Button onClick={() => {
               // Auto-fill from preConsulta if available
               if (preConsultasPendentes && preConsultasPendentes.length > 0) {

@@ -1,0 +1,13 @@
+{
+  "query": "SELECT dados FROM ultrassons WHERE tipoUltrassom = 'primeiro_ultrassom' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT dados FROM ultrassons WHERE tipoUltrassom = 'primeiro_ultrassom' LIMIT 1;",
+  "rows": [
+    {
+      "dados": "{\"bcf\": \"Presente\", \"ccn\": \"5.2\", \"observacoes\": \"Gestação tópica única, embrião com BCF presente\", \"sacoGestacional\": \"18\", \"vesiculaVitelina\": \"Presente\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "dados\n{\"bcf\": \"Presente\", \"ccn\": \"5.2\", \"observacoes\": \"Gestação tópica única, embrião com BCF presente\", \"sacoGestacional\": \"18\", \"vesiculaVitelina\": \"Presente\"}\n",
+  "stderr": "",
+  "execution_time_ms": 369
+}

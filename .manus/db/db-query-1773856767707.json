@@ -1,0 +1,30 @@
+{
+  "query": "SELECT u.id as userId, u.name FROM users u WHERE u.clinicaId = 1 AND u.role IN ('superadmin', 'admin') LIMIT 1;\nSELECT m.id as medicoId, m.nome FROM medicos m WHERE m.clinicaId = 1 AND m.ativo = 1 LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT u.id as userId, u.name FROM users u WHERE u.clinicaId = 1 AND u.role IN ('superadmin', 'admin') LIMIT 1;\nSELECT m.id as medicoId, m.nome FROM medicos m WHERE m.clinicaId = 1 AND m.ativo = 1 LIMIT 5;",
+  "rows": [
+    {
+      "userId": "1",
+      "name": "Andre Schlemper"
+    },
+    {
+      "userId": "medicoId",
+      "name": "nome"
+    },
+    {
+      "userId": "1",
+      "name": "Dr. André"
+    },
+    {
+      "userId": "2",
+      "name": "Dra. Fabiana"
+    },
+    {
+      "userId": "3",
+      "name": "Plantonista do SUS"
+    }
+  ],
+  "messages": [],
+  "stdout": "userId\tname\n1\tAndre Schlemper\nmedicoId\tnome\n1\tDr. André\n2\tDra. Fabiana\n3\tPlantonista do SUS\n",
+  "stderr": "",
+  "execution_time_ms": 475
+}

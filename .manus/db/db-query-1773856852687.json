@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(2640025, 'Tipagem sanguínea ABO/Rh', 1, 'O+', '2026-01-20'),\n(2640025, 'Coombs indireto', 1, 'Negativo', '2026-01-20'),\n(2640025, 'Hemoglobina/Hematócrito', 1, '12.8 / 38.5', '2026-01-20'),\n(2640025, 'Plaquetas', 1, '245.000', '2026-01-20'),\n(2640025, 'Glicemia de jejum', 1, '82', '2026-01-20'),\n(2640025, 'VDRL', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'FTA-ABS IgG', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'FTA-ABS IgM', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'HIV', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'Hepatite B (HBsAg)', 1, 'Não reagente', '2026-01-20');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame) VALUES\n(2640025, 'Tipagem sanguínea ABO/Rh', 1, 'O+', '2026-01-20'),\n(2640025, 'Coombs indireto', 1, 'Negativo', '2026-01-20'),\n(2640025, 'Hemoglobina/Hematócrito', 1, '12.8 / 38.5', '2026-01-20'),\n(2640025, 'Plaquetas', 1, '245.000', '2026-01-20'),\n(2640025, 'Glicemia de jejum', 1, '82', '2026-01-20'),\n(2640025, 'VDRL', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'FTA-ABS IgG', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'FTA-ABS IgM', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'HIV', 1, 'Não reagente', '2026-01-20'),\n(2640025, 'Hepatite B (HBsAg)', 1, 'Não reagente', '2026-01-20');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 352
+}

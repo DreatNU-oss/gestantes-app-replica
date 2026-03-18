@@ -102,6 +102,26 @@ export default function ConsultaUrgencia() {
     { enabled: !!gestanteId }
   );
 
+  // Buscar pré-consulta pendente para auto-fill de PA
+  const { data: preConsultasPendentes } = trpc.preConsulta.listarPendentesPorGestante.useQuery(
+    { gestanteId: gestanteId! },
+    { enabled: !!gestanteId }
+  );
+  const marcarPreConsultaUtilizada = trpc.preConsulta.marcarUtilizado.useMutation();
+  const [preConsultaUsadaId, setPreConsultaUsadaId] = useState<number | null>(null);
+
+  // Auto-preencher PA da pré-consulta
+  useEffect(() => {
+    if (preConsultasPendentes && preConsultasPendentes.length > 0 && !preConsultaUsadaId) {
+      const pc = preConsultasPendentes[0] as any;
+      setFormData(prev => ({
+        ...prev,
+        pressaoArterial: pc.pressaoArterial || prev.pressaoArterial,
+      }));
+      setPreConsultaUsadaId(pc.id);
+    }
+  }, [preConsultasPendentes]);
+
   const { data: lembretesPendentes } = trpc.lembretes.pendentes.useQuery(
     { gestanteId: gestanteId! },
     { enabled: !!gestanteId }
@@ -125,6 +145,12 @@ export default function ConsultaUrgencia() {
       const textoGerado = gerarTextoPEP();
       setTextoPEP(textoGerado);
       setShowPEPModal(true);
+
+      // Marcar pré-consulta como utilizada
+      if (preConsultaUsadaId) {
+        marcarPreConsultaUtilizada.mutate({ id: preConsultaUsadaId });
+        setPreConsultaUsadaId(null);
+      }
 
       utils.consultasPrenatal.list.invalidate();
       resetForm();

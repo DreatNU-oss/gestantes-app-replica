@@ -1,0 +1,23 @@
+{
+  "query": "SELECT g.id, g.nome, g.telefone, g.email, g.dataNascimento, g.dum, g.igUltrassomSemanas, g.igUltrassomDias, g.dataUltrassom, g.observacoes, g.clinicaId FROM gestantes g WHERE g.id = 2640025;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, g.telefone, g.email, g.dataNascimento, g.dum, g.igUltrassomSemanas, g.igUltrassomDias, g.dataUltrassom, g.observacoes, g.clinicaId FROM gestantes g WHERE g.id = 2640025;",
+  "rows": [
+    {
+      "id": "2640025",
+      "nome": "Poli Antunes",
+      "telefone": "+5535999587881",
+      "email": "gorgulho@gmail.com",
+      "dataNascimento": "1990-03-18",
+      "dum": "2026-01-07",
+      "igUltrassomSemanas": "10",
+      "igUltrassomDias": "0",
+      "dataUltrassom": "2026-03-18",
+      "observacoes": "Gestação Gemelar. Paciente teste.",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\temail\tdataNascimento\tdum\tigUltrassomSemanas\tigUltrassomDias\tdataUltrassom\tobservacoes\tclinicaId\n2640025\tPoli Antunes\t+5535999587881\tgorgulho@gmail.com\t1990-03-18\t2026-01-07\t10\t0\t2026-03-18\tGestação Gemelar. Paciente teste.\t1\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

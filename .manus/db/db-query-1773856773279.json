@@ -1,0 +1,184 @@
+{
+  "query": "SELECT DISTINCT nomeExame FROM resultadosExames WHERE trimestre = 1 ORDER BY nomeExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT DISTINCT nomeExame FROM resultadosExames WHERE trimestre = 1 ORDER BY nomeExame;",
+  "rows": [
+    {
+      "nomeExame": "Anti-HBs"
+    },
+    {
+      "nomeExame": "citomegalovirus"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgG"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgM"
+    },
+    {
+      "nomeExame": "CMV IgG"
+    },
+    {
+      "nomeExame": "CMV IgM"
+    },
+    {
+      "nomeExame": "Coombs indireto"
+    },
+    {
+      "nomeExame": "eas"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)__Nitrito"
+    },
+    {
+      "nomeExame": "eas_urina_tipo_1"
+    },
+    {
+      "nomeExame": "EPF (Parasitológico de Fezes)"
+    },
+    {
+      "nomeExame": "Ferritina"
+    },
+    {
+      "nomeExame": "FTA-ABS IgG"
+    },
+    {
+      "nomeExame": "FTA-ABS IgM"
+    },
+    {
+      "nomeExame": "Glicemia de jejum"
+    },
+    {
+      "nomeExame": "Glicemia jejum"
+    },
+    {
+      "nomeExame": "glicemia_jejum"
+    },
+    {
+      "nomeExame": "glicemiaJejum"
+    },
+    {
+      "nomeExame": "Grupo sanguíneo e Rh"
+    },
+    {
+      "nomeExame": "Hematócrito"
+    },
+    {
+      "nomeExame": "Hemoglobina"
+    },
+    {
+      "nomeExame": "hemoglobina_hematocrito"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito"
+    },
+    {
+      "nomeExame": "Hemograma"
+    },
+    {
+      "nomeExame": "Hepatite B (HBsAg)"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg"
+    },
+    {
+      "nomeExame": "Hepatite C"
+    },
+    {
+      "nomeExame": "Hepatite C (Anti-HCV)"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV"
+    },
+    {
+      "nomeExame": "hepatiteB"
+    },
+    {
+      "nomeExame": "hepatiteC"
+    },
+    {
+      "nomeExame": "HIV"
+    },
+    {
+      "nomeExame": "Plaquetas"
+    },
+    {
+      "nomeExame": "rubeola"
+    },
+    {
+      "nomeExame": "Rubéola IgG"
+    },
+    {
+      "nomeExame": "Rubéola IgM"
+    },
+    {
+      "nomeExame": "rubeola_igg"
+    },
+    {
+      "nomeExame": "rubeola_igm"
+    },
+    {
+      "nomeExame": "T4 Livre"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh"
+    },
+    {
+      "nomeExame": "tipagem_sanguinea"
+    },
+    {
+      "nomeExame": "tipoSanguineo"
+    },
+    {
+      "nomeExame": "toxoplasmose"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM"
+    },
+    {
+      "nomeExame": "toxoplasmose_igg"
+    },
+    {
+      "nomeExame": "toxoplasmose_igm"
+    },
+    {
+      "nomeExame": "TSH"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)"
+    },
+    {
+      "nomeExame": "Urina tipo I"
+    },
+    {
+      "nomeExame": "Urocultura"
+    },
+    {
+      "nomeExame": "VDRL"
+    },
+    {
+      "nomeExame": "vdrl_sifilis"
+    },
+    {
+      "nomeExame": "Vitamina B12"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)"
+    },
+    {
+      "nomeExame": "vitamina_d_25_oh"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\nAnti-HBs\ncitomegalovirus\nCitomegalovírus IgG\nCitomegalovírus IgM\nCMV IgG\nCMV IgM\nCoombs indireto\neas\nEAS (Urina tipo 1)\nEAS (Urina tipo 1)__Nitrito\neas_urina_tipo_1\nEPF (Parasitológico de Fezes)\nFerritina\nFTA-ABS IgG\nFTA-ABS IgM\nGlicemia de jejum\nGlicemia jejum\nglicemia_jejum\nglicemiaJejum\nGrupo sanguíneo e Rh\nHematócrito\nHemoglobina\nhemoglobina_hematocrito\nHemoglobina/Hematócrito\nHemograma\nHepatite B (HBsAg)\nHepatite B HBsAg\nHepatite C\nHepatite C (Anti-HCV)\nHepatite C Anti-HCV\nhepatiteB\nhepatiteC\nHIV\nPlaquetas\nrubeola\nRubéola IgG\nRubéola IgM\nrubeola_igg\nrubeola_igm\nT4 Livre\nTipagem sanguínea\nTipagem sanguínea ABO/Rh\ntipagem_sanguinea\ntipoSanguineo\ntoxoplasmose\nToxoplasmose IgG\nToxoplasmose IgM\ntoxoplasmose_igg\ntoxoplasmose_igm\nTSH\nTTGO 75g (Curva Glicêmica)\nUrina tipo I\nUrocultura\nVDRL\nvdrl_sifilis\nVitamina B12\nVitamina D (25-OH)\nvitamina_d_25_oh\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

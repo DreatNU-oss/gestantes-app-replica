@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO gestantes (userId, clinicaId, nome, telefone, email, dataNascimento, planoSaudeId, medicoId, tipoPartoDesejado, gesta, para, partosNormais, cesareas, abortos, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom, observacoes, altura, pesoInicial) VALUES (1, 1, 'Poli Antunes', '+5535999587881', 'gorgulho@gmail.com', '1990-03-18', 1, 1, 'a_definir', 1, 0, 0, 0, 0, '2026-01-07', 10, 0, '2026-03-18', 'Gestação Gemelar. Paciente teste.', 165, 65000);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO gestantes (userId, clinicaId, nome, telefone, email, dataNascimento, planoSaudeId, medicoId, tipoPartoDesejado, gesta, para, partosNormais, cesareas, abortos, dum, igUltrassomSemanas, igUltrassomDias, dataUltrassom, observacoes, altura, pesoInicial) VALUES (1, 1, 'Poli Antunes', '+5535999587881', 'gorgulho@gmail.com', '1990-03-18', 1, 1, 'a_definir', 1, 0, 0, 0, 0, '2026-01-07', 10, 0, '2026-03-18', 'Gestação Gemelar. Paciente teste.', 165, 65000);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 352
+}

@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, nome FROM planosSaude WHERE clinicaId = 1 AND ativo = 1 LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM planosSaude WHERE clinicaId = 1 AND ativo = 1 LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Particular"
+    },
+    {
+      "id": "2",
+      "nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "3",
+      "nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "4",
+      "nome": "S.P.A. Saúde"
+    },
+    {
+      "id": "5",
+      "nome": "FUSEX"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n1\tParticular\n2\tUnimed (ambulatorial)\n3\tUnimed (inclui o parto)\n4\tS.P.A. Saúde\n5\tFUSEX\n",
+  "stderr": "",
+  "execution_time_ms": 359
+}

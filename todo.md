@@ -2330,3 +2330,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Desativar envio automático de todos os e-mails
 - [x] Remover item "Monitoramento de E-mails" do menu Configurações
 - [x] Manter apenas capacidade de envio manual de e-mail com configuração atual
+- [x] Criar gestante teste Poli Antunes na Clínica 00001 (gemelar, 10 semanas, lab 1o tri completo, 1o US)
+- [x] Auto-preencher Peso e PA da pré-consulta no pop-up da 1ª consulta
+- [x] Auto-preencher Peso e PA da pré-consulta na consulta de rotina (remover aviso azul)
+- [x] Auto-preencher Peso e PA da pré-consulta na consulta de urgência (remover aviso azul)

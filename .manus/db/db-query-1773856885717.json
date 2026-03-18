@@ -1,0 +1,19 @@
+{
+  "query": "SELECT COUNT(*) as totalExames FROM resultadosExames WHERE gestanteId = 2640025 AND trimestre = 1;\nSELECT COUNT(*) as totalUS FROM ultrassons WHERE gestanteId = 2640025;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as totalExames FROM resultadosExames WHERE gestanteId = 2640025 AND trimestre = 1;\nSELECT COUNT(*) as totalUS FROM ultrassons WHERE gestanteId = 2640025;",
+  "rows": [
+    {
+      "totalExames": "27"
+    },
+    {
+      "totalExames": "totalUS"
+    },
+    {
+      "totalExames": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "totalExames\n27\ntotalUS\n1\n",
+  "stderr": "",
+  "execution_time_ms": 399
+}
