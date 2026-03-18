@@ -2339,3 +2339,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Bug: Peso e PA da pré-consulta não aparecem pré-preenchidos no pop-up da 1ª consulta (testado e confirmado funcionando)
 - [x] Verificar nome da paciente no laudo do US vs nome no cadastro (alerta se diferente)
 - [x] Permitir múltiplos ultrassons do mesmo tipo sem apagar o anterior
+- [x] Remover ícones de coração dos botões de envio de WhatsApp no cartão pré-natal
+- [x] Trocar primeira pessoa do plural por singular nas mensagens do cartão pré-natal
+- [x] Adicionar mensagem de boas-vindas antes do PDF de orientação alimentar

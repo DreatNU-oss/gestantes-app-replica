@@ -3326,11 +3326,35 @@ export default function CartaoPrenatal() {
                   className={`gap-2 ${foiEnviada('or-alimentares-1a') ? 'border-green-400 bg-green-50 text-green-800' : 'border-green-200 hover:bg-green-50 hover:border-green-400 text-green-800'}`}
                   disabled={!gestante.telefone || enviandoWhatsApp === 'or-alimentares-1a'}
                   title={foiEnviada('or-alimentares-1a') ? `Enviado em ${ultimoEnvio('or-alimentares-1a')}` : 'Enviar orientações alimentares 1ª consulta'}
-                  onClick={() => handleEnviarOrientacao(
-                    'or-alimentares-1a',
-                    `Olá ${gestante.nome?.split(' ')[0] || ''}! 🤰\n\nSegue o *Guia de Alimentação para uma Gestação Saudável* da Clínica Mais Mulher.\n\nEste material contém orientações nutricionais importantes para esta fase, incluindo:\n• Princípios de ouro da nutrição na gravidez\n• Alimentos que devem ser evitados\n• Sugestão de cardápio semanal balanceado\n\nLeia com atenção e em caso de dúvidas, converse com seu médico na próxima consulta.\n\nAbraços da equipe Mais Mulher! 💜`,
-                    'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes-alimentares-1a-consulta_bb34a959.pdf'
-                  )}
+                  onClick={async () => {
+                    if (!gestante || !gestante.telefone) return;
+                    setEnviandoWhatsApp('or-alimentares-1a');
+                    try {
+                      // 1) Enviar mensagem de boas-vindas primeiro
+                      await enviarWhatsAppMutation.mutateAsync({
+                        telefone: gestante.telefone,
+                        mensagem: `Olá ${gestante.nome?.split(' ')[0] || ''}! 👋\n\nAqui é o Dr. André, da *Clínica Mais Mulher*.\n\nSeja bem-vinda ao nosso pré-natal! Agradeço por ter nos escolhido para acompanhar este momento tão especial.\n\nA partir de agora, você receberá por aqui orientações e materiais importantes para a sua gestação.\n\nEstou à disposição para qualquer dúvida.\n\nUm abraço!`,
+                        nomeGestante: gestante.nome,
+                        gestanteId: gestante.id,
+                      });
+                      // 2) Aguardar 3 segundos para não enviar tudo junto
+                      await new Promise(r => setTimeout(r, 3000));
+                      // 3) Enviar PDF de orientação alimentar
+                      await enviarWhatsAppMutation.mutateAsync({
+                        telefone: gestante.telefone,
+                        mensagem: `Olá ${gestante.nome?.split(' ')[0] || ''}! 👋\n\nSegue o *Guia de Alimentação para uma Gestação Saudável* da Clínica Mais Mulher.\n\nEste material contém orientações nutricionais importantes para esta fase, incluindo:\n• Princípios de ouro da nutrição na gravidez\n• Alimentos que devem ser evitados\n• Sugestão de cardápio semanal balanceado\n\nLeia com atenção e, em caso de dúvidas, converse comigo na próxima consulta.\n\nUm abraço!`,
+                        pdfUrl: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/orientacoes-alimentares-1a-consulta_bb34a959.pdf',
+                        nomeGestante: gestante.nome,
+                        gestanteId: gestante.id,
+                      });
+                      toast.success('Boas-vindas e orientações alimentares enviadas com sucesso!');
+                      registrarOrientacaoMutation.mutate({ gestanteId: gestante.id, tipoOrientacao: 'or-alimentares-1a' });
+                    } catch (error: any) {
+                      toast.error(`Erro ao enviar: ${error.message}`);
+                    } finally {
+                      setEnviandoWhatsApp(null);
+                    }
+                  }}
                 >
                   {enviandoWhatsApp === 'or-alimentares-1a' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -3372,7 +3396,7 @@ export default function CartaoPrenatal() {
                   title={foiEnviada('or-ativ-fisicas') ? `Enviado em ${ultimoEnvio('or-ativ-fisicas')}` : 'Enviar orientações de atividade física na gestação'}
                   onClick={() => handleEnviarOrientacao(
                     'or-ativ-fisicas',
-                    `Olá ${gestante.nome?.split(' ')[0] || ''}! 🤰\n\nSegue o guia de *Orientações para Atividade Física na Gestação*.\n\nEste material contém informações importantes sobre:\n• Benefícios da atividade física durante a gravidez\n• Exercícios recomendados para cada fase\n• Cuidados e contraindicações\n• Dicas de segurança\n\nLeia com atenção e converse com seu médico sobre o melhor plano de exercícios para você.\n\nAbraços da equipe Mais Mulher! 💜`,
+                    `Olá ${gestante.nome?.split(' ')[0] || ''}! 👋\n\nSegue o guia de *Orientações para Atividade Física na Gestação*.\n\nEste material contém informações importantes sobre:\n• Benefícios da atividade física durante a gravidez\n• Exercícios recomendados para cada fase\n• Cuidados e contraindicações\n• Dicas de segurança\n\nLeia com atenção e converse comigo sobre o melhor plano de exercícios para você.\n\nUm abraço!`,
                     'https://d2xsxph8kpxj0f.cloudfront.net/310519663167696128/bSA4q7aMJsJeSmafooCq7A/atividade_fisica_gestacao_1ad0b797.pdf'
                   )}
                 >
