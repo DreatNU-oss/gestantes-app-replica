@@ -7,7 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { uploadLaudoRouter } from "../uploadLaudo";
-import { processarLembretes } from "../lembretes";
+// import { processarLembretes } from "../lembretes"; // [REMOVIDO] Envio automático de e-mails desativado
 import gestanteApiRouter from "../gestanteApi";
 import { integrationCallbackRouter } from "../integrationCallback";
 import { serveStatic, setupVite } from "./vite";
@@ -89,32 +89,7 @@ async function startServer() {
   // API de Callback para integração bidirecional com sistema administrativo
   app.use('/api/integration/callback', integrationCallbackRouter);
   
-  // Endpoint para processamento automático de lembretes (chamado por cron/scheduler)
-  app.get('/api/cron/processar-lembretes', async (req, res) => {
-    try {
-      // Verificar token de autorização para segurança
-      const authHeader = req.headers.authorization;
-      const cronSecret = process.env.CRON_SECRET || 'manus-cron-secret-2024';
-      
-      if (authHeader !== `Bearer ${cronSecret}`) {
-        console.log('[Cron] Tentativa de acesso não autorizada ao endpoint de lembretes');
-        return res.status(401).json({ error: 'Não autorizado' });
-      }
-      
-      console.log('[Cron] Iniciando processamento automático de lembretes...');
-      const resultado = await processarLembretes();
-      console.log(`[Cron] Processamento concluído: ${resultado.enviados} enviados, ${resultado.erros} erros`);
-      
-      res.json({
-        success: true,
-        timestamp: new Date().toISOString(),
-        ...resultado
-      });
-    } catch (error: any) {
-      console.error('[Cron] Erro ao processar lembretes:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
+  // [REMOVIDO] Endpoint de processamento automático de lembretes por e-mail desativado
   // tRPC API
   // Middleware de guarda para garantir que rotas /api/trpc NUNCA retornem HTML
   app.use("/api/trpc", (req, res, next) => {

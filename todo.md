@@ -2327,3 +2327,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
   - Adicionado guard no useEffect de rascunho para não carregar quando preConsultaUsadaId existe
 - [x] Create WhatsApp template for Android app update and send to all gestantes
 - [x] Investigar e corrigir envio duplicado de WhatsApp de curva glicêmica para Lucíola
+- [x] Desativar envio automático de todos os e-mails
+- [x] Remover item "Monitoramento de E-mails" do menu Configurações
+- [x] Manter apenas capacidade de envio manual de e-mail com configuração atual

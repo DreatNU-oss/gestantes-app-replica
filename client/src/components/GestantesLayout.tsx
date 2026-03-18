@@ -36,7 +36,6 @@ import {
   Plus,
   TestTube,
   Scan,
-  Mail,
   Stethoscope,
   ClipboardList,
   AlertTriangle,
@@ -81,7 +80,7 @@ const allConfigMenuItems = [
   { label: "Medicamentos", path: "/gerenciar-medicamentos" },
   { label: "Usuários", path: "/emails-autorizados" },
   { label: "Alterar Senha", path: "/alterar-senha" },
-  { label: "Monitoramento de E-mails", path: "/monitoramento-emails", icon: Mail },
+  // [REMOVIDO] Monitoramento de E-mails desativado
   { label: "Integrações", path: "/integracoes", clinicaOnly: "00001" },
 ];
 
