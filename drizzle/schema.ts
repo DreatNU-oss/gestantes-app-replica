@@ -196,6 +196,7 @@ export type InsertGestante = typeof gestantes.$inferInsert;
 
 // Tipo estendido com campos calculados (usado nas respostas da API)
 export type GestanteComCalculos = Gestante & {
+  medicoNome?: string | null;
   calculado?: {
     igDUM: { semanas: number; dias: number; totalDias: number } | null;
     igUS: { semanas: number; dias: number; totalDias: number } | null;

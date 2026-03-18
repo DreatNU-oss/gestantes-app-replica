@@ -640,8 +640,18 @@ export const appRouter = router({
           idade = calcularIdade(new Date(year, month - 1, day));
         }
         
+        // Buscar nome do médico se medicoId existir
+        let medicoNome: string | null = null;
+        if (g.medicoId) {
+          const { listarMedicos } = await import('./db');
+          const todosMedicos = await listarMedicos(g.clinicaId);
+          const medico = todosMedicos.find(m => m.id === g.medicoId);
+          medicoNome = medico?.nome || null;
+        }
+        
         return {
           ...g,
+          medicoNome,
           calculado: {
             igDUM,
             igUS,

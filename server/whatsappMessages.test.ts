@@ -39,8 +39,10 @@ describe("WhatsApp Messages - CartaoPrenatal", () => {
       expect(code).toContain("Agradeço por ter nos escolhido");
     });
 
-    it("should have Dr. André identification in welcome message", () => {
-      expect(code).toContain("Aqui é o Dr. André");
+    it("should use dynamic doctor name in welcome message", () => {
+      expect(code).toContain("gestante.medicoNome");
+      // Fallback to André if medicoNome is not available
+      expect(code).toContain("medicoNome || 'André'");
     });
 
     it("should have a delay between welcome and PDF messages", () => {

@@ -2343,3 +2343,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Trocar primeira pessoa do plural por singular nas mensagens do cartão pré-natal
 - [x] Adicionar mensagem de boas-vindas antes do PDF de orientação alimentar
 - [x] Remover LogsEmails.tsx e GerenciarEmails.tsx para resolver erros de TypeScript restantes
+- [x] Tornar nome do médico dinâmico na mensagem de boas-vindas do WhatsApp (buscar do cadastro)

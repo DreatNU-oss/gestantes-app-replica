@@ -3333,7 +3333,7 @@ export default function CartaoPrenatal() {
                       // 1) Enviar mensagem de boas-vindas primeiro
                       await enviarWhatsAppMutation.mutateAsync({
                         telefone: gestante.telefone,
-                        mensagem: `Olá ${gestante.nome?.split(' ')[0] || ''}! 👋\n\nAqui é o Dr. André, da *Clínica Mais Mulher*.\n\nSeja bem-vinda ao nosso pré-natal! Agradeço por ter nos escolhido para acompanhar este momento tão especial.\n\nA partir de agora, você receberá por aqui orientações e materiais importantes para a sua gestação.\n\nEstou à disposição para qualquer dúvida.\n\nUm abraço!`,
+                        mensagem: `Olá ${gestante.nome?.split(' ')[0] || ''}! 👋\n\nAqui é o Dr. ${gestante.medicoNome || 'André'}, da *Clínica Mais Mulher*.\n\nSeja bem-vinda ao nosso pré-natal! Agradeço por ter nos escolhido para acompanhar este momento tão especial.\n\nA partir de agora, você receberá por aqui orientações e materiais importantes para a sua gestação.\n\nEstou à disposição para qualquer dúvida.\n\nUm abraço!`,
                         nomeGestante: gestante.nome,
                         gestanteId: gestante.id,
                       });
