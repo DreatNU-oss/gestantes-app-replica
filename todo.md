@@ -2353,3 +2353,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir lista com nome, data do último acesso, e status (ativo/inativo) na interface admin
 - [x] Corrigir bug: tipo sanguíneo extraído pela IA nos exames lab não está sendo salvo no cadastro da gestante
 - [x] Corrigir duplicação de Dr./Dra./Dr(a). nas mensagens de WhatsApp automáticas e manuais quando o nome do médico já contém o pronome
+- [x] Unificar as duas seções de condutas na consulta de urgência em uma única seção sem duplicatas

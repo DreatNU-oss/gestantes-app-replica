@@ -674,12 +674,13 @@ export default function ConsultaUrgencia() {
             </CardContent>
           </Card>
 
-          {/* Condutas */}
+          {/* Condutas - seção unificada */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base text-[#722F37]">Conduta:</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-4">
+              {/* Checkboxes de condutas predefinidas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {CONDUTAS_URGENCIA.map((conduta) => (
                   <div key={conduta.key}>
@@ -707,33 +708,27 @@ export default function ConsultaUrgencia() {
                             }
                             placeholder="Descreva a conduta..."
                             rows={2}
-tipo="outra_conduta_urgencia"
-                           />
+                            tipo="outra_conduta_urgencia"
+                          />
                         </div>
                       )}
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Conduta (complementação) */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base text-[#722F37]">
-                Conduta (complementação):
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TextareaComAutocomplete
-                value={formData.condutaComplementacao}
-                onChange={(condutaComplementacao) =>
-                  setFormData({ ...formData, condutaComplementacao })
-                }
-                placeholder="Complementação da conduta..."
-                rows={3}
-                tipo="conduta_complementacao"
-              />
+              {/* Campo de texto livre para complementação */}
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Complementação:</p>
+                <TextareaComAutocomplete
+                  value={formData.condutaComplementacao}
+                  onChange={(condutaComplementacao) =>
+                    setFormData({ ...formData, condutaComplementacao })
+                  }
+                  placeholder="Complementação da conduta..."
+                  rows={3}
+                  tipo="conduta_complementacao"
+                />
+              </div>
             </CardContent>
           </Card>
 
