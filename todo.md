@@ -2358,3 +2358,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Filtrar ambas as listas de "Acesso ao App" para exibir apenas gestantes ativas (excluir partos realizados, abortos e exclusões)
 - [x] Ocultar menu "Acesso ao App" para clínicas que não sejam a clínica 00001
 - [x] Adicionar seletor de clínica no topo da página "Acesso ao App" para visualizar dados por clínica
+- [x] Remover menu lateral "Page 1/Page 2" da página Acesso ao App e substituir por botão Voltar no topo

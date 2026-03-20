@@ -1,11 +1,13 @@
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import DashboardLayout from "@/components/DashboardLayout";
+import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Smartphone, Search, Users, Clock, TrendingUp, UserX, Building2 } from "lucide-react";
+import { Smartphone, Search, Users, Clock, TrendingUp, UserX, Building2, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 
 function formatarData(isoString: string | null): string {
   if (!isoString) return "—";
@@ -88,9 +90,24 @@ export default function AcessoApp() {
   const totalComAcesso = resumo?.totalComAcesso ?? 0;
   const percentual = totalAtivas > 0 ? Math.round((totalComAcesso / totalAtivas) * 100) : 0;
 
+  const [, setLocation] = useLocation();
+
   return (
-    <DashboardLayout>
+    <GestantesLayout>
       <div className="p-6 space-y-6">
+        {/* Botão Voltar */}
+        <div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation("/")}
+            className="gap-2 text-muted-foreground hover:text-foreground -ml-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
           <div className="flex items-center gap-3">
@@ -371,6 +388,6 @@ export default function AcessoApp() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </GestantesLayout>
   );
 }
