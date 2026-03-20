@@ -1,27 +1,26 @@
 import { useState, useEffect } from "react";
 import { Cookie, X, Shield } from "lucide-react";
-
-const COOKIE_CONSENT_KEY = "lgpd_cookie_consent";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const { hasConsented, accept, decline } = useCookieConsent();
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!consent) {
+    if (!hasConsented) {
       // Small delay so it doesn't flash on initial render
       const timer = setTimeout(() => setVisible(true), 800);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [hasConsented]);
 
   const handleAccept = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+    accept();
     setVisible(false);
   };
 
   const handleDecline = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+    decline();
     setVisible(false);
   };
 
@@ -73,7 +72,8 @@ export default function CookieBanner() {
           </span>
         </div>
         <p style={{ fontSize: "0.85rem", color: "#555", margin: 0, lineHeight: "1.5" }}>
-          Utilizamos cookies essenciais para o funcionamento do sistema e cookies analíticos para melhorar sua experiência. Seus dados de saúde são tratados com total sigilo, conforme a{" "}
+          Utilizamos cookies essenciais para o funcionamento do sistema e cookies analíticos para
+          melhorar sua experiência. Seus dados de saúde são tratados com total sigilo, conforme a{" "}
           <a
             href="/privacidade"
             style={{ color: "#b5451b", textDecoration: "underline", fontWeight: "600" }}

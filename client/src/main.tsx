@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import CookieBanner from "./components/CookieBanner";
+import AnalyticsLoader from "./components/AnalyticsLoader";
 import "./index.css";
 import { registerServiceWorker, setupInstallPrompt } from "./registerSW";
 
@@ -64,6 +65,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <App />
       <CookieBanner />
+      <AnalyticsLoader />
     </QueryClientProvider>
   </trpc.Provider>
 );

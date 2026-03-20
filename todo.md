@@ -2363,3 +2363,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar rota /privacidade como alias de /politicadeprivacidade e corrigir dados de contato (Clínica Médica Schlemper LTDA, André Luis Schlemper, dreatnu@yahoo.com)
 - [x] Criar página de Termos de Uso em /termos e ativar link no rodapé da Home
 - [x] Adicionar banner de consentimento de cookies em conformidade com a LGPD
+- [x] Implementar lógica para desativar cookies não essenciais quando usuário escolher "Apenas essenciais"
