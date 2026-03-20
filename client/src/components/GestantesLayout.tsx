@@ -70,7 +70,6 @@ const allMenuItems = [
   { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: MessageSquare, label: "Mensagens de Texto", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'] },
-  { icon: Smartphone, label: "Acesso ao App", path: "/acesso-app", roles: ['superadmin', 'admin', 'obstetra'], clinicaOnly: "00001" },
 ];
 
 const allConfigMenuItems = [
@@ -385,6 +384,18 @@ export default function GestantesLayout({
                   >
                     <Building2 className="h-4 w-4" />
                     <span className="font-semibold">Admin Clínicas</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+              {/* Acesso ao App - apenas owner */}
+              {(user as any)?.isOwner && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => setLocation('/acesso-app')}
+                    isActive={location === '/acesso-app'}
+                  >
+                    <Smartphone className="h-4 w-4" />
+                    <span className="font-semibold">Acesso ao App</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
