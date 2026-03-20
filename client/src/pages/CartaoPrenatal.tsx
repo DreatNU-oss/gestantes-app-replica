@@ -2908,6 +2908,23 @@ export default function CartaoPrenatal() {
                       )}
                     </div>
 
+                    {/* Peso (dentro do card de urgência) */}
+                    <div>
+                      <Label className="text-sm font-medium">Peso (kg)</Label>
+                      <Input
+                        type="text"
+                        inputMode="decimal"
+                        value={formData.peso}
+                        onChange={(e) => {
+                          const v = e.target.value.replace(",", ".");
+                          if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
+                            setFormData({ ...formData, peso: v });
+                          }
+                        }}
+                        placeholder="Ex: 65.5"
+                      />
+                    </div>
+
                     {/* Toque Vaginal */}
                     <div>
                       <Label className="text-sm font-medium">Toque Vaginal</Label>
