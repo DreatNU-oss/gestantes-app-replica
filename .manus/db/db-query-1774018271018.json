@@ -1,0 +1,115 @@
+{
+  "query": "\nSELECT \n  ROW_NUMBER() OVER (ORDER BY g.nome ASC) AS numero,\n  g.nome,\n  COUNT(s.id) AS total_sessoes,\n  DATE_FORMAT(MIN(s.createdAt), '%d/%m/%Y') AS primeiro_acesso,\n  DATE_FORMAT(MAX(s.ultimoAcesso), '%d/%m/%Y') AS ultimo_acesso\nFROM sessoesGestante s\nJOIN gestantes g ON g.id = s.gestanteId\nGROUP BY g.id, g.nome\nORDER BY g.nome ASC\nLIMIT 20 OFFSET 40;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT \n  ROW_NUMBER() OVER (ORDER BY g.nome ASC) AS numero,\n  g.nome,\n  COUNT(s.id) AS total_sessoes,\n  DATE_FORMAT(MIN(s.createdAt), '%d/%m/%Y') AS primeiro_acesso,\n  DATE_FORMAT(MAX(s.ultimoAcesso), '%d/%m/%Y') AS ultimo_acesso\nFROM sessoesGestante s\nJOIN gestantes g ON g.id = s.gestanteId\nGROUP BY g.id, g.nome\nORDER BY g.nome ASC\nLIMIT 20 OFFSET 40;\n",
+  "rows": [
+    {
+      "numero": "41",
+      "nome": "Monalisa Mafra Gonçalves de Oliveira",
+      "total_sessoes": "1",
+      "primeiro_acesso": "17/03/2026",
+      "ultimo_acesso": "17/03/2026"
+    },
+    {
+      "numero": "42",
+      "nome": "Nathalia Amélia Martins",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "43",
+      "nome": "Poli Antunes",
+      "total_sessoes": "1",
+      "primeiro_acesso": "19/03/2026",
+      "ultimo_acesso": "19/03/2026"
+    },
+    {
+      "numero": "44",
+      "nome": "Raissa Andrade Gibram",
+      "total_sessoes": "1",
+      "primeiro_acesso": "15/03/2026",
+      "ultimo_acesso": "15/03/2026"
+    },
+    {
+      "numero": "45",
+      "nome": "Rayane Aparecida Zanin",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "46",
+      "nome": "Rosemeire Furtado de Paiva",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "47",
+      "nome": "Rosimeire Pereira de Paiva",
+      "total_sessoes": "1",
+      "primeiro_acesso": "16/03/2026",
+      "ultimo_acesso": "16/03/2026"
+    },
+    {
+      "numero": "48",
+      "nome": "Sophy Marie Ferreira Martins",
+      "total_sessoes": "1",
+      "primeiro_acesso": "14/03/2026",
+      "ultimo_acesso": "14/03/2026"
+    },
+    {
+      "numero": "49",
+      "nome": "Suelen Gandza Gomes",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "50",
+      "nome": "Taciana Ribeiro Rios de Abreu",
+      "total_sessoes": "1",
+      "primeiro_acesso": "14/03/2026",
+      "ultimo_acesso": "14/03/2026"
+    },
+    {
+      "numero": "51",
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "total_sessoes": "1",
+      "primeiro_acesso": "14/03/2026",
+      "ultimo_acesso": "14/03/2026"
+    },
+    {
+      "numero": "52",
+      "nome": "TESTE TESTE",
+      "total_sessoes": "358",
+      "primeiro_acesso": "22/01/2026",
+      "ultimo_acesso": "20/03/2026"
+    },
+    {
+      "numero": "53",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "54",
+      "nome": "Thainá Batista Valim",
+      "total_sessoes": "1",
+      "primeiro_acesso": "18/03/2026",
+      "ultimo_acesso": "18/03/2026"
+    },
+    {
+      "numero": "55",
+      "nome": "Yanka Moreira Távora",
+      "total_sessoes": "1",
+      "primeiro_acesso": "14/03/2026",
+      "ultimo_acesso": "14/03/2026"
+    }
+  ],
+  "messages": [],
+  "stdout": "numero\tnome\ttotal_sessoes\tprimeiro_acesso\tultimo_acesso\n41\tMonalisa Mafra Gonçalves de Oliveira\t1\t17/03/2026\t17/03/2026\n42\tNathalia Amélia Martins\t1\t18/03/2026\t18/03/2026\n43\tPoli Antunes\t1\t19/03/2026\t19/03/2026\n44\tRaissa Andrade Gibram\t1\t15/03/2026\t15/03/2026\n45\tRayane Aparecida Zanin\t1\t18/03/2026\t18/03/2026\n46\tRosemeire Furtado de Paiva\t1\t18/03/2026\t18/03/2026\n47\tRosimeire Pereira de Paiva\t1\t16/03/2026\t16/03/2026\n48\tSophy Marie Ferreira Martins\t1\t14/03/2026\t14/03/2026\n49\tSuelen Gandza Gomes\t1\t18/03/2026\t18/03/2026\n50\tTaciana Ribeiro Rios de Abreu\t1\t14/03/2026\t14/03/2026\n51\tTassiana Tonioli Craveiro Chagas\t1\t14/03/2026\t14/03/2026\n52\tTESTE TESTE\t358\t22/01/2026\t20/03/2026\n53\tThabata Aline de Oliveira Costa\t1\t18/03/2026\t18/03/2026\n54\tThainá Batista Valim\t1\t18/03/2026\t18/03/2026\n55\tYanka Moreira Távora\t1\t14/03/2026\t14/03/2026\n",
+  "stderr": "",
+  "execution_time_ms": 398
+}

@@ -4294,6 +4294,53 @@ export const appRouter = router({
           }>;
       }),
     
+    // Listar gestantes que NUNCA acessaram o app mobile (sem sessão registrada)
+    listarGestantesSemAcesso: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
+        
+        const { sessoesGestante } = await import('../drizzle/schema');
+        const clinicaId = ctx.user.clinicaId;
+        
+        // Buscar IDs de gestantes que JÁ têm sessão
+        const comSessao = await db
+          .selectDistinct({ gestanteId: sessoesGestante.gestanteId })
+          .from(sessoesGestante);
+        
+        const idsComSessao = comSessao.map(s => Number(s.gestanteId));
+        
+        // Buscar gestantes ativas da clínica que NÃO estão nessa lista
+        const resultado = await db
+          .select({
+            id: gestantes.id,
+            nome: gestantes.nome,
+            email: gestantes.email,
+            telefone: gestantes.telefone,
+          })
+          .from(gestantes)
+          .where(
+            clinicaId
+              ? and(
+                  eq(gestantes.clinicaId, clinicaId),
+                  idsComSessao.length > 0
+                    ? sql`${gestantes.id} NOT IN (${sql.join(idsComSessao.map(id => sql`${id}`), sql`, `)})`
+                    : sql`1=1`
+                )
+              : idsComSessao.length > 0
+                ? sql`${gestantes.id} NOT IN (${sql.join(idsComSessao.map(id => sql`${id}`), sql`, `)})`
+                : undefined
+          )
+          .orderBy(sql`${gestantes.nome} ASC`);
+        
+        return resultado.map(g => ({
+          id: g.id,
+          nome: g.nome,
+          email: g.email || '',
+          telefone: g.telefone || '',
+        }));
+      }),
+
     // Resumo: total de gestantes com acesso ao app
     resumo: protectedProcedure
       .query(async ({ ctx }) => {

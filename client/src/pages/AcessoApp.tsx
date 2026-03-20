@@ -4,18 +4,16 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, Search, Users, Clock, TrendingUp } from "lucide-react";
+import { Smartphone, Search, Users, Clock, TrendingUp, UserX } from "lucide-react";
 
-function formatarDataHora(isoString: string | null): string {
+function formatarData(isoString: string | null): string {
   if (!isoString) return "—";
   const d = new Date(isoString);
   if (isNaN(d.getTime())) return "—";
-  return d.toLocaleString("pt-BR", {
+  return d.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
   });
 }
 
@@ -44,22 +42,39 @@ function statusAcesso(ultimoAcesso: string | null): { label: string; variant: "d
 }
 
 export default function AcessoApp() {
-  const [busca, setBusca] = useState("");
+  const [buscaComAcesso, setBuscaComAcesso] = useState("");
+  const [buscaSemAcesso, setBuscaSemAcesso] = useState("");
 
   const { data: resumo, isLoading: loadingResumo } = trpc.appAcesso.resumo.useQuery();
-  const { data: gestantes, isLoading: loadingLista } = trpc.appAcesso.listarGestantesComAcesso.useQuery();
+  const { data: gestantesComAcesso, isLoading: loadingComAcesso } = trpc.appAcesso.listarGestantesComAcesso.useQuery();
+  const { data: gestantesSemAcesso, isLoading: loadingSemAcesso } = trpc.appAcesso.listarGestantesSemAcesso.useQuery();
 
-  const gestantesFiltradas = useMemo(() => {
-    if (!gestantes) return [];
-    if (!busca.trim()) return gestantes;
-    const buscaLower = busca.toLowerCase();
-    return gestantes.filter(
+  // Ordenar gestantes com acesso alfabeticamente e filtrar por busca
+  const comAcessoFiltradas = useMemo(() => {
+    if (!gestantesComAcesso) return [];
+    const sorted = [...gestantesComAcesso].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    if (!buscaComAcesso.trim()) return sorted;
+    const buscaLower = buscaComAcesso.toLowerCase();
+    return sorted.filter(
       (g) =>
         g.nome.toLowerCase().includes(buscaLower) ||
         g.email.toLowerCase().includes(buscaLower) ||
         g.telefone.toLowerCase().includes(buscaLower)
     );
-  }, [gestantes, busca]);
+  }, [gestantesComAcesso, buscaComAcesso]);
+
+  // Filtrar gestantes sem acesso por busca (já vêm ordenadas do backend)
+  const semAcessoFiltradas = useMemo(() => {
+    if (!gestantesSemAcesso) return [];
+    if (!buscaSemAcesso.trim()) return gestantesSemAcesso;
+    const buscaLower = buscaSemAcesso.toLowerCase();
+    return gestantesSemAcesso.filter(
+      (g) =>
+        g.nome.toLowerCase().includes(buscaLower) ||
+        g.email.toLowerCase().includes(buscaLower) ||
+        g.telefone.toLowerCase().includes(buscaLower)
+    );
+  }, [gestantesSemAcesso, buscaSemAcesso]);
 
   return (
     <DashboardLayout>
@@ -128,84 +143,81 @@ export default function AcessoApp() {
           </Card>
         </div>
 
-        {/* Lista de gestantes */}
+        {/* Lista 1: Gestantes COM acesso */}
         <Card>
           <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-              <CardTitle className="text-base">
-                Gestantes com acesso ao app
-                {gestantes && (
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">
-                    ({gestantesFiltradas.length} de {gestantes.length})
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+                Gestantes que acessaram o app
+                {gestantesComAcesso && (
+                  <span className="text-sm font-normal text-muted-foreground">
+                    ({comAcessoFiltradas.length}{buscaComAcesso ? ` de ${gestantesComAcesso.length}` : ""})
                   </span>
                 )}
               </CardTitle>
-              <div className="relative w-full sm:w-72">
+              <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar por nome, email..."
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  className="pl-9"
+                  placeholder="Buscar..."
+                  value={buscaComAcesso}
+                  onChange={(e) => setBuscaComAcesso(e.target.value)}
+                  className="pl-9 h-8 text-sm"
                 />
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            {loadingLista ? (
+            {loadingComAcesso ? (
+              <div className="p-8 text-center text-muted-foreground">Carregando...</div>
+            ) : comAcessoFiltradas.length === 0 ? (
               <div className="p-8 text-center text-muted-foreground">
-                Carregando...
-              </div>
-            ) : gestantesFiltradas.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground">
-                {busca ? "Nenhuma gestante encontrada para esta busca." : "Nenhuma gestante acessou o app ainda."}
+                {buscaComAcesso ? "Nenhuma gestante encontrada." : "Nenhuma gestante acessou o app ainda."}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/50">
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Nome</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Telefone</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Último acesso</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Primeiro acesso</th>
-                      <th className="text-center px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Sessões</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground w-8">#</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Nome</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden lg:table-cell">Telefone</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden sm:table-cell">1º Acesso</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Último acesso</th>
+                      <th className="text-center px-4 py-2 font-medium text-muted-foreground hidden sm:table-cell">Sessões</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {gestantesFiltradas.map((g, idx) => {
+                    {comAcessoFiltradas.map((g, idx) => {
                       const status = statusAcesso(g.ultimoAcesso);
                       return (
                         <tr
                           key={g.gestanteId}
                           className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "" : "bg-muted/10"}`}
                         >
-                          <td className="px-4 py-3 font-medium">{g.nome}</td>
-                          <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                            {g.email || <span className="text-muted-foreground/50 italic">—</span>}
+                          <td className="px-4 py-2 text-muted-foreground text-xs">{idx + 1}</td>
+                          <td className="px-4 py-2 font-medium">{g.nome}</td>
+                          <td className="px-4 py-2 text-muted-foreground hidden lg:table-cell">
+                            {g.telefone || <span className="italic text-muted-foreground/50">—</span>}
                           </td>
-                          <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                            {g.telefone || <span className="text-muted-foreground/50 italic">—</span>}
+                          <td className="px-4 py-2 text-muted-foreground hidden sm:table-cell">
+                            {formatarData(g.primeiraSessao)}
                           </td>
-                          <td className="px-4 py-3">
-                            <span className="text-foreground">{formatarDataHora(g.ultimoAcesso)}</span>
+                          <td className="px-4 py-2">
+                            <span>{formatarData(g.ultimoAcesso)}</span>
                             {g.ultimoAcesso && (
                               <span className="ml-1 text-xs text-muted-foreground">
                                 ({tempoRelativo(g.ultimoAcesso)})
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">
-                            {formatarDataHora(g.primeiraSessao)}
-                          </td>
-                          <td className="px-4 py-3 text-center hidden sm:table-cell">
-                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-xs font-bold">
+                          <td className="px-4 py-2 text-center hidden sm:table-cell">
+                            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold">
                               {g.totalSessoes}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-2">
                             <Badge variant={status.variant} className="text-xs">
                               {status.label}
                             </Badge>
@@ -213,6 +225,78 @@ export default function AcessoApp() {
                         </tr>
                       );
                     })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Lista 2: Gestantes SEM acesso */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-muted-foreground/40" />
+                Gestantes que ainda não acessaram o app
+                {gestantesSemAcesso && (
+                  <span className="text-sm font-normal text-muted-foreground">
+                    ({semAcessoFiltradas.length}{buscaSemAcesso ? ` de ${gestantesSemAcesso.length}` : ""})
+                  </span>
+                )}
+              </CardTitle>
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar..."
+                  value={buscaSemAcesso}
+                  onChange={(e) => setBuscaSemAcesso(e.target.value)}
+                  className="pl-9 h-8 text-sm"
+                />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {loadingSemAcesso ? (
+              <div className="p-8 text-center text-muted-foreground">Carregando...</div>
+            ) : semAcessoFiltradas.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground">
+                {buscaSemAcesso ? "Nenhuma gestante encontrada." : "Todas as gestantes já acessaram o app! 🎉"}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground w-8">#</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Nome</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden md:table-cell">Email</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden lg:table-cell">Telefone</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {semAcessoFiltradas.map((g, idx) => (
+                      <tr
+                        key={g.id}
+                        className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "" : "bg-muted/10"}`}
+                      >
+                        <td className="px-4 py-2 text-muted-foreground text-xs">{idx + 1}</td>
+                        <td className="px-4 py-2 font-medium">{g.nome}</td>
+                        <td className="px-4 py-2 text-muted-foreground hidden md:table-cell">
+                          {g.email || <span className="italic text-muted-foreground/50">—</span>}
+                        </td>
+                        <td className="px-4 py-2 text-muted-foreground hidden lg:table-cell">
+                          {g.telefone || <span className="italic text-muted-foreground/50">—</span>}
+                        </td>
+                        <td className="px-4 py-2">
+                          <Badge variant="outline" className="text-xs text-muted-foreground">
+                            <UserX className="h-3 w-3 mr-1" />
+                            Não acessou
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
