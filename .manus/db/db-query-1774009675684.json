@@ -1,0 +1,14 @@
+{
+  "query": "\nSELECT \n  COUNT(DISTINCT s.gestanteId) as totalComAcesso,\n  COUNT(DISTINCT CASE WHEN s.ativo = 1 THEN s.gestanteId END) as totalAtivas\nFROM sessoesGestante s;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT \n  COUNT(DISTINCT s.gestanteId) as totalComAcesso,\n  COUNT(DISTINCT CASE WHEN s.ativo = 1 THEN s.gestanteId END) as totalAtivas\nFROM sessoesGestante s;\n",
+  "rows": [
+    {
+      "totalComAcesso": "57",
+      "totalAtivas": "57"
+    }
+  ],
+  "messages": [],
+  "stdout": "totalComAcesso\ttotalAtivas\n57\t57\n",
+  "stderr": "",
+  "execution_time_ms": 402
+}

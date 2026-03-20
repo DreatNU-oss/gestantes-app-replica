@@ -4214,6 +4214,128 @@ export const appRouter = router({
       }),
   }),
 
+  // ===== Acesso ao App Mobile pelas Gestantes =====
+  appAcesso: router({
+    // Listar gestantes que acessaram o app mobile (têm sessão registrada)
+    listarGestantesComAcesso: protectedProcedure
+      .input(z.object({
+        clinicaId: z.number().optional(),
+        limit: z.number().min(1).max(500).default(200),
+      }).optional())
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
+        
+        const { sessoesGestante } = await import('../drizzle/schema');
+        const { count, max } = await import('drizzle-orm');
+        
+        // Filtrar por clínica do usuário logado (exceto superadmin que vê tudo)
+        const clinicaId = ctx.user.clinicaId;
+        
+        // Buscar gestantes com sessões, agrupadas por gestante
+        let query = db
+          .select({
+            gestanteId: sessoesGestante.gestanteId,
+            totalSessoes: count(sessoesGestante.id),
+            ultimoAcesso: max(sessoesGestante.ultimoAcesso),
+            primeiraSessao: max(sessoesGestante.createdAt),
+          })
+          .from(sessoesGestante)
+          .groupBy(sessoesGestante.gestanteId)
+          .orderBy(desc(max(sessoesGestante.ultimoAcesso)));
+        
+        const sessoes = await query;
+        
+        if (sessoes.length === 0) return [];
+        
+        // Buscar dados das gestantes correspondentes
+        const gestanteIds = sessoes.map(s => Number(s.gestanteId));
+        
+        const gestantesData = await db
+          .select({
+            id: gestantes.id,
+            nome: gestantes.nome,
+            email: gestantes.email,
+            telefone: gestantes.telefone,
+            clinicaId: gestantes.clinicaId,
+          })
+          .from(gestantes)
+          .where(
+            clinicaId
+              ? and(eq(gestantes.clinicaId, clinicaId), sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`)
+              : sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`
+          );
+        
+        // Combinar dados de sessão com dados da gestante
+        const gestantesMap = new Map(gestantesData.map(g => [g.id, g]));
+        
+        return sessoes
+          .map(s => {
+            const gestante = gestantesMap.get(Number(s.gestanteId));
+            if (!gestante) return null;
+            return {
+              gestanteId: Number(s.gestanteId),
+              nome: gestante.nome,
+              email: gestante.email || '',
+              telefone: gestante.telefone || '',
+              totalSessoes: Number(s.totalSessoes),
+              ultimoAcesso: s.ultimoAcesso ? new Date(s.ultimoAcesso).toISOString() : null,
+              primeiraSessao: s.primeiraSessao ? new Date(s.primeiraSessao).toISOString() : null,
+            };
+          })
+          .filter(Boolean) as Array<{
+            gestanteId: number;
+            nome: string;
+            email: string;
+            telefone: string;
+            totalSessoes: number;
+            ultimoAcesso: string | null;
+            primeiraSessao: string | null;
+          }>;
+      }),
+    
+    // Resumo: total de gestantes com acesso ao app
+    resumo: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        
+        const { sessoesGestante } = await import('../drizzle/schema');
+        const { countDistinct } = await import('drizzle-orm');
+        
+        const clinicaId = ctx.user.clinicaId;
+        
+        // Total de gestantes únicas com sessão
+        const [totalResult] = await db
+          .select({ total: countDistinct(sessoesGestante.gestanteId) })
+          .from(sessoesGestante);
+        
+        // Acessos nos últimos 7 dias
+        const seteDiasAtras = new Date();
+        seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
+        
+        const [recentes] = await db
+          .select({ total: countDistinct(sessoesGestante.gestanteId) })
+          .from(sessoesGestante)
+          .where(sql`${sessoesGestante.ultimoAcesso} >= ${seteDiasAtras}`);
+        
+        // Acessos nas últimas 24h
+        const umDiaAtras = new Date();
+        umDiaAtras.setDate(umDiaAtras.getDate() - 1);
+        
+        const [hoje] = await db
+          .select({ total: countDistinct(sessoesGestante.gestanteId) })
+          .from(sessoesGestante)
+          .where(sql`${sessoesGestante.ultimoAcesso} >= ${umDiaAtras}`);
+        
+        return {
+          totalComAcesso: Number(totalResult?.total || 0),
+          acessosUltimos7Dias: Number(recentes?.total || 0),
+          acessosHoje: Number(hoje?.total || 0),
+        };
+      }),
+  }),
+
   // ===== Pré-Consulta (Secretária) =====
   preConsulta: router({
     criar: protectedProcedure

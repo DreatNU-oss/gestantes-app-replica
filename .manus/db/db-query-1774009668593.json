@@ -1,0 +1,210 @@
+{
+  "query": "\nSELECT \n  g.id,\n  g.nome,\n  g.email,\n  g.telefone,\n  COUNT(s.id) as totalSessoes,\n  MAX(s.ultimoAcesso) as ultimoAcesso,\n  MAX(s.createdAt) as primeiraSessao,\n  SUM(CASE WHEN s.ativo = 1 THEN 1 ELSE 0 END) as sessoesAtivas\nFROM gestantes g\nINNER JOIN sessoesGestante s ON s.gestanteId = g.id\nGROUP BY g.id, g.nome, g.email, g.telefone\nORDER BY ultimoAcesso DESC\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT \n  g.id,\n  g.nome,\n  g.email,\n  g.telefone,\n  COUNT(s.id) as totalSessoes,\n  MAX(s.ultimoAcesso) as ultimoAcesso,\n  MAX(s.createdAt) as primeiraSessao,\n  SUM(CASE WHEN s.ativo = 1 THEN 1 ELSE 0 END) as sessoesAtivas\nFROM gestantes g\nINNER JOIN sessoesGestante s ON s.gestanteId = g.id\nGROUP BY g.id, g.nome, g.email, g.telefone\nORDER BY ultimoAcesso DESC\nLIMIT 20;\n",
+  "rows": [
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "email": "dreatnu@yahoo.com",
+      "telefone": "5535991156028",
+      "totalSessoes": "348",
+      "ultimoAcesso": "2026-03-20 11:15:23",
+      "primeiraSessao": "2026-03-20 11:15:23",
+      "sessoesAtivas": "348"
+    },
+    {
+      "id": "690018",
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "email": "jeniffercatrine34@gmail.com",
+      "telefone": "(35) 99248-0745",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-20 02:35:06",
+      "primeiraSessao": "2026-03-20 02:35:06",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330055",
+      "nome": "Iris Fonseca de Morais",
+      "email": "fonsecairis147@gmail.com",
+      "telefone": "(35) 99713-7696",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-20 01:11:02",
+      "primeiraSessao": "2026-03-20 01:11:02",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2640025",
+      "nome": "Poli Antunes",
+      "email": "gorgulho@gmail.com",
+      "telefone": "+5535999587881",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-19 20:57:00",
+      "primeiraSessao": "2026-03-19 20:57:00",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330057",
+      "nome": "Janaína Helena Machado",
+      "email": "machadojanainahelena@gmail.com",
+      "telefone": "(35) 98892-5227",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 21:50:58",
+      "primeiraSessao": "2026-03-18 21:50:58",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330101",
+      "nome": "Thainá Batista Valim",
+      "email": "thainavalim_@hotmail.com",
+      "telefone": "(35) 98409-0424",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 20:13:40",
+      "primeiraSessao": "2026-03-18 20:13:40",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2640024",
+      "nome": "Gislaine Santos Da Silva ",
+      "email": "gislainelavinia536@gmail.com",
+      "telefone": "(35) 99241-3963",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 19:15:32",
+      "primeiraSessao": "2026-03-18 19:15:32",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330007",
+      "nome": "Camila Soares Ferreira Sidrin",
+      "email": "camilasidrim17@gmail.com",
+      "telefone": "(35) 99179-1204",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 18:38:25",
+      "primeiraSessao": "2026-03-18 18:38:25",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330084",
+      "nome": "Rayane Aparecida Zanin",
+      "email": "zaninrayane2002@gmail.com",
+      "telefone": "(35) 99158-3690",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 17:54:41",
+      "primeiraSessao": "2026-03-18 17:54:41",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2610025",
+      "nome": "Larissa Santos Santana",
+      "email": "Lsantana@simtax.com.br",
+      "telefone": "(11) 96707-3720",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 17:42:56",
+      "primeiraSessao": "2026-03-18 17:42:56",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2640002",
+      "nome": "Cassia Moreira Francisco De Oliveira",
+      "email": "Cassiamfo11.com@gmail.com",
+      "telefone": "(35) 98886-4061",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 17:40:48",
+      "primeiraSessao": "2026-03-18 17:40:48",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330090",
+      "nome": "Suelen Gandza Gomes",
+      "email": "suelengandza98@gmail.com",
+      "telefone": "(35) 98894-2521",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 17:23:30",
+      "primeiraSessao": "2026-03-18 17:23:30",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330047",
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "email": "fernanda_santos.l@hotmail.com",
+      "telefone": "(35) 99949-4671",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 16:46:41",
+      "primeiraSessao": "2026-03-18 16:46:41",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2310003",
+      "nome": "Rosemeire Furtado de Paiva",
+      "email": "rosemeire.furtado.paiva@gmail.com",
+      "telefone": "(35) 99970-3857",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 16:13:52",
+      "primeiraSessao": "2026-03-18 16:13:52",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "email": "thabata.costa@educacao.mg.gov.br",
+      "telefone": "(35) 98706-0390",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 16:08:13",
+      "primeiraSessao": "2026-03-18 16:08:13",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "1440002",
+      "nome": "Marcela Bellato Reis",
+      "email": "marcelabreis@hotmail.com",
+      "telefone": "(35) 98408-7562",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 15:59:54",
+      "primeiraSessao": "2026-03-18 15:59:54",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330040",
+      "nome": "Eliana Gomes de Noronha",
+      "email": "elianasaothome@hotmail.com",
+      "telefone": "(35) 99853-9531",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 15:56:50",
+      "primeiraSessao": "2026-03-18 15:56:50",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "330074",
+      "nome": "Luciany Aparecida Vilela",
+      "email": "lucianyvilela@gmail.com",
+      "telefone": "(35) 99911-0116",
+      "totalSessoes": "2",
+      "ultimoAcesso": "2026-03-18 15:40:33",
+      "primeiraSessao": "2026-03-18 15:40:33",
+      "sessoesAtivas": "2"
+    },
+    {
+      "id": "2610002",
+      "nome": "Luciana Valim",
+      "email": "lucianavalim88@gmail.com",
+      "telefone": "(35) 98891-7100",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 13:11:17",
+      "primeiraSessao": "2026-03-18 13:11:17",
+      "sessoesAtivas": "1"
+    },
+    {
+      "id": "2610024",
+      "nome": "Nathalia Amélia Martins",
+      "email": "nathalia-amelia@hotmail.com",
+      "telefone": "(21) 98322-5558",
+      "totalSessoes": "1",
+      "ultimoAcesso": "2026-03-18 13:11:17",
+      "primeiraSessao": "2026-03-18 13:11:17",
+      "sessoesAtivas": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\temail\ttelefone\ttotalSessoes\tultimoAcesso\tprimeiraSessao\tsessoesAtivas\n1560002\tTESTE TESTE\tdreatnu@yahoo.com\t5535991156028\t348\t2026-03-20 11:15:23\t2026-03-20 11:15:23\t348\n690018\tJeniffer Catrine Alves de Souza\tjeniffercatrine34@gmail.com\t(35) 99248-0745\t1\t2026-03-20 02:35:06\t2026-03-20 02:35:06\t1\n330055\tIris Fonseca de Morais\tfonsecairis147@gmail.com\t(35) 99713-7696\t1\t2026-03-20 01:11:02\t2026-03-20 01:11:02\t1\n2640025\tPoli Antunes\tgorgulho@gmail.com\t+5535999587881\t1\t2026-03-19 20:57:00\t2026-03-19 20:57:00\t1\n330057\tJanaína Helena Machado\tmachadojanainahelena@gmail.com\t(35) 98892-5227\t1\t2026-03-18 21:50:58\t2026-03-18 21:50:58\t1\n330101\tThainá Batista Valim\tthainavalim_@hotmail.com\t(35) 98409-0424\t1\t2026-03-18 20:13:40\t2026-03-18 20:13:40\t1\n2640024\tGislaine Santos Da Silva \tgislainelavinia536@gmail.com\t(35) 99241-3963\t1\t2026-03-18 19:15:32\t2026-03-18 19:15:32\t1\n330007\tCamila Soares Ferreira Sidrin\tcamilasidrim17@gmail.com\t(35) 99179-1204\t1\t2026-03-18 18:38:25\t2026-03-18 18:38:25\t1\n330084\tRayane Aparecida Zanin\tzaninrayane2002@gmail.com\t(35) 99158-3690\t1\t2026-03-18 17:54:41\t2026-03-18 17:54:41\t1\n2610025\tLarissa Santos Santana\tLsantana@simtax.com.br\t(11) 96707-3720\t1\t2026-03-18 17:42:56\t2026-03-18 17:42:56\t1\n2640002\tCassia Moreira Francisco De Oliveira\tCassiamfo11.com@gmail.com\t(35) 98886-4061\t1\t2026-03-18 17:40:48\t2026-03-18 17:40:48\t1\n330090\tSuelen Gandza Gomes\tsuelengandza98@gmail.com\t(35) 98894-2521\t1\t2026-03-18 17:23:30\t2026-03-18 17:23:30\t1\n330047\tFernanda Luciano Santos Gonçalves\tfernanda_santos.l@hotmail.com\t(35) 99949-4671\t1\t2026-03-18 16:46:41\t2026-03-18 16:46:41\t1\n2310003\tRosemeire Furtado de Paiva\trosemeire.furtado.paiva@gmail.com\t(35) 99970-3857\t1\t2026-03-18 16:13:52\t2026-03-18 16:13:52\t1\n330006\tThabata Aline de Oliveira Costa\tthabata.costa@educacao.mg.gov.br\t(35) 98706-0390\t1\t2026-03-18 16:08:13\t2026-03-18 16:08:13\t1\n1440002\tMarcela Bellato Reis\tmarcelabreis@hotmail.com\t(35) 98408-7562\t1\t2026-03-18 15:59:54\t2026-03-18 15:59:54\t1\n330040\tEliana Gomes de Noronha\telianasaothome@hotmail.com\t(35) 99853-9531\t1\t2026-03-18 15:56:50\t2026-03-18 15:56:50\t1\n330074\tLuciany Aparecida Vilela\tlucianyvilela@gmail.com\t(35) 99911-0116\t2\t2026-03-18 15:40:33\t2026-03-18 15:40:33\t2\n2610002\tLuciana Valim\tlucianavalim88@gmail.com\t(35) 98891-7100\t1\t2026-03-18 13:11:17\t2026-03-18 13:11:17\t1\n2610024\tNathalia Amélia Martins\tnathalia-amelia@hotmail.com\t(21) 98322-5558\t1\t2026-03-18 13:11:17\t2026-03-18 13:11:17\t1\n",
+  "stderr": "",
+  "execution_time_ms": 432
+}

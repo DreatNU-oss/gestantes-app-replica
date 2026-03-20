@@ -35,6 +35,7 @@ import GerenciarProcedimentos from "./pages/GerenciarProcedimentos";
 import MensagensTexto from "./pages/MensagensTexto";
 import PreCadastro from "./pages/PreCadastro";
 import PreConsulta from "./pages/PreConsulta";
+import AcessoApp from "./pages/AcessoApp";
 
 // Roles que podem acessar conteúdo clínico (cartão, exames, ultrassons, partos)
 const CLINICAL_ROLES = ["superadmin", "admin", "obstetra"] as const;
@@ -63,6 +64,11 @@ function Router() {
       <Route path={"/previsao-partos"} component={PrevisaoPartos} />
       <Route path={"/agendamento-consultas"} component={AgendamentoConsultas} />
       <Route path={"/estatisticas"} component={Estatisticas} />
+
+      {/* Acesso ao App Mobile - superadmin, admin, obstetra */}
+      <Route path="/acesso-app">
+        <RoleGuard allowedRoles={['superadmin', 'admin', 'obstetra']}><AcessoApp /></RoleGuard>
+      </Route>
 
       {/* Mensagens de Texto - superadmin, admin, obstetra */}
       <Route path={"/mensagens-texto"}>

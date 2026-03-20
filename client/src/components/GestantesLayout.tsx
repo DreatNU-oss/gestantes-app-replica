@@ -41,7 +41,8 @@ import {
   AlertTriangle,
   Building2,
   MessageSquare,
-  ClipboardPlus
+  ClipboardPlus,
+  Smartphone
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -69,6 +70,7 @@ const allMenuItems = [
   { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: MessageSquare, label: "Mensagens de Texto", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: Smartphone, label: "Acesso ao App", path: "/acesso-app", roles: ['superadmin', 'admin', 'obstetra'] },
 ];
 
 const allConfigMenuItems = [
