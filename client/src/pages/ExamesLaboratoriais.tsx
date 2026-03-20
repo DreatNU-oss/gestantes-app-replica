@@ -1889,6 +1889,48 @@ export default function ExamesLaboratoriais() {
                         }
                       }
                       
+                      // Tipagem sanguínea ABO/Rh: converter para formato "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"
+                      // A IA pode retornar formatos variados como "A Negativo", "A NEG", "Grupo A / RH Negativo",
+                      // "A NEGATIVO", "Tipo A, RH Negativo", etc.
+                      if (nomeExame === 'Tipagem sanguínea ABO/Rh') {
+                        // Detectar grupo ABO
+                        let grupoABO = '';
+                        if (/\bab\b/i.test(valorLower)) {
+                          grupoABO = 'AB';
+                        } else if (/\ba\b|grupo\s*a|tipo\s*a|grupo\s+sanguíneo\s*:\s*a/i.test(valorLower)) {
+                          grupoABO = 'A';
+                        } else if (/\bb\b|grupo\s*b|tipo\s*b/i.test(valorLower)) {
+                          grupoABO = 'B';
+                        } else if (/\bo\b|grupo\s*o|tipo\s*o/i.test(valorLower)) {
+                          grupoABO = 'O';
+                        }
+                        
+                        // Detectar fator Rh
+                        let fatorRh = '';
+                        if (
+                          valorLower.includes('negativo') ||
+                          valorLower.includes('neg') ||
+                          valorLower.includes('rh -') ||
+                          valorLower.includes('rh-') ||
+                          valor.includes('-')
+                        ) {
+                          fatorRh = '-';
+                        } else if (
+                          valorLower.includes('positivo') ||
+                          valorLower.includes('pos') ||
+                          valorLower.includes('rh +') ||
+                          valorLower.includes('rh+') ||
+                          valor.includes('+')
+                        ) {
+                          fatorRh = '+';
+                        }
+                        
+                        if (grupoABO && fatorRh) {
+                          return { valorNormalizado: `${grupoABO}${fatorRh}` };
+                        }
+                        // Se só tiver o grupo sem Rh, não retornar para evitar valor inválido no dropdown
+                      }
+                      
                       // Retornar valor original se não precisar de normalização
                       return { valorNormalizado: valor };
                     };
@@ -2025,6 +2067,17 @@ export default function ExamesLaboratoriais() {
                       
                       return novoEstado;
                     });
+                    
+                    // Sincronizar fator de risco Rh se a IA preencheu o tipo sanguíneo
+                    const tipagemIA = resultadosFormatados['Tipagem sanguínea ABO/Rh'];
+                    if (tipagemIA && typeof tipagemIA === 'object' && gestanteSelecionada) {
+                      const tipoSanguineoIA = (tipagemIA as Record<string, string>)['1'] ||
+                                             (tipagemIA as Record<string, string>)['2'] ||
+                                             (tipagemIA as Record<string, string>)['3'] || '';
+                      if (tipoSanguineoIA && ['A+','A-','B+','B-','AB+','AB-','O+','O-'].includes(tipoSanguineoIA)) {
+                        syncRhMutation.mutate({ gestanteId: gestanteSelecionada, tipoSanguineo: tipoSanguineoIA });
+                      }
+                    }
                     
                     // Salvar no histórico de interpretações
                     if (gestanteSelecionada) {

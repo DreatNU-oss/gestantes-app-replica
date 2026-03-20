@@ -1,0 +1,32 @@
+{
+  "query": "SELECT pr.id, pr.gestanteId, g.nome, pr.dataParto, pr.tipoParto, pr.medicoId, pr.observacoes, pr.createdAt, pr.updatedAt \nFROM partosRealizados pr \nLEFT JOIN gestantes g ON pr.gestanteId = g.id\nWHERE pr.gestanteId IN (330021, 330022) \nORDER BY pr.updatedAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT pr.id, pr.gestanteId, g.nome, pr.dataParto, pr.tipoParto, pr.medicoId, pr.observacoes, pr.createdAt, pr.updatedAt \nFROM partosRealizados pr \nLEFT JOIN gestantes g ON pr.gestanteId = g.id\nWHERE pr.gestanteId IN (330021, 330022) \nORDER BY pr.updatedAt DESC;",
+  "rows": [
+    {
+      "id": "1020001",
+      "gestanteId": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "dataParto": "2026-03-19",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "observacoes": "NULL",
+      "createdAt": "2026-03-19 14:01:57",
+      "updatedAt": "2026-03-19 14:01:57"
+    },
+    {
+      "id": "990002",
+      "gestanteId": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "dataParto": "2026-03-19",
+      "tipoParto": "cesarea",
+      "medicoId": "1",
+      "observacoes": "NULL",
+      "createdAt": "2026-03-19 13:37:27",
+      "updatedAt": "2026-03-19 13:37:27"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnome\tdataParto\ttipoParto\tmedicoId\tobservacoes\tcreatedAt\tupdatedAt\n1020001\t330021\tBianca Aparecida Marcolino do Carmo\t2026-03-19\tcesarea\t1\tNULL\t2026-03-19 14:01:57\t2026-03-19 14:01:57\n990002\t330022\tBianca Fonseca Moreno da Cruz\t2026-03-19\tcesarea\t1\tNULL\t2026-03-19 13:37:27\t2026-03-19 13:37:27\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}

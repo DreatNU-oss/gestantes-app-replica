@@ -2348,3 +2348,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Ordenar ultrassons do mesmo tipo cronologicamente (mais antigo acima, mais recente abaixo)
 - [x] Atualizar teste ultrassomMultiple.test.ts para usar UltrassomFormularioSalvo ao invés de UltrassomRegistrosSalvos
 - [x] Auto-preencher campo de dias do ultrassom com "0" quando deixado vazio
+- [ ] Criar visualização de quais gestantes acessaram o app mobile (fizeram download e login)
+- [ ] Identificar no banco de dados os registros de autenticação/acesso das gestantes ao app
+- [ ] Exibir lista com nome, data do último acesso, e status (ativo/inativo) na interface admin
+- [x] Corrigir bug: tipo sanguíneo extraído pela IA nos exames lab não está sendo salvo no cadastro da gestante

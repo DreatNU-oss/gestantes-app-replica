@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, nome, telefone, email, dum, dataPartoProgramado, createdAt, updatedAt FROM gestantes WHERE nome LIKE '%Bianca%' ORDER BY updatedAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, telefone, email, dum, dataPartoProgramado, createdAt, updatedAt FROM gestantes WHERE nome LIKE '%Bianca%' ORDER BY updatedAt DESC;",
+  "rows": [
+    {
+      "id": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "telefone": "(35) 99904-0233",
+      "email": "bianca_mp88@hotmail.com",
+      "dum": "2025-06-24",
+      "dataPartoProgramado": "0026-03-24",
+      "createdAt": "2025-11-28 16:35:46",
+      "updatedAt": "2026-03-18 11:33:29"
+    },
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "telefone": "(35) 99147-0014",
+      "email": "bm98678@gmail.com",
+      "dum": "2025-07-09",
+      "dataPartoProgramado": "2026-04-08",
+      "createdAt": "2025-11-28 16:36:09",
+      "updatedAt": "2026-03-16 18:42:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttelefone\temail\tdum\tdataPartoProgramado\tcreatedAt\tupdatedAt\n330021\tBianca Aparecida Marcolino do Carmo\t(35) 99904-0233\tbianca_mp88@hotmail.com\t2025-06-24\t0026-03-24\t2025-11-28 16:35:46\t2026-03-18 11:33:29\n330022\tBianca Fonseca Moreno da Cruz\t(35) 99147-0014\tbm98678@gmail.com\t2025-07-09\t2026-04-08\t2025-11-28 16:36:09\t2026-03-16 18:42:21\n",
+  "stderr": "",
+  "execution_time_ms": 454
+}

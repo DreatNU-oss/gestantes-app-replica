@@ -1,0 +1,18 @@
+{
+  "query": "SELECT pr.id, pr.gestanteId, g.nome, pr.dataParto, pr.tipoParto, pr.createdAt\nFROM partosRealizados pr\nJOIN gestantes g ON pr.gestanteId = g.id\nWHERE pr.gestanteId IN (330021, 330022)\nORDER BY pr.createdAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT pr.id, pr.gestanteId, g.nome, pr.dataParto, pr.tipoParto, pr.createdAt\nFROM partosRealizados pr\nJOIN gestantes g ON pr.gestanteId = g.id\nWHERE pr.gestanteId IN (330021, 330022)\nORDER BY pr.createdAt DESC;",
+  "rows": [
+    {
+      "id": "1020001",
+      "gestanteId": "330021",
+      "nome": "Bianca Aparecida Marcolino do Carmo",
+      "dataParto": "2026-03-19",
+      "tipoParto": "cesarea",
+      "createdAt": "2026-03-19 14:01:57"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnome\tdataParto\ttipoParto\tcreatedAt\n1020001\t330021\tBianca Aparecida Marcolino do Carmo\t2026-03-19\tcesarea\t2026-03-19 14:01:57\n",
+  "stderr": "",
+  "execution_time_ms": 388
+}

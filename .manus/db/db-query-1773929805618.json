@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, nome, dum, dataPartoProgramado, updatedAt FROM gestantes WHERE id = 330022;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dum, dataPartoProgramado, updatedAt FROM gestantes WHERE id = 330022;",
+  "rows": [
+    {
+      "id": "330022",
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "dum": "2025-07-09",
+      "dataPartoProgramado": "2026-04-08",
+      "updatedAt": "2026-03-16 18:42:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdum\tdataPartoProgramado\tupdatedAt\n330022\tBianca Fonseca Moreno da Cruz\t2025-07-09\t2026-04-08\t2026-03-16 18:42:21\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}
