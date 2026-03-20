@@ -21,6 +21,7 @@ import Ultrassons from "./pages/Ultrassons";
 import PartosRealizados from "./pages/PartosRealizados";
 import EstatisticasPartos from "./pages/EstatisticasPartos";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosDeUso from "./pages/TermosDeUso";
 import GerenciarFatoresRisco from "./pages/GerenciarFatoresRisco";
 import GerenciarMedicamentosConfig from "./pages/GerenciarMedicamentos";
 import Login from "./pages/Login";
@@ -52,6 +53,7 @@ function Router() {
       <Route path={"/redefinir-senha"} component={RedefinirSenha} />
       <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
       <Route path={"/privacidade"} component={PoliticaPrivacidade} />
+      <Route path={"/termos"} component={TermosDeUso} />
 
       {/* Rotas acessíveis a todos os roles autenticados */}
       <Route path={"/pre-cadastro"}>

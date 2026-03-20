@@ -2361,3 +2361,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover menu lateral "Page 1/Page 2" da página Acesso ao App e substituir por botão Voltar no topo
 - [x] Omitir campos vazios no texto gerado para copiar no PEP (ex: "BCF: -" não deve aparecer se não foi preenchido)
 - [x] Adicionar rota /privacidade como alias de /politicadeprivacidade e corrigir dados de contato (Clínica Médica Schlemper LTDA, André Luis Schlemper, dreatnu@yahoo.com)
+- [x] Criar página de Termos de Uso em /termos e ativar link no rodapé da Home
