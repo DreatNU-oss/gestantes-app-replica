@@ -2367,3 +2367,5 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Restringir menu "Acesso ao App" apenas ao usuário owner (abaixo do menu Admin, mesmo estilo em negrito)
 - [x] Remover completamente o login via OAuth Manus — bloquear rota /api/oauth/callback e remover todos os pontos de entrada
 - [x] Unificar condutas de urgência e condutas comuns em uma única seção ao final da consulta de urgência (CartaoPrenatal.tsx)
+- [x] Renomear "Ausência / Não é Possível" para "Útero não palpável" na lista de Atividade Uterina
+- [x] Mover campo Pressão Arterial para dentro do card vermelho de urgência, abaixo do AUF

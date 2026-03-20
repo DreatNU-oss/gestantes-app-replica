@@ -194,7 +194,7 @@ export default function CartaoPrenatal() {
 
   // Atividade uterina (checkboxes)
   const ATIVIDADE_UTERINA = [
-    "Ausência / Não é Possível",
+    "Útero não palpável",
     "Útero Não Palpável no Abdome (1º Trimestre)",
     "Ausente — Tônus Uterino Normal",
     "Contrações de Braxton-Hicks",
@@ -2709,7 +2709,8 @@ export default function CartaoPrenatal() {
                   </div>
                     </>
                   )}
-                  <div className={isUrgencia ? "col-span-2" : ""}>
+                  {!isUrgencia && (
+                  <div>
                     <Label>Pressão Arterial</Label>
                     <Input
                       type="text"
@@ -2725,6 +2726,7 @@ export default function CartaoPrenatal() {
                       </p>
                     )}
                   </div>
+                  )}
                   {!isUrgencia && (
                     <>
                   <div>
@@ -2886,6 +2888,24 @@ export default function CartaoPrenatal() {
                         rows={1}
                         tipo="auf_urgencia"
                       />
+                    </div>
+
+                    {/* Pressão Arterial (dentro do card de urgência) */}
+                    <div>
+                      <Label className="text-sm font-medium">Pressão Arterial</Label>
+                      <Input
+                        type="text"
+                        value={formData.pressaoArterial}
+                        onChange={(e) => setFormData({ ...formData, pressaoArterial: e.target.value })}
+                        placeholder="Ex: 120/80 ou 120x80"
+                        className={isBPAbnormal(formData.pressaoArterial) ? 'border-red-500 bg-red-50 text-red-900 font-bold dark:bg-red-950/30 dark:text-red-300 dark:border-red-700' : ''}
+                      />
+                      {isBPAbnormal(formData.pressaoArterial) && (
+                        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                          <AlertTriangle className="h-3 w-3" />
+                          PA elevada (≥130/90 mmHg)
+                        </p>
+                      )}
                     </div>
 
                     {/* Toque Vaginal */}
