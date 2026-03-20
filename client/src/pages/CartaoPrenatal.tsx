@@ -201,8 +201,8 @@ export default function CartaoPrenatal() {
     "Trabalho de Parto (>5DU/Montevidéu)",
   ];
 
-  // Condutas de urgência (checkboxes)
-  const CONDUTAS_URGENCIA = [
+  // Mapeamento legado de condutas de urgência (para compatibilidade retroativa com consultas antigas)
+  const CONDUTAS_URGENCIA_LEGADO = [
     { key: "orientacoes", label: "Orientações" },
     { key: "exames_laboratoriais", label: "Exames Laboratoriais" },
     { key: "progesterona_micronizada", label: "Progesterona Micronizada" },
@@ -215,27 +215,38 @@ export default function CartaoPrenatal() {
     { key: "outra_conduta", label: "Outra Conduta" },
   ];
 
+  // Lista unificada de condutas (comuns + urgência), em ordem alfabética, sem duplicatas
+  // Usada tanto em consultas normais quanto em consultas de urgência
   const OPCOES_CONDUTA = [
+    "AAS",
+    "Acompanhamento Rotina",
+    "Agendamento Cesárea",
+    "Aguardo Exames Laboratoriais",
+    "Analgésicos",
+    "Antibioticoterapia",
+    "Colhido Cultura para EGB",
+    "Ecocardiograma Fetal",
+    "Exames Laboratoriais",
+    "Ferro Venoso",
+    "Indicação Cesárea",
+    "Indicação Curetagem",
+    "Indico Curetagem Uterina",
+    "Internação Hospitalar",
+    "Levotiroxina",
+    "Orientações",
+    "Outros Exames Laboratoriais Específicos",
+    "Outra Conduta",
+    "Progesterona Micronizada",
     "Rotina Laboratorial 1º Trimestre",
     "Rotina Laboratorial 2º Trimestre",
     "Rotina Laboratorial 3º Trimestre",
-    "Outros Exames Laboratoriais Específicos",
-    "US Obstétrico Endovaginal",
+    "US de Fígado e Vias Biliares",
+    "US de Rins e Vias Urinárias",
     "US Morfológico 1º Trimestre",
     "US Morfológico 2º Trimestre",
     "US Obstétrico com Doppler",
-    "Ecocardiograma Fetal",
-    "Colhido Cultura para EGB",
-    "Antibioticoterapia",
-    "Progesterona Micronizada",
+    "US Obstétrico Endovaginal",
     "Vacinas (Prescrevo ou Oriento)",
-    "Levotiroxina",
-    "AAS",
-    "Agendamento Cesárea",
-    "Indico Curetagem Uterina",
-    "Acompanhamento Rotina",
-    "Ferro Venoso",
-    "Aguardo Exames Laboratoriais",
   ];
 
   const [formData, setFormData] = useState({
@@ -1803,11 +1814,11 @@ export default function CartaoPrenatal() {
       if (formData.hipoteseDiagnostica) {
         linhas.push(`Hipótese Diagnóstica: ${formData.hipoteseDiagnostica}`);
       }
-      // Condutas de urgência
+      // Condutas de urgência (legado: condutaUrgencia obj)
       const condutasUrg = Object.entries(formData.condutaUrgencia)
         .filter(([_, v]) => v)
         .map(([k]) => {
-          const found = CONDUTAS_URGENCIA.find(c => c.key === k);
+          const found = CONDUTAS_URGENCIA_LEGADO.find((c) => c.key === k);
           return found ? found.label : k;
         });
       if (condutasUrg.length > 0) {
@@ -1944,7 +1955,7 @@ export default function CartaoPrenatal() {
           const condutasUrg = Object.entries(cu)
             .filter(([_, v]) => v)
             .map(([k]) => {
-              const found = CONDUTAS_URGENCIA.find(c => c.key === k);
+              const found = CONDUTAS_URGENCIA_LEGADO.find((conduta) => conduta.key === k);
               return found ? found.label : k;
             });
           if (condutasUrg.length > 0) linhas.push(`Condutas de Urgência: ${condutasUrg.join(", ")}`);
@@ -2074,7 +2085,7 @@ export default function CartaoPrenatal() {
       }
     }
     
-    // Parse conduta de urgência
+    // Parse conduta de urgência (legado) e migrar para conduta[]
     let condutaUrgenciaObj: Record<string, boolean> = {};
     if (isConsultaUrgencia && consulta.condutaUrgencia) {
       try {
@@ -2086,6 +2097,19 @@ export default function CartaoPrenatal() {
       }
     }
     
+    // Migrar condutas de urgência legadas para o novo formato unificado (conduta[])
+    // Isso garante compatibilidade retroativa ao editar consultas antigas
+    const condutasLegadoMigradas = Object.entries(condutaUrgenciaObj)
+      .filter(([_, v]) => v)
+      .map(([k]) => {
+        const found = CONDUTAS_URGENCIA_LEGADO.find((c) => c.key === k);
+        return found ? found.label : null;
+      })
+      .filter((label): label is string => label !== null);
+    
+    // Unir condutas existentes com as migradas (sem duplicatas)
+    const condutaUnificada = Array.from(new Set([...condutaArray, ...condutasLegadoMigradas]));
+    
     setFormData({
       dataConsulta: new Date(consulta.dataConsulta).toISOString().split('T')[0],
       peso: consulta.peso ? String(consulta.peso / 1000) : "",
@@ -2096,7 +2120,7 @@ export default function CartaoPrenatal() {
       bcf: consulta.bcf ? String(consulta.bcf) : "",
       mf: consulta.mf ? String(consulta.mf) : "",
       edema: (consulta as any).edema || "",
-      conduta: condutaArray,
+      conduta: condutaUnificada,
       condutaComplementacao: consulta.condutaComplementacao || "",
       observacoes: consulta.observacoes || "",
       queixas: consulta.queixas || "",
@@ -2816,112 +2840,6 @@ export default function CartaoPrenatal() {
                   </div>
                 )}
 
-                {/* Seção de Conduta com Checkboxes */}
-                <div className="border rounded-lg p-4 bg-muted/30">
-                  <div className="flex items-center justify-between mb-3">
-                    <Label className="text-base font-semibold">Conduta:</Label>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setMostrarAddConduta(!mostrarAddConduta)}
-                      className="text-xs"
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      Adicionar Conduta
-                    </Button>
-                  </div>
-
-                  {/* Formulário para adicionar nova conduta */}
-                  {mostrarAddConduta && (
-                    <div className="mb-4 p-3 bg-background rounded-lg border flex gap-2">
-                      <Input
-                        value={novaConduta}
-                        onChange={(e) => setNovaConduta(e.target.value)}
-                        placeholder="Nome da nova conduta..."
-                        className="flex-1"
-                      />
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() => {
-                          if (novaConduta.trim()) {
-                            createCondutaMutation.mutate({ nome: novaConduta.trim() });
-                          }
-                        }}
-                        disabled={!novaConduta.trim() || createCondutaMutation.isPending}
-                      >
-                        Salvar
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setNovaConduta("");
-                          setMostrarAddConduta(false);
-                        }}
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {/* Condutas predefinidas */}
-                    {OPCOES_CONDUTA.map((opcao) => (
-                      <label
-                        key={opcao}
-                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={formData.conduta.includes(opcao)}
-                          onChange={() => toggleConduta(opcao)}
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                        />
-                        <span className="text-sm text-muted-foreground">{opcao}</span>
-                      </label>
-                    ))}
-
-                    {/* Condutas personalizadas */}
-                    {condutasPersonalizadas && condutasPersonalizadas.length > 0 && (
-                      <>
-                        <div className="col-span-full border-t my-2 pt-2">
-                          <span className="text-xs text-muted-foreground font-medium">Condutas Personalizadas:</span>
-                        </div>
-                        {condutasPersonalizadas.map((conduta) => (
-                          <label
-                            key={`custom-${conduta.id}`}
-                            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors group"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={formData.conduta.includes(conduta.nome)}
-                              onChange={() => toggleConduta(conduta.nome)}
-                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                            />
-                            <span className="text-sm text-muted-foreground flex-1">{conduta.nome}</span>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                if (confirm(`Remover conduta "${conduta.nome}"?`)) {
-                                  deleteCondutaMutation.mutate({ id: conduta.id });
-                                }
-                              }}
-                              className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive/80 transition-opacity"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          </label>
-                        ))}
-                      </>
-                    )}
-                  </div>
-                </div>
-
                 {/* Campos extras de Urgência */}
                 {isUrgencia && (
                   <div className="border-2 border-red-200 rounded-lg p-4 bg-red-50/30 dark:bg-red-950/10 space-y-4">
@@ -3006,48 +2924,128 @@ export default function CartaoPrenatal() {
                       />
                     </div>
 
-                    {/* Condutas de Urgência */}
-                    <div>
-                      <Label className="text-sm font-medium">Condutas de Urgência</Label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-1">
-                        {CONDUTAS_URGENCIA.map((conduta) => (
+                  </div>
+                )}
+
+                {/* Seção de Conduta com Checkboxes (unificada) */}
+                <div className="border rounded-lg p-4 bg-muted/30">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label className="text-base font-semibold">Conduta:</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setMostrarAddConduta(!mostrarAddConduta)}
+                      className="text-xs"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Adicionar Conduta
+                    </Button>
+                  </div>
+
+                  {/* Formulário para adicionar nova conduta */}
+                  {mostrarAddConduta && (
+                    <div className="mb-4 p-3 bg-background rounded-lg border flex gap-2">
+                      <Input
+                        value={novaConduta}
+                        onChange={(e) => setNovaConduta(e.target.value)}
+                        placeholder="Nome da nova conduta..."
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          if (novaConduta.trim()) {
+                            createCondutaMutation.mutate({ nome: novaConduta.trim() });
+                          }
+                        }}
+                        disabled={!novaConduta.trim() || createCondutaMutation.isPending}
+                      >
+                        Salvar
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setNovaConduta("");
+                          setMostrarAddConduta(false);
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {/* Condutas predefinidas (lista unificada e alfabética) */}
+                    {OPCOES_CONDUTA.map((opcao) => (
+                      <label
+                        key={opcao}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.conduta.includes(opcao)}
+                          onChange={() => toggleConduta(opcao)}
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-muted-foreground">{opcao}</span>
+                      </label>
+                    ))}
+
+                    {/* Condutas personalizadas */}
+                    {condutasPersonalizadas && condutasPersonalizadas.length > 0 && (
+                      <>
+                        <div className="col-span-full border-t my-2 pt-2">
+                          <span className="text-xs text-muted-foreground font-medium">Condutas Personalizadas:</span>
+                        </div>
+                        {condutasPersonalizadas.map((conduta) => (
                           <label
-                            key={conduta.key}
-                            className="flex items-center gap-2 cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/30 p-2 rounded transition-colors"
+                            key={`custom-${conduta.id}`}
+                            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors group"
                           >
                             <input
                               type="checkbox"
-                              checked={!!formData.condutaUrgencia[conduta.key]}
-                              onChange={() => {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  condutaUrgencia: {
-                                    ...prev.condutaUrgencia,
-                                    [conduta.key]: !prev.condutaUrgencia[conduta.key]
-                                  }
-                                }));
-                              }}
-                              className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                              checked={formData.conduta.includes(conduta.nome)}
+                              onChange={() => toggleConduta(conduta.nome)}
+                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                             />
-                            <span className="text-sm">{conduta.label}</span>
+                            <span className="text-sm text-muted-foreground flex-1">{conduta.nome}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (confirm(`Remover conduta "${conduta.nome}"?`)) {
+                                  deleteCondutaMutation.mutate({ id: conduta.id });
+                                }
+                              }}
+                              className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive/80 transition-opacity"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
                           </label>
                         ))}
-                      </div>
-                      {formData.condutaUrgencia['outra_conduta'] && (
-                        <div className="mt-2">
-                          <Label className="text-sm">Descrição da Outra Conduta</Label>
-                          <TextareaComAutocomplete
-                            value={formData.outraCondutaDescricao}
-                            onChange={(outraCondutaDescricao) => setFormData({ ...formData, outraCondutaDescricao })}
-                            placeholder="Descreva a outra conduta..."
-                            rows={2}
-                            tipo="outra_conduta_urgencia"
-                          />
-                        </div>
-                      )}
-                    </div>
+                      </>
+                    )}
                   </div>
-                )}
+
+                  {/* Campo de descrição para "Outra Conduta" quando marcado */}
+                  {formData.conduta.includes("Outra Conduta") && (
+                    <div className="mt-3 pt-3 border-t">
+                      <Label className="text-sm">Descrição da Outra Conduta</Label>
+                      <TextareaComAutocomplete
+                        value={formData.outraCondutaDescricao}
+                        onChange={(outraCondutaDescricao) => setFormData({ ...formData, outraCondutaDescricao })}
+                        placeholder="Descreva a outra conduta..."
+                        rows={2}
+                        tipo="outra_conduta_urgencia"
+                      />
+                    </div>
+                  )}
+                </div>
 
                 {/* Conduta Complementação */}
                 <div>
