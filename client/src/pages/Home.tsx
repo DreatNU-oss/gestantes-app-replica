@@ -806,7 +806,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm opacity-70">
-                <li><a href="/politicadeprivacidade" className="hover:opacity-100 transition-opacity">Política de Privacidade</a></li>
+                <li><a href="/privacidade" className="hover:opacity-100 transition-opacity">Política de Privacidade</a></li>
                 <li>Termos de Uso</li>
                 <li>LGPD</li>
               </ul>
