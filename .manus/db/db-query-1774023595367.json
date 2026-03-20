@@ -1,0 +1,15 @@
+{
+  "query": "\nSELECT \n  (SELECT COUNT(*) FROM gestantes) AS total_gestantes,\n  (SELECT COUNT(*) FROM partosRealizados) AS total_partos,\n  (SELECT COUNT(DISTINCT gestanteId) FROM partosRealizados) AS gestantes_com_parto;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT \n  (SELECT COUNT(*) FROM gestantes) AS total_gestantes,\n  (SELECT COUNT(*) FROM partosRealizados) AS total_partos,\n  (SELECT COUNT(DISTINCT gestanteId) FROM partosRealizados) AS gestantes_com_parto;\n",
+  "rows": [
+    {
+      "total_gestantes": "156",
+      "total_partos": "46",
+      "gestantes_com_parto": "46"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_gestantes\ttotal_partos\tgestantes_com_parto\n156\t46\t46\n",
+  "stderr": "",
+  "execution_time_ms": 396
+}

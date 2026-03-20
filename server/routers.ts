@@ -4251,6 +4251,12 @@ export const appRouter = router({
         // Buscar dados das gestantes correspondentes
         const gestanteIds = sessoes.map(s => Number(s.gestanteId));
         
+        // IDs de gestantes que já tiveram parto (devem ser excluídas)
+        const comPartoRows = await db
+          .selectDistinct({ gestanteId: partosRealizados.gestanteId })
+          .from(partosRealizados);
+        const idsComParto = comPartoRows.map(r => Number(r.gestanteId));
+        
         const gestantesData = await db
           .select({
             id: gestantes.id,
@@ -4262,8 +4268,19 @@ export const appRouter = router({
           .from(gestantes)
           .where(
             clinicaId
-              ? and(eq(gestantes.clinicaId, clinicaId), sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`)
-              : sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`
+              ? and(
+                  eq(gestantes.clinicaId, clinicaId),
+                  sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`,
+                  idsComParto.length > 0
+                    ? sql`${gestantes.id} NOT IN (${sql.join(idsComParto.map(id => sql`${id}`), sql`, `)})`
+                    : sql`1=1`
+                )
+              : and(
+                  sql`${gestantes.id} IN (${sql.join(gestanteIds.map(id => sql`${id}`), sql`, `)})`,
+                  idsComParto.length > 0
+                    ? sql`${gestantes.id} NOT IN (${sql.join(idsComParto.map(id => sql`${id}`), sql`, `)})`
+                    : sql`1=1`
+                )
           );
         
         // Combinar dados de sessão com dados da gestante
@@ -4310,6 +4327,15 @@ export const appRouter = router({
         
         const idsComSessao = comSessao.map(s => Number(s.gestanteId));
         
+        // IDs de gestantes que já tiveram parto (devem ser excluídas)
+        const comPartoRows2 = await db
+          .selectDistinct({ gestanteId: partosRealizados.gestanteId })
+          .from(partosRealizados);
+        const idsComParto2 = comPartoRows2.map(r => Number(r.gestanteId));
+        
+        // Combinar IDs a excluir: com sessão + com parto
+        const idsExcluir = Array.from(new Set([...idsComSessao, ...idsComParto2]));
+        
         // Buscar gestantes ativas da clínica que NÃO estão nessa lista
         const resultado = await db
           .select({
@@ -4323,12 +4349,12 @@ export const appRouter = router({
             clinicaId
               ? and(
                   eq(gestantes.clinicaId, clinicaId),
-                  idsComSessao.length > 0
-                    ? sql`${gestantes.id} NOT IN (${sql.join(idsComSessao.map(id => sql`${id}`), sql`, `)})`
+                  idsExcluir.length > 0
+                    ? sql`${gestantes.id} NOT IN (${sql.join(idsExcluir.map(id => sql`${id}`), sql`, `)})`
                     : sql`1=1`
                 )
-              : idsComSessao.length > 0
-                ? sql`${gestantes.id} NOT IN (${sql.join(idsComSessao.map(id => sql`${id}`), sql`, `)})`
+              : idsExcluir.length > 0
+                ? sql`${gestantes.id} NOT IN (${sql.join(idsExcluir.map(id => sql`${id}`), sql`, `)})`
                 : undefined
           )
           .orderBy(sql`${gestantes.nome} ASC`);

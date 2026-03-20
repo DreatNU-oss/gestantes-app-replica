@@ -1,0 +1,90 @@
+{
+  "query": "\nSELECT COLUMN_NAME, COLUMN_TYPE, COLUMN_DEFAULT \nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'gestantes' \nAND TABLE_SCHEMA = DATABASE()\nAND ORDINAL_POSITION > 20\nORDER BY ORDINAL_POSITION;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT COLUMN_NAME, COLUMN_TYPE, COLUMN_DEFAULT \nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'gestantes' \nAND TABLE_SCHEMA = DATABASE()\nAND ORDINAL_POSITION > 20\nORDER BY ORDINAL_POSITION;\n",
+  "rows": [
+    {
+      "COLUMN_NAME": "guiaExameUrl",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "documentosUrls",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "createdAt",
+      "COLUMN_TYPE": "timestamp",
+      "COLUMN_DEFAULT": "CURRENT_TIMESTAMP"
+    },
+    {
+      "COLUMN_NAME": "updatedAt",
+      "COLUMN_TYPE": "timestamp",
+      "COLUMN_DEFAULT": "CURRENT_TIMESTAMP"
+    },
+    {
+      "COLUMN_NAME": "dataPartoProgramado",
+      "COLUMN_TYPE": "varchar(10)",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "observacoes",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "altura",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "pesoInicial",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "nomeBebe",
+      "COLUMN_TYPE": "varchar(255)",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "sexoBebe",
+      "COLUMN_TYPE": "enum('masculino','feminino','nao_informado')",
+      "COLUMN_DEFAULT": "nao_informado"
+    },
+    {
+      "COLUMN_NAME": "motivoCesarea",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "motivoCesareaOutro",
+      "COLUMN_TYPE": "text",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "hospitalParto",
+      "COLUMN_TYPE": "varchar(255)",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "convenioCirurgia",
+      "COLUMN_TYPE": "varchar(255)",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "procedimentoCirurgia",
+      "COLUMN_TYPE": "varchar(255)",
+      "COLUMN_DEFAULT": "NULL"
+    },
+    {
+      "COLUMN_NAME": "clinicaId",
+      "COLUMN_TYPE": "int",
+      "COLUMN_DEFAULT": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\tCOLUMN_TYPE\tCOLUMN_DEFAULT\nguiaExameUrl\ttext\tNULL\ndocumentosUrls\ttext\tNULL\ncreatedAt\ttimestamp\tCURRENT_TIMESTAMP\nupdatedAt\ttimestamp\tCURRENT_TIMESTAMP\ndataPartoProgramado\tvarchar(10)\tNULL\nobservacoes\ttext\tNULL\naltura\tint\tNULL\npesoInicial\tint\tNULL\nnomeBebe\tvarchar(255)\tNULL\nsexoBebe\tenum('masculino','feminino','nao_informado')\tnao_informado\nmotivoCesarea\ttext\tNULL\nmotivoCesareaOutro\ttext\tNULL\nhospitalParto\tvarchar(255)\tNULL\nconvenioCirurgia\tvarchar(255)\tNULL\nprocedimentoCirurgia\tvarchar(255)\tNULL\nclinicaId\tint\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 387
+}

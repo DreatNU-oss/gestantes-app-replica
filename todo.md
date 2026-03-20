@@ -2355,3 +2355,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir duplicação de Dr./Dra./Dr(a). nas mensagens de WhatsApp automáticas e manuais quando o nome do médico já contém o pronome
 - [x] Unificar as duas seções de condutas na consulta de urgência em uma única seção sem duplicatas
 - [x] Atualizar tela "Acesso ao App" com duas listas alfabéticas: gestantes que acessaram e gestantes que ainda não acessaram o app
+- [x] Filtrar ambas as listas de "Acesso ao App" para exibir apenas gestantes ativas (excluir partos realizados, abortos e exclusões)
