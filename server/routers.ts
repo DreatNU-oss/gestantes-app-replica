@@ -4222,15 +4222,15 @@ export const appRouter = router({
         clinicaId: z.number().optional(),
         limit: z.number().min(1).max(500).default(200),
       }).optional())
-      .query(async ({ ctx }) => {
+      .query(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
         
         const { sessoesGestante } = await import('../drizzle/schema');
         const { count, max } = await import('drizzle-orm');
         
-        // Filtrar por clínica do usuário logado (exceto superadmin que vê tudo)
-        const clinicaId = ctx.user.clinicaId;
+        // Se clinicaId foi passado no input, usar esse; senão usar o da clínica do usuário logado
+        const clinicaId = input?.clinicaId ?? ctx.user.clinicaId;
         
         // Buscar gestantes com sessões, agrupadas por gestante
         let query = db
@@ -4313,12 +4313,16 @@ export const appRouter = router({
     
     // Listar gestantes que NUNCA acessaram o app mobile (sem sessão registrada)
     listarGestantesSemAcesso: protectedProcedure
-      .query(async ({ ctx }) => {
+      .input(z.object({
+        clinicaId: z.number().optional(),
+      }).optional())
+      .query(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados indisponível' });
         
         const { sessoesGestante } = await import('../drizzle/schema');
-        const clinicaId = ctx.user.clinicaId;
+        // Se clinicaId foi passado no input, usar esse; senão usar o da clínica do usuário logado
+        const clinicaId = input?.clinicaId ?? ctx.user.clinicaId;
         
         // Buscar IDs de gestantes que JÁ têm sessão
         const comSessao = await db
@@ -4369,19 +4373,28 @@ export const appRouter = router({
 
     // Resumo: total de gestantes com acesso ao app
     resumo: protectedProcedure
-      .query(async ({ ctx }) => {
+      .input(z.object({
+        clinicaId: z.number().optional(),
+      }).optional())
+      .query(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
         
         const { sessoesGestante } = await import('../drizzle/schema');
         const { countDistinct } = await import('drizzle-orm');
         
-        const clinicaId = ctx.user.clinicaId;
+        const clinicaId = input?.clinicaId ?? ctx.user.clinicaId;
         
-        // Total de gestantes únicas com sessão
+        // Subquery de gestantes ativas da clínica selecionada
+        const gestantesDaClinica = clinicaId
+          ? db.select({ id: gestantes.id }).from(gestantes).where(eq(gestantes.clinicaId, clinicaId))
+          : db.select({ id: gestantes.id }).from(gestantes);
+        
+        // Total de gestantes únicas com sessão na clínica
         const [totalResult] = await db
           .select({ total: countDistinct(sessoesGestante.gestanteId) })
-          .from(sessoesGestante);
+          .from(sessoesGestante)
+          .where(sql`${sessoesGestante.gestanteId} IN (${gestantesDaClinica})`);
         
         // Acessos nos últimos 7 dias
         const seteDiasAtras = new Date();
@@ -4390,7 +4403,10 @@ export const appRouter = router({
         const [recentes] = await db
           .select({ total: countDistinct(sessoesGestante.gestanteId) })
           .from(sessoesGestante)
-          .where(sql`${sessoesGestante.ultimoAcesso} >= ${seteDiasAtras}`);
+          .where(and(
+            sql`${sessoesGestante.gestanteId} IN (${gestantesDaClinica})`,
+            sql`${sessoesGestante.ultimoAcesso} >= ${seteDiasAtras}`
+          ));
         
         // Acessos nas últimas 24h
         const umDiaAtras = new Date();
@@ -4399,12 +4415,29 @@ export const appRouter = router({
         const [hoje] = await db
           .select({ total: countDistinct(sessoesGestante.gestanteId) })
           .from(sessoesGestante)
-          .where(sql`${sessoesGestante.ultimoAcesso} >= ${umDiaAtras}`);
+          .where(and(
+            sql`${sessoesGestante.gestanteId} IN (${gestantesDaClinica})`,
+            sql`${sessoesGestante.ultimoAcesso} >= ${umDiaAtras}`
+          ));
+        
+        // Total de gestantes ativas na clínica (sem parto)
+        const partosIds = db.select({ gestanteId: partosRealizados.gestanteId }).from(partosRealizados);
+        const [totalGestantesAtivas] = await db
+          .select({ total: countDistinct(gestantes.id) })
+          .from(gestantes)
+          .where(clinicaId
+            ? and(
+                eq(gestantes.clinicaId, clinicaId),
+                sql`${gestantes.id} NOT IN (${partosIds})`
+              )
+            : sql`${gestantes.id} NOT IN (${partosIds})`
+          );
         
         return {
           totalComAcesso: Number(totalResult?.total || 0),
           acessosUltimos7Dias: Number(recentes?.total || 0),
           acessosHoje: Number(hoje?.total || 0),
+          totalGestantesAtivas: Number(totalGestantesAtivas?.total || 0),
         };
       }),
   }),

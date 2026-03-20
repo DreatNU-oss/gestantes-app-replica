@@ -2356,3 +2356,5 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Unificar as duas seções de condutas na consulta de urgência em uma única seção sem duplicatas
 - [x] Atualizar tela "Acesso ao App" com duas listas alfabéticas: gestantes que acessaram e gestantes que ainda não acessaram o app
 - [x] Filtrar ambas as listas de "Acesso ao App" para exibir apenas gestantes ativas (excluir partos realizados, abortos e exclusões)
+- [x] Ocultar menu "Acesso ao App" para clínicas que não sejam a clínica 00001
+- [x] Adicionar seletor de clínica no topo da página "Acesso ao App" para visualizar dados por clínica

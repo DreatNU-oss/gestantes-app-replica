@@ -70,7 +70,7 @@ const allMenuItems = [
   { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: MessageSquare, label: "Mensagens de Texto", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'] },
-  { icon: Smartphone, label: "Acesso ao App", path: "/acesso-app", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: Smartphone, label: "Acesso ao App", path: "/acesso-app", roles: ['superadmin', 'admin', 'obstetra'], clinicaOnly: "00001" },
 ];
 
 const allConfigMenuItems = [
@@ -98,9 +98,13 @@ export default function GestantesLayout({
   
   const userRole = (user as any)?.role || 'obstetra';
   
-  // Filtrar menus principais baseado no role do usuário
+  // Filtrar menus principais baseado no role do usuário e na clínica
   const menuItems = allMenuItems.filter(item => {
-    return item.roles.includes(userRole);
+    if (!item.roles.includes(userRole)) return false;
+    if ('clinicaOnly' in item && item.clinicaOnly) {
+      return (user as any)?.clinicaCodigo === item.clinicaOnly;
+    }
+    return true;
   });
   
   // Filtrar itens de configuração baseado na clínica do usuário (só admin/superadmin)

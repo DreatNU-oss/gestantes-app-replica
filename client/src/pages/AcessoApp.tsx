@@ -4,7 +4,8 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, Search, Users, Clock, TrendingUp, UserX } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Smartphone, Search, Users, Clock, TrendingUp, UserX, Building2 } from "lucide-react";
 
 function formatarData(isoString: string | null): string {
   if (!isoString) return "—";
@@ -44,10 +45,16 @@ function statusAcesso(ultimoAcesso: string | null): { label: string; variant: "d
 export default function AcessoApp() {
   const [buscaComAcesso, setBuscaComAcesso] = useState("");
   const [buscaSemAcesso, setBuscaSemAcesso] = useState("");
+  const [clinicaIdSelecionada, setClinicaIdSelecionada] = useState<number | undefined>(undefined);
 
-  const { data: resumo, isLoading: loadingResumo } = trpc.appAcesso.resumo.useQuery();
-  const { data: gestantesComAcesso, isLoading: loadingComAcesso } = trpc.appAcesso.listarGestantesComAcesso.useQuery();
-  const { data: gestantesSemAcesso, isLoading: loadingSemAcesso } = trpc.appAcesso.listarGestantesSemAcesso.useQuery();
+  // Buscar lista de clínicas
+  const { data: clinicas } = trpc.adminClinicas.listar.useQuery();
+
+  const queryInput = clinicaIdSelecionada ? { clinicaId: clinicaIdSelecionada } : undefined;
+
+  const { data: resumo, isLoading: loadingResumo } = trpc.appAcesso.resumo.useQuery(queryInput);
+  const { data: gestantesComAcesso, isLoading: loadingComAcesso } = trpc.appAcesso.listarGestantesComAcesso.useQuery(queryInput);
+  const { data: gestantesSemAcesso, isLoading: loadingSemAcesso } = trpc.appAcesso.listarGestantesSemAcesso.useQuery(queryInput);
 
   // Ordenar gestantes com acesso alfabeticamente e filtrar por busca
   const comAcessoFiltradas = useMemo(() => {
@@ -76,24 +83,56 @@ export default function AcessoApp() {
     );
   }, [gestantesSemAcesso, buscaSemAcesso]);
 
+  const clinicaSelecionadaNome = clinicas?.find((c: { id: number; nome: string }) => c.id === clinicaIdSelecionada)?.nome;
+  const totalAtivas = resumo?.totalGestantesAtivas ?? 0;
+  const totalComAcesso = resumo?.totalComAcesso ?? 0;
+  const percentual = totalAtivas > 0 ? Math.round((totalComAcesso / totalAtivas) * 100) : 0;
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Smartphone className="h-6 w-6 text-primary" />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Smartphone className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Acesso ao App</h1>
+              <p className="text-sm text-muted-foreground">
+                Gestantes que fizeram download e acessaram o aplicativo mobile
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold">Acesso ao App</h1>
-            <p className="text-sm text-muted-foreground">
-              Gestantes que fizeram download e acessaram o aplicativo mobile
-            </p>
+
+          {/* Seletor de Clínica */}
+          <div className="flex items-center gap-2 min-w-[220px]">
+            <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+            <Select
+              value={clinicaIdSelecionada ? String(clinicaIdSelecionada) : "todas"}
+              onValueChange={(val) => {
+                setBuscaComAcesso("");
+                setBuscaSemAcesso("");
+                setClinicaIdSelecionada(val === "todas" ? undefined : Number(val));
+              }}
+            >
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Selecionar clínica..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas as clínicas</SelectItem>
+                {clinicas?.map((c: { id: number; nome: string }) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         {/* Resumo Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
@@ -101,10 +140,32 @@ export default function AcessoApp() {
                   <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total com acesso</p>
+                  <p className="text-xs text-muted-foreground">Total com acesso</p>
                   <p className="text-2xl font-bold">
-                    {loadingResumo ? "..." : (resumo?.totalComAcesso ?? 0)}
+                    {loadingResumo ? "..." : totalComAcesso}
                   </p>
+                  {!loadingResumo && totalAtivas > 0 && (
+                    <p className="text-xs text-muted-foreground">{percentual}% das ativas</p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-slate-100 dark:bg-slate-900/30">
+                  <UserX className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Sem acesso</p>
+                  <p className="text-2xl font-bold">
+                    {loadingResumo ? "..." : Math.max(0, totalAtivas - totalComAcesso)}
+                  </p>
+                  {!loadingResumo && totalAtivas > 0 && (
+                    <p className="text-xs text-muted-foreground">{100 - percentual}% das ativas</p>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -117,7 +178,7 @@ export default function AcessoApp() {
                   <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Últimos 7 dias</p>
+                  <p className="text-xs text-muted-foreground">Últimos 7 dias</p>
                   <p className="text-2xl font-bold">
                     {loadingResumo ? "..." : (resumo?.acessosUltimos7Dias ?? 0)}
                   </p>
@@ -133,7 +194,7 @@ export default function AcessoApp() {
                   <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Hoje</p>
+                  <p className="text-xs text-muted-foreground">Hoje</p>
                   <p className="text-2xl font-bold">
                     {loadingResumo ? "..." : (resumo?.acessosHoje ?? 0)}
                   </p>
@@ -142,6 +203,12 @@ export default function AcessoApp() {
             </CardContent>
           </Card>
         </div>
+
+        {clinicaSelecionadaNome && (
+          <p className="text-sm text-muted-foreground -mt-2">
+            Exibindo dados de: <span className="font-medium text-foreground">{clinicaSelecionadaNome}</span>
+          </p>
+        )}
 
         {/* Lista 1: Gestantes COM acesso */}
         <Card>
