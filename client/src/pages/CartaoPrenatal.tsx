@@ -1765,28 +1765,26 @@ export default function CartaoPrenatal() {
       linhas.push(`** CONSULTA DE URGÊNCIA **`);
     }
     
-    linhas.push(`Idade Gestacional: ${igTexto}`);
+    if (igTexto !== "-") linhas.push(`Idade Gestacional: ${igTexto}`);
     
     if (isUrgencia) {
       // Queixas de urgência
       const queixasTexto = formData.queixasUrgencia.length > 0 
         ? formData.queixasUrgencia.join(", ") 
-        : "-";
-      linhas.push(`Queixa(s): ${queixasTexto}`);
+        : null;
+      if (queixasTexto) linhas.push(`Queixa(s): ${queixasTexto}`);
       if (formData.detalhamentoQueixa) {
         linhas.push(`Detalhamento: ${formData.detalhamentoQueixa}`);
       }
     } else {
-      linhas.push(`Queixa(s): ${formData.queixas || "Sem queixas hoje."}`);
+      if (formData.queixas) linhas.push(`Queixa(s): ${formData.queixas}`);
     }
     
-    linhas.push(
-      `Peso: ${formData.peso ? `${formData.peso}kg` : "-"}`,
-      `AUF: ${aufTexto}`,
-      `BCF: ${bcfTexto}`,
-      `Edema: ${edemaTexto}`,
-      `Pressão Arterial: ${formData.pressaoArterial || "-"}`,
-    );
+    if (formData.peso) linhas.push(`Peso: ${formData.peso}kg`);
+    if (aufTexto !== "-") linhas.push(`AUF: ${aufTexto}`);
+    if (bcfTexto !== "-") linhas.push(`BCF: ${bcfTexto}`);
+    if (edemaTexto !== "-") linhas.push(`Edema: ${edemaTexto}`);
+    if (formData.pressaoArterial) linhas.push(`Pressão Arterial: ${formData.pressaoArterial}`);
     
     // Campos extras de urgência
     if (isUrgencia) {
@@ -1820,7 +1818,7 @@ export default function CartaoPrenatal() {
       }
     }
     
-    linhas.push(`Conduta: ${condutaTexto}`);
+    if (condutaTexto !== "-") linhas.push(`Conduta: ${condutaTexto}`);
     
     // Adicionar complementação se houver
     if (formData.condutaComplementacao) {
@@ -1901,41 +1899,32 @@ export default function CartaoPrenatal() {
       linhas.push(`** CONSULTA DE URGÊNCIA **`);
     }
     
-    linhas.push(`Idade Gestacional: ${igTexto}`);
+    if (igTexto !== "-") linhas.push(`Idade Gestacional: ${igTexto}`);
     
     if (isConsultaUrg) {
       // Queixas de urgência
-      let queixasTexto = "-";
       if (consulta.queixasUrgencia) {
         try {
           const q = typeof consulta.queixasUrgencia === 'string' ? JSON.parse(consulta.queixasUrgencia) : consulta.queixasUrgencia;
-          if (q.length > 0) queixasTexto = q.join(", ");
+          if (q.length > 0) linhas.push(`Queixa(s): ${q.join(", ")}`);
         } catch { /* ignore */ }
       }
-      linhas.push(`Queixa(s): ${queixasTexto}`);
       if (consulta.detalhamentoQueixa) {
         linhas.push(`Detalhamento: ${consulta.detalhamentoQueixa}`);
       }
     } else {
-      linhas.push(`Queixa(s): ${consulta.queixas || "Sem queixas hoje."}`);
+      if (consulta.queixas) linhas.push(`Queixa(s): ${consulta.queixas}`);
     }
     
-    linhas.push(
-      `Peso: ${pesoTexto}`,
-      `AUF: ${aufTexto}`,
-      `BCF: ${bcfTexto}`,
-      `Edema: ${(() => {
-        const edema = (consulta as any).edema;
-        if (!edema) return "-";
-        if (edema === "0") return "Ausente";
-        if (edema === "1") return "+";
-        if (edema === "2") return "++";
-        if (edema === "3") return "+++";
-        if (edema === "4") return "++++";
-        return edema;
-      })()}`,
-      `Pressão Arterial: ${paTexto}`,
-    );
+    if (pesoTexto !== "-") linhas.push(`Peso: ${pesoTexto}`);
+    if (aufTexto !== "-") linhas.push(`AUF: ${aufTexto}`);
+    if (bcfTexto !== "-") linhas.push(`BCF: ${bcfTexto}`);
+    const edemaVal = (consulta as any).edema;
+    if (edemaVal) {
+      const edemaMap: Record<string, string> = { "0": "Ausente", "1": "+", "2": "++", "3": "+++", "4": "++++" };
+      linhas.push(`Edema: ${edemaMap[edemaVal] ?? edemaVal}`);
+    }
+    if (paTexto !== "-") linhas.push(`Pressão Arterial: ${paTexto}`);
     
     // Campos extras de urgência
     if (isConsultaUrg) {
@@ -1964,7 +1953,7 @@ export default function CartaoPrenatal() {
       if (consulta.outraCondutaDescricao) linhas.push(`Outra Conduta: ${consulta.outraCondutaDescricao}`);
     }
     
-    linhas.push(`Conduta: ${condutaTexto}`);
+    if (condutaTexto !== "-") linhas.push(`Conduta: ${condutaTexto}`);
     
     // Adicionar complementação se houver
     if (consulta.condutaComplementacao) {
