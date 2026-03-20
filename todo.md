@@ -2365,3 +2365,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar banner de consentimento de cookies em conformidade com a LGPD
 - [x] Implementar lógica para desativar cookies não essenciais quando usuário escolher "Apenas essenciais"
 - [x] Restringir menu "Acesso ao App" apenas ao usuário owner (abaixo do menu Admin, mesmo estilo em negrito)
+- [x] Remover completamente o login via OAuth Manus — bloquear rota /api/oauth/callback e remover todos os pontos de entrada
