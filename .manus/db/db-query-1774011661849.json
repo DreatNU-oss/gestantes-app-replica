@@ -1,0 +1,117 @@
+{
+  "query": "SELECT id, nome, LEFT(mensagem, 300) as mensagem_preview FROM mensagemTemplates WHERE mensagem LIKE '%{medico}%' OR mensagem LIKE '%Dr%' LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, LEFT(mensagem, 300) as mensagem_preview FROM mensagemTemplates WHERE mensagem LIKE '%{medico}%' OR mensagem LIKE '%Dr%' LIMIT 20;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Lembrete: Vacina dTpa",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "2",
+      "nome": "Lembrete: Vacina Bronquiolite",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "3",
+      "nome": "Lembrete: Morfológico 1º Trimestre",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "4",
+      "nome": "Lembrete: Morfológico 2º Tri (2 semanas)",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "5",
+      "nome": "Lembrete: Morfológico 2º Tri (1 semana)",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "30001",
+      "nome": "Orientações Alimentares - 1ª Consulta",
+      "mensagem_preview": "Olá {nome}! 👋"
+    },
+    {
+      "id": "30003",
+      "nome": "Orientações Pré-operatórias Cesárea - 36 semanas",
+      "mensagem_preview": "Olá {nome}! 👋"
+    },
+    {
+      "id": "30004",
+      "nome": "Parabéns + Cuidados Pós-Operatórios Cesárea",
+      "mensagem_preview": "Olá {nome}! 👋"
+    },
+    {
+      "id": "30005",
+      "nome": "Parabéns + Cuidados Pós-Parto Normal",
+      "mensagem_preview": "Olá {nome}! 👋"
+    },
+    {
+      "id": "60001",
+      "nome": "Lembrete: Curva Glicêmica",
+      "mensagem_preview": "Olá *{nome}*! 👋"
+    },
+    {
+      "id": "90001",
+      "nome": "Troca de Medicamento - Ácido Fólico para Polivitamínico",
+      "mensagem_preview": "Olá, {nome}! 👋"
+    }
+  ],
+  "messages": [
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).",
+    "Esta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.",
+    "💉 *Procure uma clínica de vacinação para age",
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *{ig_semanas} semanas de gestação* e está no período ideal para tomar a *vacina contra bronquiolite* (VSR - Vírus Sincicial Respiratório).",
+    "Esta vacina protege seu bebê contra infecções respiratórias graves nos primeiros meses de vida.",
+    "📅 *Pe",
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *{ig_semanas} semanas de gestação* e está próximo do período ideal para realizar o *ultrassom morfológico do 1º trimestre*.",
+    "📅 *Período recomendado:* entre 11 e 14 semanas de gestação.",
+    "Este exame é importante para:",
+    "• Avaliar a anatomia fetal",
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.",
+    "📅 *Período recomendado:* entre 20 e 24 semanas de gestação.",
+    "Este é um dos exames mais importantes da gestação para:",
+    "• A",
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *{ig_semanas} semanas de gestação* e falta *1 semana* para o período ideal do *ultrassom morfológico do 2º trimestre*.",
+    "📅 *Período recomendado:* entre 20 e 24 semanas de gestação.",
+    "Este é um dos exames mais importantes da gestação para:",
+    "• Ava",
+    "Aqui é o Dr(a). {medico}.",
+    "Seja bem-vinda ao acompanhamento pré-natal! Segue em anexo o Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.",
+    "Qualquer dúvida, entre em contato comigo.",
+    "Um abraço! 🤰",
+    "Dr(a). {medico}",
+    "Aqui é o Dr(a). {medico}.",
+    "Sua cesariana já está chegando! Segue em anexo orientações para sua internação.",
+    "Leia com atenção e qualquer dúvida, entre em contato comigo.",
+    "Um abraço! 🤰",
+    "Dr(a). {medico}",
+    "Aqui é o Dr(a). {medico}.",
+    "Parabéns pelo nascimento do seu bebê! 🎉👶",
+    "Desejo muita saúde e felicidade para vocês!",
+    "Segue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, entre em contato comigo.",
+    "Um abraço! 🤰",
+    "Dr(a). {medico}",
+    "Aqui é o Dr(a). {medico}.",
+    "Parabéns pelo nascimento do seu bebê! 🎉👶",
+    "Desejo muita saúde e felicidade para vocês!",
+    "Segue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, entre em contato comigo.",
+    "Um abraço! 🤰",
+    "Dr(a). {medico}",
+    "Aqui é o Dr(a). {medico}.",
+    "Você está com *{ig_semanas} semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).",
+    "Este exame é muito importante para detectar o *diabetes gestacional*, que pode trazer complicações ",
+    "Aqui é o Dr(a). {medico}.",
+    "Estou entrando em contato para orientá-la sobre uma troca importante na sua suplementação.",
+    "Até agora, você vinha tomando *ácido fólico/metilfolato* (como Regenesis Pré ou Ofolato D). A partir de agora, é hora de trocar por um *polivitamínico mais completo*"
+  ],
+  "stdout": "id\tnome\tmensagem_preview\n1\tLembrete: Vacina dTpa\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *27 semanas de gestação* e chegou o momento de tomar a *vacina dTpa* (tríplice bacteriana acelular).\n\nEsta vacina é importante para proteger você e seu bebê contra *difteria, tétano e coqueluche*.\n\n💉 *Procure uma clínica de vacinação para age\n2\tLembrete: Vacina Bronquiolite\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *{ig_semanas} semanas de gestação* e está no período ideal para tomar a *vacina contra bronquiolite* (VSR - Vírus Sincicial Respiratório).\n\nEsta vacina protege seu bebê contra infecções respiratórias graves nos primeiros meses de vida.\n\n📅 *Pe\n3\tLembrete: Morfológico 1º Trimestre\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *{ig_semanas} semanas de gestação* e está próximo do período ideal para realizar o *ultrassom morfológico do 1º trimestre*.\n\n📅 *Período recomendado:* entre 11 e 14 semanas de gestação.\n\nEste exame é importante para:\n• Avaliar a anatomia fetal\n4\tLembrete: Morfológico 2º Tri (2 semanas)\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *{ig_semanas} semanas de gestação* e faltam *2 semanas* para o período ideal do *ultrassom morfológico do 2º trimestre*.\n\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\n\nEste é um dos exames mais importantes da gestação para:\n• A\n5\tLembrete: Morfológico 2º Tri (1 semana)\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *{ig_semanas} semanas de gestação* e falta *1 semana* para o período ideal do *ultrassom morfológico do 2º trimestre*.\n\n📅 *Período recomendado:* entre 20 e 24 semanas de gestação.\n\nEste é um dos exames mais importantes da gestação para:\n• Ava\n30001\tOrientações Alimentares - 1ª Consulta\tOlá {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nSeja bem-vinda ao acompanhamento pré-natal! Segue em anexo o Guia de Alimentação para uma Gestação Saudável, com dicas de nutrição e um cardápio semanal balanceado.\n\nQualquer dúvida, entre em contato comigo.\n\nUm abraço! 🤰\nDr(a). {medico}\n30003\tOrientações Pré-operatórias Cesárea - 36 semanas\tOlá {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nSua cesariana já está chegando! Segue em anexo orientações para sua internação.\n\nLeia com atenção e qualquer dúvida, entre em contato comigo.\n\nUm abraço! 🤰\nDr(a). {medico}\n30004\tParabéns + Cuidados Pós-Operatórios Cesárea\tOlá {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nParabéns pelo nascimento do seu bebê! 🎉👶\n\nDesejo muita saúde e felicidade para vocês!\n\nSegue em anexo as orientações de cuidados pós-operatórios da sua cesárea. Leia com atenção e qualquer dúvida, entre em contato comigo.\n\nUm abraço! 🤰\nDr(a). {medico}\n30005\tParabéns + Cuidados Pós-Parto Normal\tOlá {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nParabéns pelo nascimento do seu bebê! 🎉👶\n\nDesejo muita saúde e felicidade para vocês!\n\nSegue em anexo as orientações de cuidados pós-parto. Leia com atenção e qualquer dúvida, entre em contato comigo.\n\nUm abraço! 🤰\nDr(a). {medico}\n60001\tLembrete: Curva Glicêmica\tOlá *{nome}*! 👋\n\nAqui é o Dr(a). {medico}.\n\nVocê está com *{ig_semanas} semanas de gestação* e está no período ideal para realizar o exame de *Curva Glicêmica* (Teste de Tolerância à Glicose - TOTG).\n\nEste exame é muito importante para detectar o *diabetes gestacional*, que pode trazer complicações \n90001\tTroca de Medicamento - Ácido Fólico para Polivitamínico\tOlá, {nome}! 👋\n\nAqui é o Dr(a). {medico}.\n\nEstou entrando em contato para orientá-la sobre uma troca importante na sua suplementação.\n\nAté agora, você vinha tomando *ácido fólico/metilfolato* (como Regenesis Pré ou Ofolato D). A partir de agora, é hora de trocar por um *polivitamínico mais completo*\n",
+  "stderr": "",
+  "execution_time_ms": 369
+}

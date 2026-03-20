@@ -222,18 +222,35 @@ export function extrairPrimeiroNome(nomeCompleto: string): string {
 }
 
 /**
+ * Remove o prefixo de título médico (Dr., Dra., Dr(a).) do nome do médico
+ * para evitar duplicação quando o template já contém o prefixo.
+ * Ex: "Dr. André" → "André", "Dra. Maria" → "Maria"
+ */
+export function removerPrefixoMedico(nome: string): string {
+  if (!nome) return nome;
+  // Remove prefixos: Dr., Dra., Dr(a)., Dr(a) (com ou sem ponto, com ou sem espaço)
+  return nome.replace(/^Dr\(a\)\.?\s*/i, '')
+             .replace(/^Dra?\.\s*/i, '')
+             .trim();
+}
+
+/**
  * Substitui variáveis no template de mensagem com dados da gestante.
  * Variáveis suportadas: {nome} (primeiro nome), {nome_completo}, {ig_semanas}, {ig_dias}, {dpp}, {medico}, {telefone_medico}
+ * Nota: {medico} é substituído pelo nome sem prefixo (Dr./Dra.) para evitar duplicação
+ * quando o template já contém "Dr(a)." antes da variável.
  */
 export function replaceTemplateVariables(template: string, context: GestanteContext): string {
   let msg = template;
   const primeiroNome = extrairPrimeiroNome(context.nome || '');
+  // Remove prefixo do nome do médico para evitar duplicação com o template
+  const nomeMedicoSemPrefixo = removerPrefixoMedico(context.medico || '');
   msg = msg.replace(/\{nome\}/g, primeiroNome);
   msg = msg.replace(/\{nome_completo\}/g, context.nome || '');
   msg = msg.replace(/\{ig_semanas\}/g, String(context.igSemanas ?? ''));
   msg = msg.replace(/\{ig_dias\}/g, String(context.igDias ?? ''));
   msg = msg.replace(/\{dpp\}/g, context.dpp || '');
-  msg = msg.replace(/\{medico\}/g, context.medico || '');
+  msg = msg.replace(/\{medico\}/g, nomeMedicoSemPrefixo);
   msg = msg.replace(/\{telefone_medico\}/g, context.telefoneMedico || '');
   return msg;
 }
