@@ -51,6 +51,7 @@ function Router() {
       <Route path={"/esqueci-senha"} component={EsqueciSenha} />
       <Route path={"/redefinir-senha"} component={RedefinirSenha} />
       <Route path={"/politicadeprivacidade"} component={PoliticaPrivacidade} />
+      <Route path={"/privacidade"} component={PoliticaPrivacidade} />
 
       {/* Rotas acessíveis a todos os roles autenticados */}
       <Route path={"/pre-cadastro"}>

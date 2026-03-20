@@ -195,10 +195,10 @@ export default function PoliticaPrivacidade() {
 
               <h2 style={sectionTitleStyle}>10. Contato</h2>
               <div style={contactBoxStyle}>
-                <p style={{ marginBottom: '8px' }}><strong>Clínica Mais Mulher</strong></p>
+                <p style={{ marginBottom: '8px' }}><strong>Clínica Médica Schlemper LTDA</strong></p>
+                <p style={{ marginBottom: '8px' }}><strong>Responsável:</strong> Dr. André Luis Schlemper</p>
                 <p style={{ marginBottom: '8px' }}><strong>Site:</strong> <a href="https://gestantesapp.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>https://gestantesapp.com</a></p>
-                <p style={{ marginBottom: '8px' }}><strong>E-mail de Privacidade:</strong> privacidade@gestantesapp.com</p>
-                <p style={{ marginBottom: '8px' }}><strong>E-mail de Suporte:</strong> suporte@gestantesapp.com</p>
+                <p style={{ marginBottom: '8px' }}><strong>E-mail:</strong> <a href="mailto:dreatnu@yahoo.com" style={linkStyle}>dreatnu@yahoo.com</a></p>
                 <p style={{ marginBottom: '8px' }}><strong>Telefone:</strong> (47) 3025-1500</p>
                 <p style={{ marginBottom: '8px' }}><strong>Endereço:</strong> Rua Dona Francisca, 8300 - Zona Industrial Norte, Joinville - SC, 89219-600, Brasil</p>
               </div>
@@ -339,10 +339,10 @@ export default function PoliticaPrivacidade() {
 
               <h2 style={sectionTitleStyle}>10. Contact</h2>
               <div style={contactBoxStyle}>
-                <p style={{ marginBottom: '8px' }}><strong>Clínica Mais Mulher</strong></p>
+                <p style={{ marginBottom: '8px' }}><strong>Clínica Médica Schlemper LTDA</strong></p>
+                <p style={{ marginBottom: '8px' }}><strong>Responsible:</strong> Dr. André Luis Schlemper</p>
                 <p style={{ marginBottom: '8px' }}><strong>Website:</strong> <a href="https://gestantesapp.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>https://gestantesapp.com</a></p>
-                <p style={{ marginBottom: '8px' }}><strong>Privacy Email:</strong> privacidade@gestantesapp.com</p>
-                <p style={{ marginBottom: '8px' }}><strong>Support Email:</strong> suporte@gestantesapp.com</p>
+                <p style={{ marginBottom: '8px' }}><strong>Email:</strong> <a href="mailto:dreatnu@yahoo.com" style={linkStyle}>dreatnu@yahoo.com</a></p>
                 <p style={{ marginBottom: '8px' }}><strong>Phone:</strong> +55 (47) 3025-1500</p>
                 <p style={{ marginBottom: '8px' }}><strong>Address:</strong> Rua Dona Francisca, 8300 - Zona Industrial Norte, Joinville - SC, 89219-600, Brazil</p>
               </div>
