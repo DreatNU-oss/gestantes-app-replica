@@ -439,30 +439,94 @@ export default function GestantesLayout({
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="flex-1">
-          <header className={`sticky top-0 z-10 flex items-center gap-4 border-b bg-background px-6 ${gestanteAtiva ? 'h-auto py-2' : 'h-16'}`}>
+          {/* Barra 1: Título + Nome/IG da gestante */}
+          <header className="sticky top-0 z-20 flex items-center gap-4 border-b bg-background px-6 h-14">
             <SidebarTrigger />
             <div className="flex flex-col justify-center">
               <h1 className="text-lg font-semibold text-foreground leading-tight">
                 Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
               </h1>
-              {gestanteAtiva && (() => {
-                const ig = gestanteAtivaCompleta?.calculado
-                  ? (gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM)
-                  : null;
-                return (
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <Users className="h-4 w-4 text-rose-500" />
-                    <span className="text-lg font-bold text-rose-600 leading-tight">{gestanteAtiva.nome}</span>
-                    {ig && (
-                      <span className="text-lg font-bold text-emerald-600 leading-tight">
-                        &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
-                      </span>
-                    )}
-                  </div>
-                );
-              })()}
             </div>
+            {gestanteAtiva && (() => {
+              const ig = gestanteAtivaCompleta?.calculado
+                ? (gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM)
+                : null;
+              return (
+                <div className="flex items-center gap-2 ml-4">
+                  <Users className="h-4 w-4 text-rose-500" />
+                  <span className="text-lg font-bold text-rose-600 leading-tight">{gestanteAtiva.nome}</span>
+                  {ig && (
+                    <span className="text-lg font-bold text-emerald-600 leading-tight">
+                      &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
           </header>
+
+          {/* Barra 2: Botões de ação rápida (só aparece quando há gestante selecionada) */}
+          {gestanteAtiva && userRole !== 'secretaria' && (
+            <div className="sticky top-14 z-19 flex items-center gap-2 border-b bg-muted/40 px-6 py-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs bg-background"
+                onClick={() => setLocation('/cartao-prenatal')}
+                title="Ver Cartão de Pré-natal"
+              >
+                <Eye className="h-3 w-3 mr-1" />
+                Cartão
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs bg-background"
+                title="Nova Consulta"
+                onClick={() => {
+                  const g = gestanteAtivaCompleta || gestanteAtiva;
+                  setGestanteParaConsulta({
+                    id: gestanteAtiva.id,
+                    nome: gestanteAtiva.nome,
+                    dum: (g as any).dum || undefined,
+                    tipoDum: (g as any).tipoDum || undefined,
+                    dataUltrassom: (g as any).dataUltrassom || undefined,
+                    igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
+                    igUltrassomDias: (g as any).igUltrassomDias || undefined,
+                    gesta: (g as any).gesta || undefined,
+                    para: (g as any).para || undefined,
+                    partosNormais: (g as any).partosNormais || undefined,
+                    cesareas: (g as any).cesareas || undefined,
+                    abortos: (g as any).abortos || undefined,
+                  });
+                  setShowConsultaDialog(true);
+                }}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Consulta
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs bg-background"
+                onClick={() => setLocation('/exames')}
+                title="Exames Laboratoriais"
+              >
+                <TestTube className="h-3 w-3 mr-1" />
+                Exames
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs bg-background"
+                onClick={() => setLocation('/ultrassons')}
+                title="Ultrassons"
+              >
+                <Scan className="h-3 w-3 mr-1" />
+                Ultrassons
+              </Button>
+            </div>
+          )}
           <main className="flex-1 p-6" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
             {children}
           </main>
