@@ -2404,3 +2404,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Correções CartaoPrenatal (21/03/2026)
 - [x] Corrigir ícone de smartphone no CartaoPrenatal (baixouApp agora vem via gestantes.get com JOIN em sessoesGestante)
 - [x] Botão "Consulta" no CartaoPrenatal agora abre ConsultaUnificadaDialog (mesma janela do Dashboard)
+
+## Bug Fix App Mobile - alturaUterina (21/03/2026)
+- [x] Corrigir bug no app mobile: converter alturaUterina de mm para cm (÷10) na rota gestante.consultas do tRPC (linhas 2580 e 2807 em routers.ts)
