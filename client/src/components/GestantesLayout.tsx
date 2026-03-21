@@ -448,6 +448,15 @@ export default function GestantesLayout({
               <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="h-4 w-4" />
                 <span className="font-medium text-foreground">{gestanteAtiva.nome}</span>
+                {gestanteAtivaCompleta?.calculado && (() => {
+                  const ig = gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM;
+                  if (!ig) return null;
+                  return (
+                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
+                      IG: {ig.semanas}s {ig.dias}d
+                    </span>
+                  );
+                })()}
               </div>
             )}
           </header>

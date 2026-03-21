@@ -2424,3 +2424,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir nome da paciente selecionada no header dos Exames Laboratoriais
 - [x] Exibir nome da paciente selecionada no header dos Ultrassons
 - [x] Exibir nome da paciente selecionada no header dos Marcos Importantes
+
+## IG Atual no Header (21/03/2026)
+- [x] Adicionar idade gestacional atual ao lado do nome da gestante no header do GestantesLayout
