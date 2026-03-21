@@ -439,26 +439,29 @@ export default function GestantesLayout({
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+          <header className={`sticky top-0 z-10 flex items-center gap-4 border-b bg-background px-6 ${gestanteAtiva ? 'h-auto py-2' : 'h-16'}`}>
             <SidebarTrigger />
-            <h1 className="text-lg font-semibold text-foreground">
-              Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
-            </h1>
-            {gestanteAtiva && (
-              <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-                <Users className="h-4 w-4" />
-                <span className="font-medium text-foreground">{gestanteAtiva.nome}</span>
-                {gestanteAtivaCompleta?.calculado && (() => {
-                  const ig = gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM;
-                  if (!ig) return null;
-                  return (
-                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">
-                      IG: {ig.semanas}s {ig.dias}d
-                    </span>
-                  );
-                })()}
-              </div>
-            )}
+            <div className="flex flex-col justify-center">
+              <h1 className="text-lg font-semibold text-foreground leading-tight">
+                Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
+              </h1>
+              {gestanteAtiva && (() => {
+                const ig = gestanteAtivaCompleta?.calculado
+                  ? (gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM)
+                  : null;
+                return (
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Users className="h-4 w-4 text-rose-500" />
+                    <span className="text-lg font-bold text-rose-600 leading-tight">{gestanteAtiva.nome}</span>
+                    {ig && (
+                      <span className="text-lg font-bold text-emerald-600 leading-tight">
+                        &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
           </header>
           <main className="flex-1 p-6" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
             {children}

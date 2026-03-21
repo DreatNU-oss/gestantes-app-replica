@@ -2427,3 +2427,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## IG Atual no Header (21/03/2026)
 - [x] Adicionar idade gestacional atual ao lado do nome da gestante no header do GestantesLayout
+
+## Nome + IG abaixo do título no header (21/03/2026)
+- [x] Mover nome da paciente e IG para abaixo do título no header, em negrito e fonte grande
