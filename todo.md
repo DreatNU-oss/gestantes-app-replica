@@ -2433,3 +2433,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Duas barras fixas no topo - header (21/03/2026)
 - [x] Criar segunda barra fixa com botões de ação abaixo do header com nome/IG
+
+## Remover caixa seletor gestante da sidebar (21/03/2026)
+- [x] Remover bloco seletor de gestante (linhas 212-332) da sidebar do GestantesLayout
