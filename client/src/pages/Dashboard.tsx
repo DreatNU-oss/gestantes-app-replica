@@ -120,6 +120,7 @@ export default function Dashboard() {
     partosNormais?: number;
     cesareas?: number;
     abortos?: number;
+    baixouApp?: boolean;
   } | null>(null);
   
 
@@ -583,6 +584,7 @@ export default function Dashboard() {
                           partosNormais: gestanteSelecionada.partosNormais || undefined,
                           cesareas: gestanteSelecionada.cesareas || undefined,
                           abortos: gestanteSelecionada.abortos || undefined,
+                          baixouApp: gestanteSelecionada.baixouApp,
                         });
                         setShowConsultaDialog(true);
                       }}

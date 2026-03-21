@@ -2394,3 +2394,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir ícone de smartphone na lista do menu Gestantes
 - [x] Exibir ícone de smartphone na lista de partos próximos
 - [x] Exibir ícone de smartphone na janela de dados ao abrir consulta
+
+## Ícone Smartphone no ConsultaUnificadaDialog (21/03/2026)
+- [x] Adicionar ícone de smartphone no cabeçalho da janela ConsultaUnificadaDialog para gestantes que baixaram o app

@@ -20,6 +20,7 @@ import {
   Calendar,
   Loader2,
   ClipboardList,
+  Smartphone,
 } from "lucide-react";
 
 // Labels de fatores de risco
@@ -107,6 +108,7 @@ interface ConsultaUnificadaDialogProps {
     partosNormais?: number;
     cesareas?: number;
     abortos?: number;
+    baixouApp?: boolean;
   } | null;
   onClose: () => void;
   onConfirm: (isPrimeiraConsulta?: boolean, isUrgencia?: boolean) => void;
@@ -239,6 +241,11 @@ export default function ConsultaUnificadaDialog({
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Stethoscope className="h-5 w-5 text-[#722F37]" />
             {gestanteParaConsulta.nome}
+            {gestanteParaConsulta.baixouApp && (
+              <span title="Baixou o aplicativo">
+                <Smartphone className="h-4 w-4 text-emerald-500 shrink-0" />
+              </span>
+            )}
           </DialogTitle>
           {gestante?.nomeBebe && (
             <div className="flex items-center gap-2 mt-1 ml-1">
