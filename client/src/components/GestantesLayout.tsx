@@ -70,7 +70,7 @@ const allMenuItems = [
   { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
-  { icon: MessageSquare, label: "Mensagens de Texto", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: MessageSquare, label: "WhatsApp Programado", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'] },
 ];
 
 const allConfigMenuItems = [

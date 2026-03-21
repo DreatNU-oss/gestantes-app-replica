@@ -2436,3 +2436,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Remover caixa seletor gestante da sidebar (21/03/2026)
 - [x] Remover bloco seletor de gestante (linhas 212-332) da sidebar do GestantesLayout
+
+## Renomear menu Mensagens de Texto (21/03/2026)
+- [x] Renomear 'Mensagens de Texto' para 'WhatsApp Programado' no menu lateral
