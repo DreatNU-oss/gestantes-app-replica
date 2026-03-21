@@ -16,9 +16,25 @@
  */
 
 import { getDb } from './db';
-import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users, medicamentosGestacao, mensagensAgendadas } from '../drizzle/schema';
+import { gestantes, mensagemTemplates, whatsappHistorico, whatsappConfig, medicos, partosRealizados, abortamentos, fatoresRisco, users, medicamentosGestacao, mensagensAgendadas, sessoesGestante } from '../drizzle/schema';
 import { eq, and, isNotNull, sql, notInArray } from 'drizzle-orm';
 import { sendToGestante, type GestanteContext } from './whatsapp';
+
+// ─── Filtro: apenas gestantes que baixaram o app ────────────────────────────
+
+/**
+ * Retorna true se a gestante tiver ao menos uma sessão registrada em sessoesGestante,
+ * indicando que ela já baixou e acessou o aplicativo.
+ * Regra obrigatória: mensagens automáticas só são enviadas para quem baixou o app.
+ */
+async function temSessaoApp(db: any, gestanteId: number): Promise<boolean> {
+  const [sessao] = await db
+    .select({ id: sessoesGestante.id })
+    .from(sessoesGestante)
+    .where(eq(sessoesGestante.gestanteId, gestanteId))
+    .limit(1);
+  return !!sessao;
+}
 
 // ─── Retry Helper ───────────────────────────────────────────────────────────
 
@@ -258,6 +274,13 @@ export async function processarMensagensIG(): Promise<{ enviadas: number; erros:
               }
             }
 
+            // Verificar se gestante baixou o app (regra obrigatória para mensagens automáticas)
+            const baixouApp = await temSessaoApp(db, gestante.id);
+            if (!baixouApp) {
+              console.log(`[WhatsApp Scheduler] ⏭️ ${gestante.nome} não baixou o app, pulando mensagem automática`);
+              continue;
+            }
+
             // Verificar se já foi enviada
             const enviada = await jaEnviada(db, clinicaConfig.clinicaId, gestante.id, template.id);
             if (enviada) continue;
@@ -373,6 +396,15 @@ export async function processarMensagemEvento(
       sql`${mensagemTemplates.evento} = ${evento}`,
     ));
 
+  // Verificar se gestante baixou o app (regra obrigatória para mensagens automáticas)
+  if (gestanteContext.gestanteId) {
+    const baixouApp = await temSessaoApp(db, gestanteContext.gestanteId);
+    if (!baixouApp) {
+      console.log(`[WhatsApp Scheduler] ⏭️ Gestante ${gestanteContext.gestanteId} não baixou o app, cancelando mensagem de evento '${evento}'`);
+      return { enviadas: 0, erros: 0 };
+    }
+  }
+
   for (const template of templates) {
     const result = await sendToGestante(clinicaId, template.id, gestanteContext);
     if (result.success) {
@@ -467,6 +499,16 @@ export async function processarMensagensAgendadas(): Promise<{ enviadas: number;
           await db.update(mensagensAgendadas)
             .set({ status: 'cancelado', erroMensagem: 'Gestante já teve parto ou abortamento', processedAt: new Date() })
             .where(eq(mensagensAgendadas.id, agendada.id));
+          continue;
+        }
+
+        // Verificar se gestante baixou o app (regra obrigatória para mensagens automáticas)
+        const baixouApp = await temSessaoApp(db, agendada.gestanteId);
+        if (!baixouApp) {
+          await db.update(mensagensAgendadas)
+            .set({ status: 'cancelado', erroMensagem: 'Gestante não baixou o app', processedAt: new Date() })
+            .where(eq(mensagensAgendadas.id, agendada.id));
+          console.log(`[WhatsApp Scheduler] ⏭️ Gestante ${agendada.gestanteId} não baixou o app, cancelando mensagem agendada`);
           continue;
         }
 

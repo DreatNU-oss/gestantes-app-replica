@@ -2385,3 +2385,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar InputComHistorico em FormularioGestante.tsx (todos os campos)
 - [x] Implementar InputComHistorico em demais componentes e modais (AdminClinicas, AcessoApp, Dashboard, EmailsAutorizados, GerenciarFatoresRisco, GerenciarHospitais, GerenciarMedicamentos, GerenciarMedicos, GerenciarPlanos, GerenciarProcedimentos, MensagensTexto, TemplateWizard, UltrassomFormularioSalvo, MedicamentosManager, ProcedimentoSelect, FatoresRiscoManager, GestantesLayout)
 - [x] Implementar debounce de 150ms na busca de sugestões do InputComHistorico
+
+## Filtro WhatsApp Automático - Apenas Gestantes com App (20/03/2026)
+- [x] Filtrar envio de mensagens automáticas WhatsApp: apenas gestantes com sessão em sessoesGestante (baixaram o app) recebem mensagens automáticas — todas as clínicas
