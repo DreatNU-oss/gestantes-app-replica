@@ -2388,3 +2388,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Filtro WhatsApp Automático - Apenas Gestantes com App (20/03/2026)
 - [x] Filtrar envio de mensagens automáticas WhatsApp: apenas gestantes com sessão em sessoesGestante (baixaram o app) recebem mensagens automáticas — todas as clínicas
+
+## Ícone de Smartphone para Gestantes com App (21/03/2026)
+- [x] Adicionar campo baixouApp na query de listagem de gestantes (backend)
+- [x] Exibir ícone de smartphone na lista do menu Gestantes
+- [x] Exibir ícone de smartphone na lista de partos próximos
+- [x] Exibir ícone de smartphone na janela de dados ao abrir consulta

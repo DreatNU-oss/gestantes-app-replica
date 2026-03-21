@@ -34,7 +34,8 @@ import {
   MonitorDot,
   X,
   User,
-  AlertTriangle
+  AlertTriangle,
+  Smartphone
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -522,6 +523,11 @@ export default function Dashboard() {
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="text-xl font-bold text-primary">{gestanteSelecionada.nome}</h3>
+                        {gestanteSelecionada.baixouApp && (
+                          <span title="Baixou o aplicativo">
+                            <Smartphone className="h-4 w-4 text-emerald-500 shrink-0" />
+                          </span>
+                        )}
                         <AltoRiscoBadge gestanteId={gestanteSelecionada.id} />
                       </div>
                       <div className="flex flex-wrap gap-3 mt-1 text-sm text-muted-foreground">
@@ -675,7 +681,16 @@ export default function Dashboard() {
                             {gestanteAtiva?.id === g.id ? "Selecionada" : "Selecionar"}
                           </Button>
                         </TableCell>
-                        <TableCell className="font-medium">{g.nome}</TableCell>
+                        <TableCell className="font-medium">
+                          <span className="flex items-center gap-1.5">
+                            {g.nome}
+                            {g.baixouApp && (
+                              <span title="Baixou o aplicativo">
+                                <Smartphone className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                              </span>
+                            )}
+                          </span>
+                        </TableCell>
                         <TableCell>
                           <AltoRiscoBadge gestanteId={g.id} />
                         </TableCell>

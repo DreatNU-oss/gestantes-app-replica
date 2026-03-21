@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Calendar, Baby } from "lucide-react";
+import { AlertCircle, Calendar, Baby, Smartphone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +15,7 @@ interface Gestante {
   medicoId?: number | null;
   nomeBebe?: string | null;
   sexoBebe?: "masculino" | "feminino" | "nao_informado" | null;
+  baixouApp?: boolean;
 }
 
 interface Medico {
@@ -253,6 +254,11 @@ export function AlertasPartosProximos({
             <div className="flex-1">
               <div className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
                 {alerta.gestante.nome}
+                {alerta.gestante.baixouApp && (
+                  <span title="Baixou o aplicativo">
+                    <Smartphone className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  </span>
+                )}
                 {alerta.gestante.sexoBebe === "masculino" && (
                   <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
                     ♂

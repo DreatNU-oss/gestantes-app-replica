@@ -539,6 +539,20 @@ export const appRouter = router({
       .query(async ({ ctx, input }): Promise<GestanteComCalculos[]> => {
       const lista = await getGestantesByUserId(ctx.user.id, input?.searchTerm, ctx.user.clinicaId);
       
+      // Buscar IDs de gestantes que já baixaram o app (uma única query eficiente)
+      const db = await import('./db').then(m => m.getDb());
+      let gestantesComApp = new Set<number>();
+      if (db && lista.length > 0) {
+        const { sessoesGestante } = await import('../drizzle/schema');
+        const { inArray } = await import('drizzle-orm');
+        const ids = lista.map(g => g.id);
+        const sessoes = await db
+          .selectDistinct({ gestanteId: sessoesGestante.gestanteId })
+          .from(sessoesGestante)
+          .where(inArray(sessoesGestante.gestanteId, ids));
+        gestantesComApp = new Set(sessoes.map(s => s.gestanteId));
+      }
+      
       // Adicionar cálculos para cada gestante
       const gestantesComCalculo = lista.map(g => {
         let igDUM = null;
@@ -573,6 +587,7 @@ export const appRouter = router({
         
         return {
           ...g,
+          baixouApp: gestantesComApp.has(g.id),
           calculado: {
             igDUM,
             igUS,
