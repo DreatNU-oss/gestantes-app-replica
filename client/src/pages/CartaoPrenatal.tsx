@@ -21,7 +21,7 @@ import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useInstantSave } from "@/hooks/useInstantSave";
-import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert, Send, MessageSquare, UtensilsCrossed, Dumbbell } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarCheck, FileText, Plus, Trash2, Edit2, Download, Copy, Baby, Activity, Syringe, CheckCircle2, Loader2, UserCog, AlertTriangle, CircleUser, Check, ClipboardList, Heart, Pill, Milestone, ChartLine, Stethoscope, ShieldAlert, Send, MessageSquare, UtensilsCrossed, Dumbbell, Smartphone } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import {
@@ -2429,7 +2429,14 @@ export default function CartaoPrenatal() {
             </CardHeader>
             <CardContent className="px-3 pb-0 pt-0">
               <div className="flex items-center gap-2 mb-0">
-                <p className="font-semibold text-base">{gestante.nome}</p>
+                <p className="font-semibold text-base flex items-center gap-1.5">
+                  {gestante.nome}
+                  {gestante.baixouApp && (
+                    <span title="Baixou o aplicativo">
+                      <Smartphone className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                    </span>
+                  )}
+                </p>
                 <span className="text-muted-foreground text-xs">|</span>
                 <span className="text-sm text-muted-foreground">
                   G{gestante.gesta || 0}P{gestante.para || 0}(PN{gestante.partosNormais || 0}PC{gestante.cesareas || 0})A{gestante.abortos || 0}

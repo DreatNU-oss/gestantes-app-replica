@@ -2397,3 +2397,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Ícone Smartphone no ConsultaUnificadaDialog (21/03/2026)
 - [x] Adicionar ícone de smartphone no cabeçalho da janela ConsultaUnificadaDialog para gestantes que baixaram o app
+
+## Ícone Smartphone no CartaoPrenatal (21/03/2026)
+- [x] Adicionar ícone de smartphone ao lado do nome da gestante no cabeçalho do CartaoPrenatal
