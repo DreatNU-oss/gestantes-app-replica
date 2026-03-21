@@ -661,6 +661,7 @@ export const gestanteRouter = router({
         consultas: consultasList.map(c => ({
           ...c,
           dataConsulta: c.dataConsulta ? new Date(c.dataConsulta).toISOString().split("T")[0] : null,
+          alturaUterina: c.alturaUterina != null ? Math.round(c.alturaUterina / 10 * 10) / 10 : null,
         })),
       };
     }),
@@ -912,7 +913,7 @@ export const gestanteRouter = router({
           igUS: c.igSemanas ? `${c.igSemanas}s${c.igDias || 0}d` : null,
           peso: c.peso,
           pa: c.pressaoSistolica && c.pressaoDiastolica ? `${c.pressaoSistolica}/${c.pressaoDiastolica}` : null,
-          au: c.alturaUterina,
+          au: c.alturaUterina != null ? Math.round(c.alturaUterina / 10 * 10) / 10 : null,
           bcf: c.bcf,
           mf: c.movimentosFetais ? 1 : null,
           edema: c.edema || null,

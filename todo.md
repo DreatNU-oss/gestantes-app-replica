@@ -2410,3 +2410,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Polling Automático - Acesso ao App (21/03/2026)
 - [x] Adicionar refetchInterval de 30s nas queries da página AcessoApp (resumo, listarGestantesComAcesso, listarGestantesSemAcesso)
+
+## Bug Fix App Mobile - alturaUterina na rota gestante.consultas (21/03/2026)
+- [x] Corrigir rota gestante.consultas em gestante-router.ts (linha 661) que retorna alturaUterina sem conversão mm→cm via spread (...c)
+- [x] Corrigir rota gerarPdfCartao em gestante-router.ts (linha 916) que retornava au: c.alturaUterina sem conversão
