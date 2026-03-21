@@ -1,0 +1,28 @@
+{
+  "query": "\nSHOW TABLES LIKE '%sess%';\nSHOW TABLES LIKE '%gestante%';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSHOW TABLES LIKE '%sess%';\nSHOW TABLES LIKE '%gestante%';\n",
+  "rows": [
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "sessoesGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "Tables_in_bSA4q7aMJsJeSmafooCq7A (%gestante%)"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "codigosAcessoGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "gestantes"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "logsAcessoGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)": "sessoesGestante"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_bSA4q7aMJsJeSmafooCq7A (%sess%)\nsessoesGestante\nTables_in_bSA4q7aMJsJeSmafooCq7A (%gestante%)\ncodigosAcessoGestante\ngestantes\nlogsAcessoGestante\nsessoesGestante\n",
+  "stderr": "",
+  "execution_time_ms": 387
+}

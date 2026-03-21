@@ -2407,3 +2407,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug Fix App Mobile - alturaUterina (21/03/2026)
 - [x] Corrigir bug no app mobile: converter alturaUterina de mm para cm (÷10) na rota gestante.consultas do tRPC (linhas 2580 e 2807 em routers.ts)
+
+## Polling Automático - Acesso ao App (21/03/2026)
+- [x] Adicionar refetchInterval de 30s nas queries da página AcessoApp (resumo, listarGestantesComAcesso, listarGestantesSemAcesso)

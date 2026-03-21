@@ -1,0 +1,16 @@
+{
+  "query": "\n-- 1. Visão geral: total, baixaram, não baixaram\nSELECT\n  COUNT(DISTINCT g.id) AS total_gestantes,\n  COUNT(DISTINCT s.gestanteId) AS baixaram_app,\n  COUNT(DISTINCT g.id) - COUNT(DISTINCT s.gestanteId) AS nao_baixaram_app,\n  ROUND(COUNT(DISTINCT s.gestanteId) * 100.0 / NULLIF(COUNT(DISTINCT g.id), 0), 1) AS pct_baixaram\nFROM gestantes g\nLEFT JOIN sessoesGestante s ON s.gestanteId = g.id;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \n-- 1. Visão geral: total, baixaram, não baixaram\nSELECT\n  COUNT(DISTINCT g.id) AS total_gestantes,\n  COUNT(DISTINCT s.gestanteId) AS baixaram_app,\n  COUNT(DISTINCT g.id) - COUNT(DISTINCT s.gestanteId) AS nao_baixaram_app,\n  ROUND(COUNT(DISTINCT s.gestanteId) * 100.0 / NULLIF(COUNT(DISTINCT g.id), 0), 1) AS pct_baixaram\nFROM gestantes g\nLEFT JOIN sessoesGestante s ON s.gestanteId = g.id;\n",
+  "rows": [
+    {
+      "total_gestantes": "156",
+      "baixaram_app": "56",
+      "nao_baixaram_app": "100",
+      "pct_baixaram": "35.9"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_gestantes\tbaixaram_app\tnao_baixaram_app\tpct_baixaram\n156\t56\t100\t35.9\n",
+  "stderr": "",
+  "execution_time_ms": 376
+}

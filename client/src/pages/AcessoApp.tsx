@@ -55,9 +55,9 @@ export default function AcessoApp() {
 
   const queryInput = clinicaIdSelecionada ? { clinicaId: clinicaIdSelecionada } : undefined;
 
-  const { data: resumo, isLoading: loadingResumo } = trpc.appAcesso.resumo.useQuery(queryInput);
-  const { data: gestantesComAcesso, isLoading: loadingComAcesso } = trpc.appAcesso.listarGestantesComAcesso.useQuery(queryInput);
-  const { data: gestantesSemAcesso, isLoading: loadingSemAcesso } = trpc.appAcesso.listarGestantesSemAcesso.useQuery(queryInput);
+  const { data: resumo, isLoading: loadingResumo } = trpc.appAcesso.resumo.useQuery(queryInput, { refetchInterval: 30_000 });
+  const { data: gestantesComAcesso, isLoading: loadingComAcesso } = trpc.appAcesso.listarGestantesComAcesso.useQuery(queryInput, { refetchInterval: 30_000 });
+  const { data: gestantesSemAcesso, isLoading: loadingSemAcesso } = trpc.appAcesso.listarGestantesSemAcesso.useQuery(queryInput, { refetchInterval: 30_000 });
 
   // Ordenar gestantes com acesso alfabeticamente e filtrar por busca
   const comAcessoFiltradas = useMemo(() => {
