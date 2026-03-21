@@ -3456,7 +3456,7 @@ export const appRouter = router({
     // Buscar sugestões ordenadas por frequência de uso
     getSugestoes: protectedProcedure
       .input(z.object({
-        tipo: z.enum(["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar", "us_biometria", "us_avaliacao_anatomica", "us_observacoes", "eco_conclusao", "us_seguimento_observacoes", "hipotese_diagnostica", "detalhamento_queixa_urgencia", "toque_vaginal", "usg_hoje", "auf_urgencia", "outra_conduta_urgencia"]),
+        tipo: z.string().min(1).max(100),
         busca: z.string().optional(),
       }))
       .query(async ({ input }) => {
@@ -3500,7 +3500,7 @@ export const appRouter = router({
     // Registrar uso de texto (incrementar contador ou criar novo)
     registrarUso: protectedProcedure
       .input(z.object({
-        tipo: z.enum(["observacao", "conduta_complementacao", "historia_patologica", "historia_social", "historia_familiar", "us_biometria", "us_avaliacao_anatomica", "us_observacoes", "eco_conclusao", "us_seguimento_observacoes", "hipotese_diagnostica", "detalhamento_queixa_urgencia", "toque_vaginal", "usg_hoje", "auf_urgencia", "outra_conduta_urgencia"]),
+        tipo: z.string().min(1).max(100),
         texto: z.string().min(1),
       }))
       .mutation(async ({ input }) => {

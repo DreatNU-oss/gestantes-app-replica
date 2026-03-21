@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AutocompleteInput } from "@/components/AutocompleteInput";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -625,15 +626,15 @@ export default function WizardPrimeiraConsulta({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-semibold">Peso (kg)</Label>
-                  <Input
-                    type="text"
+                  <InputComHistorico
+                    tipo="peso_consulta"
                     inputMode="decimal"
                     placeholder="Ex: 68.5"
                     value={exameFisico.peso}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(",", ".");
-                      if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
-                        setExameFisico({ ...exameFisico, peso: v });
+                    onChange={(v) => {
+                      const val = v.replace(",", ".");
+                      if (val === "" || /^\d{0,3}(\.\d{0,1})?$/.test(val)) {
+                        setExameFisico({ ...exameFisico, peso: val });
                       }
                     }}
                     className="mt-1"
@@ -641,10 +642,11 @@ export default function WizardPrimeiraConsulta({
                 </div>
                 <div>
                   <Label className="text-sm font-semibold">Pressão Arterial</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="pa_consulta"
                     placeholder="Ex: 120/80"
                     value={exameFisico.pressaoArterial}
-                    onChange={(e) => setExameFisico({ ...exameFisico, pressaoArterial: e.target.value })}
+                    onChange={(v) => setExameFisico({ ...exameFisico, pressaoArterial: v })}
                     className="mt-1"
                   />
                 </div>

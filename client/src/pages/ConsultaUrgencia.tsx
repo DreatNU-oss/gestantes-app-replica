@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { trpc } from "@/lib/trpc";
@@ -514,10 +515,11 @@ export default function ConsultaUrgencia() {
                 </div>
                 <div>
                   <Label>Idade Gestacional</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="ig_consulta_urgencia"
                     value={formData.idadeGestacional}
-                    onChange={(e) =>
-                      setFormData({ ...formData, idadeGestacional: e.target.value })
+                    onChange={(v) =>
+                      setFormData({ ...formData, idadeGestacional: v })
                     }
                     placeholder="Ex: 32s 4d"
                   />
@@ -578,10 +580,11 @@ export default function ConsultaUrgencia() {
           <Card>
             <CardContent className="pt-6">
               <Label>Pressão Arterial</Label>
-              <Input
+              <InputComHistorico
+                tipo="pa_consulta_urgencia"
                 value={formData.pressaoArterial}
-                onChange={(e) =>
-                  setFormData({ ...formData, pressaoArterial: e.target.value })
+                onChange={(v) =>
+                  setFormData({ ...formData, pressaoArterial: v })
                 }
                 placeholder="Ex: 120/80"
               />

@@ -4,6 +4,7 @@ import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -917,21 +918,21 @@ export default function Dashboard() {
                 <div className="space-y-2">
                   <Label>Idade Gestacional</Label>
                   <div className="flex gap-2 items-center">
-                    <Input
-                      type="number"
+                    <InputComHistorico
+                      tipo="dashboard_abortamentoigsemanas"
                       placeholder="Sem."
                       value={abortamentoIGSemanas}
-                      onChange={(e) => setAbortamentoIGSemanas(e.target.value)}
+                      onChange={(v) => setAbortamentoIGSemanas(v)}
                       className="w-20"
                       min={0}
                       max={42}
                     />
                     <span className="text-sm text-muted-foreground">sem</span>
-                    <Input
-                      type="number"
+                    <InputComHistorico
+                      tipo="dashboard_abortamentoigdias"
                       placeholder="Dias"
                       value={abortamentoIGDias}
-                      onChange={(e) => setAbortamentoIGDias(e.target.value)}
+                      onChange={(v) => setAbortamentoIGDias(v)}
                       className="w-20"
                       min={0}
                       max={6}

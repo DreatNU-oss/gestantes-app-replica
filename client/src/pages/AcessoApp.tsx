@@ -3,6 +3,7 @@ import { trpc } from "@/lib/trpc";
 import GestantesLayout from "@/components/GestantesLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -242,10 +243,11 @@ export default function AcessoApp() {
               </CardTitle>
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
+                <InputComHistorico
+                  tipo="acesso_app_buscacomacesso"
                   placeholder="Buscar..."
                   value={buscaComAcesso}
-                  onChange={(e) => setBuscaComAcesso(e.target.value)}
+                  onChange={(v) => setBuscaComAcesso(v)}
                   className="pl-9 h-8 text-sm"
                 />
               </div>
@@ -331,10 +333,11 @@ export default function AcessoApp() {
               </CardTitle>
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
+                <InputComHistorico
+                  tipo="acesso_app_buscasemacesso"
                   placeholder="Buscar..."
                   value={buscaSemAcesso}
-                  onChange={(e) => setBuscaSemAcesso(e.target.value)}
+                  onChange={(v) => setBuscaSemAcesso(v)}
                   className="pl-9 h-8 text-sm"
                 />
               </div>

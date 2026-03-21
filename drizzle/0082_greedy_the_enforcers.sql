@@ -1,0 +1,1 @@
+ALTER TABLE `historicoTextos` MODIFY COLUMN `tipo` varchar(100) NOT NULL;

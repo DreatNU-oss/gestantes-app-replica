@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -825,10 +826,11 @@ export default function TemplateWizard({
           <div className="space-y-4">
             <div>
               <Label>Nome do Template</Label>
-              <Input
+              <InputComHistorico
+                tipo="template_nome"
                 placeholder="Ex: Lembrete Vacina DTPa"
                 value={nome}
-                onChange={e => setNome(e.target.value)}
+                onChange={(v) => setNome(v)}
               />
             </div>
 
@@ -854,24 +856,24 @@ export default function TemplateWizard({
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Label>Semana</Label>
-                  <Input
-                    type="number"
+                  <InputComHistorico
+                    tipo="template_igsemanas"
                     min={1}
                     max={45}
                     placeholder="Ex: 28"
-                    value={igSemanas || ''}
-                    onChange={e => setIgSemanas(parseInt(e.target.value) || undefined)}
+                    value={String(igSemanas || '')}
+                    onChange={(v) => setIgSemanas(parseInt(v) || undefined)}
                   />
                 </div>
                 <div className="w-24">
                   <Label>Dias</Label>
-                  <Input
-                    type="number"
+                  <InputComHistorico
+                    tipo="template_igdias"
                     min={0}
                     max={6}
                     placeholder="0"
-                    value={igDias || ''}
-                    onChange={e => setIgDias(parseInt(e.target.value) || 0)}
+                    value={String(igDias || '')}
+                    onChange={(v) => setIgDias(parseInt(v) || 0)}
                   />
                 </div>
               </div>
@@ -924,13 +926,13 @@ export default function TemplateWizard({
                 </div>
                 <div>
                   <Label>Dias após a consulta para enviar</Label>
-                  <Input
-                    type="number"
+                  <InputComHistorico
+                    tipo="template_diasaposconsulta"
                     min={1}
                     max={90}
                     placeholder="Ex: 14"
-                    value={diasAposConsulta}
-                    onChange={e => setDiasAposConsulta(parseInt(e.target.value) || 14)}
+                    value={String(diasAposConsulta)}
+                    onChange={(v) => setDiasAposConsulta(parseInt(v) || 14)}
                   />
                   <p className="text-xs text-muted-foreground mt-1">A mensagem será enviada {diasAposConsulta} dia(s) após a consulta.</p>
                 </div>

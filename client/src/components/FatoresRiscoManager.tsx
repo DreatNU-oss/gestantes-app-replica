@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { AlertTriangle, Plus, X, ShieldAlert, Pill } from "lucide-react";
 import { toast } from "sonner";
@@ -354,11 +355,12 @@ export default function FatoresRiscoManager({ gestanteId, idadeGestante, imcGest
                    novoFator.tipo === "alergia_medicamentos" ? "Especificar medicamentos *" : 
                    "Detalhes *"}
                 </Label>
-                <Input
+                <InputComHistorico
+                  tipo="fator_risco_descricao"
                   id="descricao"
                   value={novoFator.descricao}
-                  onChange={(e) =>
-                    setNovoFator({ ...novoFator, descricao: e.target.value })
+                  onChange={(v) =>
+                    setNovoFator({ ...novoFator, descricao: v })
                   }
                   placeholder="Descreva o fator de risco..."
                 />

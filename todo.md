@@ -2372,3 +2372,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar campo de Peso dentro do card de urgência, abaixo da Pressão Arterial
 - [x] Adicionar campo de Temperatura no card de urgência, com alerta visual para febre (≥37.8°C)
 - [x] Incluir Temperatura no texto do PEP (gerarTextoPEP e gerarTextoPEPConsultaAnterior)
+
+## Autopreenchimento Inteligente Estilo Chrome em TODOS os Campos (20/03/2026)
+- [x] Criar componente InputComHistorico universal para campos Input com autocomplete por histórico
+- [x] Implementar InputComHistorico em CartaoPrenatal.tsx (PA, peso, temperatura, queixas, etc.)
+- [x] Implementar InputComHistorico em WizardPrimeiraConsulta.tsx (todos os campos)
+- [x] Implementar InputComHistorico em PreConsulta.tsx (todos os campos)
+- [x] Implementar InputComHistorico em Ultrassons.tsx (todos os campos)
+- [x] Implementar InputComHistorico em ExamesLaboratoriais.tsx (todos os campos)
+- [x] Implementar InputComHistorico em ConsultaUrgencia.tsx (todos os campos)
+- [x] Implementar InputComHistorico em PreCadastro.tsx (todos os campos)
+- [x] Implementar InputComHistorico em FormularioGestante.tsx (todos os campos)
+- [x] Implementar InputComHistorico em demais componentes e modais (AdminClinicas, AcessoApp, Dashboard, EmailsAutorizados, GerenciarFatoresRisco, GerenciarHospitais, GerenciarMedicamentos, GerenciarMedicos, GerenciarPlanos, GerenciarProcedimentos, MensagensTexto, TemplateWizard, UltrassomFormularioSalvo, MedicamentosManager, ProcedimentoSelect, FatoresRiscoManager, GestantesLayout)

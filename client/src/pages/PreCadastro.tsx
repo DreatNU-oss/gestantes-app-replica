@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { PhoneInput } from "@/components/PhoneInput";
 import { EmailInput } from "@/components/EmailInput";
 import { DateOfBirthInput } from "@/components/DateOfBirthInput";
@@ -253,11 +254,12 @@ export default function PreCadastro() {
                   <Label htmlFor="nome">
                     Nome Completo <span className="text-red-500">*</span>
                   </Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="precadastro_nome"
                     id="nome"
                     value={formData.nome}
-                    onChange={(e) => {
-                      setFormData({ ...formData, nome: e.target.value });
+                    onChange={(v) => {
+                      setFormData({ ...formData, nome: v });
                       clearFieldError("nome");
                     }}
                     placeholder="Nome completo da gestante"
@@ -355,15 +357,15 @@ export default function PreCadastro() {
                     <Label htmlFor="altura">
                       Altura (cm) <span className="text-red-500">*</span>
                     </Label>
-                    <Input
+                    <InputComHistorico
+                      tipo="precadastro_altura"
                       id="altura"
-                      type="number"
                       min="100"
                       max="250"
                       placeholder="Ex: 165"
                       value={formData.altura}
-                      onChange={(e) => {
-                        setFormData({ ...formData, altura: e.target.value });
+                      onChange={(v) => {
+                        setFormData({ ...formData, altura: v });
                         clearFieldError("altura");
                       }}
                       className={fieldErrors.altura ? "border-red-500 focus-visible:ring-red-500" : ""}
@@ -378,16 +380,16 @@ export default function PreCadastro() {
                       </span>
                     </Label>
                     <div className="relative">
-                      <Input
+                      <InputComHistorico
+                        tipo="precadastro_pesoinicial"
                         id="pesoInicial"
-                        type="text"
                         inputMode="decimal"
                         placeholder="Ex: 65.5"
                         value={formData.pesoInicial}
-                        onChange={(e) => {
-                          const v = e.target.value.replace(",", ".");
-                          if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
-                            setFormData({ ...formData, pesoInicial: v });
+                        onChange={(v) => {
+                          const val = v.replace(",", ".");
+                          if (val === "" || /^\d{0,3}(\.\d{0,1})?$/.test(val)) {
+                            setFormData({ ...formData, pesoInicial: val });
                             clearFieldError("pesoInicial");
                           }
                         }}
@@ -459,10 +461,11 @@ export default function PreCadastro() {
           <CardContent className="pt-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
+              <InputComHistorico
+                tipo="precadastro_searchterm"
                 placeholder="Buscar por nome, telefone ou e-mail..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(v) => setSearchTerm(v)}
                 className="pl-10"
               />
             </div>

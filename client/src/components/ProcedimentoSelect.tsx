@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import {
   Select,
   SelectContent,
@@ -107,11 +108,11 @@ export function ProcedimentoSelect({
           <Label>
             Descreva o procedimento {required && <span className="text-red-500">*</span>}
           </Label>
-          <Input
-            type="text"
+          <InputComHistorico
+            tipo="procedimento_outrotexto______isknownvalue____value___value"
             placeholder="Ex: Laparoscopia diagnóstica"
             value={outroTexto || (!isKnownValue && value ? value : "")}
-            onChange={(e) => onOutroTextoChange(e.target.value)}
+            onChange={(v) => onOutroTextoChange(v)}
             className="max-w-md"
           />
         </div>

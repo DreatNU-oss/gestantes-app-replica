@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -455,11 +456,12 @@ export default function AdminClinicas() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="nome">Nome da Clínica</Label>
-              <Input
+              <InputComHistorico
+                tipo="admin_clinica_nome"
                 id="nome"
                 placeholder="Ex: Clínica São Lucas"
                 value={novoNome}
-                onChange={(e) => setNovoNome(e.target.value)}
+                onChange={(v) => setNovoNome(v)}
                 onKeyDown={(e) => e.key === "Enter" && handleCriar()}
               />
             </div>
@@ -487,10 +489,11 @@ export default function AdminClinicas() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="editNome">Nome da Clínica</Label>
-              <Input
+              <InputComHistorico
+                tipo="admin_clinica_editnome"
                 id="editNome"
                 value={editNome}
-                onChange={(e) => setEditNome(e.target.value)}
+                onChange={(v) => setEditNome(v)}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -659,10 +662,11 @@ export default function AdminClinicas() {
           <div className="space-y-4">
             {/* Add email form */}
             <div className="flex gap-2">
-              <Input
+              <InputComHistorico
+                tipo="admin_clinica_novoemail"
                 placeholder="novo@email.com"
                 value={novoEmail}
-                onChange={(e) => setNovoEmail(e.target.value)}
+                onChange={(v) => setNovoEmail(v)}
                 onKeyDown={(e) => e.key === "Enter" && handleAdicionarEmail()}
               />
               <Button

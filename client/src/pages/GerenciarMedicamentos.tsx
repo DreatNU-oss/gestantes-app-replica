@@ -2,6 +2,7 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -159,19 +160,21 @@ export default function GerenciarMedicamentos() {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label htmlFor="nome">Nome *</Label>
-                    <Input
+                    <InputComHistorico
+                      tipo="gerenciar_med_nome"
                       id="nome"
                       value={formData.nome}
-                      onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                      onChange={(v) => setFormData({ ...formData, nome: v })}
                       placeholder="Ex: Metformina"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="descricaoPadrao">Descrição Padrão (opcional)</Label>
-                    <Input
+                    <InputComHistorico
+                      tipo="gerenciar_med_descricaopadrao"
                       id="descricaoPadrao"
                       value={formData.descricaoPadrao}
-                      onChange={(e) => setFormData({ ...formData, descricaoPadrao: e.target.value })}
+                      onChange={(v) => setFormData({ ...formData, descricaoPadrao: v })}
                       placeholder="Ex: 500mg 2x/dia"
                     />
                   </div>

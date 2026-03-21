@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { InputExameValidado } from "@/components/InputExameValidado";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { obterIdValidacao } from "@/data/mapeamentoExames";
 import { isExameSorologico } from "@/data/valoresReferencia";
 import { Button } from "@/components/ui/button";
@@ -952,10 +953,10 @@ export default function ExamesLaboratoriais() {
             </SelectContent>
           </Select>
           {valor === "Alterado" && (
-            <Input
-              type="text"
+            <InputComHistorico
+              tipo="exame_obs_alteracao"
               value={valorObs}
-              onChange={(e) => handleResultadoChange(nomeExame, chaveObs, e.target.value)}
+              onChange={(v) => handleResultadoChange(nomeExame, chaveObs, v)}
               placeholder="Especifique a alteração (ex: leucócitos, hemácias...)" 
               className="w-full text-xs"
             />
@@ -1013,17 +1014,17 @@ export default function ExamesLaboratoriais() {
           </Select>
           {valor === "Positiva" && (
             <>
-              <Input
-                type="text"
+              <InputComHistorico
+                tipo="exame_agente_infeccioso"
                 value={valorAgente}
-                onChange={(e) => handleResultadoChange(nomeExame, chaveAgente, e.target.value)}
+                onChange={(v) => handleResultadoChange(nomeExame, chaveAgente, v)}
                 placeholder="Agente infeccioso (ex: E. coli, Proteus...)" 
                 className="w-full text-xs"
               />
-              <Input
-                type="text"
+              <InputComHistorico
+                tipo="exame_antibiograma"
                 value={valorAntibiograma}
-                onChange={(e) => handleResultadoChange(nomeExame, chaveAntibiograma, e.target.value)}
+                onChange={(v) => handleResultadoChange(nomeExame, chaveAntibiograma, v)}
                 placeholder="Antibiograma (sensibilidade aos antibióticos)" 
                 className="w-full text-xs"
               />

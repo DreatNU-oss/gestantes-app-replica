@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { parseLocalDate } from "@/lib/dateUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { PhoneInput } from "@/components/PhoneInput";
 import { EmailInput } from "@/components/EmailInput";
 import { DateOfBirthInput } from "@/components/DateOfBirthInput";
@@ -616,14 +617,15 @@ export default function FormularioGestante({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nome">Nome Completo *</Label>
-                <Input
+                <InputComHistorico
+                  tipo="nome_gestante"
                   id="nome"
                   value={formData.nome}
-                  onChange={(e) => {
-                    setFormData({ ...formData, nome: e.target.value });
+                  onChange={(v) => {
+                    setFormData({ ...formData, nome: v });
                     clearFieldError('nome');
                   }}
-                  onBlur={() => validateField('nome')}
+                  onBlurExtra={() => validateField('nome')}
                   className={fieldErrors.nome ? 'border-red-500 focus-visible:ring-red-500' : ''}
                   required
                 />
@@ -735,10 +737,11 @@ export default function FormularioGestante({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="carteirinhaUnimed">Carteirinha Unimed</Label>
-                <Input
+                <InputComHistorico
+                  tipo="carteirinha_unimed"
                   id="carteirinhaUnimed"
                   value={formData.carteirinhaUnimed}
-                  onChange={(e) => setFormData({ ...formData, carteirinhaUnimed: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, carteirinhaUnimed: v })}
                 />
               </div>
               <div className="space-y-2">
@@ -786,52 +789,52 @@ export default function FormularioGestante({
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="gesta">Gesta</Label>
-                <Input
+                <InputComHistorico
+                  tipo="gesta"
                   id="gesta"
-                  type="number"
-                  min="0"
+                  inputMode="numeric"
                   value={formData.gesta}
-                  onChange={(e) => setFormData({ ...formData, gesta: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, gesta: v })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="para">Para</Label>
-                <Input
+                <InputComHistorico
+                  tipo="para"
                   id="para"
-                  type="number"
-                  min="0"
+                  inputMode="numeric"
                   value={formData.para}
-                  onChange={(e) => setFormData({ ...formData, para: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, para: v })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="partosNormais">Partos Normais</Label>
-                <Input
+                <InputComHistorico
+                  tipo="partos_normais"
                   id="partosNormais"
-                  type="number"
-                  min="0"
+                  inputMode="numeric"
                   value={formData.partosNormais}
-                  onChange={(e) => setFormData({ ...formData, partosNormais: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, partosNormais: v })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cesareas">Cesáreas</Label>
-                <Input
+                <InputComHistorico
+                  tipo="cesareas"
                   id="cesareas"
-                  type="number"
-                  min="0"
+                  inputMode="numeric"
                   value={formData.cesareas}
-                  onChange={(e) => setFormData({ ...formData, cesareas: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, cesareas: v })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="abortos">Abortos</Label>
-                <Input
+                <InputComHistorico
+                  tipo="abortos"
                   id="abortos"
-                  type="number"
-                  min="0"
+                  inputMode="numeric"
                   value={formData.abortos}
-                  onChange={(e) => setFormData({ ...formData, abortos: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, abortos: v })}
                 />
               </div>
             </div>
@@ -891,25 +894,25 @@ export default function FormularioGestante({
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div className="space-y-2">
                       <Label htmlFor="igUltrassomSemanas" className="text-xs">Semanas</Label>
-                      <Input
+                      <InputComHistorico
+                        tipo="gestante_igultrassomsemanas"
                         id="igUltrassomSemanas"
-                        type="number"
                         min="0"
                         max="42"
                         value={formData.igUltrassomSemanas}
-                        onChange={(e) => setFormData({ ...formData, igUltrassomSemanas: e.target.value })}
+                        onChange={(v) => setFormData({ ...formData, igUltrassomSemanas: v })}
                         className="h-9"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="igUltrassomDias" className="text-xs">Dias</Label>
-                      <Input
+                      <InputComHistorico
+                        tipo="gestante_igultrassomdias"
                         id="igUltrassomDias"
-                        type="number"
                         min="0"
                         max="6"
                         value={formData.igUltrassomDias}
-                        onChange={(e) => setFormData({ ...formData, igUltrassomDias: e.target.value })}
+                        onChange={(v) => setFormData({ ...formData, igUltrassomDias: v })}
                         className="h-9"
                       />
                     </div>
@@ -921,15 +924,15 @@ export default function FormularioGestante({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="altura">Altura (cm) <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="gestante_altura"
                     id="altura"
-                    type="number"
                     min="100"
                     max="250"
                     placeholder="Ex: 165"
                     value={formData.altura}
-                    onChange={(e) => {
-                      setFormData({ ...formData, altura: e.target.value });
+                    onChange={(v) => {
+                      setFormData({ ...formData, altura: v });
                       if (fieldErrors.altura) setFieldErrors(prev => ({ ...prev, altura: undefined }));
                     }}
                     className={fieldErrors.altura ? "border-red-500 focus-visible:ring-red-500" : alertaAltura.show ? "border-amber-500 focus-visible:ring-amber-500" : ""}
@@ -945,16 +948,16 @@ export default function FormularioGestante({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pesoInicial">Peso Inicial (kg) <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="peso_inicial"
                     id="pesoInicial"
-                    type="text"
                     inputMode="decimal"
                     placeholder="Ex: 65.5"
                     value={formData.pesoInicial}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(",", ".");
-                      if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
-                        setFormData({ ...formData, pesoInicial: v });
+                    onChange={(v) => {
+                      const val = v.replace(",", ".");
+                      if (val === "" || /^\d{0,3}(\.\d{0,1})?$/.test(val)) {
+                        setFormData({ ...formData, pesoInicial: val });
                         if (fieldErrors.pesoInicial) setFieldErrors(prev => ({ ...prev, pesoInicial: undefined }));
                       }
                     }}
@@ -1256,12 +1259,12 @@ export default function FormularioGestante({
                         Salvar
                       </Button>
                     </div>
-                    <Input
+                    <InputComHistorico
+                      tipo="motivo_cesarea_outro"
                       id="motivoCesareaOutro"
-                      type="text"
                       placeholder="Descreva a indicação médica"
                       value={motivoCesareaOutroLocal}
-                      onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
+                      onChange={(v) => setMotivoCesareaOutroLocal(v)}
                     />
                   </div>
                 )}
@@ -1322,11 +1325,12 @@ export default function FormularioGestante({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nomeBebe">Nome planejado para o bebê (opcional)</Label>
-                <Input
+                <InputComHistorico
+                  tipo="nome_bebe"
                   id="nomeBebe"
                   placeholder="Ex: Maria, João, etc."
                   value={formData.nomeBebe}
-                  onChange={(e) => setFormData({ ...formData, nomeBebe: e.target.value })}
+                  onChange={(v) => setFormData({ ...formData, nomeBebe: v })}
                   className={formData.sexoBebe === "masculino" ? "border-blue-300 focus:ring-blue-400" : formData.sexoBebe === "feminino" ? "border-pink-300 focus:ring-pink-400" : ""}
                 />
                 {formData.nomeBebe && (

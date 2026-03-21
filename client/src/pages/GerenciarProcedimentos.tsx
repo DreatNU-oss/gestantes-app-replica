@@ -3,6 +3,7 @@ import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -269,10 +270,11 @@ export default function GerenciarProcedimentos() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome do Procedimento *</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="gerenciar_proc_nome"
                     id="nome"
                     value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    onChange={(v) => setNome(v)}
                     required
                     placeholder="Ex: Cesárea sem DIU, Cesárea + DIU, Histerec aberta..."
                   />

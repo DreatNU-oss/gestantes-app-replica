@@ -3,6 +3,7 @@ import { trpc } from '@/lib/trpc';
 import GestantesLayout from '@/components/GestantesLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InputComHistorico } from '@/components/InputComHistorico';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -782,12 +783,13 @@ export default function Ultrassons() {
                 </div>
                 <div>
                   <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_idadegestacional"
                     placeholder="Ex: 7s 2d"
                     className={getInputClassName('primeiro_ultrassom', 'idadeGestacional')}
                     value={primeiroUS.idadeGestacional}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'idadeGestacional'); setPrimeiroUS({ ...primeiroUS, idadeGestacional: e.target.value }); }}
-                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setPrimeiroUS(prev => ({ ...prev, idadeGestacional: normalizado })); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'idadeGestacional'); setPrimeiroUS({ ...primeiroUS, idadeGestacional: v }); }}
+                    onBlurExtra={() => { const val = primeiroUS.idadeGestacional; const normalizado = normalizarIdadeGestacional(val); if (normalizado !== val) setPrimeiroUS(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -795,20 +797,22 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>CCN (Comprimento Cabeça-Nádegas)</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_ccn"
                     placeholder="Ex: 12mm"
                     className={getInputClassName('primeiro_ultrassom', 'ccn')}
                     value={primeiroUS.ccn}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'ccn'); setPrimeiroUS({ ...primeiroUS, ccn: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'ccn'); setPrimeiroUS({ ...primeiroUS, ccn: v }); }}
                   />
                 </div>
                 <div>
                   <Label>BCF (Batimento Cardíaco Fetal)</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_bcf"
                     placeholder="Ex: 150 bpm"
                     className={getInputClassName('primeiro_ultrassom', 'bcf')}
                     value={primeiroUS.bcf}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'bcf'); setPrimeiroUS({ ...primeiroUS, bcf: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'bcf'); setPrimeiroUS({ ...primeiroUS, bcf: v }); }}
                   />
                 </div>
               </div>
@@ -816,20 +820,22 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Saco Vitelino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_sacovitelino"
                     placeholder="Presente/Ausente"
                     className={getInputClassName('primeiro_ultrassom', 'sacoVitelino')}
                     value={primeiroUS.sacoVitelino}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'sacoVitelino'); setPrimeiroUS({ ...primeiroUS, sacoVitelino: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'sacoVitelino'); setPrimeiroUS({ ...primeiroUS, sacoVitelino: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Presença de Hematoma/Coleções</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_hematoma"
                     placeholder="Sim/Não"
                     className={getInputClassName('primeiro_ultrassom', 'hematoma')}
                     value={primeiroUS.hematoma}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'hematoma'); setPrimeiroUS({ ...primeiroUS, hematoma: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'hematoma'); setPrimeiroUS({ ...primeiroUS, hematoma: v }); }}
                   />
                 </div>
               </div>
@@ -837,20 +843,22 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Identificação do Corpo Lúteo</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_corpoluteo"
                     placeholder="Presente/Ausente"
                     className={getInputClassName('primeiro_ultrassom', 'corpoLuteo')}
                     value={primeiroUS.corpoLuteo}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'corpoLuteo'); setPrimeiroUS({ ...primeiroUS, corpoLuteo: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'corpoLuteo'); setPrimeiroUS({ ...primeiroUS, corpoLuteo: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Colo Uterino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_colouterino"
                     placeholder="Ex: 3.9 cm, OI fechado"
                     className={getInputClassName('primeiro_ultrassom', 'coloUterino')}
                     value={primeiroUS.coloUterino}
-                    onChange={(e) => { removerDestaqueIA('primeiro_ultrassom', 'coloUterino'); setPrimeiroUS({ ...primeiroUS, coloUterino: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('primeiro_ultrassom', 'coloUterino'); setPrimeiroUS({ ...primeiroUS, coloUterino: v }); }}
                   />
                 </div>
               </div>
@@ -936,12 +944,13 @@ export default function Ultrassons() {
                 </div>
                 <div>
                   <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_idadegestacional"
                     placeholder="Ex: 12s 3d"
                     className={getInputClassName('morfologico_1tri', 'idadeGestacional')}
                     value={morfo1Tri.idadeGestacional}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'idadeGestacional'); setMorfo1Tri({ ...morfo1Tri, idadeGestacional: e.target.value }); }}
-                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setMorfo1Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'idadeGestacional'); setMorfo1Tri({ ...morfo1Tri, idadeGestacional: v }); }}
+                    onBlurExtra={() => { const val = morfo1Tri.idadeGestacional; const normalizado = normalizarIdadeGestacional(val); if (normalizado !== val) setMorfo1Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -949,20 +958,22 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Translucência Nucal (TN)</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_tn"
                     placeholder="Ex: 1.2mm"
                     className={getInputClassName('morfologico_1tri', 'tn')}
                     value={morfo1Tri.tn}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'tn'); setMorfo1Tri({ ...morfo1Tri, tn: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'tn'); setMorfo1Tri({ ...morfo1Tri, tn: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Ducto Venoso (DV)</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_dv"
                     placeholder="Normal/Alterado"
                     className={getInputClassName('morfologico_1tri', 'dv')}
                     value={morfo1Tri.dv}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'dv'); setMorfo1Tri({ ...morfo1Tri, dv: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'dv'); setMorfo1Tri({ ...morfo1Tri, dv: v }); }}
                   />
                 </div>
               </div>
@@ -970,20 +981,22 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Valva Tricúspide</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_valvatricuspide"
                     placeholder="Normal/Alterada"
                     className={getInputClassName('morfologico_1tri', 'valvaTricuspide')}
                     value={morfo1Tri.valvaTricuspide}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'valvaTricuspide'); setMorfo1Tri({ ...morfo1Tri, valvaTricuspide: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'valvaTricuspide'); setMorfo1Tri({ ...morfo1Tri, valvaTricuspide: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Doppler das Artérias Uterinas</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_doppleruterinas"
                     placeholder="Valor dos IPs"
                     className={getInputClassName('morfologico_1tri', 'dopplerUterinas')}
                     value={morfo1Tri.dopplerUterinas}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'dopplerUterinas'); setMorfo1Tri({ ...morfo1Tri, dopplerUterinas: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'dopplerUterinas'); setMorfo1Tri({ ...morfo1Tri, dopplerUterinas: v }); }}
                   />
                 </div>
               </div>
@@ -991,31 +1004,34 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Incisura Presente?</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_incisurapresente"
                     placeholder="Sim/Não"
                     className={getInputClassName('morfologico_1tri', 'incisuraPresente')}
                     value={morfo1Tri.incisuraPresente}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'incisuraPresente'); setMorfo1Tri({ ...morfo1Tri, incisuraPresente: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'incisuraPresente'); setMorfo1Tri({ ...morfo1Tri, incisuraPresente: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Medida do Colo Uterino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo1tri_colo"
                     placeholder="Ex: 35mm"
                     className={getInputClassName('morfologico_1tri', 'colo')}
                     value={morfo1Tri.colo}
-                    onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'colo'); setMorfo1Tri({ ...morfo1Tri, colo: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'colo'); setMorfo1Tri({ ...morfo1Tri, colo: v }); }}
                   />
                 </div>
               </div>
               
               <div>
                 <Label>Risco Calculado para Trissomias</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_morfo1tri_riscotrissomias"
                   placeholder="Ex: Baixo risco"
                   className={getInputClassName('morfologico_1tri', 'riscoTrissomias')}
                   value={morfo1Tri.riscoTrissomias}
-                  onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'riscoTrissomias'); setMorfo1Tri({ ...morfo1Tri, riscoTrissomias: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'riscoTrissomias'); setMorfo1Tri({ ...morfo1Tri, riscoTrissomias: v }); }}
                 />
               </div>
               
@@ -1085,43 +1101,47 @@ export default function Ultrassons() {
                 </div>
                 <div>
                   <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_obstetrico_idadegestacional"
                     placeholder="Ex: 20s 1d"
                     className={getInputClassName('ultrassom_obstetrico', 'idadeGestacional')}
                     value={usObstetrico.idadeGestacional}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'idadeGestacional'); setUsObstetrico({ ...usObstetrico, idadeGestacional: e.target.value }); }}
-                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setUsObstetrico(prev => ({ ...prev, idadeGestacional: normalizado })); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'idadeGestacional'); setUsObstetrico({ ...usObstetrico, idadeGestacional: v }); }}
+                    onBlurExtra={() => { const val = usObstetrico.idadeGestacional; const normalizado = normalizarIdadeGestacional(val); if (normalizado !== val) setUsObstetrico(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
               
               <div>
                 <Label>Peso Fetal Estimado</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_obstetrico_pesofetal"
                   placeholder="Ex: 350g"
                   className={getInputClassName('ultrassom_obstetrico', 'pesoFetal')}
                   value={usObstetrico.pesoFetal}
-                  onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'pesoFetal'); setUsObstetrico({ ...usObstetrico, pesoFetal: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'pesoFetal'); setUsObstetrico({ ...usObstetrico, pesoFetal: v }); }}
                 />
               </div>
               
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Placenta - Localização</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_obstetrico_placentalocalizacao"
                     placeholder="Ex: Anterior"
                     className={getInputClassName('ultrassom_obstetrico', 'placentaLocalizacao')}
                     value={usObstetrico.placentaLocalizacao}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaLocalizacao'); setUsObstetrico({ ...usObstetrico, placentaLocalizacao: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaLocalizacao'); setUsObstetrico({ ...usObstetrico, placentaLocalizacao: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Placenta - Grau</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_obstetrico_placentagrau"
                     placeholder="Ex: 0, I, II, III"
                     className={getInputClassName('ultrassom_obstetrico', 'placentaGrau')}
                     value={usObstetrico.placentaGrau}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaGrau'); setUsObstetrico({ ...usObstetrico, placentaGrau: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'placentaGrau'); setUsObstetrico({ ...usObstetrico, placentaGrau: v }); }}
                   />
                 </div>
 
@@ -1130,11 +1150,12 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Colo Uterino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_obstetrico_colouterinomedida"
                     placeholder="Ex: 35 mm, OI fechado"
                     className={getInputClassName('ultrassom_obstetrico', 'coloUterinoMedida')}
                     value={usObstetrico.coloUterinoMedida}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_obstetrico', 'coloUterinoMedida'); setUsObstetrico({ ...usObstetrico, coloUterinoMedida: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'coloUterinoMedida'); setUsObstetrico({ ...usObstetrico, coloUterinoMedida: v }); }}
                   />
                 </div>
               </div>
@@ -1211,12 +1232,13 @@ export default function Ultrassons() {
                 </div>
                 <div>
                   <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo2tri_idadegestacional"
                     placeholder="Ex: 22s 4d"
                     className={getInputClassName('morfologico_2tri', 'idadeGestacional')}
                     value={morfo2Tri.idadeGestacional}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'idadeGestacional'); setMorfo2Tri({ ...morfo2Tri, idadeGestacional: e.target.value }); }}
-                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setMorfo2Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'idadeGestacional'); setMorfo2Tri({ ...morfo2Tri, idadeGestacional: v }); }}
+                    onBlurExtra={() => { const val = morfo2Tri.idadeGestacional; const normalizado = normalizarIdadeGestacional(val); if (normalizado !== val) setMorfo2Tri(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -1235,40 +1257,44 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Peso Fetal Estimado</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_morfo2tri_pesofetal"
                   placeholder="Ex: 450g"
                   className={getInputClassName('morfologico_2tri', 'pesoFetal')}
                   value={morfo2Tri.pesoFetal}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'pesoFetal'); setMorfo2Tri({ ...morfo2Tri, pesoFetal: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'pesoFetal'); setMorfo2Tri({ ...morfo2Tri, pesoFetal: v }); }}
                 />
               </div>
               
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Placenta - Localização</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo2tri_placentalocalizacao"
                     placeholder="Ex: Anterior"
                     className={getInputClassName('morfologico_2tri', 'placentaLocalizacao')}
                     value={morfo2Tri.placentaLocalizacao}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'placentaLocalizacao'); setMorfo2Tri({ ...morfo2Tri, placentaLocalizacao: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'placentaLocalizacao'); setMorfo2Tri({ ...morfo2Tri, placentaLocalizacao: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Placenta - Grau</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo2tri_placentagrau"
                     placeholder="Ex: 0, I, II, III"
                     className={getInputClassName('morfologico_2tri', 'placentaGrau')}
                     value={morfo2Tri.placentaGrau}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'placentaGrau'); setMorfo2Tri({ ...morfo2Tri, placentaGrau: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'placentaGrau'); setMorfo2Tri({ ...morfo2Tri, placentaGrau: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Colo Uterino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo2tri_colouterino______"
                     placeholder="Ex: 35 mm, OI fechado"
                     className={getInputClassName('morfologico_2tri', 'coloUterino')}
                     value={morfo2Tri.coloUterino || ''}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'coloUterino'); setMorfo2Tri({ ...morfo2Tri, coloUterino: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'coloUterino'); setMorfo2Tri({ ...morfo2Tri, coloUterino: v }); }}
                   />
                 </div>
               </div>
@@ -1276,11 +1302,12 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Líquido Amniótico (ILA)</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_morfo2tri_liquidoamniotico"
                     placeholder="Ex: 12cm"
                     className={getInputClassName('morfologico_2tri', 'liquidoAmniotico')}
                     value={morfo2Tri.liquidoAmniotico}
-                    onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'liquidoAmniotico'); setMorfo2Tri({ ...morfo2Tri, liquidoAmniotico: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'liquidoAmniotico'); setMorfo2Tri({ ...morfo2Tri, liquidoAmniotico: v }); }}
                   />
                 </div>
               </div>
@@ -1299,21 +1326,23 @@ export default function Ultrassons() {
               
               <div>
                 <Label>Dopplers (se realizados)</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_morfo2tri_dopplers"
                   placeholder="AU, ACM, DV..."
                   className={getInputClassName('morfologico_2tri', 'dopplers')}
                   value={morfo2Tri.dopplers}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'dopplers'); setMorfo2Tri({ ...morfo2Tri, dopplers: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'dopplers'); setMorfo2Tri({ ...morfo2Tri, dopplers: v }); }}
                 />
               </div>
               
               <div>
                 <Label>Sexo Fetal (se desejado)</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_morfo2tri_sexofetal"
                   placeholder="Masculino/Feminino"
                   className={getInputClassName('morfologico_2tri', 'sexoFetal')}
                   value={morfo2Tri.sexoFetal}
-                  onChange={(e) => { removerDestaqueIA('morfologico_2tri', 'sexoFetal'); setMorfo2Tri({ ...morfo2Tri, sexoFetal: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'sexoFetal'); setMorfo2Tri({ ...morfo2Tri, sexoFetal: v }); }}
                 />
               </div>
               
@@ -1473,12 +1502,13 @@ export default function Ultrassons() {
                 </div>
                 <div>
                   <Label>Idade Gestacional <span className="text-red-500">*</span></Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_idadegestacional"
                     placeholder="Ex: 32s 1d"
                     className={getInputClassName('ultrassom_seguimento', 'idadeGestacional')}
                     value={usSeguimento.idadeGestacional}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'idadeGestacional'); setUsSeguimento({ ...usSeguimento, idadeGestacional: e.target.value }); }}
-                    onBlur={(e) => { const normalizado = normalizarIdadeGestacional(e.target.value); if (normalizado !== e.target.value) setUsSeguimento(prev => ({ ...prev, idadeGestacional: normalizado })); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'idadeGestacional'); setUsSeguimento({ ...usSeguimento, idadeGestacional: v }); }}
+                    onBlurExtra={() => { const val = usSeguimento.idadeGestacional; const normalizado = normalizarIdadeGestacional(val); if (normalizado !== val) setUsSeguimento(prev => ({ ...prev, idadeGestacional: normalizado })); }}
                   />
                 </div>
               </div>
@@ -1486,60 +1516,66 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Peso Fetal Estimado</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_pesofetal"
                     placeholder="Ex: 2100g"
                     className={getInputClassName('ultrassom_seguimento', 'pesoFetal')}
                     value={usSeguimento.pesoFetal}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'pesoFetal'); setUsSeguimento({ ...usSeguimento, pesoFetal: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'pesoFetal'); setUsSeguimento({ ...usSeguimento, pesoFetal: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Percentil do Peso Fetal</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_percentilpeso"
                     placeholder="Ex: P50"
                     className={getInputClassName('ultrassom_seguimento', 'percentilPeso')}
                     value={usSeguimento.percentilPeso}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'percentilPeso'); setUsSeguimento({ ...usSeguimento, percentilPeso: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'percentilPeso'); setUsSeguimento({ ...usSeguimento, percentilPeso: v }); }}
                   />
                 </div>
               </div>
               
               <div>
                 <Label>Líquido Amniótico (ILA ou subjetivo)</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_liquidoamniotico"
                   placeholder="Ex: 10cm ou Normal"
                   className={getInputClassName('ultrassom_seguimento', 'liquidoAmniotico')}
                   value={usSeguimento.liquidoAmniotico}
-                  onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'liquidoAmniotico'); setUsSeguimento({ ...usSeguimento, liquidoAmniotico: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'liquidoAmniotico'); setUsSeguimento({ ...usSeguimento, liquidoAmniotico: v }); }}
                 />
               </div>
               
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Placenta - Localização</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_placentalocalizacao"
                     placeholder="Ex: Anterior"
                     className={getInputClassName('ultrassom_seguimento', 'placentaLocalizacao')}
                     value={usSeguimento.placentaLocalizacao}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'placentaLocalizacao'); setUsSeguimento({ ...usSeguimento, placentaLocalizacao: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'placentaLocalizacao'); setUsSeguimento({ ...usSeguimento, placentaLocalizacao: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Placenta - Grau</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_placentagrau"
                     placeholder="Ex: II"
                     className={getInputClassName('ultrassom_seguimento', 'placentaGrau')}
                     value={usSeguimento.placentaGrau}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'placentaGrau'); setUsSeguimento({ ...usSeguimento, placentaGrau: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'placentaGrau'); setUsSeguimento({ ...usSeguimento, placentaGrau: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Colo Uterino</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_colouterino______"
                     placeholder="Ex: 35 mm, OI fechado"
                     className={getInputClassName('ultrassom_seguimento', 'coloUterino')}
                     value={usSeguimento.coloUterino || ''}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'coloUterino'); setUsSeguimento({ ...usSeguimento, coloUterino: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'coloUterino'); setUsSeguimento({ ...usSeguimento, coloUterino: v }); }}
                   />
                 </div>
               </div>
@@ -1547,31 +1583,34 @@ export default function Ultrassons() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Movimentos Fetais</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_movimentosfetais"
                     placeholder="Presentes/Ausentes"
                     className={getInputClassName('ultrassom_seguimento', 'movimentosFetais')}
                     value={usSeguimento.movimentosFetais}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'movimentosFetais'); setUsSeguimento({ ...usSeguimento, movimentosFetais: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'movimentosFetais'); setUsSeguimento({ ...usSeguimento, movimentosFetais: v }); }}
                   />
                 </div>
                 <div>
                   <Label>Apresentação Fetal</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="us_apresentacaofetal"
                     placeholder="Cefálica/Pélvica/Transversa"
                     className={getInputClassName('ultrassom_seguimento', 'apresentacaoFetal')}
                     value={usSeguimento.apresentacaoFetal}
-                    onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'apresentacaoFetal'); setUsSeguimento({ ...usSeguimento, apresentacaoFetal: e.target.value }); }}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'apresentacaoFetal'); setUsSeguimento({ ...usSeguimento, apresentacaoFetal: v }); }}
                   />
                 </div>
               </div>
               
               <div>
                 <Label>Dopplers (AU, ACM, DV se indicado)</Label>
-                <Input
+                <InputComHistorico
+                  tipo="us_dopplers"
                   placeholder="Valores dos dopplers..."
                   className={getInputClassName('ultrassom_seguimento', 'dopplers')}
                   value={usSeguimento.dopplers}
-                  onChange={(e) => { removerDestaqueIA('ultrassom_seguimento', 'dopplers'); setUsSeguimento({ ...usSeguimento, dopplers: e.target.value }); }}
+                  onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'dopplers'); setUsSeguimento({ ...usSeguimento, dopplers: v }); }}
                 />
               </div>
               

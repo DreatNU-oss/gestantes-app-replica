@@ -4,6 +4,7 @@ import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -634,10 +635,11 @@ export default function MensagensTexto() {
           <div className="space-y-4">
             <div>
               <Label>Nome do Template</Label>
-              <Input
+              <InputComHistorico
+                tipo="mensagem_nome"
                 placeholder="Ex: Lembrete Vacina DTPa"
                 value={form.nome}
-                onChange={e => setForm(prev => ({ ...prev, nome: e.target.value }))}
+                onChange={(v) => setForm(prev => ({ ...prev, nome: v }))}
               />
             </div>
 
@@ -662,24 +664,24 @@ export default function MensagensTexto() {
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Label>Semana</Label>
-                  <Input
-                    type="number"
+                  <InputComHistorico
+                    tipo="mensagem_igsemanas"
                     min={1}
                     max={45}
                     placeholder="Ex: 28"
-                    value={form.igSemanas || ''}
-                    onChange={e => setForm(prev => ({ ...prev, igSemanas: parseInt(e.target.value) || undefined }))}
+                    value={String(form.igSemanas || '')}
+                    onChange={(v) => setForm(prev => ({ ...prev, igSemanas: parseInt(v) || undefined }))}
                   />
                 </div>
                 <div className="w-24">
                   <Label>Dias</Label>
-                  <Input
-                    type="number"
+                  <InputComHistorico
+                    tipo="mensagem_igdias"
                     min={0}
                     max={6}
                     placeholder="0"
-                    value={form.igDias || ''}
-                    onChange={e => setForm(prev => ({ ...prev, igDias: parseInt(e.target.value) || 0 }))}
+                    value={String(form.igDias || '')}
+                    onChange={(v) => setForm(prev => ({ ...prev, igDias: parseInt(v) || 0 }))}
                   />
                 </div>
               </div>
@@ -840,10 +842,11 @@ export default function MensagensTexto() {
             <div className="border-t pt-4">
               <Label>Testar Envio</Label>
               <div className="flex gap-2 mt-1">
-                <Input
+                <InputComHistorico
+                  tipo="mensagem_testphone"
                   placeholder="5535999887766"
                   value={testPhone}
-                  onChange={e => setTestPhone(e.target.value.replace(/\D/g, ''))}
+                  onChange={(v) => setTestPhone(v.replace(/\D/g, ''))}
                   maxLength={15}
                 />
                 <Button

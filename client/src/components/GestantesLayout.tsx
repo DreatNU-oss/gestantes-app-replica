@@ -50,6 +50,7 @@ import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { trpc } from "@/lib/trpc";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Button } from "@/components/ui/button";
 import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
 import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
@@ -304,11 +305,11 @@ export default function GestantesLayout({
                   </label>
                   <div className="relative">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="text"
+                    <InputComHistorico
+                      tipo="layout_busca"
                       placeholder="Digite o nome..."
                       value={busca}
-                      onChange={(e) => setBusca(e.target.value)}
+                      onChange={(v) => setBusca(v)}
                       onFocus={() => busca.length > 0 && setMostrarSugestoes(true)}
                       className="pl-8 h-9 text-sm"
                     />

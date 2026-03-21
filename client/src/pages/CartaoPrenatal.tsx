@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TextareaComAutocomplete } from "@/components/TextareaComAutocomplete";
 import { AutocompleteInput } from "@/components/AutocompleteInput";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { trpc } from "@/lib/trpc";
 
@@ -2699,14 +2700,14 @@ export default function CartaoPrenatal() {
                     <>
                   <div>
                     <Label>Peso (kg)</Label>
-                    <Input
-                      type="text"
+                    <InputComHistorico
+                      tipo="peso_consulta"
                       inputMode="decimal"
                       value={formData.peso}
-                      onChange={(e) => {
-                        const v = e.target.value.replace(",", ".");
-                        if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
-                          setFormData({ ...formData, peso: v });
+                      onChange={(v) => {
+                        const val = v.replace(",", ".");
+                        if (val === "" || /^\d{0,3}(\.\d{0,1})?$/.test(val)) {
+                          setFormData({ ...formData, peso: val });
                         }
                       }}
                       placeholder="Ex: 65.5"
@@ -2717,10 +2718,10 @@ export default function CartaoPrenatal() {
                   {!isUrgencia && (
                   <div>
                     <Label>Pressão Arterial</Label>
-                    <Input
-                      type="text"
+                    <InputComHistorico
+                      tipo="pa_consulta"
                       value={formData.pressaoArterial}
-                      onChange={(e) => setFormData({ ...formData, pressaoArterial: e.target.value })}
+                      onChange={(v) => setFormData({ ...formData, pressaoArterial: v })}
                       placeholder="Ex: 120/80 ou 120x80"
                       className={isBPAbnormal(formData.pressaoArterial) ? 'border-red-500 bg-red-50 text-red-900 font-bold dark:bg-red-950/30 dark:text-red-300 dark:border-red-700' : ''}
                     />
@@ -2898,10 +2899,10 @@ export default function CartaoPrenatal() {
                     {/* Pressão Arterial (dentro do card de urgência) */}
                     <div>
                       <Label className="text-sm font-medium">Pressão Arterial</Label>
-                      <Input
-                        type="text"
+                      <InputComHistorico
+                        tipo="pa_consulta"
                         value={formData.pressaoArterial}
-                        onChange={(e) => setFormData({ ...formData, pressaoArterial: e.target.value })}
+                        onChange={(v) => setFormData({ ...formData, pressaoArterial: v })}
                         placeholder="Ex: 120/80 ou 120x80"
                         className={isBPAbnormal(formData.pressaoArterial) ? 'border-red-500 bg-red-50 text-red-900 font-bold dark:bg-red-950/30 dark:text-red-300 dark:border-red-700' : ''}
                       />
@@ -2916,14 +2917,14 @@ export default function CartaoPrenatal() {
                     {/* Peso (dentro do card de urgência) */}
                     <div>
                       <Label className="text-sm font-medium">Peso (kg)</Label>
-                      <Input
-                        type="text"
+                      <InputComHistorico
+                        tipo="peso_consulta"
                         inputMode="decimal"
                         value={formData.peso}
-                        onChange={(e) => {
-                          const v = e.target.value.replace(",", ".");
-                          if (v === "" || /^\d{0,3}(\.\d{0,1})?$/.test(v)) {
-                            setFormData({ ...formData, peso: v });
+                        onChange={(v) => {
+                          const val = v.replace(",", ".");
+                          if (val === "" || /^\d{0,3}(\.\d{0,1})?$/.test(val)) {
+                            setFormData({ ...formData, peso: val });
                           }
                         }}
                         placeholder="Ex: 65.5"
@@ -2933,14 +2934,14 @@ export default function CartaoPrenatal() {
                     {/* Temperatura (dentro do card de urgência) */}
                     <div>
                       <Label className="text-sm font-medium">Temperatura (°C)</Label>
-                      <Input
-                        type="text"
+                      <InputComHistorico
+                        tipo="temperatura_consulta"
                         inputMode="decimal"
                         value={formData.temperatura}
-                        onChange={(e) => {
-                          const v = e.target.value.replace(",", ".");
-                          if (v === "" || /^\d{0,2}(\.\d{0,1})?$/.test(v)) {
-                            setFormData({ ...formData, temperatura: v });
+                        onChange={(v) => {
+                          const val = v.replace(",", ".");
+                          if (val === "" || /^\d{0,2}(\.\d{0,1})?$/.test(val)) {
+                            setFormData({ ...formData, temperatura: val });
                           }
                         }}
                         placeholder="Ex: 36.5"
@@ -3012,9 +3013,10 @@ export default function CartaoPrenatal() {
                   {/* Formulário para adicionar nova conduta */}
                   {mostrarAddConduta && (
                     <div className="mb-4 p-3 bg-background rounded-lg border flex gap-2">
-                      <Input
+                      <InputComHistorico
+                        tipo="nova_conduta"
                         value={novaConduta}
-                        onChange={(e) => setNovaConduta(e.target.value)}
+                        onChange={(v) => setNovaConduta(v)}
                         placeholder="Nome da nova conduta..."
                         className="flex-1"
                       />
@@ -3711,12 +3713,12 @@ export default function CartaoPrenatal() {
                           Salvar
                         </Button>
                       </div>
-                      <Input
+                      <InputComHistorico
+                        tipo="motivo_cesarea"
                         id="motivoCesareaOutro"
-                        type="text"
                         placeholder="Descreva a indicação médica"
                         value={motivoCesareaOutroLocal}
-                        onChange={(e) => setMotivoCesareaOutroLocal(e.target.value)}
+                        onChange={(v) => setMotivoCesareaOutroLocal(v)}
                       />
                     </div>
                   )}
@@ -3767,11 +3769,12 @@ export default function CartaoPrenatal() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="nomeBebe">Nome planejado para o bebê</Label>
-                    <Input
+                    <InputComHistorico
+                      tipo="nome_bebe"
                       id="nomeBebe"
                       placeholder="Ex: Maria, João, etc."
                       value={dadosBebe.nomeBebe}
-                      onChange={(e) => setDadosBebe(prev => ({ ...prev, nomeBebe: e.target.value }))}
+                      onChange={(v) => setDadosBebe(prev => ({ ...prev, nomeBebe: v }))}
                       className="max-w-xs"
                     />
                   </div>

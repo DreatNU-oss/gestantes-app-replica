@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { TextareaComAutocomplete } from '@/components/TextareaComAutocomplete';
@@ -129,14 +130,16 @@ export function UltrassomFormularioSalvo({
                   rows={field.rows || 3}
                 />
               ) : (
-                <Input
+                <InputComHistorico
+                  tipo={`us_salvo_${field.key}`}
                   type={field.type || 'text'}
                   placeholder={field.placeholder || ''}
                   value={formData[field.key] || ''}
-                  onChange={(e) => updateField(field.key, e.target.value)}
-                  onBlur={field.key === 'idadeGestacional' ? (e) => {
-                    const normalizado = normalizarIdadeGestacional(e.target.value);
-                    if (normalizado !== e.target.value) updateField(field.key, normalizado);
+                  onChange={(v) => updateField(field.key, v)}
+                  onBlurExtra={field.key === 'idadeGestacional' ? () => {
+                    const val = formData[field.key] || '';
+                    const normalizado = normalizarIdadeGestacional(val);
+                    if (normalizado !== val) updateField(field.key, normalizado);
                   } : undefined}
                 />
               )}

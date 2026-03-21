@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -387,12 +388,12 @@ export default function PreConsulta() {
                         <Scale className="h-4 w-4 text-blue-600" />
                         Peso Hoje (kg) <span className="text-red-500">*</span>
                       </Label>
-                      <Input
-                        type="text"
+                      <InputComHistorico
+                        tipo="peso_preconsulta"
                         inputMode="decimal"
                         placeholder="Ex: 72.5"
                         value={peso}
-                        onChange={(e) => setPeso(e.target.value)}
+                        onChange={(v) => setPeso(v)}
                         className="h-14 text-2xl font-bold text-center bg-white"
                       />
                       <p className="text-xs text-muted-foreground text-center">
@@ -407,26 +408,26 @@ export default function PreConsulta() {
                         Pressão Arterial (mmHg) <span className="text-red-500">*</span>
                       </Label>
                       <div className="flex items-center gap-2">
-                        <Input
-                          type="text"
+                        <InputComHistorico
+                          tipo="pa_sistolica_preconsulta"
                           inputMode="numeric"
                           placeholder="120"
                           value={pressaoSistolica}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, "");
+                          onChange={(v) => {
+                            const val = v.replace(/\D/g, "");
                             if (val.length <= 3) setPressaoSistolica(val);
                           }}
                           className="h-14 text-2xl font-bold text-center bg-white"
                           maxLength={3}
                         />
                         <span className="text-3xl font-bold text-muted-foreground">/</span>
-                        <Input
-                          type="text"
+                        <InputComHistorico
+                          tipo="pa_diastolica_preconsulta"
                           inputMode="numeric"
                           placeholder="80"
                           value={pressaoDiastolica}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, "");
+                          onChange={(v) => {
+                            const val = v.replace(/\D/g, "");
                             if (val.length <= 3) setPressaoDiastolica(val);
                           }}
                           className="h-14 text-2xl font-bold text-center bg-white"

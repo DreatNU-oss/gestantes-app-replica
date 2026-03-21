@@ -3,6 +3,7 @@ import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -193,21 +194,22 @@ export default function GerenciarMedicos() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome do Médico *</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="gerenciar_medico_nome"
                     id="nome"
                     value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    onChange={(v) => setNome(v)}
                     required
                     placeholder="Ex: Dr. João Silva"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="ordem">Ordem de Exibição</Label>
-                  <Input
+                  <InputComHistorico
+                    tipo="gerenciar_medico_ordem"
                     id="ordem"
-                    type="number"
                     value={ordem}
-                    onChange={(e) => setOrdem(e.target.value)}
+                    onChange={(v) => setOrdem(v)}
                     placeholder="1, 2, 3..."
                   />
                 </div>

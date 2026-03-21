@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Label } from "@/components/ui/label";
 import { Pill, Plus, X } from "lucide-react";
 import { toast } from "sonner";
@@ -202,10 +203,11 @@ export default function MedicamentosManager({ gestanteId }: MedicamentosManagerP
             {tipoPermiteTextoLivre && (
               <div className="space-y-2">
                 <Label htmlFor="especificacao">Especificar *</Label>
-                <Input
+                <InputComHistorico
+                  tipo="medicamento_especificacao"
                   id="especificacao"
                   value={novoMedicamento.especificacao}
-                  onChange={(e) => setNovoMedicamento({ ...novoMedicamento, especificacao: e.target.value })}
+                  onChange={(v) => setNovoMedicamento({ ...novoMedicamento, especificacao: v })}
                   placeholder="Ex: Losartana 50mg, Atenolol 25mg"
                 />
               </div>

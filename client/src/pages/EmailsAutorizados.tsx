@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputComHistorico } from "@/components/InputComHistorico";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -324,12 +325,13 @@ export default function EmailsAutorizados() {
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
+                  <InputComHistorico
+                    tipo="email_autorizado_novoemail"
                     type="email"
                     placeholder="novo@email.com"
                     value={novoEmail}
-                    onChange={(e) => {
-                      setNovoEmail(e.target.value);
+                    onChange={(v) => {
+                      setNovoEmail(v);
                       setErro("");
                     }}
                     className="pl-10 border-[#E8D5D0] focus:border-[#722F37] focus:ring-[#722F37]"
@@ -435,9 +437,10 @@ export default function EmailsAutorizados() {
                           {email.userExists && (email as any).userId ? (
                             editandoTelefone === (email as any).userId ? (
                               <div className="flex items-center gap-1">
-                                <Input
+                                <InputComHistorico
+                                  tipo="email_autorizado_telefonetemp"
                                   value={telefoneTemp}
-                                  onChange={(e) => setTelefoneTemp(e.target.value)}
+                                  onChange={(v) => setTelefoneTemp(v)}
                                   placeholder="(XX) XXXXX-XXXX"
                                   className="h-7 w-[150px] text-xs border-gray-200"
                                   onKeyDown={(e) => {
