@@ -42,6 +42,7 @@ import { HospitalSelect } from "@/components/HospitalSelect";
 import { ConvenioSelect } from "@/components/ConvenioSelect";
 import { ProcedimentoSelect } from "@/components/ProcedimentoSelect";
 import MedicamentosManager from "@/components/MedicamentosManager";
+import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
 // ModalInfoGestante removido do fluxo de consulta - informações agora no ConsultaUnificadaDialog
 import { toast } from "sonner";
 import {
@@ -175,6 +176,7 @@ export default function CartaoPrenatal() {
   
   // Estado para scroll automático para Marcos Importantes após fechar PEP
   const [scrollToMarcosAfterPEP, setScrollToMarcosAfterPEP] = useState(false);
+  const [showConsultaUnificadaDialog, setShowConsultaUnificadaDialog] = useState(false);
 
   // Lista de opções de conduta predefinidas
   // Queixas de urgência (checkboxes)
@@ -2384,7 +2386,7 @@ export default function CartaoPrenatal() {
             <div className="flex flex-wrap gap-1.5 justify-center">
               {[
                 { id: 'dados-gestante', label: 'Dados', icon: FileText },
-                { id: 'nova-consulta', label: 'Consulta', icon: Stethoscope },
+                { id: 'nova-consulta', label: 'Consulta', icon: Stethoscope, isDialog: true },
                 { id: 'historico-consultas', label: 'Histórico', icon: ClipboardList },
                 { id: 'cesarea', label: 'Cesárea', icon: Calendar },
                 { id: 'dados-bebe', label: 'Bebê', icon: Baby },
@@ -2392,10 +2394,14 @@ export default function CartaoPrenatal() {
                 { id: 'medicamentos', label: 'Medicamentos', icon: Pill },
                 { id: 'marcos-importantes', label: 'Marcos', icon: Milestone },
                 { id: 'graficos', label: 'Gráficos', icon: ChartLine },
-              ].map(({ id, label, icon: Icon }) => (
+              ].map(({ id, label, icon: Icon, isDialog }) => (
                 <button
                   key={id}
                   onClick={() => {
+                    if (isDialog && gestante) {
+                      setShowConsultaUnificadaDialog(true);
+                      return;
+                    }
                     const el = document.getElementById(id);
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }}
@@ -4236,5 +4242,36 @@ export default function CartaoPrenatal() {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    {/* Janela de Consulta Unificada - abre ao clicar em 'Consulta' na barra de navegação */}
+    {gestante && (
+      <ConsultaUnificadaDialog
+        open={showConsultaUnificadaDialog}
+        onOpenChange={setShowConsultaUnificadaDialog}
+        gestanteParaConsulta={showConsultaUnificadaDialog ? {
+          id: gestante.id,
+          nome: gestante.nome,
+          dum: gestante.dum || undefined,
+          dataUltrassom: gestante.dataUltrassom || undefined,
+          igUltrassomSemanas: gestante.igUltrassomSemanas || undefined,
+          igUltrassomDias: gestante.igUltrassomDias || undefined,
+          gesta: gestante.gesta || undefined,
+          para: gestante.para || undefined,
+          partosNormais: gestante.partosNormais || undefined,
+          cesareas: gestante.cesareas || undefined,
+          abortos: gestante.abortos || undefined,
+          baixouApp: gestante.baixouApp,
+        } : null}
+        onClose={() => setShowConsultaUnificadaDialog(false)}
+        onConfirm={(_isPrimeira, _isUrgencia) => {
+          setShowConsultaUnificadaDialog(false);
+          // Scroll para a seção de nova consulta após confirmar
+          setTimeout(() => {
+            const el = document.getElementById('nova-consulta');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }}
+      />
+    )}
   </>);
 }

@@ -663,10 +663,23 @@ export const appRouter = router({
           const medico = todosMedicos.find(m => m.id === g.medicoId);
           medicoNome = medico?.nome || null;
         }
+
+        // Verificar se a gestante já baixou o app
+        const { sessoesGestante: sessoesGestanteTable } = await import('../drizzle/schema');
+        const dbInstance = await getDb();
+        let baixouApp = false;
+        if (dbInstance) {
+          const sessao = await dbInstance.select({ id: sessoesGestanteTable.id })
+            .from(sessoesGestanteTable)
+            .where(eq(sessoesGestanteTable.gestanteId, g.id))
+            .limit(1);
+          baixouApp = sessao.length > 0;
+        }
         
         return {
           ...g,
           medicoNome,
+          baixouApp,
           calculado: {
             igDUM,
             igUS,

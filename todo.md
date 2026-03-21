@@ -2400,3 +2400,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Ícone Smartphone no CartaoPrenatal (21/03/2026)
 - [x] Adicionar ícone de smartphone ao lado do nome da gestante no cabeçalho do CartaoPrenatal
+
+## Correções CartaoPrenatal (21/03/2026)
+- [x] Corrigir ícone de smartphone no CartaoPrenatal (baixouApp agora vem via gestantes.get com JOIN em sessoesGestante)
+- [x] Botão "Consulta" no CartaoPrenatal agora abre ConsultaUnificadaDialog (mesma janela do Dashboard)
