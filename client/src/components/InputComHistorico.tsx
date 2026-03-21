@@ -122,25 +122,42 @@ export function InputComHistorico({
     onSuccess: () => refetchSugestoes(),
   });
 
-  // Filter suggestions based on typed text
+  // Filter suggestions based on typed text (debounced 150ms)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
+    // Clear any pending debounce
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    // Immediate clear when no suggestions available
     if (!sugestoes || sugestoes.length === 0) {
       setFilteredSuggestions([]);
       return;
     }
 
-    if (!value.trim()) {
-      setFilteredSuggestions(sugestoes);
-      return;
-    }
+    // Debounce the filtering to reduce re-renders during fast typing
+    debounceRef.current = setTimeout(() => {
+      if (!value.trim()) {
+        setFilteredSuggestions(sugestoes);
+        return;
+      }
 
-    const valorLower = value.toLowerCase();
-    const filtradas = sugestoes.filter((s) =>
-      s.texto.toLowerCase().includes(valorLower)
-    );
+      const valorLower = value.toLowerCase();
+      const filtradas = sugestoes.filter((s) =>
+        s.texto.toLowerCase().includes(valorLower)
+      );
 
-    setFilteredSuggestions(filtradas);
-    setSelectedIndex(-1);
+      setFilteredSuggestions(filtradas);
+      setSelectedIndex(-1);
+    }, 150);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
   }, [value, sugestoes]);
 
   // Show suggestions when focused and available

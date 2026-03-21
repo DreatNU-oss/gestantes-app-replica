@@ -2384,3 +2384,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar InputComHistorico em PreCadastro.tsx (todos os campos)
 - [x] Implementar InputComHistorico em FormularioGestante.tsx (todos os campos)
 - [x] Implementar InputComHistorico em demais componentes e modais (AdminClinicas, AcessoApp, Dashboard, EmailsAutorizados, GerenciarFatoresRisco, GerenciarHospitais, GerenciarMedicamentos, GerenciarMedicos, GerenciarPlanos, GerenciarProcedimentos, MensagensTexto, TemplateWizard, UltrassomFormularioSalvo, MedicamentosManager, ProcedimentoSelect, FatoresRiscoManager, GestantesLayout)
+- [x] Implementar debounce de 150ms na busca de sugestões do InputComHistorico
