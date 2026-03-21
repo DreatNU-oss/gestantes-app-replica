@@ -2417,3 +2417,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Bug: Erro validação 'tipo' vazio na página /ultrassons (21/03/2026)
 - [x] Corrigir erro "too_small: expected string to have >=1 characters" no campo tipo na página de ultrassons
+
+## Nome da Paciente no Header de Todas as Páginas (21/03/2026)
+- [x] Exibir nome da paciente selecionada no header do GestantesLayout
+- [x] Exibir nome da paciente selecionada no header do Cartão de Pré-Natal
+- [x] Exibir nome da paciente selecionada no header dos Exames Laboratoriais
+- [x] Exibir nome da paciente selecionada no header dos Ultrassons
+- [x] Exibir nome da paciente selecionada no header dos Marcos Importantes

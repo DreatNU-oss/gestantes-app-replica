@@ -444,6 +444,12 @@ export default function GestantesLayout({
             <h1 className="text-lg font-semibold text-foreground">
               Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
             </h1>
+            {gestanteAtiva && (
+              <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span className="font-medium text-foreground">{gestanteAtiva.nome}</span>
+              </div>
+            )}
           </header>
           <main className="flex-1 p-6" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
             {children}
