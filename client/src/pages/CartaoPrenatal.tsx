@@ -271,6 +271,7 @@ export default function CartaoPrenatal() {
     condutaUrgencia: {} as Record<string, boolean>,
     outraCondutaDescricao: "",
     auf: "",
+    temperatura: "",
   });
 
   // Auto-save: salvar rascunho automaticamente (500ms padrão)
@@ -1627,6 +1628,7 @@ export default function CartaoPrenatal() {
       condutaUrgencia: {},
       outraCondutaDescricao: "",
       auf: "",
+      temperatura: "",
     });
     clearDraft(); // Limpar rascunho ao resetar formulário
     setMostrarFormulario(false);
@@ -2134,6 +2136,7 @@ export default function CartaoPrenatal() {
       condutaUrgencia: condutaUrgenciaObj,
       outraCondutaDescricao: consulta.outraCondutaDescricao || "",
       auf: consulta.auf || "",
+      temperatura: (consulta as any).temperatura || "",
     });
     setMostrarFormulario(true);
   };
@@ -2925,6 +2928,30 @@ export default function CartaoPrenatal() {
                       />
                     </div>
 
+                    {/* Temperatura (dentro do card de urgência) */}
+                    <div>
+                      <Label className="text-sm font-medium">Temperatura (°C)</Label>
+                      <Input
+                        type="text"
+                        inputMode="decimal"
+                        value={formData.temperatura}
+                        onChange={(e) => {
+                          const v = e.target.value.replace(",", ".");
+                          if (v === "" || /^\d{0,2}(\.\d{0,1})?$/.test(v)) {
+                            setFormData({ ...formData, temperatura: v });
+                          }
+                        }}
+                        placeholder="Ex: 36.5"
+                        className={parseFloat(formData.temperatura) >= 37.8 ? 'border-red-500 bg-red-50 text-red-900 font-bold dark:bg-red-950/30 dark:text-red-300 dark:border-red-700' : ''}
+                      />
+                      {parseFloat(formData.temperatura) >= 37.8 && (
+                        <p className="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                          <AlertTriangle className="h-3 w-3" />
+                          Febre (≥37.8°C) — investigar infecção
+                        </p>
+                      )}
+                    </div>
+
                     {/* Toque Vaginal */}
                     <div>
                       <Label className="text-sm font-medium">Toque Vaginal</Label>
@@ -3145,6 +3172,7 @@ export default function CartaoPrenatal() {
                           condutaUrgencia: {},
                           outraCondutaDescricao: "",
                           auf: "",
+                          temperatura: "",
                         });
                         toast.success('Rascunho limpo', {
                           description: 'Formulário resetado com sucesso.',

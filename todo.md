@@ -2370,3 +2370,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Renomear "Ausência / Não é Possível" para "Útero não palpável" na lista de Atividade Uterina
 - [x] Mover campo Pressão Arterial para dentro do card vermelho de urgência, abaixo do AUF
 - [x] Adicionar campo de Peso dentro do card de urgência, abaixo da Pressão Arterial
+- [x] Adicionar campo de Temperatura no card de urgência, com alerta visual para febre (≥37.8°C)
