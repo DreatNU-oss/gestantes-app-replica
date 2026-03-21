@@ -39,9 +39,10 @@ export function TextareaComAutocomplete({
   const sugestoesRef = useRef<HTMLDivElement>(null);
 
   // Buscar sugestões do histórico (ordenadas por contadorUso desc, ultimoUso desc)
-  const { data: sugestoes, isLoading, refetch: refetchSugestoes } = trpc.historicoTextos.getSugestoes.useQuery({
-    tipo,
-  });
+  const { data: sugestoes, isLoading, refetch: refetchSugestoes } = trpc.historicoTextos.getSugestoes.useQuery(
+    { tipo },
+    { enabled: !!tipo }
+  );
 
   // Mutation para registrar uso
   const registrarUsoMutation = trpc.historicoTextos.registrarUso.useMutation({

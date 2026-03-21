@@ -126,7 +126,7 @@ export function UltrassomFormularioSalvo({
                   placeholder={field.placeholder || ''}
                   value={formData[field.key] || ''}
                   onChange={(val) => updateField(field.key, val)}
-                  tipo={field.autocompleteType as any || ''}
+                  tipo={field.autocompleteType || `us_salvo_${field.key}`}
                   rows={field.rows || 3}
                 />
               ) : (

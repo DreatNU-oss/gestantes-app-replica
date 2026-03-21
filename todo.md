@@ -2414,3 +2414,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Bug Fix App Mobile - alturaUterina na rota gestante.consultas (21/03/2026)
 - [x] Corrigir rota gestante.consultas em gestante-router.ts (linha 661) que retorna alturaUterina sem conversão mm→cm via spread (...c)
 - [x] Corrigir rota gerarPdfCartao em gestante-router.ts (linha 916) que retornava au: c.alturaUterina sem conversão
+
+## Bug: Erro validação 'tipo' vazio na página /ultrassons (21/03/2026)
+- [x] Corrigir erro "too_small: expected string to have >=1 characters" no campo tipo na página de ultrassons
