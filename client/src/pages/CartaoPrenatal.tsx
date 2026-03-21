@@ -1798,6 +1798,7 @@ export default function CartaoPrenatal() {
     if (bcfTexto !== "-") linhas.push(`BCF: ${bcfTexto}`);
     if (edemaTexto !== "-") linhas.push(`Edema: ${edemaTexto}`);
     if (formData.pressaoArterial) linhas.push(`Pressão Arterial: ${formData.pressaoArterial}`);
+    if (formData.temperatura) linhas.push(`Temperatura: ${formData.temperatura}°C`);
     
     // Campos extras de urgência
     if (isUrgencia) {
@@ -1938,6 +1939,7 @@ export default function CartaoPrenatal() {
       linhas.push(`Edema: ${edemaMap[edemaVal] ?? edemaVal}`);
     }
     if (paTexto !== "-") linhas.push(`Pressão Arterial: ${paTexto}`);
+    if ((consulta as any).temperatura) linhas.push(`Temperatura: ${(consulta as any).temperatura}°C`);
     
     // Campos extras de urgência
     if (isConsultaUrg) {
