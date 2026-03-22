@@ -2443,7 +2443,7 @@ export default function CartaoPrenatal() {
                 </p>
                 <span className="text-muted-foreground text-xs">|</span>
                 <span className="text-sm text-muted-foreground">
-                  G{gestante.gesta || 0}P{gestante.para || 0}(PN{gestante.partosNormais || 0}PC{gestante.cesareas || 0})A{gestante.abortos || 0}
+                  {formatarParidade({ gesta: gestante.gesta, para: gestante.para, partosNormais: gestante.partosNormais, cesareas: gestante.cesareas, abortos: gestante.abortos })}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-0 text-sm">

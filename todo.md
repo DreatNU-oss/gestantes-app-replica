@@ -2524,3 +2524,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] IA extrai CA para o campo dedicado no morfológico_2tri (campo circunferenciaAbdominal)
 - [x] Gráfico de CA lê circunferenciaAbdominal com prioridade (já implementado, cobre ambos os tipos)
 - [x] 53 testes vitest passando (graficoCrescimentoFetal + igNormalization)
+
+## Paridade com Supressão de Zeros no CartaoPrenatal.tsx (22/03/2026)
+- [x] Aplicar formatarParidade() do shared/paridade.ts no span G/P/A do CartaoPrenatal.tsx (linha 2445)
