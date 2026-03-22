@@ -2530,3 +2530,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Paridade no Header do GestantesLayout (22/03/2026)
 - [x] Adicionar formatarParidade() entre o nome e a IG no header do GestantesLayout.tsx (linha 341)
+
+## IG e DPP no Header do GestantesLayout (22/03/2026)
+- [x] Exibir IG(DUM), DPP DUM, IG(US) e DPP US no header do GestantesLayout após a paridade
+- [x] Blocos só aparecem quando o respectivo dado está disponível (IG(DUM) e IG(US) são independentes)

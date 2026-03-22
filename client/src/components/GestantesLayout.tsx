@@ -357,10 +357,31 @@ export default function GestantesLayout({
                       </span>
                     </>
                   )}
-                  {ig && (
-                    <span className="text-lg font-bold text-emerald-600 leading-tight">
-                      &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
-                    </span>
+                  {gestanteAtivaCompleta?.calculado?.igDUM && (
+                    <>
+                      <span className="text-muted-foreground text-xs">·</span>
+                      <span className="text-xs text-muted-foreground leading-tight">
+                        IG(DUM): <span className="font-semibold text-foreground">{gestanteAtivaCompleta.calculado.igDUM.semanas}s {gestanteAtivaCompleta.calculado.igDUM.dias}d</span>
+                      </span>
+                      {gestanteAtivaCompleta.calculado.dpp && (
+                        <span className="text-xs text-muted-foreground leading-tight">
+                          DPP DUM: <span className="font-semibold text-foreground">{gestanteAtivaCompleta.calculado.dpp}</span>
+                        </span>
+                      )}
+                    </>
+                  )}
+                  {gestanteAtivaCompleta?.calculado?.igUS && (
+                    <>
+                      <span className="text-muted-foreground text-xs">·</span>
+                      <span className="text-xs text-muted-foreground leading-tight">
+                        IG(US): <span className="font-semibold text-emerald-600">{gestanteAtivaCompleta.calculado.igUS.semanas}s {gestanteAtivaCompleta.calculado.igUS.dias}d</span>
+                      </span>
+                      {gestanteAtivaCompleta.calculado.dppUS && (
+                        <span className="text-xs text-muted-foreground leading-tight">
+                          DPP US: <span className="font-semibold text-emerald-600">{gestanteAtivaCompleta.calculado.dppUS}</span>
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
               );
