@@ -354,9 +354,9 @@ export default function GestantesLayout({
           {gestanteAtiva && userRole !== 'secretaria' && (
             <div className="sticky top-14 z-19 flex items-center gap-2 border-b bg-muted/40 px-6 py-2">
               <Button
-                variant="outline"
+                variant={location === '/cartao-prenatal' ? 'default' : 'outline'}
                 size="sm"
-                className="h-8 text-xs bg-background"
+                className={`h-8 text-xs ${location === '/cartao-prenatal' ? 'bg-primary text-primary-foreground' : 'bg-background'}`}
                 onClick={() => setLocation('/cartao-prenatal')}
                 title="Ver Cartão de Pré-natal"
               >
@@ -391,9 +391,9 @@ export default function GestantesLayout({
                 Consulta
               </Button>
               <Button
-                variant="outline"
+                variant={location === '/exames' ? 'default' : 'outline'}
                 size="sm"
-                className="h-8 text-xs bg-background"
+                className={`h-8 text-xs ${location === '/exames' ? 'bg-primary text-primary-foreground' : 'bg-background'}`}
                 onClick={() => setLocation('/exames')}
                 title="Exames Laboratoriais"
               >
@@ -401,9 +401,9 @@ export default function GestantesLayout({
                 Exames
               </Button>
               <Button
-                variant="outline"
+                variant={location === '/ultrassons' ? 'default' : 'outline'}
                 size="sm"
-                className="h-8 text-xs bg-background"
+                className={`h-8 text-xs ${location === '/ultrassons' ? 'bg-primary text-primary-foreground' : 'bg-background'}`}
                 onClick={() => setLocation('/ultrassons')}
                 title="Ultrassons"
               >

@@ -2445,3 +2445,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Botão Copiar em Marcos Importantes (22/03/2026)
 - [x] Adicionar botão de copiar em cada marco na página Marcos Importantes
+
+## Destaque botão ativo na barra 2 do header (22/03/2026)
+- [x] Destacar botão ativo na barra 2 do header conforme rota atual
