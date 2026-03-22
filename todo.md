@@ -2527,3 +2527,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Paridade com Supressão de Zeros no CartaoPrenatal.tsx (22/03/2026)
 - [x] Aplicar formatarParidade() do shared/paridade.ts no span G/P/A do CartaoPrenatal.tsx (linha 2445)
+
+## Paridade no Header do GestantesLayout (22/03/2026)
+- [x] Adicionar formatarParidade() entre o nome e a IG no header do GestantesLayout.tsx (linha 341)

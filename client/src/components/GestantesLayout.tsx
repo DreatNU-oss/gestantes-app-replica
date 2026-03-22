@@ -62,6 +62,7 @@ import { InputComHistorico } from "@/components/InputComHistorico";
 import { Button } from "@/components/ui/button";
 import ConsultaUnificadaDialog from "@/components/ConsultaUnificadaDialog";
 import WizardPrimeiraConsulta from "@/components/WizardPrimeiraConsulta";
+import { formatarParidade } from "@shared/paridade";
 
 
 // Definição de menus com controle de acesso por role
@@ -348,6 +349,14 @@ export default function GestantesLayout({
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <span className="text-lg font-bold text-foreground leading-tight">{gestanteAtiva.nome}</span>
+                  {gestanteAtivaCompleta && (
+                    <>
+                      <span className="text-muted-foreground text-xs">·</span>
+                      <span className="text-sm text-muted-foreground leading-tight">
+                        {formatarParidade({ gesta: gestanteAtivaCompleta.gesta, para: gestanteAtivaCompleta.para, partosNormais: gestanteAtivaCompleta.partosNormais, cesareas: gestanteAtivaCompleta.cesareas, abortos: gestanteAtivaCompleta.abortos })}
+                      </span>
+                    </>
+                  )}
                   {ig && (
                     <span className="text-lg font-bold text-emerald-600 leading-tight">
                       &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
