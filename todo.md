@@ -2439,3 +2439,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Renomear menu Mensagens de Texto (21/03/2026)
 - [x] Renomear 'Mensagens de Texto' para 'WhatsApp Programado' no menu lateral
+
+## Ícone WhatsApp no menu (21/03/2026)
+- [x] Adicionar ícone SVG do WhatsApp no item de menu 'WhatsApp Programado'
