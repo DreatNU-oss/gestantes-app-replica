@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { parseLocalDate } from "@/lib/dateUtils";
+import { formatarParidade } from "@shared/paridade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputComHistorico } from "@/components/InputComHistorico";
@@ -1490,20 +1491,14 @@ export default function FormularioGestante({
               <div className="border-t pt-3 mt-3">
                 <span className="text-muted-foreground text-sm">História Obstétrica:</span>
                 <div className="flex flex-wrap gap-3 mt-2">
-                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
-                    G{formData.gesta || "0"}
-                  </span>
-                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-medium">
-                    P{formData.para || "0"}
-                  </span>
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
-                    PN: {formData.partosNormais || "0"}
-                  </span>
-                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">
-                    PC: {formData.cesareas || "0"}
-                  </span>
-                  <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm">
-                    A: {formData.abortos || "0"}
+                  <span className="bg-[#722F37]/10 text-[#722F37] px-2 py-1 rounded text-sm font-bold">
+                    {formatarParidade({
+                      gesta: formData.gesta ? parseInt(formData.gesta) : 0,
+                      para: formData.para ? parseInt(formData.para) : 0,
+                      partosNormais: formData.partosNormais ? parseInt(formData.partosNormais) : 0,
+                      cesareas: formData.cesareas ? parseInt(formData.cesareas) : 0,
+                      abortos: formData.abortos ? parseInt(formData.abortos) : 0,
+                    })}
                   </span>
                 </div>
               </div>

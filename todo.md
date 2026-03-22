@@ -2453,3 +2453,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir menu lateral que fecha ao acessar WhatsApp Programado
 - [x] Adicionar botão de voltar na página WhatsApp Programado (já existia)
 - [x] Criar skill menu-novo com regras de criação de menus
+
+## Formatação de Paridade com Supressão de Zeros (22/03/2026)
+- [x] Criar função utilitária formatarParidade em shared/utils.ts
+- [ ] Aplicar em Dashboard.tsx (card gestante selecionada)
+- [ ] Aplicar em ConsultaUnificadaDialog.tsx (badges)
+- [ ] Aplicar em FormularioGestante.tsx (preview inferior)
+- [ ] Aplicar em CartaoPrenatalImpressao.tsx
+- [ ] Aplicar em CartaoPrenatalPDF.tsx

@@ -38,6 +38,10 @@ export default defineConfig({
     ],
     fs: {
       strict: true,
+      allow: [
+        path.resolve(import.meta.dirname, "client"),
+        path.resolve(import.meta.dirname, "shared"),
+      ],
       deny: ["**/.*"],
     },
   },

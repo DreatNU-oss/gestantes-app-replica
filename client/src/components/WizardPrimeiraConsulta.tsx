@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
+import { formatarParidade } from "@shared/paridade";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -223,12 +224,13 @@ export default function WizardPrimeiraConsulta({
   }, [gestante.dataUltrassom, gestante.igUltrassomSemanas, gestante.igUltrassomDias]);
 
   // Paridade
-  const paridade = useMemo(() => {
-    const g = gestante.gesta ?? 0;
-    const p = gestante.para ?? 0;
-    const a = gestante.abortos ?? 0;
-    return `G${g}P${p}A${a}`;
-  }, [gestante.gesta, gestante.para, gestante.abortos]);
+  const paridade = useMemo(() => formatarParidade({
+    gesta: gestante.gesta,
+    para: gestante.para,
+    partosNormais: gestante.partosNormais,
+    cesareas: gestante.cesareas,
+    abortos: gestante.abortos,
+  }), [gestante.gesta, gestante.para, gestante.partosNormais, gestante.cesareas, gestante.abortos]);
 
   // Calcular IG numérica para salvar
   const calcularIgNumerica = () => {

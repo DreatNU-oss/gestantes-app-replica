@@ -17,6 +17,7 @@ import { AutocompleteInput } from "@/components/AutocompleteInput";
 import { InputComHistorico } from "@/components/InputComHistorico";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { trpc } from "@/lib/trpc";
+import { formatarParidade } from "@shared/paridade";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
@@ -723,18 +724,14 @@ export default function CartaoPrenatal() {
       pdf.text(`Nome: ${gestante.nome} - Idade: ${idade} anos`, 20, y);
       y += 7;
       
-      // Formatar dados obstétricos no padrão médico (ex: G5P3(2PC1PN)A1)
-      const gesta = gestante.gesta || 0;
-      const para = gestante.para || 0;
-      const cesareas = gestante.cesareas || 0;
-      const partosNormais = gestante.partosNormais || 0;
-      const abortos = gestante.abortos || 0;
-      
-      let notacaoObstetrica = `G${gesta}P${para}`;
-      if (para > 0) {
-        notacaoObstetrica += `(${cesareas}PC${partosNormais}PN)`;
-      }
-      notacaoObstetrica += `A${abortos}`;
+      // Formatar dados obstétricos no padrão médico com supressão de zeros
+      const notacaoObstetrica = formatarParidade({
+        gesta: gestante.gesta,
+        para: gestante.para,
+        partosNormais: gestante.partosNormais,
+        cesareas: gestante.cesareas,
+        abortos: gestante.abortos,
+      });
       
       pdf.text(notacaoObstetrica, 20, y);
       y += 7;

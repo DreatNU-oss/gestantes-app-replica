@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 import GestantesLayout from "@/components/GestantesLayout";
 import { trpc } from "@/lib/trpc";
+import { formatarParidade } from "@shared/paridade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputComHistorico } from "@/components/InputComHistorico";
@@ -505,13 +506,14 @@ export default function Dashboard() {
           const ig = igUS || igDUM;
           const igTexto = ig ? `${ig.semanas}s ${ig.dias}d` : "-";
           
-          // Formatar paridade
-          const gesta = gestanteSelecionada.gesta || 0;
-          const para = gestanteSelecionada.para || 0;
-          const pn = gestanteSelecionada.partosNormais || 0;
-          const pc = gestanteSelecionada.cesareas || 0;
-          const abortos = gestanteSelecionada.abortos || 0;
-          const paridade = `G${gesta}P${para}(PN${pn}PC${pc})A${abortos}`;
+          // Formatar paridade com supressão de zeros
+          const paridade = formatarParidade({
+            gesta: gestanteSelecionada.gesta,
+            para: gestanteSelecionada.para,
+            partosNormais: gestanteSelecionada.partosNormais,
+            cesareas: gestanteSelecionada.cesareas,
+            abortos: gestanteSelecionada.abortos,
+          });
           
           return (
             <Card className="border-2 border-primary bg-primary/5">

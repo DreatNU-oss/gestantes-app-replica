@@ -1,4 +1,5 @@
 import { trpc } from "@/lib/trpc";
+import { formatarParidade } from "@shared/paridade";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -293,20 +294,14 @@ export default function ConsultaUnificadaDialog({
               <span className="font-semibold text-sm">História Obstétrica</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="bg-[#722F37]/10 text-[#722F37] border-[#722F37]/30">
-                G{gestanteParaConsulta.gesta || 0}
-              </Badge>
-              <Badge variant="outline" className="bg-[#722F37]/10 text-[#722F37] border-[#722F37]/30">
-                P{gestanteParaConsulta.para || 0}
-              </Badge>
-              <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-300">
-                PN: {gestanteParaConsulta.partosNormais || 0}
-              </Badge>
-              <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
-                PC: {gestanteParaConsulta.cesareas || 0}
-              </Badge>
-              <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">
-                A: {gestanteParaConsulta.abortos || 0}
+              <Badge variant="outline" className="bg-[#722F37]/10 text-[#722F37] border-[#722F37]/30 font-bold">
+                {formatarParidade({
+                  gesta: gestanteParaConsulta.gesta,
+                  para: gestanteParaConsulta.para,
+                  partosNormais: gestanteParaConsulta.partosNormais,
+                  cesareas: gestanteParaConsulta.cesareas,
+                  abortos: gestanteParaConsulta.abortos,
+                })}
               </Badge>
             </div>
           </div>

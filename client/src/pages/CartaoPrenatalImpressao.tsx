@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { formatarParidade } from "@shared/paridade";
 import { GraficoPeso } from "@/components/GraficoPeso";
 import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
 import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
@@ -153,7 +154,7 @@ export default function CartaoPrenatalImpressao() {
           </div>
           <div>
             <span className="font-semibold">História Obstétrica:</span>
-            <div>G{gestante.gesta || 0}P{gestante.para || 0}A{gestante.abortos || 0}</div>
+            <div>{formatarParidade({ gesta: gestante.gesta, para: gestante.para, partosNormais: gestante.partosNormais, cesareas: gestante.cesareas, abortos: gestante.abortos })}</div>
           </div>
           <div>
             <span className="font-semibold">DUM:</span>
