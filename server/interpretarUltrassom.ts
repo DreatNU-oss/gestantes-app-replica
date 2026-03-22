@@ -82,6 +82,7 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
     { nome: "idadeGestacional", descricao: "Idade gestacional no momento do exame", exemplo: "32 semanas e 3 dias", regra: "Procure por 'correspondendo a X semanas e X dias' ou 'IG: Xs Xd'." },
     { nome: "pesoFetal", descricao: "Peso fetal estimado", exemplo: "1850 g", regra: "Procure por 'peso fetal estimado', 'peso estimado', 'PFE'. Mantenha a unidade." },
     { nome: "percentilPeso", descricao: "Percentil do peso fetal", exemplo: "50º percentil", regra: "Procure por 'percentil', 'p50', 'adequado para IG'." },
+    { nome: "circunferenciaAbdominal", descricao: "Circunferência abdominal fetal (CA)", exemplo: "280 mm", regra: "Procure por 'CA', 'circunferência abdominal', 'abdominal circumference', 'AC'. Extraia o valor numérico com a unidade (mm ou cm). Se estiver em cm, mantenha a unidade para que o sistema converta." },
     { nome: "liquidoAmniotico", descricao: "Avaliação do líquido amniótico", exemplo: "Normal, ILA: 14 cm", regra: "Procure por 'líquido amniótico', 'ILA', 'maior bolsão'." },
     { nome: "placentaLocalizacao", descricao: "Localização da placenta", exemplo: "Posterior", regra: "Procure por 'placenta' seguido de localização." },
     { nome: "placentaGrau", descricao: "Grau de maturidade da placenta", exemplo: "II", regra: "Procure por 'grau' perto de 'placenta'." },

@@ -89,6 +89,7 @@ export default function Ultrassons() {
         idadeGestacional: '',
         pesoFetal: '',
         percentilPeso: '',
+        circunferenciaAbdominal: '',
         liquidoAmniotico: '',
         placentaLocalizacao: '',
         placentaGrau: '',
@@ -218,7 +219,7 @@ export default function Ultrassons() {
         ecocardiogramaAutoSave.clearDraft();
         break;
       case 'ultrassom_seguimento':
-        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
+        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
         usSeguimentoAutoSave.clearDraft();
         break;
     }
@@ -372,6 +373,7 @@ export default function Ultrassons() {
     idadeGestacional: '',
     pesoFetal: '',
     percentilPeso: '',
+    circunferenciaAbdominal: '',
     liquidoAmniotico: '',
     placentaLocalizacao: '',
     placentaGrau: '',
@@ -492,7 +494,7 @@ export default function Ultrassons() {
         setEcocardiograma({ dataExame: '', conclusao: '' });
         break;
       case 'ultrassom_seguimento':
-        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
+        setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
         break;
     }
     limparDestaquesIA(tipoUltrassom);
@@ -1473,6 +1475,7 @@ export default function Ultrassons() {
                     { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 32s 1d', required: true },
                     { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 2100g' },
                     { key: 'percentilPeso', label: 'Percentil do Peso Fetal', placeholder: 'Ex: P50' },
+                    { key: 'circunferenciaAbdominal', label: 'Circunferência Abdominal (CA)', placeholder: 'Ex: 280mm ou 28cm' },
                     { key: 'liquidoAmniotico', label: 'Líquido Amniótico (ILA ou subjetivo)', placeholder: 'Ex: 10cm ou Normal', colSpan: 3 },
                     { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Anterior' },
                     { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: II' },
@@ -1513,7 +1516,7 @@ export default function Ultrassons() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Peso Fetal Estimado</Label>
                   <InputComHistorico
@@ -1532,6 +1535,16 @@ export default function Ultrassons() {
                     className={getInputClassName('ultrassom_seguimento', 'percentilPeso')}
                     value={usSeguimento.percentilPeso}
                     onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'percentilPeso'); setUsSeguimento({ ...usSeguimento, percentilPeso: v }); }}
+                  />
+                </div>
+                <div>
+                  <Label>Circunferência Abdominal (CA)</Label>
+                  <InputComHistorico
+                    tipo="us_circunferenciaabdominal"
+                    placeholder="Ex: 280mm ou 28cm"
+                    className={getInputClassName('ultrassom_seguimento', 'circunferenciaAbdominal')}
+                    value={usSeguimento.circunferenciaAbdominal}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_seguimento', 'circunferenciaAbdominal'); setUsSeguimento({ ...usSeguimento, circunferenciaAbdominal: v }); }}
                   />
                 </div>
               </div>

@@ -2504,3 +2504,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Inserir 6 ultrassons de teste para paciente Teste Teste (20 a 38 semanas) com prefixo TESTE_
 - [x] Tooltip exibe faixa de percentil calculada (ex: P50–P90)
 - [x] 27 testes vitest passando com validação do P50
+
+## Campo CA Dedicado no US de Seguimento (22/03/2026)
+- [x] Adicionar campo circunferenciaAbdominal no estado usSeguimento (todos os resets/inits)
+- [x] Adicionar input de CA no formulário de US de Seguimento (grid 3 colunas: Peso / Percentil / CA)
+- [x] Campo CA exibido nos registros salvos via UltrassomFormularioSalvo
+- [x] CA salva no JSON dados do ultrassom (campo circunferenciaAbdominal)
+- [x] Gráfico de CA lê circunferenciaAbdominal com prioridade, usando biometria como fallback
+- [x] IA de interpretação de laudos extrai CA para o campo dedicado (seguimento)
+- [x] 27 testes vitest passando (parseCA com campo dedicado e fallback biometria)
