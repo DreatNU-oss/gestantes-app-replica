@@ -2496,3 +2496,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Gráficos aparecem antes dos Marcos Importantes, com page-break-inside-avoid
 - [x] CSS de impressão garante que SVG/canvas sejam impressos corretamente
 - [x] Gráficos só aparecem quando há dados de peso/CA nos ultrassons
+
+## Melhorias nos Gráficos de Crescimento Fetal (22/03/2026)
+- [x] Adicionar P50 (mediana) na tabela FMF de peso e CA
+- [x] Adicionar linha de P50 (mediana) nos gráficos de crescimento fetal (linha tracejada roxa)
+- [x] Adicionar rótulos de valor (peso em g / CA em mm) próximos aos pontos medidos
+- [x] Inserir 6 ultrassons de teste para paciente Teste Teste (20 a 38 semanas) com prefixo TESTE_
+- [x] Tooltip exibe faixa de percentil calculada (ex: P50–P90)
+- [x] 27 testes vitest passando com validação do P50

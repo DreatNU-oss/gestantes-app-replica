@@ -54,27 +54,30 @@ describe("FMF_PESO tabela", () => {
     expect(FMF_PESO[FMF_PESO.length - 1].ig).toBe(40);
   });
 
-  it("deve ter P1 < P3 < P10 < P90 < P97 < P99 em todas as linhas", () => {
+  it("deve ter P1 < P3 < P10 < P50 < P90 < P97 < P99 em todas as linhas", () => {
     for (const row of FMF_PESO) {
       expect(row.p1).toBeLessThan(row.p3);
       expect(row.p3).toBeLessThan(row.p10);
-      expect(row.p10).toBeLessThan(row.p90);
+      expect(row.p10).toBeLessThan(row.p50);
+      expect(row.p50).toBeLessThan(row.p90);
       expect(row.p90).toBeLessThan(row.p97);
       expect(row.p97).toBeLessThan(row.p99);
     }
   });
 
-  it("deve ter valores corretos para IG 30 (P10=1230, P90=1730)", () => {
+  it("deve ter valores corretos para IG 30 (P10=1230, P50=1460, P90=1730)", () => {
     const row = FMF_PESO.find((r) => r.ig === 30);
     expect(row).toBeDefined();
     expect(row!.p10).toBe(1230);
+    expect(row!.p50).toBe(1460);
     expect(row!.p90).toBe(1730);
   });
 
-  it("deve ter valores corretos para IG 40 (P1=2840, P99=4400)", () => {
+  it("deve ter valores corretos para IG 40 (P1=2840, P50=3550, P99=4400)", () => {
     const row = FMF_PESO.find((r) => r.ig === 40);
     expect(row).toBeDefined();
     expect(row!.p1).toBe(2840);
+    expect(row!.p50).toBe(3550);
     expect(row!.p99).toBe(4400);
   });
 });
@@ -86,27 +89,30 @@ describe("FMF_CA tabela", () => {
     expect(FMF_CA[FMF_CA.length - 1].ig).toBe(40);
   });
 
-  it("deve ter P1 < P3 < P10 < P90 < P97 < P99 em todas as linhas", () => {
+  it("deve ter P1 < P3 < P10 < P50 < P90 < P97 < P99 em todas as linhas", () => {
     for (const row of FMF_CA) {
       expect(row.p1).toBeLessThan(row.p3);
       expect(row.p3).toBeLessThan(row.p10);
-      expect(row.p10).toBeLessThan(row.p90);
+      expect(row.p10).toBeLessThan(row.p50);
+      expect(row.p50).toBeLessThan(row.p90);
       expect(row.p90).toBeLessThan(row.p97);
       expect(row.p97).toBeLessThan(row.p99);
     }
   });
 
-  it("deve ter valores corretos para IG 30 (P10=241, P90=286)", () => {
+  it("deve ter valores corretos para IG 30 (P10=241, P50=263, P90=286)", () => {
     const row = FMF_CA.find((r) => r.ig === 30);
     expect(row).toBeDefined();
     expect(row!.p10).toBe(241);
+    expect(row!.p50).toBe(263);
     expect(row!.p90).toBe(286);
   });
 
-  it("deve ter valores corretos para IG 40 (P1=350, P99=470)", () => {
+  it("deve ter valores corretos para IG 40 (P1=350, P50=408, P99=470)", () => {
     const row = FMF_CA.find((r) => r.ig === 40);
     expect(row).toBeDefined();
     expect(row!.p1).toBe(350);
+    expect(row!.p50).toBe(408);
     expect(row!.p99).toBe(470);
   });
 });

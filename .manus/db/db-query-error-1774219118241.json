@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, gestante_id, tipo, data_exame, dados FROM ultrassons WHERE gestante_id = 1560002 ORDER BY data_exame ASC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestante_id, tipo, data_exame, dados FROM ultrassons WHERE gestante_id = 1560002 ORDER BY data_exame ASC LIMIT 5;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'gestante_id' in 'where clause'"
+  ]
+}

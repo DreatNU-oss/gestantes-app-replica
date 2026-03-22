@@ -1,0 +1,46 @@
+{
+  "query": "SELECT id, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.biometria') as biometria FROM ultrassons WHERE gestanteId = 1560002 AND JSON_EXTRACT(dados, '$.observacoes') LIKE '%TESTE_%' ORDER BY dataExame ASC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.biometria') as biometria FROM ultrassons WHERE gestanteId = 1560002 AND JSON_EXTRACT(dados, '$.observacoes') LIKE '%TESTE_%' ORDER BY dataExame ASC;",
+  "rows": [
+    {
+      "id": "1350001",
+      "dataExame": "2025-11-07",
+      "pesoFetal": "\"460g\"",
+      "biometria": "\"DBP: 47mm, CC: 180mm, CA: 152mm, CF: 35mm\""
+    },
+    {
+      "id": "1350002",
+      "dataExame": "2025-11-28",
+      "pesoFetal": "\"560g\"",
+      "biometria": "\"DBP: 57mm, CC: 210mm, CA: 180mm, CF: 41mm\""
+    },
+    {
+      "id": "1350003",
+      "dataExame": "2025-12-19",
+      "pesoFetal": "\"870g\"",
+      "biometria": "\"DBP: 65mm, CC: 240mm, CA: 213mm, CF: 49mm\""
+    },
+    {
+      "id": "1350004",
+      "dataExame": "2026-01-09",
+      "pesoFetal": "\"1300g\"",
+      "biometria": "\"DBP: 73mm, CC: 265mm, CA: 250mm, CF: 56mm\""
+    },
+    {
+      "id": "1350005",
+      "dataExame": "2026-02-20",
+      "pesoFetal": "\"2520g\"",
+      "biometria": "\"DBP: 87mm, CC: 310mm, CA: 338mm, CF: 68mm\""
+    },
+    {
+      "id": "1350006",
+      "dataExame": "2026-03-13",
+      "pesoFetal": "\"3200g\"",
+      "biometria": "\"DBP: 93mm, CC: 335mm, CA: 382mm, CF: 73mm\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataExame\tpesoFetal\tbiometria\n1350001\t2025-11-07\t\"460g\"\t\"DBP: 47mm, CC: 180mm, CA: 152mm, CF: 35mm\"\n1350002\t2025-11-28\t\"560g\"\t\"DBP: 57mm, CC: 210mm, CA: 180mm, CF: 41mm\"\n1350003\t2025-12-19\t\"870g\"\t\"DBP: 65mm, CC: 240mm, CA: 213mm, CF: 49mm\"\n1350004\t2026-01-09\t\"1300g\"\t\"DBP: 73mm, CC: 265mm, CA: 250mm, CF: 56mm\"\n1350005\t2026-02-20\t\"2520g\"\t\"DBP: 87mm, CC: 310mm, CA: 338mm, CF: 68mm\"\n1350006\t2026-03-13\t\"3200g\"\t\"DBP: 93mm, CC: 335mm, CA: 382mm, CF: 73mm\"\n",
+  "stderr": "",
+  "execution_time_ms": 366
+}

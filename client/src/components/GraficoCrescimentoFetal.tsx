@@ -24,9 +24,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  ReferenceLine,
+  LabelList,
 } from "recharts";
 import { FMF_PESO, FMF_CA } from "../../../shared/fmfPercentis";
 
@@ -92,6 +91,28 @@ function interpolar(
   return (rowFloor[campo] as number) * (1 - frac) + (rowCeil[campo] as number) * frac;
 }
 
+/**
+ * Determina em qual faixa de percentil um valor se enquadra.
+ */
+function calcularFaixaPercentil(ig: number, valor: number, tabela: typeof FMF_PESO): string {
+  const p1 = interpolar(ig, tabela, "p1");
+  const p3 = interpolar(ig, tabela, "p3");
+  const p10 = interpolar(ig, tabela, "p10");
+  const p50 = interpolar(ig, tabela, "p50");
+  const p90 = interpolar(ig, tabela, "p90");
+  const p97 = interpolar(ig, tabela, "p97");
+  const p99 = interpolar(ig, tabela, "p99");
+
+  if (valor < p1) return "< P1";
+  if (valor < p3) return "P1–P3";
+  if (valor < p10) return "P3–P10";
+  if (valor < p50) return "P10–P50";
+  if (valor < p90) return "P50–P90";
+  if (valor < p97) return "P90–P97";
+  if (valor < p99) return "P97–P99";
+  return "> P99";
+}
+
 // ─── Tooltip customizado ──────────────────────────────────────────────────────
 
 const CustomTooltip = ({
@@ -99,6 +120,7 @@ const CustomTooltip = ({
   payload,
   label,
   tipo,
+  tabela,
 }: any) => {
   if (!active || !payload || !payload.length) return null;
 
@@ -108,12 +130,37 @@ const CustomTooltip = ({
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm">
       <p className="font-semibold text-gray-700 mb-1">IG: {Number(label).toFixed(1)} semanas</p>
-      {ponto && (
-        <p className="text-blue-700 font-bold">
-          {tipo === "peso" ? "Peso Fetal" : "CA"}: {ponto.value} {unidade}
-        </p>
+      {ponto && ponto.value != null && (
+        <>
+          <p className="text-blue-700 font-bold">
+            {tipo === "peso" ? "Peso Fetal" : "CA"}: {ponto.value} {unidade}
+          </p>
+          <p className="text-gray-500 text-xs mt-1">
+            Percentil: {calcularFaixaPercentil(Number(label), ponto.value, tabela)}
+          </p>
+        </>
       )}
     </div>
+  );
+};
+
+// ─── Label customizado para os pontos medidos ─────────────────────────────────
+
+const CustomLabel = (props: any) => {
+  const { x, y, value, tipo } = props;
+  if (value == null) return null;
+  const unidade = tipo === "peso" ? "g" : "mm";
+  return (
+    <text
+      x={x}
+      y={y - 10}
+      textAnchor="middle"
+      fontSize={11}
+      fontWeight="600"
+      fill="#1d4ed8"
+    >
+      {value}{unidade}
+    </text>
   );
 };
 
@@ -138,6 +185,7 @@ export function GraficoCrescimentoFetal({
     p1: row.p1,
     p3: row.p3,
     p10: row.p10,
+    p50: row.p50,
     p90: row.p90,
     p97: row.p97,
     p99: row.p99,
@@ -177,14 +225,9 @@ export function GraficoCrescimentoFetal({
   };
 
   // ── Merge de dados para o gráfico (curvas + pontos) ──────────────────────
-  // Recharts precisa de um único array de dados com todas as séries
-  // Usamos as semanas inteiras das curvas como base e adicionamos pontos medidos
   const igTicks = tabela.map((r) => r.ig);
-
-  // Mapa de ig → dados das curvas
   const curvaMap = new Map(curvas.map((c) => [c.ig, c]));
 
-  // Construir array mesclado: semanas inteiras + semanas decimais dos pontos
   const todasIGs = Array.from(
     new Set([...igTicks, ...pontosMedidos.map((p) => p.ig)])
   ).sort((a, b) => a - b);
@@ -199,6 +242,7 @@ export function GraficoCrescimentoFetal({
         p1: curva.p1,
         p3: curva.p3,
         p10: curva.p10,
+        p50: curva.p50,
         p90: curva.p90,
         p97: curva.p97,
         p99: curva.p99,
@@ -215,6 +259,7 @@ export function GraficoCrescimentoFetal({
     const p1i = interpolar(ig, tabela, "p1");
     const p3i = interpolar(ig, tabela, "p3");
     const p10i = interpolar(ig, tabela, "p10");
+    const p50i = interpolar(ig, tabela, "p50");
     const p90i = interpolar(ig, tabela, "p90");
     const p97i = interpolar(ig, tabela, "p97");
     const p99i = interpolar(ig, tabela, "p99");
@@ -224,6 +269,7 @@ export function GraficoCrescimentoFetal({
       p1: p1i,
       p3: p3i,
       p10: p10i,
+      p50: p50i,
       p90: p90i,
       p97: p97i,
       p99: p99i,
@@ -252,10 +298,10 @@ export function GraficoCrescimentoFetal({
         </p>
       )}
 
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={400}>
         <ComposedChart
           data={dadosGrafico}
-          margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+          margin={{ top: 24, right: 30, left: 10, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
@@ -268,7 +314,7 @@ export function GraficoCrescimentoFetal({
             label={{
               value: "Idade Gestacional (semanas)",
               position: "insideBottom",
-              offset: -5,
+              offset: -10,
               fontSize: 12,
               fill: "#6b7280",
             }}
@@ -288,7 +334,7 @@ export function GraficoCrescimentoFetal({
             width={65}
           />
 
-          <Tooltip content={<CustomTooltip tipo={tipo} />} />
+          <Tooltip content={<CustomTooltip tipo={tipo} tabela={tabela} />} />
 
           {/* ── Faixas coloridas ── */}
 
@@ -403,7 +449,18 @@ export function GraficoCrescimentoFetal({
             name="P99"
           />
 
-          {/* ── Pontos medidos ── */}
+          {/* ── Linha de mediana P50 ── */}
+          <Line
+            dataKey="p50"
+            stroke="#6366f1"
+            strokeWidth={2}
+            strokeDasharray="6 3"
+            dot={false}
+            isAnimationActive={false}
+            name="P50 (Mediana)"
+          />
+
+          {/* ── Pontos medidos com rótulos de valor ── */}
           {temDados && (
             <Line
               dataKey="valor"
@@ -418,18 +475,23 @@ export function GraficoCrescimentoFetal({
                     key={`dot-${cx}-${cy}`}
                     cx={cx}
                     cy={cy}
-                    r={5}
+                    r={6}
                     fill={cor}
                     stroke="#fff"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                   />
                 );
               }}
-              activeDot={{ r: 7 }}
+              activeDot={{ r: 8 }}
               connectNulls={false}
               isAnimationActive={false}
               name={tipo === "peso" ? `Peso (${unidade})` : `CA (${unidade})`}
-            />
+            >
+              <LabelList
+                dataKey="valor"
+                content={(props: any) => <CustomLabel {...props} tipo={tipo} />}
+              />
+            </Line>
           )}
         </ComposedChart>
       </ResponsiveContainer>
@@ -447,6 +509,10 @@ export function GraficoCrescimentoFetal({
         <div className="flex items-center gap-1.5">
           <span className="inline-block w-4 h-3 rounded" style={{ background: "#fca5a5", opacity: 0.8 }} />
           <span>P1–P3 / P97–P99 (Alerta)</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="inline-block w-8 h-0.5 rounded" style={{ background: "#6366f1" }} />
+          <span>P50 (Mediana)</span>
         </div>
         {temDados && (
           <div className="flex items-center gap-1.5">

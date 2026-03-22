@@ -1,0 +1,9 @@
+{
+  "query": "\nUPDATE ultrassons \nSET dados = JSON_SET(\n  JSON_REMOVE(dados, '$.pesoEstimado'),\n  '$.pesoFetal',\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.pesoEstimado'))\n)\nWHERE gestanteId = 1560002\n  AND JSON_EXTRACT(dados, '$.observacoes') LIKE '%TESTE_%'\n  AND JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nUPDATE ultrassons \nSET dados = JSON_SET(\n  JSON_REMOVE(dados, '$.pesoEstimado'),\n  '$.pesoFetal',\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.pesoEstimado'))\n)\nWHERE gestanteId = 1560002\n  AND JSON_EXTRACT(dados, '$.observacoes') LIKE '%TESTE_%'\n  AND JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL;\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 368
+}
