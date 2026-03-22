@@ -324,22 +324,17 @@ export default function GestantesLayout({
           </SidebarFooter>
         </Sidebar>
         <SidebarInset className="flex-1">
-          {/* Barra 1: Título + Nome/IG da gestante */}
+          {/* Barra 1: Nome/IG da gestante (sem título fixo) */}
           <header className="sticky top-0 z-20 flex items-center gap-4 border-b bg-background px-6 h-14">
             <SidebarTrigger />
-            <div className="flex flex-col justify-center">
-              <h1 className="text-lg font-semibold text-foreground leading-tight">
-                Gestão de Pré-Natal{(user as any)?.clinicaNome ? ` - ${(user as any).clinicaNome}` : ''}
-              </h1>
-            </div>
-            {gestanteAtiva && (() => {
+            {gestanteAtiva ? (() => {
               const ig = gestanteAtivaCompleta?.calculado
                 ? (gestanteAtivaCompleta.calculado.igUS || gestanteAtivaCompleta.calculado.igDUM)
                 : null;
               return (
-                <div className="flex items-center gap-2 ml-4">
-                  <Users className="h-4 w-4 text-rose-500" />
-                  <span className="text-lg font-bold text-rose-600 leading-tight">{gestanteAtiva.nome}</span>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-lg font-bold text-foreground leading-tight">{gestanteAtiva.nome}</span>
                   {ig && (
                     <span className="text-lg font-bold text-emerald-600 leading-tight">
                       &nbsp;·&nbsp;IG: {ig.semanas}s {ig.dias}d
@@ -347,7 +342,11 @@ export default function GestantesLayout({
                   )}
                 </div>
               );
-            })()}
+            })() : (
+              <h1 className="text-lg font-semibold text-foreground leading-tight">
+                {(user as any)?.clinicaNome || 'Gestão de Pré-Natal'}
+              </h1>
+            )}
           </header>
 
           {/* Barra 2: Botões de ação rápida (só aparece quando há gestante selecionada) */}
