@@ -2476,3 +2476,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Fire-and-forget: não bloqueia o upload se a notificação falhar
 - [x] Delay de 3s entre envios para respeitar rate limit da WaSenderAPI
 - [x] Testes vitest (15/15 passando)
+
+## CORS - Domínios Manus Preview (22/03/2026)
+- [x] Adicionar *.manus.computer, *.manusvm.computer, *.us2.manus.computer na whitelist de CORS

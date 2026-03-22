@@ -46,6 +46,8 @@ async function startServer() {
       'https://clinicaapp-f6ne6cpt.manus.space', // APP Administrativo
       /https:\/\/.*\.manusvm\.computer$/, // Permite todos os subdomínios manusvm.computer
       /https:\/\/.*\.manus\.space$/, // Permite todos os subdomínios manus.space
+      /https:\/\/.*\.manus\.computer$/, // Manus Preview (*.manus.computer)
+      /https:\/\/.*\.us2\.manus\.computer$/, // Manus Preview US2 (*.us2.manus.computer)
     ];
     
     // Verificar se a origem está na lista de permitidas
