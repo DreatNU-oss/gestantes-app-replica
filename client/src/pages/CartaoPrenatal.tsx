@@ -37,6 +37,7 @@ import { AutocompleteSelect } from "@/components/AutocompleteSelect";
 import { GraficoPeso } from "@/components/GraficoPeso";
 import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
 import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
+import { GraficoCrescimentoFetal } from "@/components/GraficoCrescimentoFetal";
 import { CartaoPrenatalPDF } from "@/components/CartaoPrenatalPDF";
 import FatoresRiscoManager from "@/components/FatoresRiscoManager";
 import { HospitalSelect } from "@/components/HospitalSelect";
@@ -3995,6 +3996,92 @@ export default function CartaoPrenatal() {
             </CardContent>
           </Card>
         )}
+
+        {/* Gráfico de Peso Fetal */}
+        {gestante && ultrassons && gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined && (() => {
+          // Extrair pontos de peso fetal de todos os ultrassons que têm pesoFetal e dataExame
+          const parsePeso = (v: string | undefined | null): number => {
+            if (!v) return 0;
+            const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
+            return isNaN(n) ? 0 : n;
+          };
+          const pontosPeso = (ultrassons as any[])
+            .filter((us: any) => us.dataExame && us.dados?.pesoFetal)
+            .map((us: any) => ({
+              dataExame: us.dataExame,
+              valor: parsePeso(us.dados.pesoFetal),
+            }))
+            .filter((p: any) => p.valor > 0);
+
+          if (pontosPeso.length === 0) return null;
+          return (
+            <Card>
+              <CardHeader>
+                <CardTitle>Crescimento Fetal — Peso Estimado (FMF)</CardTitle>
+                <CardDescription>Peso fetal estimado nos ultrassons × curvas de percentis FMF. IG calculada pelo 1º ultrassom do cadastro.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GraficoCrescimentoFetal
+                  tipo="peso"
+                  pontos={pontosPeso}
+                  dataUltrassom={gestante.dataUltrassom!}
+                  igUltrassomSemanas={gestante.igUltrassomSemanas!}
+                  igUltrassomDias={gestante.igUltrassomDias ?? 0}
+                />
+              </CardContent>
+            </Card>
+          );
+        })()}
+
+        {/* Gráfico de Circunferência Abdominal */}
+        {gestante && ultrassons && gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined && (() => {
+          // Extrair CA do campo biometria (texto livre) ou campo dedicado
+          const parseCA = (us: any): number => {
+            // Tentar campo dedicado primeiro (futuro)
+            if (us.dados?.circunferenciaAbdominal) {
+              const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
+              if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v; // cm→mm
+            }
+            // Extrair do campo biometria: CA 280mm, CA: 28.0cm, ca=280, etc.
+            const bio: string = us.dados?.biometria || '';
+            const match = bio.match(/\bCA\s*[=:\s]?\s*(\d+(?:\.\d+)?)\s*(mm|cm)?/i);
+            if (match) {
+              const val = parseFloat(match[1]);
+              const unit = (match[2] || '').toLowerCase();
+              if (!isNaN(val) && val > 0) {
+                return unit === 'cm' || val <= 100 ? val * 10 : val;
+              }
+            }
+            return 0;
+          };
+
+          const pontosCA = (ultrassons as any[])
+            .filter((us: any) => us.dataExame)
+            .map((us: any) => ({
+              dataExame: us.dataExame,
+              valor: parseCA(us),
+            }))
+            .filter((p: any) => p.valor > 0);
+
+          if (pontosCA.length === 0) return null;
+          return (
+            <Card>
+              <CardHeader>
+                <CardTitle>Crescimento Fetal — Circunferência Abdominal (FMF)</CardTitle>
+                <CardDescription>CA fetal nos ultrassons × curvas de percentis FMF. IG calculada pelo 1º ultrassom do cadastro. Valores em mm.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GraficoCrescimentoFetal
+                  tipo="ca"
+                  pontos={pontosCA}
+                  dataUltrassom={gestante.dataUltrassom!}
+                  igUltrassomSemanas={gestante.igUltrassomSemanas!}
+                  igUltrassomDias={gestante.igUltrassomDias ?? 0}
+                />
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         </div>
 

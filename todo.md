@@ -2479,3 +2479,13 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## CORS - Domínios Manus Preview (22/03/2026)
 - [x] Adicionar *.manus.computer, *.manusvm.computer, *.us2.manus.computer na whitelist de CORS
+
+## Gráficos de Crescimento Fetal no Cartão de Pré-Natal (22/03/2026)
+- [x] Criar arquivo shared/fmfPercentis.ts com tabelas FMF de peso e CA
+- [x] Criar componente GraficoCrescimentoFetal reutilizável com curvas de percentis coloridas
+- [x] Gráfico de Peso Fetal (22–40 semanas): faixas P1-P3 e P97-P99 vermelho, P3-P10 e P90-P97 amarelo, P10-P90 verde
+- [x] Gráfico de Circunferência Abdominal (20–40 semanas): mesmas faixas de cor
+- [x] Calcular IG de cada ponto pelo 1º ultrassom do cadastro (igUltrassomSemanas + igUltrassomDias + data do US), NÃO pela IG do laudo
+- [x] Converter CA de cm para mm quando valor ≤ 100
+- [x] Integrar os dois gráficos ao final da página Cartão de Pré-Natal
+- [x] 27 testes vitest passando (tabelas FMF, cálculo de IG, parsePeso, parseCA)
