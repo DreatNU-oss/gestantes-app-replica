@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { trpc } from "@/lib/trpc";
 import React, { useState, useMemo } from "react";
-import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft, ShieldAlert } from "lucide-react";
+import { Calendar, Baby, Syringe, Activity, CheckCircle2, ArrowLeft, ShieldAlert, Copy, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGestanteAtiva } from "@/contexts/GestanteAtivaContext";
 
@@ -25,6 +25,13 @@ export default function MarcosImportantes() {
     }
   }, [gestanteAtiva]);
   const [metodo, setMetodo] = useState<MetodoCalculo>("ultrassom");
+  const [copiadoIdx, setCopiadoIdx] = useState<number | null>(null);
+
+  const copiarTexto = (texto: string, idx: number) => {
+    navigator.clipboard.writeText(texto);
+    setCopiadoIdx(idx);
+    setTimeout(() => setCopiadoIdx(null), 2000);
+  };
 
   const { data: gestantes, isLoading } = trpc.gestantes.list.useQuery();
 
@@ -283,16 +290,41 @@ export default function MarcosImportantes() {
                 dataInicio = calcularData(marco.semanas, marco.dias);
               }
 
+              // Montar texto para copiar
+              let textoParaCopiar = '';
+              if (marco.isRange) {
+                const inicioStr = dataInicio ? dataInicio.toLocaleDateString('pt-BR') : '-';
+                const fimStr = dataFim ? dataFim.toLocaleDateString('pt-BR') : '-';
+                textoParaCopiar = `${marco.titulo}: ${inicioStr} a ${fimStr}`;
+              } else {
+                textoParaCopiar = dataInicio ? `${marco.titulo}: ${formatDate(dataInicio)}` : '-';
+              }
+
               return (
                 <Card key={idx} className={`border-2 ${marco.color}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <Icon className="h-6 w-6" />
-                      <Badge variant="outline" className={marco.color}>
-                        {marco.isRange && Array.isArray(marco.semanas)
-                          ? `${marco.semanas[0]}s${marco.dias[0]}d - ${marco.semanas[1]}s${marco.dias[1]}d`
-                          : `${marco.semanas}s${marco.dias}d`}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className={marco.color}>
+                          {marco.isRange && Array.isArray(marco.semanas)
+                            ? `${marco.semanas[0]}s${marco.dias[0]}d - ${marco.semanas[1]}s${marco.dias[1]}d`
+                            : `${marco.semanas}s${marco.dias}d`}
+                        </Badge>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6"
+                          title="Copiar"
+                          onClick={() => copiarTexto(textoParaCopiar, idx)}
+                        >
+                          {copiadoIdx === idx ? (
+                            <Check className="h-3 w-3 text-green-500" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                     <CardTitle className="text-lg mt-2">{marco.titulo}</CardTitle>
                     <CardDescription className="text-xs">{marco.descricao}</CardDescription>
