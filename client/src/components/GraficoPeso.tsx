@@ -266,7 +266,7 @@ export function GraficoPeso({ consultas, altura, pesoInicial, metodoCalculo }: G
             type="monotone"
             dataKey="pesoReal"
             stroke={cor.linha}
-            strokeWidth={3}
+            strokeWidth={0}
             dot={(props: any) => {
               const { cx, cy, payload, onMouseEnter, onMouseLeave } = props;
               if (!payload.pesoReal) return <circle key={`empty-${payload?.semana || Math.random()}`} cx={0} cy={0} r={0} />;

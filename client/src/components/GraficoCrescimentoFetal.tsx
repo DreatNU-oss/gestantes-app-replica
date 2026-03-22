@@ -465,7 +465,7 @@ export function GraficoCrescimentoFetal({
             <Line
               dataKey="valor"
               stroke="#1d4ed8"
-              strokeWidth={2.5}
+              strokeWidth={0}
               dot={(props: any) => {
                 const { cx, cy, payload } = props;
                 if (payload.valor == null) return <g key={`dot-empty-${cx}`} />;

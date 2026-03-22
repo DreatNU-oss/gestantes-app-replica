@@ -2513,3 +2513,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Gráfico de CA lê circunferenciaAbdominal com prioridade, usando biometria como fallback
 - [x] IA de interpretação de laudos extrai CA para o campo dedicado (seguimento)
 - [x] 27 testes vitest passando (parseCA com campo dedicado e fallback biometria)
+
+## Remoção de Linhas entre Pontos nos Gráficos (22/03/2026)
+- [x] Remover linhas de conexão entre pontos em todos os gráficos do Cartão de Pré-Natal (Peso Fetal, CA, AU, PA, Peso Materno)

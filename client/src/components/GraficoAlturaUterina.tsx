@@ -175,10 +175,11 @@ export function GraficoAlturaUterina({ consultas, dum }: GraficoAlturaUterinaPro
         data: valoresMedidos,
         borderColor: "rgb(168, 85, 247)",
         backgroundColor: "rgba(168, 85, 247, 0.1)",
-        tension: 0.3,
+        tension: 0,
+        showLine: false,
         pointRadius: 5,
         pointHoverRadius: 7,
-        spanGaps: false, // Não conectar pontos com gaps
+        spanGaps: false,
         datalabels: {
           display: (context: any) => context.dataset.data[context.dataIndex] !== null,
           align: "top" as const,
