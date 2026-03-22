@@ -10,8 +10,10 @@ import { gerarPdfComJsPDF } from "./htmlToPdf";
 import { gerarTodosGraficos, DadoConsulta } from "./chartGenerator";
 import { normalizeExamName } from "../shared/examNormalization";
 import { storagePut } from "./storage";
-import { arquivosExames, type InsertArquivoExame } from "../drizzle/schema";
+import { arquivosExames, type InsertArquivoExame, users, medicos } from "../drizzle/schema";
 import { getDb } from "./db";
+import { sendWhatsApp } from "./whatsapp";
+import { eq, and, inArray } from "drizzle-orm";
 
 // Generate 6-digit verification code
 function generateCode(): string {
@@ -1076,7 +1078,51 @@ export const gestanteRouter = router({
         const [result] = await db.insert(arquivosExames).values(arquivoData);
         const arquivoId = result.insertId;
         
-        // Passo 4 — Acionar IA em background (não bloquear a resposta)
+        // Passo 4 — Notificar médico(s) por WhatsApp (fire-and-forget)
+        (async () => {
+          try {
+            const destinatarios = await db.select({
+              id: users.id,
+              name: users.name,
+              telefone: users.telefone,
+              role: users.role,
+            })
+              .from(users)
+              .where(
+                and(
+                  eq(users.clinicaId, gestante.clinicaId!),
+                  inArray(users.role, ['admin', 'obstetra']),
+                )
+              );
+            
+            const tipoLabel = input.tipoExame === 'laboratorial' ? 'Exame Laboratorial' : 'Ultrassom';
+            const nomeGestante = gestante.nome.split(' ').map((p: string) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+            
+            for (const dest of destinatarios) {
+              if (!dest.telefone) continue;
+              
+              const msg = `\u{1F4CB} *Novo exame recebido pelo App*\n\nA gestante *${nomeGestante}* enviou um *${tipoLabel}* pelo aplicativo.\n\n\u{1F4CE} Arquivo: ${input.nomeArquivo}\n\u23F3 Status: Aguardando sua revis\u00E3o\n\nAcesse a p\u00E1gina *Exames Pendentes* no sistema para revisar.`;
+              
+              try {
+                const r = await sendWhatsApp({ to: dest.telefone, text: msg }, gestante.clinicaId!);
+                if (r.success) {
+                  console.log(`[uploadExame] WhatsApp enviado para ${dest.name} (${dest.role})`);
+                } else {
+                  console.error(`[uploadExame] Erro WhatsApp para ${dest.name}: ${r.error}`);
+                }
+              } catch (whatsErr) {
+                console.error(`[uploadExame] Erro WhatsApp para ${dest.name}:`, whatsErr);
+              }
+              
+              // Delay de 3s entre envios para respeitar rate limit
+              await new Promise(resolve => setTimeout(resolve, 3000));
+            }
+          } catch (notifError) {
+            console.error('[uploadExame] Erro ao notificar m\u00E9dicos:', notifError);
+          }
+        })();
+        
+        // Passo 5 — Acionar IA em background (não bloquear a resposta)
         const gestanteDum = gestante.dum ? new Date(gestante.dum).toISOString().split('T')[0] : undefined;
         
         // Fire-and-forget: interpretação IA assíncrona
@@ -1092,7 +1138,6 @@ export const gestanteRouter = router({
               );
               
               // Atualizar o registro com os resultados da IA
-              const { eq } = await import('drizzle-orm');
               await db.update(arquivosExames)
                 .set({
                   resultadoIA: { resultados, dataColeta: dataColetaIA, trimestreExtraido, relatorio },
@@ -1110,7 +1155,6 @@ export const gestanteRouter = router({
               );
               
               // Atualizar o registro com os resultados da IA
-              const { eq } = await import('drizzle-orm');
               await db.update(arquivosExames)
                 .set({
                   resultadoIA: dados,
@@ -1123,7 +1167,6 @@ export const gestanteRouter = router({
           } catch (iaError: any) {
             console.error(`[uploadExame] Erro na IA para arquivo ${arquivoId}:`, iaError);
             try {
-              const { eq } = await import('drizzle-orm');
               await db.update(arquivosExames)
                 .set({
                   iaProcessado: 1,
@@ -1136,7 +1179,7 @@ export const gestanteRouter = router({
           }
         })();
         
-        // Passo 5 — Retornar resposta ao app
+        // Passo 6 — Retornar resposta ao app
         return {
           success: true,
           id: Number(arquivoId),

@@ -2463,8 +2463,16 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [ ] Aplicar em CartaoPrenatalPDF.tsx
 
 ## Upload de Exames pelo App Mobile (22/03/2026)
-- [ ] Tarefa 1: Criar rota gestante.uploadExame com autenticação por token
-- [ ] Tarefa 1: Upload S3 + registro no banco com status pendente_revisao e origemEnvio app_mobile
-- [ ] Tarefa 1: Acionar IA em background (interpretarExamesComIA ou interpretarLaudoUltrassom)
-- [ ] Tarefa 2: Interface de revisão no site para exames pendentes enviados pelo app
+- [x] Tarefa 1: Criar rota gestante.uploadExame com autenticação por token
+- [x] Tarefa 1: Upload S3 + registro no banco com status pendente_revisao e origemEnvio app_mobile
+- [x] Tarefa 1: Acionar IA em background (interpretarExamesComIA ou interpretarLaudoUltrassom)
+- [x] Tarefa 2: Interface de revisão no site para exames pendentes enviados pelo app
 - [ ] Tarefa 3: Documentar parâmetros finais para integração com o app mobile
+
+## Notificação WhatsApp ao Médico - Upload de Exame (22/03/2026)
+- [x] Enviar WhatsApp ao médico responsável via WaSenderAPI quando gestante enviar exame pelo app
+- [x] Notificar todos os usuários admin e obstetra da mesma clínica
+- [x] Mensagem inclui nome da gestante, tipo de exame e nome do arquivo
+- [x] Fire-and-forget: não bloqueia o upload se a notificação falhar
+- [x] Delay de 3s entre envios para respeitar rate limit da WaSenderAPI
+- [x] Testes vitest (15/15 passando)
