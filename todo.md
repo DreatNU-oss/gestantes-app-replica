@@ -2516,3 +2516,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Remoção de Linhas entre Pontos nos Gráficos (22/03/2026)
 - [x] Remover linhas de conexão entre pontos em todos os gráficos do Cartão de Pré-Natal (Peso Fetal, CA, AU, PA, Peso Materno)
+
+## Campo CA Dedicado no Morfológico 2º Trimestre (22/03/2026)
+- [x] Adicionar circunferenciaAbdominal no estado morfo2Tri (todos os 3 resets/inits)
+- [x] Adicionar input de CA no formulário do Morfológico 2º Tri (grid 2 colunas: Peso / CA)
+- [x] Campo CA exibido nos registros salvos via UltrassomFormularioSalvo
+- [x] IA extrai CA para o campo dedicado no morfológico_2tri (campo circunferenciaAbdominal)
+- [x] Gráfico de CA lê circunferenciaAbdominal com prioridade (já implementado, cobre ambos os tipos)
+- [x] 53 testes vitest passando (graficoCrescimentoFetal + igNormalization)

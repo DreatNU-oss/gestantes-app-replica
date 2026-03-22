@@ -111,8 +111,8 @@ describe("normalizarIdadeGestacional - Auto-fill dias com 0", () => {
         resolve(__dirname, "../client/src/pages/Ultrassons.tsx"),
         "utf-8"
       );
-      // Contar ocorrências de onBlur com normalizarIdadeGestacional
-      const matches = code.match(/onBlur=\{.*normalizarIdadeGestacional/g);
+      // Contar ocorrências de onBlurExtra com normalizarIdadeGestacional
+      const matches = code.match(/onBlurExtra=\{.*normalizarIdadeGestacional/g);
       // 5 tipos de US com campo IG: 1º US, Morfo 1T, Obstétrico, Morfo 2T, Seguimento
       expect(matches).not.toBeNull();
       expect(matches!.length).toBeGreaterThanOrEqual(5);
@@ -161,7 +161,7 @@ describe("normalizarIdadeGestacional - Auto-fill dias com 0", () => {
         "utf-8"
       );
       expect(code).toContain("normalizarIdadeGestacional");
-      expect(code).toContain("onBlur={field.key === 'idadeGestacional'");
+      expect(code).toContain("onBlurExtra={field.key === 'idadeGestacional'");
     });
   });
 });

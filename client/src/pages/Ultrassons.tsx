@@ -71,6 +71,7 @@ export default function Ultrassons() {
         idadeGestacional: '',
         biometria: '',
         pesoFetal: '',
+        circunferenciaAbdominal: '',
         placentaLocalizacao: '',
         placentaGrau: '',
         liquidoAmniotico: '',
@@ -211,7 +212,7 @@ export default function Ultrassons() {
         usObstetricoAutoSave.clearDraft();
         break;
       case 'morfologico_2tri':
-        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
         morfo2TriAutoSave.clearDraft();
         break;
       case 'ecocardiograma_fetal':
@@ -353,6 +354,7 @@ export default function Ultrassons() {
     idadeGestacional: '',
     biometria: '',
     pesoFetal: '',
+    circunferenciaAbdominal: '',
     placentaLocalizacao: '',
     placentaGrau: '',
     liquidoAmniotico: '',
@@ -488,7 +490,7 @@ export default function Ultrassons() {
         setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
         break;
       case 'morfologico_2tri':
-        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
         break;
       case 'ecocardiograma_fetal':
         setEcocardiograma({ dataExame: '', conclusao: '' });
@@ -1205,6 +1207,7 @@ export default function Ultrassons() {
                     { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 22s 0d', required: true },
                     { key: 'biometria', label: 'Biometria Fetal', placeholder: 'DBP, CC, CA, CF...', colSpan: 3 },
                     { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 500g' },
+                    { key: 'circunferenciaAbdominal', label: 'Circunferência Abdominal (CA)', placeholder: 'Ex: 175mm ou 17.5cm' },
                     { key: 'sexoFetal', label: 'Sexo Fetal', placeholder: 'Masculino/Feminino' },
                     { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Posterior' },
                     { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: 0' },
@@ -1257,15 +1260,27 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <div>
-                <Label>Peso Fetal Estimado</Label>
-                <InputComHistorico
-                  tipo="us_morfo2tri_pesofetal"
-                  placeholder="Ex: 450g"
-                  className={getInputClassName('morfologico_2tri', 'pesoFetal')}
-                  value={morfo2Tri.pesoFetal}
-                  onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'pesoFetal'); setMorfo2Tri({ ...morfo2Tri, pesoFetal: v }); }}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Peso Fetal Estimado</Label>
+                  <InputComHistorico
+                    tipo="us_morfo2tri_pesofetal"
+                    placeholder="Ex: 450g"
+                    className={getInputClassName('morfologico_2tri', 'pesoFetal')}
+                    value={morfo2Tri.pesoFetal}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'pesoFetal'); setMorfo2Tri({ ...morfo2Tri, pesoFetal: v }); }}
+                  />
+                </div>
+                <div>
+                  <Label>Circunferência Abdominal (CA)</Label>
+                  <InputComHistorico
+                    tipo="us_circunferenciaabdominal"
+                    placeholder="Ex: 175mm ou 17.5cm"
+                    className={getInputClassName('morfologico_2tri', 'circunferenciaAbdominal')}
+                    value={morfo2Tri.circunferenciaAbdominal}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'circunferenciaAbdominal'); setMorfo2Tri({ ...morfo2Tri, circunferenciaAbdominal: v }); }}
+                  />
+                </div>
               </div>
               
               <div className="grid grid-cols-3 gap-4">
