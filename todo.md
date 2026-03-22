@@ -2489,3 +2489,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Converter CA de cm para mm quando valor ≤ 100
 - [x] Integrar os dois gráficos ao final da página Cartão de Pré-Natal
 - [x] 27 testes vitest passando (tabelas FMF, cálculo de IG, parsePeso, parseCA)
+
+## Gráficos de Crescimento Fetal no PDF do Cartão de Pré-Natal (22/03/2026)
+- [x] Analisar mecanismo atual de geração do PDF (página de impressão via window.print)
+- [x] Inserir GraficoCrescimentoFetal na página CartaoPrenatalImpressao.tsx
+- [x] Gráficos aparecem antes dos Marcos Importantes, com page-break-inside-avoid
+- [x] CSS de impressão garante que SVG/canvas sejam impressos corretamente
+- [x] Gráficos só aparecem quando há dados de peso/CA nos ultrassons

@@ -5,6 +5,7 @@ import { formatarParidade } from "@shared/paridade";
 import { GraficoPeso } from "@/components/GraficoPeso";
 import { GraficoAlturaUterina } from "@/components/GraficoAlturaUterina";
 import { GraficoPressaoArterial } from "@/components/GraficoPressaoArterial";
+import { GraficoCrescimentoFetal } from "@/components/GraficoCrescimentoFetal";
 import { Loader2 } from "lucide-react";
 
 export default function CartaoPrenatalImpressao() {
@@ -107,6 +108,9 @@ export default function CartaoPrenatalImpressao() {
             padding: 0 !important;
           }
           .no-print { display: none !important; }
+          .page-break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
+          /* Garantir que os gráficos SVG/canvas sejam impressos corretamente */
+          svg, canvas { max-width: 100% !important; }
         }
       `}</style>
       
@@ -532,6 +536,70 @@ export default function CartaoPrenatalImpressao() {
           </div>
         </div>
       )}
+
+      {/* Gráficos de Crescimento Fetal */}
+      {gestante && gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined && (() => {
+        const parsePeso = (v: string | undefined | null): number => {
+          if (!v) return 0;
+          const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
+          return isNaN(n) ? 0 : n;
+        };
+        const pontosPeso = (ultrassons as any[])
+          .filter((us: any) => us.dataExame && us.dados?.pesoFetal)
+          .map((us: any) => ({ dataExame: us.dataExame, valor: parsePeso(us.dados.pesoFetal) }))
+          .filter((p: any) => p.valor > 0);
+
+        const parseCA = (us: any): number => {
+          if (us.dados?.circunferenciaAbdominal) {
+            const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
+            if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v;
+          }
+          const bio: string = us.dados?.biometria || '';
+          const match = bio.match(/\bCA\s*[=:\s]?\s*(\d+(?:\.\d+)?)\s*(mm|cm)?/i);
+          if (match) {
+            const val = parseFloat(match[1]);
+            const unit = (match[2] || '').toLowerCase();
+            if (!isNaN(val) && val > 0) return unit === 'cm' || val <= 100 ? val * 10 : val;
+          }
+          return 0;
+        };
+        const pontosCA = (ultrassons as any[])
+          .filter((us: any) => us.dataExame)
+          .map((us: any) => ({ dataExame: us.dataExame, valor: parseCA(us) }))
+          .filter((p: any) => p.valor > 0);
+
+        if (pontosPeso.length === 0 && pontosCA.length === 0) return null;
+        return (
+          <>
+            {pontosPeso.length > 0 && (
+              <div className="mb-8 page-break-inside-avoid">
+                <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Crescimento Fetal — Peso Estimado (FMF)</h2>
+                <GraficoCrescimentoFetal
+                  tipo="peso"
+                  pontos={pontosPeso}
+                  dataUltrassom={gestante.dataUltrassom!}
+                  igUltrassomSemanas={gestante.igUltrassomSemanas!}
+                  igUltrassomDias={gestante.igUltrassomDias ?? 0}
+                />
+                <p className="text-xs text-gray-400 mt-1 text-center">Curvas FMF — IG calculada pelo 1º ultrassom do cadastro</p>
+              </div>
+            )}
+            {pontosCA.length > 0 && (
+              <div className="mb-8 page-break-inside-avoid">
+                <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Crescimento Fetal — Circunferência Abdominal (FMF)</h2>
+                <GraficoCrescimentoFetal
+                  tipo="ca"
+                  pontos={pontosCA}
+                  dataUltrassom={gestante.dataUltrassom!}
+                  igUltrassomSemanas={gestante.igUltrassomSemanas!}
+                  igUltrassomDias={gestante.igUltrassomDias ?? 0}
+                />
+                <p className="text-xs text-gray-400 mt-1 text-center">Curvas FMF — IG calculada pelo 1º ultrassom do cadastro. Valores em mm.</p>
+              </div>
+            )}
+          </>
+        );
+      })()}
 
       {/* Marcos Importantes */}
       {gestante && (gestante.calculado?.dppUS || gestante.calculado?.dpp) && (
