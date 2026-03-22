@@ -2301,6 +2301,103 @@ export const appRouter = router({
         
         return { success: true };
       }),
+
+    // Listar exames pendentes de revisão (enviados pelo app mobile)
+    listarPendentes: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        const pendentes = await db.select({
+          id: arquivosExames.id,
+          gestanteId: arquivosExames.gestanteId,
+          nomeArquivo: arquivosExames.nomeArquivo,
+          tipoArquivo: arquivosExames.tipoArquivo,
+          tamanhoBytes: arquivosExames.tamanhoBytes,
+          s3Url: arquivosExames.s3Url,
+          tipoExame: arquivosExames.tipoExame,
+          status: arquivosExames.status,
+          origemEnvio: arquivosExames.origemEnvio,
+          trimestre: arquivosExames.trimestre,
+          dataColeta: arquivosExames.dataColeta,
+          observacoes: arquivosExames.observacoes,
+          resultadoIA: arquivosExames.resultadoIA,
+          iaProcessado: arquivosExames.iaProcessado,
+          iaErro: arquivosExames.iaErro,
+          createdAt: arquivosExames.createdAt,
+        })
+          .from(arquivosExames)
+          .where(eq(arquivosExames.status, 'pendente_revisao'))
+          .orderBy(desc(arquivosExames.createdAt));
+        
+        // Buscar nomes das gestantes
+        const gestanteIds = Array.from(new Set(pendentes.map(p => p.gestanteId)));
+        const gestantesMap: Record<number, string> = {};
+        for (const gId of gestanteIds) {
+          const g = await getGestanteById(gId);
+          if (g) gestantesMap[gId] = g.nome;
+        }
+        
+        return pendentes.map(p => ({
+          ...p,
+          gestanteNome: gestantesMap[p.gestanteId] || 'Desconhecida',
+        }));
+      }),
+
+    // Confirmar exame pendente (médico aprova)
+    confirmarExame: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        await db.update(arquivosExames)
+          .set({
+            status: 'confirmado',
+            revisadoPor: ctx.user?.id || null,
+            revisadoEm: new Date(),
+          })
+          .where(eq(arquivosExames.id, input.id));
+        
+        return { success: true };
+      }),
+
+    // Rejeitar exame pendente
+    rejeitarExame: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+        
+        await db.update(arquivosExames)
+          .set({
+            status: 'rejeitado',
+            revisadoPor: ctx.user?.id || null,
+            revisadoEm: new Date(),
+          })
+          .where(eq(arquivosExames.id, input.id));
+        
+        return { success: true };
+      }),
+
+    // Contar exames pendentes (para badge de notificação)
+    contarPendentes: protectedProcedure
+      .query(async () => {
+        const db = await getDb();
+        if (!db) return { count: 0 };
+        
+        const result = await db.select({
+          count: sql<number>`count(*)`,
+        })
+          .from(arquivosExames)
+          .where(eq(arquivosExames.status, 'pendente_revisao'));
+        
+        return { count: result[0]?.count || 0 };
+      }),
   }),
 
   ultrassons: router({

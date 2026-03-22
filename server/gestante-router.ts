@@ -9,6 +9,9 @@ import { gerarHTMLCartaoCompleto, DadosPdfCompleto } from "./pdfTemplateCompleto
 import { gerarPdfComJsPDF } from "./htmlToPdf";
 import { gerarTodosGraficos, DadoConsulta } from "./chartGenerator";
 import { normalizeExamName } from "../shared/examNormalization";
+import { storagePut } from "./storage";
+import { arquivosExames, type InsertArquivoExame } from "../drizzle/schema";
+import { getDb } from "./db";
 
 // Generate 6-digit verification code
 function generateCode(): string {
@@ -1009,5 +1012,145 @@ export const gestanteRouter = router({
           curva: weightData.curva,
         },
       };
+    }),
+
+  // Upload de exame pelo app mobile (autenticação por token de gestante)
+  uploadExame: publicProcedure
+    .input(z.object({
+      token: z.string(),
+      nomeArquivo: z.string(),
+      tipoArquivo: z.string(), // MIME type: application/pdf, image/jpeg, image/png
+      fileBase64: z.string(),
+      tipoExame: z.enum(["laboratorial", "ultrassom"]),
+      trimestre: z.number().optional(), // 1, 2 ou 3
+      dataColeta: z.string().optional(), // Formato YYYY-MM-DD
+      observacoes: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      // Passo 1 — Validar token da gestante
+      const gestante = await validateGestanteToken(input.token);
+      
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Banco de dados não disponível' });
+      
+      try {
+        // Passo 2 — Fazer upload no S3
+        const fileBuffer = Buffer.from(input.fileBase64, 'base64');
+        const tamanhoBytes = fileBuffer.length;
+        
+        // Limite de 16MB
+        if (tamanhoBytes > 16 * 1024 * 1024) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Arquivo excede o limite de 16MB' });
+        }
+        
+        const timestamp = Date.now();
+        const randomSuffix = Math.random().toString(36).substring(2, 8);
+        const extensao = input.nomeArquivo.split('.').pop() || 'pdf';
+        const s3Key = `exames/${gestante.id}/${timestamp}-${randomSuffix}.${extensao}`;
+        
+        const { url: s3Url } = await storagePut(s3Key, fileBuffer, input.tipoArquivo);
+        
+        // Passo 3 — Registrar no banco com status pendente_revisao
+        const arquivoData: InsertArquivoExame = {
+          gestanteId: gestante.id,
+          nomeArquivo: input.nomeArquivo,
+          tipoArquivo: input.tipoArquivo,
+          tamanhoBytes,
+          s3Url,
+          s3Key,
+          senhaPdf: null,
+          protegidoPorSenha: 0,
+          trimestre: input.trimestre || null,
+          dataColeta: input.dataColeta ? new Date(`${input.dataColeta}T12:00:00`) : null,
+          observacoes: input.observacoes || null,
+          tipoExame: input.tipoExame,
+          status: "pendente_revisao",
+          origemEnvio: "app_mobile",
+          resultadoIA: null,
+          iaProcessado: 0,
+          iaErro: null,
+          revisadoPor: null,
+          revisadoEm: null,
+        };
+        
+        const [result] = await db.insert(arquivosExames).values(arquivoData);
+        const arquivoId = result.insertId;
+        
+        // Passo 4 — Acionar IA em background (não bloquear a resposta)
+        const gestanteDum = gestante.dum ? new Date(gestante.dum).toISOString().split('T')[0] : undefined;
+        
+        // Fire-and-forget: interpretação IA assíncrona
+        (async () => {
+          try {
+            if (input.tipoExame === "laboratorial") {
+              const { interpretarExamesComIA } = await import('./interpretarExames');
+              const { resultados, dataColeta: dataColetaIA, trimestreExtraido, relatorio } = await interpretarExamesComIA(
+                fileBuffer,
+                input.tipoArquivo,
+                undefined, // trimestre - deixar a IA detectar
+                gestanteDum
+              );
+              
+              // Atualizar o registro com os resultados da IA
+              const { eq } = await import('drizzle-orm');
+              await db.update(arquivosExames)
+                .set({
+                  resultadoIA: { resultados, dataColeta: dataColetaIA, trimestreExtraido, relatorio },
+                  iaProcessado: 1,
+                })
+                .where(eq(arquivosExames.id, Number(arquivoId)));
+              
+              console.log(`[uploadExame] IA laboratorial concluída para arquivo ${arquivoId}`);
+            } else if (input.tipoExame === "ultrassom") {
+              const { interpretarLaudoUltrassom } = await import('./interpretarUltrassom');
+              const dados = await interpretarLaudoUltrassom(
+                s3Url,
+                "ultrassom_obstetrico",
+                input.tipoArquivo
+              );
+              
+              // Atualizar o registro com os resultados da IA
+              const { eq } = await import('drizzle-orm');
+              await db.update(arquivosExames)
+                .set({
+                  resultadoIA: dados,
+                  iaProcessado: 1,
+                })
+                .where(eq(arquivosExames.id, Number(arquivoId)));
+              
+              console.log(`[uploadExame] IA ultrassom concluída para arquivo ${arquivoId}`);
+            }
+          } catch (iaError: any) {
+            console.error(`[uploadExame] Erro na IA para arquivo ${arquivoId}:`, iaError);
+            try {
+              const { eq } = await import('drizzle-orm');
+              await db.update(arquivosExames)
+                .set({
+                  iaProcessado: 1,
+                  iaErro: iaError.message || 'Erro desconhecido na interpretação IA',
+                })
+                .where(eq(arquivosExames.id, Number(arquivoId)));
+            } catch (updateError) {
+              console.error(`[uploadExame] Erro ao salvar erro da IA para arquivo ${arquivoId}:`, updateError);
+            }
+          }
+        })();
+        
+        // Passo 5 — Retornar resposta ao app
+        return {
+          success: true,
+          id: Number(arquivoId),
+          s3Url,
+          status: "pendente_revisao" as const,
+          mensagem: "Exame enviado com sucesso. Aguardando revisão do médico.",
+        };
+      } catch (error: any) {
+        if (error instanceof TRPCError) throw error;
+        console.error('[uploadExame] Erro:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: error.message || 'Erro ao fazer upload do exame',
+        });
+      }
     }),
 });

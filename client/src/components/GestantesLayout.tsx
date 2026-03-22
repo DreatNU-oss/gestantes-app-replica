@@ -24,6 +24,7 @@ import {
   Users, 
   Calendar, 
   FileText, 
+  ClipboardCheck,
   Activity,
   BarChart3,
   Settings,
@@ -78,6 +79,7 @@ const allMenuItems = [
   { icon: Baby, label: "Partos Realizados", path: "/partos-realizados", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: BarChart3, label: "Estatísticas", path: "/estatisticas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: WhatsAppIcon, label: "WhatsApp Programado", path: "/mensagens-texto", roles: ['superadmin', 'admin', 'obstetra'], iconColor: 'text-green-500' },
+  { icon: ClipboardCheck, label: "Exames Pendentes", path: "/exames-pendentes", roles: ['superadmin', 'admin', 'obstetra'] },
 ];
 
 const allConfigMenuItems = [
@@ -105,6 +107,12 @@ export default function GestantesLayout({
   
   const userRole = (user as any)?.role || 'obstetra';
   
+  // Contar exames pendentes para badge
+  const { data: pendentesCount } = trpc.examesLab.contarPendentes.useQuery(undefined, {
+    refetchInterval: 60_000,
+    enabled: !!user && ['superadmin', 'admin', 'obstetra'].includes(userRole),
+  });
+
   // Filtrar menus principais baseado no role do usuário e na clínica
   const menuItems = allMenuItems.filter(item => {
     if (!item.roles.includes(userRole)) return false;
@@ -225,6 +233,11 @@ export default function GestantesLayout({
                   >
                     <item.icon className={`h-4 w-4 ${(item as any).iconColor || ''}`} />
                     <span>{item.label}</span>
+                    {item.path === '/exames-pendentes' && pendentesCount && pendentesCount.count > 0 && (
+                      <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 min-w-[20px] flex items-center justify-center px-1">
+                        {pendentesCount.count}
+                      </span>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

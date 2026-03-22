@@ -2461,3 +2461,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [ ] Aplicar em FormularioGestante.tsx (preview inferior)
 - [ ] Aplicar em CartaoPrenatalImpressao.tsx
 - [ ] Aplicar em CartaoPrenatalPDF.tsx
+
+## Upload de Exames pelo App Mobile (22/03/2026)
+- [ ] Tarefa 1: Criar rota gestante.uploadExame com autenticação por token
+- [ ] Tarefa 1: Upload S3 + registro no banco com status pendente_revisao e origemEnvio app_mobile
+- [ ] Tarefa 1: Acionar IA em background (interpretarExamesComIA ou interpretarLaudoUltrassom)
+- [ ] Tarefa 2: Interface de revisão no site para exames pendentes enviados pelo app
+- [ ] Tarefa 3: Documentar parâmetros finais para integração com o app mobile

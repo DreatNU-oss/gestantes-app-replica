@@ -787,6 +787,14 @@ export const arquivosExames = mysqlTable("arquivosExames", {
   trimestre: int("trimestre"), // 1, 2 ou 3 (opcional)
   dataColeta: date("dataColeta"), // Data de coleta dos exames (opcional)
   observacoes: text("observacoes"), // Observações opcionais
+  tipoExame: mysqlEnum("tipoExame", ["laboratorial", "ultrassom"]).default("laboratorial").notNull(), // Tipo do exame
+  status: mysqlEnum("status", ["confirmado", "pendente_revisao", "rejeitado"]).default("confirmado").notNull(), // Status de revisão
+  origemEnvio: mysqlEnum("origemEnvio", ["web", "app_mobile"]).default("web").notNull(), // De onde foi enviado
+  resultadoIA: json("resultadoIA"), // Resultado da interpretação da IA (JSON)
+  iaProcessado: int("iaProcessado").default(0).notNull(), // 1 = IA já processou, 0 = pendente
+  iaErro: text("iaErro"), // Mensagem de erro da IA (se houver)
+  revisadoPor: int("revisadoPor"), // ID do médico que revisou
+  revisadoEm: timestamp("revisadoEm"), // Data/hora da revisão
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -34,6 +34,7 @@ import AdminClinicas from "./pages/AdminClinicas";
 import GerenciarHospitais from "./pages/GerenciarHospitais";
 import GerenciarProcedimentos from "./pages/GerenciarProcedimentos";
 import MensagensTexto from "./pages/MensagensTexto";
+import ExamesPendentes from "./pages/ExamesPendentes";
 import PreCadastro from "./pages/PreCadastro";
 import PreConsulta from "./pages/PreConsulta";
 import AcessoApp from "./pages/AcessoApp";
@@ -76,6 +77,9 @@ function Router() {
       {/* Mensagens de Texto - superadmin, admin, obstetra */}
       <Route path={"/mensagens-texto"}>
         <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><MensagensTexto /></RoleGuard>
+      </Route>
+      <Route path={"/exames-pendentes"}>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><ExamesPendentes /></RoleGuard>
       </Route>
 
       {/* Rotas clínicas - apenas superadmin, admin, obstetra */}
