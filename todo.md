@@ -2448,3 +2448,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Destaque botão ativo na barra 2 do header (22/03/2026)
 - [x] Destacar botão ativo na barra 2 do header conforme rota atual
+
+## Menu Lateral e Skill menu-novo (22/03/2026)
+- [x] Corrigir menu lateral que fecha ao acessar WhatsApp Programado
+- [x] Adicionar botão de voltar na página WhatsApp Programado (já existia)
+- [x] Criar skill menu-novo com regras de criação de menus

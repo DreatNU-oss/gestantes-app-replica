@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import TemplateWizard from '@/components/TemplateWizard';
+import GestantesLayout from '@/components/GestantesLayout';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -320,6 +321,7 @@ export default function MensagensTexto() {
   // Tela de bloqueio para clínicas não autorizadas
   if (!loadingAutorizacao && !whatsappHabilitado) {
     return (
+      <GestantesLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button
@@ -331,7 +333,7 @@ export default function MensagensTexto() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Mensagens de Texto</h1>
+            <h1 className="text-2xl font-bold">WhatsApp Programado</h1>
             <p className="text-muted-foreground">Envio automático via WhatsApp</p>
           </div>
         </div>
@@ -360,10 +362,12 @@ export default function MensagensTexto() {
           </CardContent>
         </Card>
       </div>
+      </GestantesLayout>
     );
   }
 
   return (
+    <GestantesLayout>
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -885,6 +889,7 @@ export default function MensagensTexto() {
         </DialogContent>
       </Dialog>
     </div>
+    </GestantesLayout>
   );
 }
 
