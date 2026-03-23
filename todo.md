@@ -2538,3 +2538,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Formato dd/mm/aaaa nas Datas DPP do Header (22/03/2026)
 - [x] Formatar DPP DUM e DPP US no header do GestantesLayout para dd/mm/aaaa (toLocaleDateString pt-BR com ajuste de timezone)
 - [x] CartaoPrenatalImpressao.tsx já usava formatarData() corretamente — sem alterações necessárias
+
+## Remoção de Cards do CartaoPrenatal.tsx (22/03/2026)
+- [x] Remover card "Selecionar Gestante" do CartaoPrenatal.tsx
+- [x] Remover card "Dados da Gestante" do CartaoPrenatal.tsx
+- [x] Mover botão "Editar Cadastro" para a barra de ações rápidas do GestantesLayout (após Ultrassons)

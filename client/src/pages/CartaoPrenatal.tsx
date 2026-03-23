@@ -2355,28 +2355,7 @@ export default function CartaoPrenatal() {
           </div>
         </div>
 
-        {/* Seleção de Gestante */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Selecionar Gestante</CardTitle>
-            <CardDescription>Escolha a gestante para visualizar ou registrar consultas</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label>Selecionar Gestante</Label>
-              <AutocompleteSelect
-                options={gestantes?.slice().sort((a: any, b: any) => a.nome.localeCompare(b.nome)) || []}
-                value={gestanteSelecionada?.toString() || ""}
-                onChange={(value) => {
-                  setGestanteSelecionada(parseInt(value));
-                  setMostrarFormulario(false);
-                  resetForm();
-                }}
-                placeholder="Digite o nome da gestante..."
-              />
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Barra de Navegação Rápida */}
         {gestanteSelecionada && gestante && (
@@ -2413,52 +2392,7 @@ export default function CartaoPrenatal() {
           </div>
         )}
 
-        {/* Informações da Gestante */}
-        {gestante && (
-          <Card id="dados-gestante">
-            <CardHeader className="flex flex-row items-center justify-between py-0 px-3">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <FileText className="h-4 w-4" />
-                Dados da Gestante
-              </CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLocation(`/dashboard?editar=${gestante.id}`)}
-                className="flex items-center gap-2 h-7 text-xs"
-              >
-                <UserCog className="h-3 w-3" />
-                Editar Cadastro
-              </Button>
-            </CardHeader>
-            <CardContent className="px-3 pb-0 pt-0">
-              <div className="flex items-center gap-2 mb-0">
-                <p className="font-semibold text-base flex items-center gap-1.5">
-                  {gestante.nome}
-                  {gestante.baixouApp && (
-                    <span title="Baixou o aplicativo">
-                      <Smartphone className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                    </span>
-                  )}
-                </p>
-                <span className="text-muted-foreground text-xs">|</span>
-                <span className="text-sm text-muted-foreground">
-                  {formatarParidade({ gesta: gestante.gesta, para: gestante.para, partosNormais: gestante.partosNormais, cesareas: gestante.cesareas, abortos: gestante.abortos })}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-0 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">DPP (DUM):</span>
-                  <span className="font-medium">{gestante.calculado?.dpp ? formatarData(gestante.calculado.dpp) : "-"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground">DPP (US):</span>
-                  <span className="font-medium">{gestante.calculado?.dppUS ? formatarData(gestante.calculado.dppUS) : "-"}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Botão Nova Consulta */}
         <div id="nova-consulta">

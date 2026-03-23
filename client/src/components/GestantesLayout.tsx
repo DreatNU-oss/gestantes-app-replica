@@ -43,7 +43,8 @@ import {
   Building2,
   MessageSquare,
   ClipboardPlus,
-  Smartphone
+  Smartphone,
+  UserCog
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -452,6 +453,18 @@ export default function GestantesLayout({
                 <Scan className="h-3 w-3 mr-1" />
                 Ultrassons
               </Button>
+              {gestanteAtiva && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs bg-background"
+                  onClick={() => setLocation(`/dashboard?editar=${gestanteAtiva.id}`)}
+                  title="Editar Cadastro da Gestante"
+                >
+                  <UserCog className="h-3 w-3 mr-1" />
+                  Editar Cadastro
+                </Button>
+              )}
             </div>
           )}
           <main className="flex-1 p-6" style={{ backgroundColor: (user as any)?.clinicaCorFundo || '#FDF8F5' }}>
