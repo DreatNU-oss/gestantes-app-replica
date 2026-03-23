@@ -2564,3 +2564,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir coloração do EPF: exibir verde quando Negativo (igual ao EGB)
 - [x] Corrigir duplicação: formulário "Novo Ultrassom" não deve aparecer junto com o laudo de confirmação da IA
 - [x] Corrigir IA de ultrassom: CA com vírgula decimal (357,9 mm) não deve ser lida como 3579 mm
+- [x] Melhorar extração da IA para morfológico 1º trimestre (CCN, BCF, TN, Osso Nasal, DV, Valva Tricúspide, Doppler Uterinas, Colo Uterino, Risco Trissomias, DPP)
+- [x] Adicionar campos CCN, BCF, Osso Nasal e DPP ao formulário de Morfológico 1º Tri
+- [x] Adicionar verificação de tipo de ultrassom (IA alerta quando tipo selecionado não corresponde ao laudo)
+- [x] Corrigir duplicação do formulário "Novo Morfológico 1º Tri" após interpretação pela IA (limpeza já implementada)

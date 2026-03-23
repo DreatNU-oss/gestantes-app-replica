@@ -50,13 +50,17 @@ export default function Ultrassons() {
       setMorfo1Tri({
         dataExame: '',
         idadeGestacional: '',
+        ccn: '',
+        bcf: '',
         tn: '',
+        ossoNasal: '',
         dv: '',
         valvaTricuspide: '',
         dopplerUterinas: '',
         incisuraPresente: '',
         colo: '',
         riscoTrissomias: '',
+        dpp: '',
       });
       setUsObstetrico({
         dataExame: '',
@@ -137,7 +141,7 @@ export default function Ultrassons() {
           break;
         case 'morfologico_1tri':
           morfo1TriAutoSave.clearDraft();
-          setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+          setMorfo1Tri({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', tn: '', ossoNasal: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '', dpp: '' });
           setCamposPreenchidosIA(prev => ({ ...prev, morfologico_1tri: new Set() }));
           break;
         case 'obstetrico':
@@ -219,7 +223,7 @@ export default function Ultrassons() {
         primeiroUSAutoSave.clearDraft();
         break;
       case 'morfologico_1tri':
-        setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+        setMorfo1Tri({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', tn: '', ossoNasal: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '', dpp: '' });
         morfo1TriAutoSave.clearDraft();
         break;
       case 'ultrassom_obstetrico':
@@ -346,13 +350,17 @@ export default function Ultrassons() {
   const [morfo1Tri, setMorfo1Tri] = useState({
     dataExame: '',
     idadeGestacional: '',
+    ccn: '',
+    bcf: '',
     tn: '',
+    ossoNasal: '',
     dv: '',
     valvaTricuspide: '',
     dopplerUterinas: '',
     incisuraPresente: '',
     colo: '',
     riscoTrissomias: '',
+    dpp: '',
   });
   
   const [usObstetrico, setUsObstetrico] = useState({
@@ -499,7 +507,7 @@ export default function Ultrassons() {
         setPrimeiroUS({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', sacoVitelino: '', hematoma: '', corpoLuteo: '', coloUterino: '', dpp: '' });
         break;
       case 'morfologico_1tri':
-        setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+        setMorfo1Tri({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', tn: '', ossoNasal: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '', dpp: '' });
         break;
       case 'ultrassom_obstetrico':
         setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
@@ -897,13 +905,17 @@ export default function Ultrassons() {
                   fields={[
                     { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
                     { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 12s 3d', required: true },
+                    { key: 'ccn', label: 'CCN (mm)', placeholder: 'Ex: 62 mm' },
+                    { key: 'bcf', label: 'BCF (bpm)', placeholder: 'Ex: 158 bpm' },
                     { key: 'tn', label: 'Translucência Nucal (TN)', placeholder: 'Ex: 1.5 mm' },
+                    { key: 'ossoNasal', label: 'Osso Nasal', placeholder: 'Presente/Ausente' },
                     { key: 'dv', label: 'Ducto Venoso (DV)', placeholder: 'Ex: Onda A positiva' },
                     { key: 'valvaTricuspide', label: 'Valva Tricúspide', placeholder: 'Normal/Regurgitação' },
                     { key: 'dopplerUterinas', label: 'Doppler de Uterinas', placeholder: 'Ex: IP médio 1.2' },
                     { key: 'incisuraPresente', label: 'Incisura Presente', placeholder: 'Sim/Não' },
                     { key: 'colo', label: 'Colo Uterino', placeholder: 'Ex: 35 mm' },
                     { key: 'riscoTrissomias', label: 'Risco de Trissomias', placeholder: 'Ex: Baixo risco', colSpan: 3, type: 'textarea', rows: 2 },
+                    { key: 'dpp', label: 'DPP', type: 'date' },
                   ]}
                   onSalvar={handleSalvarRegistroSalvo}
                   onApagar={handleApagar}
@@ -938,6 +950,29 @@ export default function Ultrassons() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <Label>CCN (mm)</Label>
+                  <InputComHistorico
+                    tipo="us_morfo1tri_ccn"
+                    placeholder="Ex: 62 mm"
+                    className={getInputClassName('morfologico_1tri', 'ccn')}
+                    value={morfo1Tri.ccn}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'ccn'); setMorfo1Tri({ ...morfo1Tri, ccn: v }); }}
+                  />
+                </div>
+                <div>
+                  <Label>BCF (bpm)</Label>
+                  <InputComHistorico
+                    tipo="us_morfo1tri_bcf"
+                    placeholder="Ex: 158 bpm"
+                    className={getInputClassName('morfologico_1tri', 'bcf')}
+                    value={morfo1Tri.bcf}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'bcf'); setMorfo1Tri({ ...morfo1Tri, bcf: v }); }}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <Label>Translucência Nucal (TN)</Label>
                   <InputComHistorico
                     tipo="us_morfo1tri_tn"
@@ -948,6 +983,19 @@ export default function Ultrassons() {
                   />
                 </div>
                 <div>
+                  <Label>Osso Nasal</Label>
+                  <InputComHistorico
+                    tipo="us_morfo1tri_ossonasal"
+                    placeholder="Presente/Ausente"
+                    className={getInputClassName('morfologico_1tri', 'ossoNasal')}
+                    value={morfo1Tri.ossoNasal}
+                    onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'ossoNasal'); setMorfo1Tri({ ...morfo1Tri, ossoNasal: v }); }}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <Label>Ducto Venoso (DV)</Label>
                   <InputComHistorico
                     tipo="us_morfo1tri_dv"
@@ -957,9 +1005,6 @@ export default function Ultrassons() {
                     onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'dv'); setMorfo1Tri({ ...morfo1Tri, dv: v }); }}
                   />
                 </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Valva Tricúspide</Label>
                   <InputComHistorico
@@ -970,6 +1015,9 @@ export default function Ultrassons() {
                     onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'valvaTricuspide'); setMorfo1Tri({ ...morfo1Tri, valvaTricuspide: v }); }}
                   />
                 </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Doppler das Artérias Uterinas</Label>
                   <InputComHistorico
@@ -1013,6 +1061,16 @@ export default function Ultrassons() {
                   className={getInputClassName('morfologico_1tri', 'riscoTrissomias')}
                   value={morfo1Tri.riscoTrissomias}
                   onChange={(v) => { removerDestaqueIA('morfologico_1tri', 'riscoTrissomias'); setMorfo1Tri({ ...morfo1Tri, riscoTrissomias: v }); }}
+                />
+              </div>
+              
+              <div>
+                <Label>Data Provável do Parto (DPP)</Label>
+                <Input
+                  type="date"
+                  className={getInputClassName('morfologico_1tri', 'dpp')}
+                  value={morfo1Tri.dpp}
+                  onChange={(e) => { removerDestaqueIA('morfologico_1tri', 'dpp'); setMorfo1Tri({ ...morfo1Tri, dpp: e.target.value }); }}
                 />
               </div>
               

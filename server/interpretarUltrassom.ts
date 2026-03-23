@@ -38,13 +38,16 @@ const camposDetalhados: Record<TipoUltrassom, CampoDefinicao[]> = {
   morfologico_1tri: [
     { nome: "dataExame", descricao: "Data em que o exame foi realizado", exemplo: "15/01/2026", formato: "DD/MM/AAAA", regra: "OBRIGATÓRIO. Procure em QUALQUER lugar: cabeçalho ('DATA:', 'Data do exame:'), rodapé, assinatura, corpo do texto." },
     { nome: "idadeGestacional", descricao: "Idade gestacional no momento do exame", exemplo: "12 semanas e 5 dias", regra: "Procure por 'correspondendo a X semanas e X dias' ou 'IG: Xs Xd'." },
-    { nome: "tn", descricao: "Translucência Nucal (TN) - medida em mm", exemplo: "1.2 mm", regra: "Procure por 'translucência nucal', 'TN'. Valor em mm." },
-    { nome: "dv", descricao: "Ducto Venoso (DV) - fluxo normal ou alterado", exemplo: "Normal (onda A positiva)", regra: "'onda A positiva' = 'Normal (onda A positiva)'. 'onda A negativa/reversa' = 'Alterado (onda A negativa)'." },
-    { nome: "valvaTricuspide", descricao: "Avaliação da válvula tricúspide", exemplo: "Normal", regra: "Procure por 'válvula tricúspide', 'regurgitação tricúspide'. Sem menção = 'Normal'." },
+    { nome: "ccn", descricao: "Comprimento Cabeça-Nádega (CCN) do embrião/feto em mm", exemplo: "62 mm", regra: "Procure por 'crânio-nádegas', 'cabeça-nádegas', 'CCN', 'CRL'. Comum em morfológicos de 1º tri (11-14 semanas). Mantenha a unidade." },
+    { nome: "bcf", descricao: "Batimentos Cardíacos Fetais (BCF) em bpm", exemplo: "158 bpm", regra: "Procure por 'batimentos cardíacos', 'BCF', 'frequência cardíaca', 'frequência de X batimentos por minuto'." },
+    { nome: "tn", descricao: "Translucência Nucal (TN) - medida em mm", exemplo: "1.2 mm", regra: "Procure por 'translucência nucal', 'TN'. Valor em mm. Este é o campo mais importante do morfológico 1º tri." },
+    { nome: "ossoNasal", descricao: "Osso nasal - presente ou ausente", exemplo: "Presente", regra: "Procure por 'osso nasal', 'ON'. Se visualizado/presente, retorne 'Presente'. Se ausente/não visualizado, retorne 'Ausente'." },
+    { nome: "dv", descricao: "Ducto Venoso (DV) - fluxo normal ou alterado", exemplo: "Normal (onda A positiva)", regra: "'onda A positiva' = 'Normal (onda A positiva)'. 'onda A negativa/reversa' = 'Alterado (onda A negativa)'. Se descrito apenas como 'normal', retorne 'Normal (onda A positiva)'." },
+    { nome: "valvaTricuspide", descricao: "Avaliação da válvula tricúspide", exemplo: "Normal", regra: "Procure por 'válvula tricúspide', 'regurgitação tricúspide'. Sem menção = 'Normal'. Se 'regurgitação presente', retorne 'Regurgitação'." },
     { nome: "dopplerUterinas", descricao: "Doppler das artérias uterinas - valores dos IPs", exemplo: "IP D: 1.45, IP E: 1.32", regra: "Procure por 'artérias uterinas', 'IP', 'índice de pulsatilidade'. Extraia valores de ambas as artérias (direita e esquerda) ou IP médio." },
     { nome: "incisuraPresente", descricao: "Presença de incisura (notch) nas artérias uterinas", exemplo: "Não", regra: "Procure por 'incisura', 'notch'. Se não mencionado, retorne 'Não'." },
     { nome: "colo", descricao: "Medida do colo uterino em mm", exemplo: "38 mm", regra: "Procure por 'colo uterino', 'cervicometria'. Valor em mm." },
-    { nome: "riscoTrissomias", descricao: "Risco calculado para trissomias (T21, T18, T13)", exemplo: "Baixo risco. T21: 1:5000", regra: "Procure por 'risco', 'trissomia', 'T21', 'T18', 'T13', 'Síndrome de Down'." },
+    { nome: "riscoTrissomias", descricao: "Risco calculado para trissomias (T21, T18, T13)", exemplo: "Baixo risco. T21: 1:5000", regra: "Procure por 'risco', 'trissomia', 'T21', 'T18', 'T13', 'Síndrome de Down'. Inclua todos os riscos mencionados." },
     { nome: "dpp", descricao: "Data Provável do Parto calculada pelo ultrassom", exemplo: "20/08/2026", formato: "DD/MM/AAAA", regra: "IMPORTANTE. Procure por 'DPP:', 'Data Provável do Parto'." },
   ],
   ultrassom_obstetrico: [
@@ -142,7 +145,13 @@ function gerarPromptDetalhado(tipoUltrassom: TipoUltrassom): string {
 
 7. Se um campo realmente não puder ser determinado pelo laudo (não há informação suficiente), omita-o do resultado.
 
-8. **VALORES NUMÉRICOS COM VÍRGULA DECIMAL (PADRÃO BRASILEIRO)** - REGRA CRÍTICA:
+8. **VERIFICAÇÃO DE TIPO DE ULTRASSOM** - IMPORTANTE:
+   - Analise a idade gestacional e o conteúdo do laudo para verificar se o tipo de ultrassom selecionado pelo usuário está correto.
+   - Se o laudo NÃO corresponde ao tipo selecionado (ex: laudo de 9 semanas classificado como "Morfológico 1º Tri", quando deveria ser "1º Ultrassom"), inclua no JSON um campo extra **"tipoSugerido"** com o tipo correto.
+   - Tipos possíveis: "primeiro_ultrassom" (até ~10 semanas, sem TN), "morfologico_1tri" (11-14 semanas, com TN), "ultrassom_obstetrico" (rotina), "morfologico_2tri" (20-24 semanas, anatômico), "ecocardiograma" (coração fetal), "ultrassom_seguimento" (3º tri).
+   - Mesmo que o tipo pareça errado, AINDA ASSIM extraia todos os dados possíveis para os campos solicitados.
+
+9. **VALORES NUMÉRICOS COM VÍRGULA DECIMAL (PADRÃO BRASILEIRO)** - REGRA CRÍTICA:
    - Laudos brasileiros usam VÍRGULA como separador decimal: "357,9 mm" significa 357.9 mm, NÃO 3579 mm.
    - NUNCA remova a vírgula e concatene os dígitos. "357,9" = trezentos e cinquenta e sete vírgula nove.
    - Exemplos corretos: "CA 357,9 mm" → retorne "357.9 mm"; "CC 350,8 mm" → "350.8 mm"; "DBP 89,1 mm" → "89.1 mm".
@@ -282,7 +291,8 @@ REGRAS OBRIGATÓRIAS:
 6. Responda APENAS em JSON válido, sem markdown, sem explicações, sem texto antes ou depois do JSON.
 7. Use formato DD/MM/AAAA para todas as datas.
 8. Mantenha unidades de medida (mm, cm, g, bpm, etc.).
-9. VÍRGULA DECIMAL (PADRÃO BRASILEIRO): laudos usam vírgula como separador decimal. "357,9 mm" = 357.9 mm, NÃO 3579 mm. Converta vírgula para ponto no JSON. Exemplos: "CA 357,9 mm" → "357.9 mm"; "DBP 89,1 mm" → "89.1 mm". NUNCA concatene os dígitos removendo a vírgula.`
+9. VÍRGULA DECIMAL (PADRÃO BRASILEIRO): laudos usam vírgula como separador decimal. "357,9 mm" = 357.9 mm, NÃO 3579 mm. Converta vírgula para ponto no JSON. Exemplos: "CA 357,9 mm" → "357.9 mm"; "DBP 89,1 mm" → "89.1 mm". NUNCA concatene os dígitos removendo a vírgula.
+10. VERIFICAÇÃO DE TIPO: Se o laudo não corresponde ao tipo solicitado (ex: US de 9 semanas classificado como morfológico 1º tri), inclua "tipoSugerido" no JSON com o tipo correto. Tipos: primeiro_ultrassom, morfologico_1tri, ultrassom_obstetrico, morfologico_2tri, ecocardiograma, ultrassom_seguimento. Ainda assim extraia todos os dados possíveis.`
           },
           {
             role: 'user',
@@ -331,6 +341,12 @@ REGRAS OBRIGATÓRIAS:
     // Sempre incluir nomePacienteLaudo se extraído (não faz parte dos campos do formulário)
     if (dadosExtraidos.nomePacienteLaudo) {
       dadosFiltrados.nomePacienteLaudo = String(dadosExtraidos.nomePacienteLaudo);
+    }
+    
+    // Incluir tipoSugerido se a IA detectou que o tipo selecionado não corresponde ao laudo
+    if (dadosExtraidos.tipoSugerido) {
+      dadosFiltrados.tipoSugerido = String(dadosExtraidos.tipoSugerido);
+      console.log(`[Ultrassom] IA sugere tipo diferente: ${dadosExtraidos.tipoSugerido} (selecionado: ${tipoUltrassom})`);
     }
 
     // Post-processing: garantir que campos binários tenham valor padrão

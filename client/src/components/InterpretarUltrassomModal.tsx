@@ -39,6 +39,8 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos, nom
   const [showNameMismatch, setShowNameMismatch] = useState(false);
   const [nomeLaudo, setNomeLaudo] = useState('');
   const [pendingDados, setPendingDados] = useState<{ tipo: string; dados: Record<string, string>; count: number } | null>(null);
+  const [showTipoSugerido, setShowTipoSugerido] = useState(false);
+  const [tipoSugeridoInfo, setTipoSugeridoInfo] = useState<{ sugerido: string; selecionado: string } | null>(null);
   const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -249,8 +251,23 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos, nom
     if (successCount > 0) {
       // Verificar se o nome da paciente no laudo confere com o cadastro
       const nomePacienteLaudo = combinedDados.nomePacienteLaudo || '';
-      // Remover nomePacienteLaudo dos dados antes de passar ao formulário
-      const { nomePacienteLaudo: _, ...dadosSemNome } = combinedDados;
+      // Remover nomePacienteLaudo e tipoSugerido dos dados antes de passar ao formulário
+      const { nomePacienteLaudo: _, tipoSugerido, ...dadosSemNome } = combinedDados;
+      
+      // Verificar se a IA sugeriu um tipo diferente
+      if (tipoSugerido && tipoSugerido !== tipoSelecionado) {
+        const tipoLabels: Record<string, string> = {
+          'primeiro_ultrassom': '1º Ultrassom',
+          'morfologico_1tri': 'Morfológico 1º Trimestre',
+          'ultrassom_obstetrico': 'Ultrassom Obstétrico',
+          'morfologico_2tri': 'Morfológico 2º Trimestre',
+          'ecocardiograma': 'Ecocardiograma Fetal',
+          'ultrassom_seguimento': 'Ultrassom de Seguimento',
+        };
+        toast.warning(`⚠️ A IA sugere que este laudo é do tipo "${tipoLabels[tipoSugerido] || tipoSugerido}" e não "${tipoLabels[tipoSelecionado] || tipoSelecionado}". Os dados foram preenchidos no tipo selecionado. Se necessário, apague e reinterprete com o tipo correto.`, {
+          duration: 10000,
+        });
+      }
       
       if (nomePacienteLaudo && nomeGestante) {
         const nomeGestanteNorm = nomeGestante.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
@@ -313,6 +330,8 @@ export function InterpretarUltrassomModal({ open, onClose, onDadosExtraidos, nom
     setIsProcessing(false);
     setCurrentFileIndex(0);
     setShowNameMismatch(false);
+    setShowTipoSugerido(false);
+    setTipoSugeridoInfo(null);
     setPendingDados(null);
     setNomeLaudo('');
     onClose();
