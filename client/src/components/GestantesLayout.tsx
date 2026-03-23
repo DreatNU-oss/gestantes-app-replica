@@ -365,7 +365,7 @@ export default function GestantesLayout({
                       </span>
                       {gestanteAtivaCompleta.calculado.dpp && (
                         <span className="text-xs text-muted-foreground leading-tight">
-                          DPP DUM: <span className="font-semibold text-foreground">{gestanteAtivaCompleta.calculado.dpp}</span>
+                          DPP DUM: <span className="font-semibold text-foreground">{new Date(gestanteAtivaCompleta.calculado.dpp + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
                         </span>
                       )}
                     </>
@@ -378,7 +378,7 @@ export default function GestantesLayout({
                       </span>
                       {gestanteAtivaCompleta.calculado.dppUS && (
                         <span className="text-xs text-muted-foreground leading-tight">
-                          DPP US: <span className="font-semibold text-emerald-600">{gestanteAtivaCompleta.calculado.dppUS}</span>
+                          DPP US: <span className="font-semibold text-emerald-600">{new Date(gestanteAtivaCompleta.calculado.dppUS + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
                         </span>
                       )}
                     </>

@@ -2534,3 +2534,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## IG e DPP no Header do GestantesLayout (22/03/2026)
 - [x] Exibir IG(DUM), DPP DUM, IG(US) e DPP US no header do GestantesLayout após a paridade
 - [x] Blocos só aparecem quando o respectivo dado está disponível (IG(DUM) e IG(US) são independentes)
+
+## Formato dd/mm/aaaa nas Datas DPP do Header (22/03/2026)
+- [x] Formatar DPP DUM e DPP US no header do GestantesLayout para dd/mm/aaaa (toLocaleDateString pt-BR com ajuste de timezone)
+- [x] CartaoPrenatalImpressao.tsx já usava formatarData() corretamente — sem alterações necessárias
