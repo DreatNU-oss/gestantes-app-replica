@@ -107,7 +107,8 @@ export async function interpretarExamesComIA(
 
    **TIREOIDE:**
    - "TSH", "Hormônio Tireoestimulante", "TSH Ultrassensível" → "TSH"
-   - "T4 Livre", "Tiroxina Livre", "T4L" → "T4 Livre"
+   - "T4 Livre", "Tiroxina Livre", "T4L", "FT4", "Free T4" → "T4 Livre"
+   - **ATENÇÃO CRÍTICA:** "T4 Total", "T4 total", "Dosagem de T4 Total", "Tiroxina Total" → IGNORAR COMPLETAMENTE. T4 Total é um exame DIFERENTE de T4 Livre e NÃO deve ser extraído nem incluído na resposta. Só extraia T4 se o laudo especificar explicitamente "T4 Livre", "T4L" ou "Tiroxina Livre".
 
    **VITAMINAS E MINERAIS:**
    - "Ferritina", "Ferritina Sérica" → "Ferritina"
@@ -212,7 +213,7 @@ ${examesEsperados.map(e => `- ${e}`).join('\n')}
 □ Extraí TODOS os exames de sangue (hemograma, sorologias, bioquímica)?
 □ Extraí TODOS os exames de urina (EAS e Urocultura)?
 □ Extraí os exames de fezes (EPF)?
-□ Extraí os exames de tireoide (TSH, T4 Livre)?
+□ Extraí os exames de tireoide (TSH, T4 Livre)? ATENÇÃO: T4 Total ≠ T4 Livre — ignorar T4 Total!
 □ Extraí as vitaminas (D, B12, Ferritina)?
 □ Extraí a tipagem sanguínea e Coombs?
 □ Incluí a data de coleta em todos os exames?
