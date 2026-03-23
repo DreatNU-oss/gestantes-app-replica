@@ -1594,33 +1594,6 @@ export default function ExamesLaboratoriais() {
           )}
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Selecionar Gestante</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label>Gestante</Label>
-              <AutocompleteSelect
-                options={
-                  gestantes
-                    ?.filter((g) => g.dum)
-                    .sort((a, b) => a.nome.localeCompare(b.nome))
-                    .map((g) => ({
-                      id: g.id,
-                      nome: g.nome,
-                    })) || []
-                }
-                value={gestanteSelecionada?.toString() || ""}
-                onChange={(value) => {
-                  setGestanteSelecionada(value ? parseInt(value) : null);
-                  setResultados({});
-                }}
-                placeholder="Digite o nome da gestante..."
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {gestanteSelecionada && gestante && (
           <Card>

@@ -2543,3 +2543,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover card "Selecionar Gestante" do CartaoPrenatal.tsx
 - [x] Remover card "Dados da Gestante" do CartaoPrenatal.tsx
 - [x] Mover botão "Editar Cadastro" para a barra de ações rápidas do GestantesLayout (após Ultrassons)
+
+## Remoção do Card Selecionar Gestante nos Menus (22/03/2026)
+- [x] Remover card "Selecionar Gestante" do menu Exames Laboratoriais
+- [x] Remover card "Selecionar Gestante" do menu Ultrassons
+- [x] Remover card "Selecionar Gestante" do menu Marcos Importantes (mantido apenas o seletor de método DUM/US)

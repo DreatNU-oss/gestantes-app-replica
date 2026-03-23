@@ -680,45 +680,7 @@ export default function Ultrassons() {
           </Button>
         </div>
       
-      {/* Seleção de Gestante */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Selecionar Gestante</CardTitle>
-          <CardDescription>Busque e selecione a gestante para registrar ultrassons</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label>Buscar Gestante</Label>
-              <Input
-                placeholder="Digite o nome da gestante..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-              />
-            </div>
-            
-            {busca && gestantesFiltradas.length > 0 && (
-              <div className="border rounded-md max-h-60 overflow-y-auto">
-                {gestantesFiltradas.map((g: any) => (
-                  <div
-                    key={g.id}
-                    className={`p-3 cursor-pointer hover:bg-accent ${gestanteSelecionada === g.id ? 'bg-accent' : ''}`}
-                    onClick={() => {
-                      setGestanteSelecionada(g.id);
-                      setBusca(g.nome);
-                    }}
-                  >
-                    <p className="font-medium">{g.nome}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {g.idade ? `${g.idade} anos` : ''} {g.telefone ? `• ${g.telefone}` : ''}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+
       
       {!gestanteSelecionada && (
         <div className="text-center py-12 text-muted-foreground">

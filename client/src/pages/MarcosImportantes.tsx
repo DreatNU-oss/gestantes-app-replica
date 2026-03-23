@@ -219,40 +219,27 @@ export default function MarcosImportantes() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Selecionar Gestante e Método de Cálculo</CardTitle>
+            <CardTitle>Método de Cálculo</CardTitle>
             <CardDescription>
-              Escolha a gestante e o método para calcular as datas dos marcos importantes
+              Escolha o método para calcular as datas dos marcos importantes
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="gestante">Gestante</Label>
-                <AutocompleteSelect
-                  options={gestantes || []}
-                  value={gestanteSelecionada}
-                  onChange={setGestanteSelecionada}
-                  placeholder="Selecione uma gestante..."
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Método de Cálculo</Label>
-                <RadioGroup value={metodo} onValueChange={(v: MetodoCalculo) => setMetodo(v)}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="dum" id="dum" />
-                    <Label htmlFor="dum" className="font-normal cursor-pointer">
-                      DUM (Data da Última Menstruação)
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ultrassom" id="ultrassom" />
-                    <Label htmlFor="ultrassom" className="font-normal cursor-pointer">
-                      Ultrassom
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
+            <div className="space-y-3">
+              <RadioGroup value={metodo} onValueChange={(v: MetodoCalculo) => setMetodo(v)} className="flex gap-6">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="dum" id="dum" />
+                  <Label htmlFor="dum" className="font-normal cursor-pointer">
+                    DUM (Data da Última Menstruação)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ultrassom" id="ultrassom" />
+                  <Label htmlFor="ultrassom" className="font-normal cursor-pointer">
+                    Ultrassom
+                  </Label>
+                </div>
+              </RadioGroup>
             </div>
 
             {gestante && (
