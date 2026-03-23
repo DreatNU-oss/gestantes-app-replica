@@ -2554,3 +2554,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Tamanho de Fonte do Nome da Gestante no Header (22/03/2026)
 - [x] Aumentar fonte do nome da gestante no header de text-lg (18px) para 22px (style={{fontSize: '22px'}})
+
+## Tamanho de Fonte IG/DPP no Header (22/03/2026)
+- [x] Aumentar fonte dos textos de IG e DPP no header de text-xs (12px) para text-sm (14px)
