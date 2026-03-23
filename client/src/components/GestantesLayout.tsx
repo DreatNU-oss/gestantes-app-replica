@@ -362,11 +362,11 @@ export default function GestantesLayout({
                     <>
                       <span className="text-muted-foreground text-xs">·</span>
                       <span className="text-xs text-muted-foreground leading-tight">
-                        IG(DUM): <span className="font-semibold text-foreground">{gestanteAtivaCompleta.calculado.igDUM.semanas}s {gestanteAtivaCompleta.calculado.igDUM.dias}d</span>
+                        IG(DUM): <span className="font-semibold text-emerald-600">{gestanteAtivaCompleta.calculado.igDUM.semanas}s {gestanteAtivaCompleta.calculado.igDUM.dias}d</span>
                       </span>
                       {gestanteAtivaCompleta.calculado.dpp && (
                         <span className="text-xs text-muted-foreground leading-tight">
-                          DPP DUM: <span className="font-semibold text-foreground">{new Date(gestanteAtivaCompleta.calculado.dpp + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
+                          DPP DUM: <span className="font-semibold text-emerald-600">{new Date(gestanteAtivaCompleta.calculado.dpp + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
                         </span>
                       )}
                     </>

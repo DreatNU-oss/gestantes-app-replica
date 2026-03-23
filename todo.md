@@ -2548,3 +2548,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover card "Selecionar Gestante" do menu Exames Laboratoriais
 - [x] Remover card "Selecionar Gestante" do menu Ultrassons
 - [x] Remover card "Selecionar Gestante" do menu Marcos Importantes (mantido apenas o seletor de método DUM/US)
+
+## Cor Verde no IG DUM e DPP DUM do Header (22/03/2026)
+- [x] Aplicar mesma cor verde (text-emerald-600) no bloco IG(DUM)/DPP DUM do header do GestantesLayout
