@@ -1055,7 +1055,7 @@ export default function ExamesLaboratoriais() {
           onValueChange={(novoValor) => handleResultadoChange(nomeExame, chave, novoValor)}
         >
           <SelectTrigger 
-            className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : ''}`}
+            className={`w-full ${ehPositivo ? 'border-red-500 bg-red-50 text-red-900' : valor === 'Negativo' ? 'border-green-500 bg-green-50 text-green-900' : ''}`}
             data-field-type="resultado"
             data-trimestre={trimestre}
               onKeyDown={(e) => {

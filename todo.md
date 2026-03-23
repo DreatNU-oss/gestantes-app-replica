@@ -2561,3 +2561,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Ícone de Smartphone no Header para Gestantes com App (23/03/2026)
 - [x] Exibir ícone de smartphone (verde) no header do GestantesLayout quando gestante tem baixouApp=true
 - [x] Corrigir IA de exames: T4 Total deve ser ignorado (não confundir com T4 Livre)
+- [x] Corrigir coloração do EPF: exibir verde quando Negativo (igual ao EGB)
