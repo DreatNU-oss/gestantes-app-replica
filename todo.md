@@ -2562,3 +2562,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Exibir ícone de smartphone (verde) no header do GestantesLayout quando gestante tem baixouApp=true
 - [x] Corrigir IA de exames: T4 Total deve ser ignorado (não confundir com T4 Livre)
 - [x] Corrigir coloração do EPF: exibir verde quando Negativo (igual ao EGB)
+- [x] Corrigir duplicação: formulário "Novo Ultrassom" não deve aparecer junto com o laudo de confirmação da IA

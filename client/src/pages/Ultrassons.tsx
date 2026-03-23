@@ -132,21 +132,36 @@ export default function Ultrassons() {
       switch (tipoUS) {
         case 'primeiro_ultrassom':
           primeiroUSAutoSave.clearDraft();
+          setPrimeiroUS({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', sacoVitelino: '', hematoma: '', corpoLuteo: '', coloUterino: '', dpp: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, primeiro_ultrassom: new Set() }));
           break;
         case 'morfologico_1tri':
           morfo1TriAutoSave.clearDraft();
+          setMorfo1Tri({ dataExame: '', idadeGestacional: '', tn: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, morfologico_1tri: new Set() }));
           break;
         case 'obstetrico':
+        case 'ultrassom_obstetrico':
           usObstetricoAutoSave.clearDraft();
+          setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, ultrassom_obstetrico: new Set() }));
           break;
         case 'morfologico_2tri':
           morfo2TriAutoSave.clearDraft();
+          setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, morfologico_2tri: new Set() }));
           break;
         case 'ecocardiograma':
+        case 'ecocardiograma_fetal':
           ecocardiogramaAutoSave.clearDraft();
+          setEcocardiograma({ dataExame: '', conclusao: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, ecocardiograma: new Set() }));
           break;
         case 'seguimento':
+        case 'ultrassom_seguimento':
           usSeguimentoAutoSave.clearDraft();
+          setUsSeguimento({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', liquidoAmniotico: '', placentaLocalizacao: '', placentaGrau: '', coloUterino: '', movimentosFetais: '', apresentacaoFetal: '', dopplers: '', observacoes: '' });
+          setCamposPreenchidosIA(prev => ({ ...prev, ultrassom_seguimento: new Set() }));
           break;
       }
       
