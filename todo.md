@@ -2551,3 +2551,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Cor Verde no IG DUM e DPP DUM do Header (22/03/2026)
 - [x] Aplicar mesma cor verde (text-emerald-600) no bloco IG(DUM)/DPP DUM do header do GestantesLayout
+
+## Tamanho de Fonte do Nome da Gestante no Header (22/03/2026)
+- [x] Aumentar fonte do nome da gestante no header de text-lg (18px) para 22px (style={{fontSize: '22px'}})

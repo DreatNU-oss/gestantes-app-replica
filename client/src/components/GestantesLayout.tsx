@@ -349,7 +349,7 @@ export default function GestantesLayout({
               return (
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-lg font-bold text-foreground leading-tight">{gestanteAtiva.nome}</span>
+                  <span className="font-bold text-foreground leading-tight" style={{fontSize: '22px'}}>{gestanteAtiva.nome}</span>
                   {gestanteAtivaCompleta && (
                     <>
                       <span className="text-muted-foreground text-xs">·</span>
