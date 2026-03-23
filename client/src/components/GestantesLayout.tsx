@@ -350,6 +350,9 @@ export default function GestantesLayout({
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <span className="font-bold text-foreground leading-tight" style={{fontSize: '22px'}}>{gestanteAtiva.nome}</span>
+                  {gestanteAtivaCompleta?.baixouApp && (
+                    <span title="Gestante com app instalado"><Smartphone className="h-4 w-4 text-emerald-500" /></span>
+                  )}
                   {gestanteAtivaCompleta && (
                     <>
                       <span className="text-muted-foreground text-xs">·</span>

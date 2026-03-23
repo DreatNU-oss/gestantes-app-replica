@@ -2557,3 +2557,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 
 ## Tamanho de Fonte IG/DPP no Header (22/03/2026)
 - [x] Aumentar fonte dos textos de IG e DPP no header de text-xs (12px) para text-sm (14px)
+
+## Ícone de Smartphone no Header para Gestantes com App (23/03/2026)
+- [x] Exibir ícone de smartphone (verde) no header do GestantesLayout quando gestante tem baixouApp=true
