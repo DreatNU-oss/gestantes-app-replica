@@ -37,6 +37,9 @@ export function TextareaComAutocomplete({
   const [justSaved, setJustSaved] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const sugestoesRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Track if a suggestion click is in progress (mouseDown on suggestion)
+  const isSelectingSuggestionRef = useRef(false);
 
   // Buscar sugestões do histórico (ordenadas por contadorUso desc, ultimoUso desc)
   const { data: sugestoes, isLoading, refetch: refetchSugestoes } = trpc.historicoTextos.getSugestoes.useQuery(
@@ -58,6 +61,7 @@ export function TextareaComAutocomplete({
   useEffect(() => {
     if (!sugestoes) {
       setSugestoesFiltradas([]);
+      setMostrarSugestoes(false);
       return;
     }
 
@@ -74,6 +78,11 @@ export function TextareaComAutocomplete({
 
     setSugestoesFiltradas(filtradas);
     setIndiceSelecionado(-1);
+
+    // If no matches, close suggestions immediately
+    if (filtradas.length === 0) {
+      setMostrarSugestoes(false);
+    }
   }, [value, sugestoes]);
 
   // Mostrar sugestões quando o campo está focado e há sugestões disponíveis
@@ -83,16 +92,22 @@ export function TextareaComAutocomplete({
     }
   }, [isFocused, sugestoesFiltradas, dismissedByEscape]);
 
+  // Close suggestions when focus is lost
+  useEffect(() => {
+    if (!isFocused) {
+      setMostrarSugestoes(false);
+    }
+  }, [isFocused]);
+
   // Fechar sugestões ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        sugestoesRef.current &&
-        !sugestoesRef.current.contains(event.target as Node) &&
-        textareaRef.current &&
-        !textareaRef.current.contains(event.target as Node)
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
       ) {
         setMostrarSugestoes(false);
+        setIsFocused(false);
       }
     };
 
@@ -110,6 +125,19 @@ export function TextareaComAutocomplete({
       return;
     }
 
+    // TAB should always close suggestions and let focus move naturally
+    if (e.key === "Tab") {
+      if (mostrarSugestoes && sugestoesFiltradas.length > 0 && indiceSelecionado >= 0) {
+        // If an item is highlighted, select it before moving
+        e.preventDefault();
+        selecionarSugestao(sugestoesFiltradas[indiceSelecionado]);
+      } else {
+        // Close suggestions and let TAB move focus normally
+        setMostrarSugestoes(false);
+      }
+      return;
+    }
+
     if (!mostrarSugestoes || sugestoesFiltradas.length === 0) return;
 
     if (e.key === "ArrowDown") {
@@ -123,12 +151,6 @@ export function TextareaComAutocomplete({
     } else if (e.key === "Enter" && indiceSelecionado >= 0) {
       e.preventDefault();
       selecionarSugestao(sugestoesFiltradas[indiceSelecionado]);
-    } else if (e.key === "Tab") {
-      if (sugestoesFiltradas.length > 0) {
-        e.preventDefault();
-        const idx = indiceSelecionado >= 0 ? indiceSelecionado : 0;
-        selecionarSugestao(sugestoesFiltradas[idx]);
-      }
     }
   };
 
@@ -138,6 +160,7 @@ export function TextareaComAutocomplete({
     setMostrarSugestoes(false);
     setIndiceSelecionado(-1);
     setSelectedFromSuggestion(true);
+    isSelectingSuggestionRef.current = false;
 
     // Registrar uso da sugestão selecionada (incrementa contador)
     registrarUsoMutation.mutate({
@@ -152,7 +175,14 @@ export function TextareaComAutocomplete({
     e.stopPropagation();
     deletarMutation.mutate({ id: sugestao.id });
     // Remover localmente imediatamente
-    setSugestoesFiltradas(prev => prev.filter(s => s.id !== sugestao.id));
+    setSugestoesFiltradas(prev => {
+      const updated = prev.filter(s => s.id !== sugestao.id);
+      // If no more suggestions after deletion, close dropdown
+      if (updated.length === 0) {
+        setMostrarSugestoes(false);
+      }
+      return updated;
+    });
   }, [deletarMutation]);
 
   // Salvar frase atual como sugestão favorita com um clique
@@ -185,13 +215,17 @@ export function TextareaComAutocomplete({
   // Registrar uso APENAS ao perder foco (blur) — quando o usuário terminou de digitar
   // Não grava se: o texto é muito curto, não mudou desde o foco, ou veio de seleção de sugestão
   const handleBlur = () => {
-    setIsFocused(false);
-    setDismissedByEscape(false);
-
-    const trimmedValue = value.trim();
-
-    // Delay para permitir clique em sugestão antes de fechar
+    // Small delay to allow suggestion click (mouseDown → mouseUp) to complete
     setTimeout(() => {
+      // If a suggestion mouseDown is in progress, don't close yet
+      if (isSelectingSuggestionRef.current) return;
+
+      setIsFocused(false);
+      setDismissedByEscape(false);
+      setMostrarSugestoes(false);
+
+      const trimmedValue = value.trim();
+
       // Só salva se:
       // 1. Tem texto com pelo menos 5 caracteres
       // 2. O texto mudou desde que o campo foi focado
@@ -209,7 +243,7 @@ export function TextareaComAutocomplete({
       }
       // Reset flag
       setSelectedFromSuggestion(false);
-    }, 200);
+    }, 150);
   };
 
   const handleFocus = () => {
@@ -238,7 +272,7 @@ export function TextareaComAutocomplete({
   const hasText = value.trim().length >= 3;
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" ref={containerRef}>
       <div className="flex items-start gap-1">
         <div className="relative flex-1">
           <Textarea
@@ -277,6 +311,7 @@ export function TextareaComAutocomplete({
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault();
+                          isSelectingSuggestionRef.current = true;
                           selecionarSugestao(sugestao);
                         }}
                         className="flex-1 text-left px-3 py-2"
@@ -299,7 +334,13 @@ export function TextareaComAutocomplete({
                         type="button"
                         title="Remover sugestão"
                         className="px-2 py-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                        onMouseDown={(e) => deletarSugestao(e, sugestao)}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          isSelectingSuggestionRef.current = true;
+                          deletarSugestao(e, sugestao);
+                          // Reset after a tick
+                          setTimeout(() => { isSelectingSuggestionRef.current = false; }, 200);
+                        }}
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -347,7 +388,7 @@ export function TextareaComAutocomplete({
           </TooltipTrigger>
           <TooltipContent side="right" className="max-w-xs">
             <div className="text-xs space-y-1">
-              <div><strong>Tab</strong> - Aceitar primeira sugestão</div>
+              <div><strong>Tab</strong> - Aceitar sugestão selecionada</div>
               <div><strong>↑ ↓</strong> - Navegar sugestões</div>
               <div><strong>Enter</strong> - Selecionar</div>
               <div><strong>Esc</strong> - Fechar</div>

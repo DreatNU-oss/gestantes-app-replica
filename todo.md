@@ -2568,3 +2568,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Adicionar campos CCN, BCF, Osso Nasal e DPP ao formulário de Morfológico 1º Tri
 - [x] Adicionar verificação de tipo de ultrassom (IA alerta quando tipo selecionado não corresponde ao laudo)
 - [x] Corrigir duplicação do formulário "Novo Morfológico 1º Tri" após interpretação pela IA (limpeza já implementada)
+
+## Bug Autocomplete não fecha ao mudar de campo (23/03/2026)
+- [x] Corrigir InputComHistorico: sugestões devem fechar ao perder foco (TAB, clique fora, seleção)
+- [x] Corrigir TextareaComAutocomplete: sugestões devem fechar ao perder foco (TAB, clique fora, seleção)
+- [x] Fechar sugestões quando não há mais matches compatíveis
+- [x] Atualizar skill webdev-autocomplete-history com a correção

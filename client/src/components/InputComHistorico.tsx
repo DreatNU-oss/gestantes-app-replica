@@ -12,9 +12,7 @@ import { X } from "lucide-react";
  * - Permite deletar sugestões individuais com "X"
  * - Filtra sugestões conforme o usuário digita
  * - Navegação por teclado (↑↓ Enter Esc Tab)
- * 
- * Uso: substitui <Input> em qualquer campo, adicionando apenas o prop `tipo`.
- * O `tipo` é uma string livre que identifica o campo (ex: "pa_consulta", "peso_consulta").
+ * - Fecha sugestões ao: perder foco (TAB/clique fora), selecionar sugestão, Escape, sem matches
  */
 
 interface InputComHistoricoProps {
@@ -102,6 +100,8 @@ export function InputComHistorico({
   const containerRef = useRef<HTMLDivElement>(null);
   const internalInputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  // Track if a suggestion click is in progress (mouseDown on suggestion)
+  const isSelectingSuggestionRef = useRef(false);
 
   // Use the forwarded ref or internal ref
   const resolvedRef = (inputRef as React.RefObject<HTMLInputElement>) || internalInputRef;
@@ -134,6 +134,7 @@ export function InputComHistorico({
     // Immediate clear when no suggestions available
     if (!sugestoes || sugestoes.length === 0) {
       setFilteredSuggestions([]);
+      setShowSuggestions(false);
       return;
     }
 
@@ -151,6 +152,11 @@ export function InputComHistorico({
 
       setFilteredSuggestions(filtradas);
       setSelectedIndex(-1);
+
+      // If no matches, close suggestions immediately
+      if (filtradas.length === 0) {
+        setShowSuggestions(false);
+      }
     }, 150);
 
     return () => {
@@ -160,12 +166,19 @@ export function InputComHistorico({
     };
   }, [value, sugestoes]);
 
-  // Show suggestions when focused and available
+  // Show suggestions when focused and available (only open, never close here)
   useEffect(() => {
     if (isFocused && filteredSuggestions.length > 0 && !dismissedByEscape) {
       setShowSuggestions(true);
     }
   }, [isFocused, filteredSuggestions, dismissedByEscape]);
+
+  // Close suggestions when focus is lost
+  useEffect(() => {
+    if (!isFocused) {
+      setShowSuggestions(false);
+    }
+  }, [isFocused]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -175,6 +188,7 @@ export function InputComHistorico({
         !containerRef.current.contains(event.target as Node)
       ) {
         setShowSuggestions(false);
+        setIsFocused(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -198,6 +212,7 @@ export function InputComHistorico({
     setShowSuggestions(false);
     setSelectedIndex(-1);
     setSelectedFromSuggestion(true);
+    isSelectingSuggestionRef.current = false;
 
     // Register usage (increment counter)
     registrarUsoMutation.mutate({
@@ -211,7 +226,14 @@ export function InputComHistorico({
     e.preventDefault();
     e.stopPropagation();
     deletarMutation.mutate({ id: sugestao.id });
-    setFilteredSuggestions(prev => prev.filter(s => s.id !== sugestao.id));
+    setFilteredSuggestions(prev => {
+      const updated = prev.filter(s => s.id !== sugestao.id);
+      // If no more suggestions after deletion, close dropdown
+      if (updated.length === 0) {
+        setShowSuggestions(false);
+      }
+      return updated;
+    });
   }, [deletarMutation]);
 
   // Keyboard navigation
@@ -221,6 +243,21 @@ export function InputComHistorico({
       e.stopPropagation();
       setShowSuggestions(false);
       setDismissedByEscape(true);
+      if (onKeyDownExtra) onKeyDownExtra(e);
+      if (onKeyDownProp) onKeyDownProp(e);
+      return;
+    }
+
+    // TAB should always close suggestions and let focus move naturally
+    if (e.key === "Tab") {
+      if (showSuggestions && filteredSuggestions.length > 0 && selectedIndex >= 0) {
+        // If an item is highlighted, select it before moving
+        e.preventDefault();
+        selecionarSugestao(filteredSuggestions[selectedIndex]);
+      } else {
+        // Close suggestions and let TAB move focus normally
+        setShowSuggestions(false);
+      }
       if (onKeyDownExtra) onKeyDownExtra(e);
       if (onKeyDownProp) onKeyDownProp(e);
       return;
@@ -243,9 +280,6 @@ export function InputComHistorico({
     } else if (e.key === "Enter" && selectedIndex >= 0) {
       e.preventDefault();
       selecionarSugestao(filteredSuggestions[selectedIndex]);
-    } else if (e.key === "Tab" && filteredSuggestions.length > 0 && selectedIndex >= 0) {
-      e.preventDefault();
-      selecionarSugestao(filteredSuggestions[selectedIndex]);
     } else {
       if (onKeyDownExtra) onKeyDownExtra(e);
       if (onKeyDownProp) onKeyDownProp(e);
@@ -254,12 +288,17 @@ export function InputComHistorico({
 
   // Save on blur (like Chrome - only saves after actual use)
   const handleBlur = () => {
-    setIsFocused(false);
-    setDismissedByEscape(false);
-
-    const trimmedValue = value.trim();
-
+    // Small delay to allow suggestion click (mouseDown → mouseUp) to complete
     setTimeout(() => {
+      // If a suggestion mouseDown is in progress, don't close yet
+      if (isSelectingSuggestionRef.current) return;
+
+      setIsFocused(false);
+      setDismissedByEscape(false);
+      setShowSuggestions(false);
+
+      const trimmedValue = value.trim();
+
       if (
         trimmedValue &&
         trimmedValue.length >= minSaveLength &&
@@ -272,7 +311,7 @@ export function InputComHistorico({
         });
       }
       setSelectedFromSuggestion(false);
-    }, 200);
+    }, 150);
 
     if (onBlurExtra) onBlurExtra();
   };
@@ -356,6 +395,7 @@ export function InputComHistorico({
                   type="button"
                   onMouseDown={(e) => {
                     e.preventDefault();
+                    isSelectingSuggestionRef.current = true;
                     selecionarSugestao(sugestao);
                   }}
                   className="flex-1 text-left px-3 py-1.5 min-w-0"
@@ -371,7 +411,13 @@ export function InputComHistorico({
                   type="button"
                   title="Remover sugestão"
                   className="px-1.5 py-1.5 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  onMouseDown={(e) => deletarSugestao(e, sugestao)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    isSelectingSuggestionRef.current = true;
+                    deletarSugestao(e, sugestao);
+                    // Reset after a tick
+                    setTimeout(() => { isSelectingSuggestionRef.current = false; }, 200);
+                  }}
                 >
                   <X className="h-3 w-3" />
                 </button>
