@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 80;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 80;",
+  "rows": [
+    {
+      "nome": "Maria Eduarda da Silva Souza",
+      "telefone": "(18) 98194-0809"
+    },
+    {
+      "nome": "Mariá Raíssa Loureira Rodrigues",
+      "telefone": "(35) 98847-3761"
+    },
+    {
+      "nome": "Meireceli Batista Teixeira",
+      "telefone": "(35) 99128-5764"
+    },
+    {
+      "nome": "Meirielen Santiago Levy de Souza",
+      "telefone": "(35) 98404-4719"
+    },
+    {
+      "nome": "Milene de Souza Braga",
+      "telefone": "(35) 98864-6143"
+    },
+    {
+      "nome": "Monalisa Mafra Gonçalves de Oliveira",
+      "telefone": "(35) 98845-9422"
+    },
+    {
+      "nome": "Natália da Silva Silveira",
+      "telefone": "(35) 99208-2487"
+    },
+    {
+      "nome": "Nathalia Amélia Martins",
+      "telefone": "(21) 98322-5558"
+    },
+    {
+      "nome": "Poli Antunes",
+      "telefone": "+5535999587881"
+    },
+    {
+      "nome": "Raissa Andrade Gibram",
+      "telefone": "(35) 99137-5232"
+    },
+    {
+      "nome": "Raissa Silva Gabriel",
+      "telefone": "(35) 98833-2186"
+    },
+    {
+      "nome": "Rayane Aparecida Zanin",
+      "telefone": "(35) 99158-3690"
+    },
+    {
+      "nome": "Roberta Lopes Rodrigues ",
+      "telefone": "(35) 99939-7164"
+    },
+    {
+      "nome": "Rosemeire Furtado de Paiva",
+      "telefone": "(35) 99970-3857"
+    },
+    {
+      "nome": "Rosimeire Pereira de Paiva",
+      "telefone": "(35) 99873-7334"
+    },
+    {
+      "nome": "Sandra Cristina Pereira Camargo",
+      "telefone": "(35) 98801-9803"
+    },
+    {
+      "nome": "Sophy Marie Ferreira Martins",
+      "telefone": "(35) 99764-9027"
+    },
+    {
+      "nome": "Suelen Gandza Gomes",
+      "telefone": "(35) 98894-2521"
+    },
+    {
+      "nome": "Suzane Catarine da Silva Bisi",
+      "telefone": "(35) 99938-7723"
+    },
+    {
+      "nome": "Taciana Ribeiro Rios de Abreu",
+      "telefone": "(35) 98875-6556"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nMaria Eduarda da Silva Souza\t(18) 98194-0809\nMariá Raíssa Loureira Rodrigues\t(35) 98847-3761\nMeireceli Batista Teixeira\t(35) 99128-5764\nMeirielen Santiago Levy de Souza\t(35) 98404-4719\nMilene de Souza Braga\t(35) 98864-6143\nMonalisa Mafra Gonçalves de Oliveira\t(35) 98845-9422\nNatália da Silva Silveira\t(35) 99208-2487\nNathalia Amélia Martins\t(21) 98322-5558\nPoli Antunes\t+5535999587881\nRaissa Andrade Gibram\t(35) 99137-5232\nRaissa Silva Gabriel\t(35) 98833-2186\nRayane Aparecida Zanin\t(35) 99158-3690\nRoberta Lopes Rodrigues \t(35) 99939-7164\nRosemeire Furtado de Paiva\t(35) 99970-3857\nRosimeire Pereira de Paiva\t(35) 99873-7334\nSandra Cristina Pereira Camargo\t(35) 98801-9803\nSophy Marie Ferreira Martins\t(35) 99764-9027\nSuelen Gandza Gomes\t(35) 98894-2521\nSuzane Catarine da Silva Bisi\t(35) 99938-7723\nTaciana Ribeiro Rios de Abreu\t(35) 98875-6556\n",
+  "stderr": "",
+  "execution_time_ms": 373
+}

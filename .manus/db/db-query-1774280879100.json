@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 40;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 40;",
+  "rows": [
+    {
+      "nome": "Fernanda Carmem de Souza",
+      "telefone": "(35) 99993-0821"
+    },
+    {
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "telefone": "(35) 99949-4671"
+    },
+    {
+      "nome": "Flávia Helena Felizardo Pereira",
+      "telefone": "(35) 98821-7940"
+    },
+    {
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "telefone": "(35) 99269-0286"
+    },
+    {
+      "nome": "Gabriella da Silva leite",
+      "telefone": "(35) 99931-8438"
+    },
+    {
+      "nome": "Giovanna Alexsandra Mecia",
+      "telefone": "(35) 99111-5958"
+    },
+    {
+      "nome": "Gisele Silva Batista",
+      "telefone": "(35) 98831-4210"
+    },
+    {
+      "nome": "Gislaine Santos Da Silva ",
+      "telefone": "(35) 99241-3963"
+    },
+    {
+      "nome": "Gussiê Vitória Tavares Santos",
+      "telefone": "(35) 98831-0359"
+    },
+    {
+      "nome": "Helena Resende Andrade",
+      "telefone": "(35) 99891-9065"
+    },
+    {
+      "nome": "Iara Silva Miguel",
+      "telefone": "(12) 99612-7694"
+    },
+    {
+      "nome": "Iris Fonseca de Morais",
+      "telefone": "(35) 99713-7696"
+    },
+    {
+      "nome": "Jacqueline Mantovani Dos Santos Viana De Paula",
+      "telefone": "(35) 98842-0545"
+    },
+    {
+      "nome": "Janaína Helena Machado",
+      "telefone": "(35) 98892-5227"
+    },
+    {
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "telefone": "(35) 99248-0745"
+    },
+    {
+      "nome": "Jenilda Aparecida Souza Santos",
+      "telefone": "(35) 98832-8459"
+    },
+    {
+      "nome": "Jéssica Adriana Morais Lopes",
+      "telefone": "(35) 98889-4868"
+    },
+    {
+      "nome": "Joane Lopes Andrade",
+      "telefone": "(31) 99790-6488"
+    },
+    {
+      "nome": "Juliana da Silva Tavares",
+      "telefone": "(35) 98812-3752"
+    },
+    {
+      "nome": "Kassiara Batista Borges",
+      "telefone": "(35) 99130-0554"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nFernanda Carmem de Souza\t(35) 99993-0821\nFernanda Luciano Santos Gonçalves\t(35) 99949-4671\nFlávia Helena Felizardo Pereira\t(35) 98821-7940\nGabriela dos Santos Batista Figueiredo\t(35) 99269-0286\nGabriella da Silva leite\t(35) 99931-8438\nGiovanna Alexsandra Mecia\t(35) 99111-5958\nGisele Silva Batista\t(35) 98831-4210\nGislaine Santos Da Silva \t(35) 99241-3963\nGussiê Vitória Tavares Santos\t(35) 98831-0359\nHelena Resende Andrade\t(35) 99891-9065\nIara Silva Miguel\t(12) 99612-7694\nIris Fonseca de Morais\t(35) 99713-7696\nJacqueline Mantovani Dos Santos Viana De Paula\t(35) 98842-0545\nJanaína Helena Machado\t(35) 98892-5227\nJeniffer Catrine Alves de Souza\t(35) 99248-0745\nJenilda Aparecida Souza Santos\t(35) 98832-8459\nJéssica Adriana Morais Lopes\t(35) 98889-4868\nJoane Lopes Andrade\t(31) 99790-6488\nJuliana da Silva Tavares\t(35) 98812-3752\nKassiara Batista Borges\t(35) 99130-0554\n",
+  "stderr": "",
+  "execution_time_ms": 372
+}

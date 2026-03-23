@@ -1,0 +1,20 @@
+{
+  "query": "SELECT g.clinicaId, c.nome as clinica, COUNT(*) as total\nFROM gestantes g\nLEFT JOIN clinicas c ON c.id = g.clinicaId\nWHERE g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nGROUP BY g.clinicaId, c.nome\nORDER BY total DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.clinicaId, c.nome as clinica, COUNT(*) as total\nFROM gestantes g\nLEFT JOIN clinicas c ON c.id = g.clinicaId\nWHERE g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nGROUP BY g.clinicaId, c.nome\nORDER BY total DESC;",
+  "rows": [
+    {
+      "clinicaId": "1",
+      "clinica": "Clínica Mais Mulher",
+      "total": "106"
+    },
+    {
+      "clinicaId": "60001",
+      "clinica": "Clínica 00003",
+      "total": "5"
+    }
+  ],
+  "messages": [],
+  "stdout": "clinicaId\tclinica\ttotal\n1\tClínica Mais Mulher\t106\n60001\tClínica 00003\t5\n",
+  "stderr": "",
+  "execution_time_ms": 379
+}

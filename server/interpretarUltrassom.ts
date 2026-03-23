@@ -142,6 +142,13 @@ function gerarPromptDetalhado(tipoUltrassom: TipoUltrassom): string {
 
 7. Se um campo realmente não puder ser determinado pelo laudo (não há informação suficiente), omita-o do resultado.
 
+8. **VALORES NUMÉRICOS COM VÍRGULA DECIMAL (PADRÃO BRASILEIRO)** - REGRA CRÍTICA:
+   - Laudos brasileiros usam VÍRGULA como separador decimal: "357,9 mm" significa 357.9 mm, NÃO 3579 mm.
+   - NUNCA remova a vírgula e concatene os dígitos. "357,9" = trezentos e cinquenta e sete vírgula nove.
+   - Exemplos corretos: "CA 357,9 mm" → retorne "357.9 mm"; "CC 350,8 mm" → "350.8 mm"; "DBP 89,1 mm" → "89.1 mm".
+   - Converta a vírgula para ponto no JSON: "357,9" → "357.9".
+   - Esta regra se aplica a TODOS os campos numéricos: CA, CC, DBP, CF, CCN, ILA, IP, IR, etc.
+
 **CAMPOS A EXTRAIR:**
 
 ${listaCampos}
@@ -274,7 +281,8 @@ REGRAS OBRIGATÓRIAS:
 5. Para Doppler das Uterinas: extraia os valores de IP (Índice de Pulsatilidade) de ambas as artérias.
 6. Responda APENAS em JSON válido, sem markdown, sem explicações, sem texto antes ou depois do JSON.
 7. Use formato DD/MM/AAAA para todas as datas.
-8. Mantenha unidades de medida (mm, cm, g, bpm, etc.).`
+8. Mantenha unidades de medida (mm, cm, g, bpm, etc.).
+9. VÍRGULA DECIMAL (PADRÃO BRASILEIRO): laudos usam vírgula como separador decimal. "357,9 mm" = 357.9 mm, NÃO 3579 mm. Converta vírgula para ponto no JSON. Exemplos: "CA 357,9 mm" → "357.9 mm"; "DBP 89,1 mm" → "89.1 mm". NUNCA concatene os dígitos removendo a vírgula.`
           },
           {
             role: 'user',

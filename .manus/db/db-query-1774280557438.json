@@ -1,0 +1,19 @@
+{
+  "query": "SELECT COUNT(*) as total_ativas_com_telefone \nFROM gestantes g\nWHERE g.telefone IS NOT NULL AND g.telefone != ''\nAND g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);\n\nSELECT COUNT(*) as total_ativas_sem_telefone\nFROM gestantes g\nWHERE (g.telefone IS NULL OR g.telefone = '')\nAND g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as total_ativas_com_telefone \nFROM gestantes g\nWHERE g.telefone IS NOT NULL AND g.telefone != ''\nAND g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);\n\nSELECT COUNT(*) as total_ativas_sem_telefone\nFROM gestantes g\nWHERE (g.telefone IS NULL OR g.telefone = '')\nAND g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);",
+  "rows": [
+    {
+      "total_ativas_com_telefone": "111"
+    },
+    {
+      "total_ativas_com_telefone": "total_ativas_sem_telefone"
+    },
+    {
+      "total_ativas_com_telefone": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_ativas_com_telefone\n111\ntotal_ativas_sem_telefone\n0\n",
+  "stderr": "",
+  "execution_time_ms": 438
+}

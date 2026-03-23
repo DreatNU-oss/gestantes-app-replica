@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as total_ativas\nFROM gestantes g\nWHERE g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as total_ativas\nFROM gestantes g\nWHERE g.id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL);",
+  "rows": [
+    {
+      "total_ativas": "111"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_ativas\n111\n",
+  "stderr": "",
+  "execution_time_ms": 367
+}

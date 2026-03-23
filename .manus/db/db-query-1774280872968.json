@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 20;",
+  "rows": [
+    {
+      "nome": "Camila Rosa Carvalho",
+      "telefone": "(35) 98864-0766"
+    },
+    {
+      "nome": "Camila Soares Ferreira Sidrin",
+      "telefone": "(35) 99179-1204"
+    },
+    {
+      "nome": "Camily De Souza Junqueira Costa",
+      "telefone": "(35) 98441-1782"
+    },
+    {
+      "nome": "Carolina Otavio Baroni",
+      "telefone": "(35) 99715-5209"
+    },
+    {
+      "nome": "Cassia Moreira Francisco De Oliveira",
+      "telefone": "(35) 98886-4061"
+    },
+    {
+      "nome": "Chaiane Priscila da Silva Carvalho",
+      "telefone": "(35) 98859-4161"
+    },
+    {
+      "nome": "Crisilane Aparecida da Costa Soares",
+      "telefone": "(35) 99932-7688"
+    },
+    {
+      "nome": "Crislayne Eleniz de Andrade",
+      "telefone": "(35) 98702-9492"
+    },
+    {
+      "nome": "Damaris Pereira Arlindo",
+      "telefone": "(35) 99123-4544"
+    },
+    {
+      "nome": "Denise Bittencourt Siqueira",
+      "telefone": "(14) 98100-0879"
+    },
+    {
+      "nome": "Eliana Gomes de Noronha",
+      "telefone": "(35) 99853-9531"
+    },
+    {
+      "nome": "Elisa Matias Jorge Souza",
+      "telefone": "(35) 99961-0388"
+    },
+    {
+      "nome": "Elisangela da Silva",
+      "telefone": "(35) 99200-9797"
+    },
+    {
+      "nome": "Ellem Ribeiro Lemes",
+      "telefone": "(35) 98407-4122"
+    },
+    {
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "telefone": "(35) 99126-5151"
+    },
+    {
+      "nome": "Erica Aparecida Luz",
+      "telefone": "(35) 99935-9659"
+    },
+    {
+      "nome": "Estefane Alvarenga Cardoso",
+      "telefone": "(35) 99860-3176"
+    },
+    {
+      "nome": "Fabiana Aparecida Fonseca",
+      "telefone": "(35) 98701-6463"
+    },
+    {
+      "nome": "Fernanda Angélica Mafra",
+      "telefone": "(35) 98866-8363"
+    },
+    {
+      "nome": "Fernanda Aparecida Lemes",
+      "telefone": "(35) 99923-3153"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nCamila Rosa Carvalho\t(35) 98864-0766\nCamila Soares Ferreira Sidrin\t(35) 99179-1204\nCamily De Souza Junqueira Costa\t(35) 98441-1782\nCarolina Otavio Baroni\t(35) 99715-5209\nCassia Moreira Francisco De Oliveira\t(35) 98886-4061\nChaiane Priscila da Silva Carvalho\t(35) 98859-4161\nCrisilane Aparecida da Costa Soares\t(35) 99932-7688\nCrislayne Eleniz de Andrade\t(35) 98702-9492\nDamaris Pereira Arlindo\t(35) 99123-4544\nDenise Bittencourt Siqueira\t(14) 98100-0879\nEliana Gomes de Noronha\t(35) 99853-9531\nElisa Matias Jorge Souza\t(35) 99961-0388\nElisangela da Silva\t(35) 99200-9797\nEllem Ribeiro Lemes\t(35) 98407-4122\nEllen Aparecida Ferreira Batista\t(35) 99126-5151\nErica Aparecida Luz\t(35) 99935-9659\nEstefane Alvarenga Cardoso\t(35) 99860-3176\nFabiana Aparecida Fonseca\t(35) 98701-6463\nFernanda Angélica Mafra\t(35) 98866-8363\nFernanda Aparecida Lemes\t(35) 99923-3153\n",
+  "stderr": "",
+  "execution_time_ms": 369
+}

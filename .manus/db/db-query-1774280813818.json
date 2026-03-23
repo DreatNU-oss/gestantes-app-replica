@@ -1,0 +1,30 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 60001 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 60001 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome;",
+  "rows": [
+    {
+      "nome": "Gabrielle Lodgero dos Santos",
+      "telefone": "(35) 99746-8249"
+    },
+    {
+      "nome": "Indira Pereira de Oliveira",
+      "telefone": "(93) 99185-1024"
+    },
+    {
+      "nome": "Kaylane dos Santos Delmiro",
+      "telefone": "(35) 98451-1405"
+    },
+    {
+      "nome": "Luana Aparecida De Paula",
+      "telefone": "(35) 99122-4385"
+    },
+    {
+      "nome": "Roberta Cristina Arlindo",
+      "telefone": "(35) 98818-5291"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nGabrielle Lodgero dos Santos\t(35) 99746-8249\nIndira Pereira de Oliveira\t(93) 99185-1024\nKaylane dos Santos Delmiro\t(35) 98451-1405\nLuana Aparecida De Paula\t(35) 99122-4385\nRoberta Cristina Arlindo\t(35) 98818-5291\n",
+  "stderr": "",
+  "execution_time_ms": 366
+}

@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 60;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome\nLIMIT 20 OFFSET 60;",
+  "rows": [
+    {
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "telefone": "(35) 98800-1074"
+    },
+    {
+      "nome": "Lara Carolyne Miguel de Paula",
+      "telefone": "(35) 98709-6389"
+    },
+    {
+      "nome": "Lara de Souza Gomes",
+      "telefone": "(35) 99815-4273"
+    },
+    {
+      "nome": "Lara De Souza Silverio",
+      "telefone": "(35) 98712-5973"
+    },
+    {
+      "nome": "Larissa Santos Santana",
+      "telefone": "(11) 96707-3720"
+    },
+    {
+      "nome": "Letícia Aparecida Silveira",
+      "telefone": "(35) 99208-7701"
+    },
+    {
+      "nome": "Letícia Dias de Souza",
+      "telefone": "(35) 98456-4541"
+    },
+    {
+      "nome": "Leticia Petrin",
+      "telefone": "(35) 98813-5747"
+    },
+    {
+      "nome": "Lívia Caldas Marins",
+      "telefone": "(35) 99952-9318"
+    },
+    {
+      "nome": "Lorena Luísa da Costa",
+      "telefone": "(35) 99824-1549"
+    },
+    {
+      "nome": "Lorenza Silva Pereira",
+      "telefone": "(35) 99198-8651"
+    },
+    {
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "telefone": "(35) 98814-4033"
+    },
+    {
+      "nome": "Luciana Maria Silva",
+      "telefone": "(35) 98809-1543"
+    },
+    {
+      "nome": "Luciana Valim",
+      "telefone": "(35) 98891-7100"
+    },
+    {
+      "nome": "Luciany Aparecida Vilela",
+      "telefone": "(35) 99911-0116"
+    },
+    {
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "telefone": "(35) 98885-5312"
+    },
+    {
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "telefone": "(35) 98412-6224"
+    },
+    {
+      "nome": "Marcela Bellato Reis",
+      "telefone": "(35) 98408-7562"
+    },
+    {
+      "nome": "Marcelly De Oliveira Rezende ",
+      "telefone": "(35) 98427-2947"
+    },
+    {
+      "nome": "Maria da Glória Barros Pires Ferrari",
+      "telefone": "(35) 99832-6366"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nKayane Ketnny Gomes Branquinho\t(35) 98800-1074\nLara Carolyne Miguel de Paula\t(35) 98709-6389\nLara de Souza Gomes\t(35) 99815-4273\nLara De Souza Silverio\t(35) 98712-5973\nLarissa Santos Santana\t(11) 96707-3720\nLetícia Aparecida Silveira\t(35) 99208-7701\nLetícia Dias de Souza\t(35) 98456-4541\nLeticia Petrin\t(35) 98813-5747\nLívia Caldas Marins\t(35) 99952-9318\nLorena Luísa da Costa\t(35) 99824-1549\nLorenza Silva Pereira\t(35) 99198-8651\nLuana Maria Oliveira Ribeiro Bernardes\t(35) 98814-4033\nLuciana Maria Silva\t(35) 98809-1543\nLuciana Valim\t(35) 98891-7100\nLuciany Aparecida Vilela\t(35) 99911-0116\nLucíola Viviane Achilles Medeiros Araújo\t(35) 98885-5312\nMakisleide Ferreira de Souza Santos\t(35) 98412-6224\nMarcela Bellato Reis\t(35) 98408-7562\nMarcelly De Oliveira Rezende \t(35) 98427-2947\nMaria da Glória Barros Pires Ferrari\t(35) 99832-6366\n",
+  "stderr": "",
+  "execution_time_ms": 366
+}

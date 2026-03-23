@@ -1,0 +1,434 @@
+{
+  "query": "SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nome, telefone FROM gestantes \nWHERE clinicaId = 1 \nAND telefone IS NOT NULL AND telefone != ''\nAND id NOT IN (SELECT gestanteId FROM partosRealizados WHERE gestanteId IS NOT NULL)\nORDER BY nome;",
+  "rows": [
+    {
+      "nome": "Adrieli Rezende Barros",
+      "telefone": "(35) 99228-9660"
+    },
+    {
+      "nome": "Alexandra Maria Silva Souza ",
+      "telefone": "(35) 99126-8626"
+    },
+    {
+      "nome": "Aline Cassia Fernandes",
+      "telefone": "(35) 98824-0095"
+    },
+    {
+      "nome": "Aline Cristina Soares Gallo",
+      "telefone": "(35) 98842-2584"
+    },
+    {
+      "nome": "Amanda Paula da Costa Silva",
+      "telefone": "(35) 98856-8114"
+    },
+    {
+      "nome": "Amanda Ribeiro Freitas",
+      "telefone": "(35) 99931-1810"
+    },
+    {
+      "nome": "Amanda Tavares Amado",
+      "telefone": "(35) 99775-4348"
+    },
+    {
+      "nome": "Ana Beatriz de Oliveira Salles",
+      "telefone": "(35) 99985-2307"
+    },
+    {
+      "nome": "Ana Carolini Almeida de Souza",
+      "telefone": "(14) 99635-7688"
+    },
+    {
+      "nome": "Ana Clara Borges da Silva",
+      "telefone": "(35) 98889-2511"
+    },
+    {
+      "nome": "Ana Laura Marinho Amaral",
+      "telefone": "(31) 98252-2303"
+    },
+    {
+      "nome": "Andressa Cristina Gonçalves",
+      "telefone": "(35) 99912-6437"
+    },
+    {
+      "nome": "Andressa Helena Silva Fonseca",
+      "telefone": "(35) 99849-3185"
+    },
+    {
+      "nome": "Bianca Fonseca Moreno da Cruz",
+      "telefone": "(35) 99147-0014"
+    },
+    {
+      "nome": "Bruna do Carmo Cunha",
+      "telefone": "(35) 98407-1855"
+    },
+    {
+      "nome": "Bruna Ribeiro Costa",
+      "telefone": "(35) 99705-0080"
+    },
+    {
+      "nome": "Bruna Tertuliano de Souza",
+      "telefone": "(35) 99112-1923"
+    },
+    {
+      "nome": "Camila Cristina Luiz da Silva",
+      "telefone": "(35) 98435-1550"
+    },
+    {
+      "nome": "Camila Dias Vicente",
+      "telefone": "(35) 99909-0827"
+    },
+    {
+      "nome": "Camila Paiva do Nascimento",
+      "telefone": "(35) 98427-6768"
+    },
+    {
+      "nome": "Camila Rosa Carvalho",
+      "telefone": "(35) 98864-0766"
+    },
+    {
+      "nome": "Camila Soares Ferreira Sidrin",
+      "telefone": "(35) 99179-1204"
+    },
+    {
+      "nome": "Camily De Souza Junqueira Costa",
+      "telefone": "(35) 98441-1782"
+    },
+    {
+      "nome": "Carolina Otavio Baroni",
+      "telefone": "(35) 99715-5209"
+    },
+    {
+      "nome": "Cassia Moreira Francisco De Oliveira",
+      "telefone": "(35) 98886-4061"
+    },
+    {
+      "nome": "Chaiane Priscila da Silva Carvalho",
+      "telefone": "(35) 98859-4161"
+    },
+    {
+      "nome": "Crisilane Aparecida da Costa Soares",
+      "telefone": "(35) 99932-7688"
+    },
+    {
+      "nome": "Crislayne Eleniz de Andrade",
+      "telefone": "(35) 98702-9492"
+    },
+    {
+      "nome": "Damaris Pereira Arlindo",
+      "telefone": "(35) 99123-4544"
+    },
+    {
+      "nome": "Denise Bittencourt Siqueira",
+      "telefone": "(14) 98100-0879"
+    },
+    {
+      "nome": "Eliana Gomes de Noronha",
+      "telefone": "(35) 99853-9531"
+    },
+    {
+      "nome": "Elisa Matias Jorge Souza",
+      "telefone": "(35) 99961-0388"
+    },
+    {
+      "nome": "Elisangela da Silva",
+      "telefone": "(35) 99200-9797"
+    },
+    {
+      "nome": "Ellem Ribeiro Lemes",
+      "telefone": "(35) 98407-4122"
+    },
+    {
+      "nome": "Ellen Aparecida Ferreira Batista",
+      "telefone": "(35) 99126-5151"
+    },
+    {
+      "nome": "Erica Aparecida Luz",
+      "telefone": "(35) 99935-9659"
+    },
+    {
+      "nome": "Estefane Alvarenga Cardoso",
+      "telefone": "(35) 99860-3176"
+    },
+    {
+      "nome": "Fabiana Aparecida Fonseca",
+      "telefone": "(35) 98701-6463"
+    },
+    {
+      "nome": "Fernanda Angélica Mafra",
+      "telefone": "(35) 98866-8363"
+    },
+    {
+      "nome": "Fernanda Aparecida Lemes",
+      "telefone": "(35) 99923-3153"
+    },
+    {
+      "nome": "Fernanda Carmem de Souza",
+      "telefone": "(35) 99993-0821"
+    },
+    {
+      "nome": "Fernanda Luciano Santos Gonçalves",
+      "telefone": "(35) 99949-4671"
+    },
+    {
+      "nome": "Flávia Helena Felizardo Pereira",
+      "telefone": "(35) 98821-7940"
+    },
+    {
+      "nome": "Gabriela dos Santos Batista Figueiredo",
+      "telefone": "(35) 99269-0286"
+    },
+    {
+      "nome": "Gabriella da Silva leite",
+      "telefone": "(35) 99931-8438"
+    },
+    {
+      "nome": "Giovanna Alexsandra Mecia",
+      "telefone": "(35) 99111-5958"
+    },
+    {
+      "nome": "Gisele Silva Batista",
+      "telefone": "(35) 98831-4210"
+    },
+    {
+      "nome": "Gislaine Santos Da Silva ",
+      "telefone": "(35) 99241-3963"
+    },
+    {
+      "nome": "Gussiê Vitória Tavares Santos",
+      "telefone": "(35) 98831-0359"
+    },
+    {
+      "nome": "Helena Resende Andrade",
+      "telefone": "(35) 99891-9065"
+    },
+    {
+      "nome": "Iara Silva Miguel",
+      "telefone": "(12) 99612-7694"
+    },
+    {
+      "nome": "Iris Fonseca de Morais",
+      "telefone": "(35) 99713-7696"
+    },
+    {
+      "nome": "Jacqueline Mantovani Dos Santos Viana De Paula",
+      "telefone": "(35) 98842-0545"
+    },
+    {
+      "nome": "Janaína Helena Machado",
+      "telefone": "(35) 98892-5227"
+    },
+    {
+      "nome": "Jeniffer Catrine Alves de Souza",
+      "telefone": "(35) 99248-0745"
+    },
+    {
+      "nome": "Jenilda Aparecida Souza Santos",
+      "telefone": "(35) 98832-8459"
+    },
+    {
+      "nome": "Jéssica Adriana Morais Lopes",
+      "telefone": "(35) 98889-4868"
+    },
+    {
+      "nome": "Joane Lopes Andrade",
+      "telefone": "(31) 99790-6488"
+    },
+    {
+      "nome": "Juliana da Silva Tavares",
+      "telefone": "(35) 98812-3752"
+    },
+    {
+      "nome": "Kassiara Batista Borges",
+      "telefone": "(35) 99130-0554"
+    },
+    {
+      "nome": "Kayane Ketnny Gomes Branquinho",
+      "telefone": "(35) 98800-1074"
+    },
+    {
+      "nome": "Lara Carolyne Miguel de Paula",
+      "telefone": "(35) 98709-6389"
+    },
+    {
+      "nome": "Lara de Souza Gomes",
+      "telefone": "(35) 99815-4273"
+    },
+    {
+      "nome": "Lara De Souza Silverio",
+      "telefone": "(35) 98712-5973"
+    },
+    {
+      "nome": "Larissa Santos Santana",
+      "telefone": "(11) 96707-3720"
+    },
+    {
+      "nome": "Letícia Aparecida Silveira",
+      "telefone": "(35) 99208-7701"
+    },
+    {
+      "nome": "Letícia Dias de Souza",
+      "telefone": "(35) 98456-4541"
+    },
+    {
+      "nome": "Leticia Petrin",
+      "telefone": "(35) 98813-5747"
+    },
+    {
+      "nome": "Lívia Caldas Marins",
+      "telefone": "(35) 99952-9318"
+    },
+    {
+      "nome": "Lorena Luísa da Costa",
+      "telefone": "(35) 99824-1549"
+    },
+    {
+      "nome": "Lorenza Silva Pereira",
+      "telefone": "(35) 99198-8651"
+    },
+    {
+      "nome": "Luana Maria Oliveira Ribeiro Bernardes",
+      "telefone": "(35) 98814-4033"
+    },
+    {
+      "nome": "Luciana Maria Silva",
+      "telefone": "(35) 98809-1543"
+    },
+    {
+      "nome": "Luciana Valim",
+      "telefone": "(35) 98891-7100"
+    },
+    {
+      "nome": "Luciany Aparecida Vilela",
+      "telefone": "(35) 99911-0116"
+    },
+    {
+      "nome": "Lucíola Viviane Achilles Medeiros Araújo",
+      "telefone": "(35) 98885-5312"
+    },
+    {
+      "nome": "Makisleide Ferreira de Souza Santos",
+      "telefone": "(35) 98412-6224"
+    },
+    {
+      "nome": "Marcela Bellato Reis",
+      "telefone": "(35) 98408-7562"
+    },
+    {
+      "nome": "Marcelly De Oliveira Rezende ",
+      "telefone": "(35) 98427-2947"
+    },
+    {
+      "nome": "Maria da Glória Barros Pires Ferrari",
+      "telefone": "(35) 99832-6366"
+    },
+    {
+      "nome": "Maria Eduarda da Silva Souza",
+      "telefone": "(18) 98194-0809"
+    },
+    {
+      "nome": "Mariá Raíssa Loureira Rodrigues",
+      "telefone": "(35) 98847-3761"
+    },
+    {
+      "nome": "Meireceli Batista Teixeira",
+      "telefone": "(35) 99128-5764"
+    },
+    {
+      "nome": "Meirielen Santiago Levy de Souza",
+      "telefone": "(35) 98404-4719"
+    },
+    {
+      "nome": "Milene de Souza Braga",
+      "telefone": "(35) 98864-6143"
+    },
+    {
+      "nome": "Monalisa Mafra Gonçalves de Oliveira",
+      "telefone": "(35) 98845-9422"
+    },
+    {
+      "nome": "Natália da Silva Silveira",
+      "telefone": "(35) 99208-2487"
+    },
+    {
+      "nome": "Nathalia Amélia Martins",
+      "telefone": "(21) 98322-5558"
+    },
+    {
+      "nome": "Poli Antunes",
+      "telefone": "+5535999587881"
+    },
+    {
+      "nome": "Raissa Andrade Gibram",
+      "telefone": "(35) 99137-5232"
+    },
+    {
+      "nome": "Raissa Silva Gabriel",
+      "telefone": "(35) 98833-2186"
+    },
+    {
+      "nome": "Rayane Aparecida Zanin",
+      "telefone": "(35) 99158-3690"
+    },
+    {
+      "nome": "Roberta Lopes Rodrigues ",
+      "telefone": "(35) 99939-7164"
+    },
+    {
+      "nome": "Rosemeire Furtado de Paiva",
+      "telefone": "(35) 99970-3857"
+    },
+    {
+      "nome": "Rosimeire Pereira de Paiva",
+      "telefone": "(35) 99873-7334"
+    },
+    {
+      "nome": "Sandra Cristina Pereira Camargo",
+      "telefone": "(35) 98801-9803"
+    },
+    {
+      "nome": "Sophy Marie Ferreira Martins",
+      "telefone": "(35) 99764-9027"
+    },
+    {
+      "nome": "Suelen Gandza Gomes",
+      "telefone": "(35) 98894-2521"
+    },
+    {
+      "nome": "Suzane Catarine da Silva Bisi",
+      "telefone": "(35) 99938-7723"
+    },
+    {
+      "nome": "Taciana Ribeiro Rios de Abreu",
+      "telefone": "(35) 98875-6556"
+    },
+    {
+      "nome": "Tassiana Tonioli Craveiro Chagas",
+      "telefone": "(35) 99752-5058"
+    },
+    {
+      "nome": "TESTE TESTE",
+      "telefone": "5535991156028"
+    },
+    {
+      "nome": "Thabata Aline de Oliveira Costa",
+      "telefone": "(35) 98706-0390"
+    },
+    {
+      "nome": "Thaiane Massarim do Nascimento",
+      "telefone": "(35) 99179-8324"
+    },
+    {
+      "nome": "Thainá Batista Valim",
+      "telefone": "(35) 98409-0424"
+    },
+    {
+      "nome": "Yanka Moreira Távora",
+      "telefone": "(35) 99155-9782"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttelefone\nAdrieli Rezende Barros\t(35) 99228-9660\nAlexandra Maria Silva Souza \t(35) 99126-8626\nAline Cassia Fernandes\t(35) 98824-0095\nAline Cristina Soares Gallo\t(35) 98842-2584\nAmanda Paula da Costa Silva\t(35) 98856-8114\nAmanda Ribeiro Freitas\t(35) 99931-1810\nAmanda Tavares Amado\t(35) 99775-4348\nAna Beatriz de Oliveira Salles\t(35) 99985-2307\nAna Carolini Almeida de Souza\t(14) 99635-7688\nAna Clara Borges da Silva\t(35) 98889-2511\nAna Laura Marinho Amaral\t(31) 98252-2303\nAndressa Cristina Gonçalves\t(35) 99912-6437\nAndressa Helena Silva Fonseca\t(35) 99849-3185\nBianca Fonseca Moreno da Cruz\t(35) 99147-0014\nBruna do Carmo Cunha\t(35) 98407-1855\nBruna Ribeiro Costa\t(35) 99705-0080\nBruna Tertuliano de Souza\t(35) 99112-1923\nCamila Cristina Luiz da Silva\t(35) 98435-1550\nCamila Dias Vicente\t(35) 99909-0827\nCamila Paiva do Nascimento\t(35) 98427-6768\nCamila Rosa Carvalho\t(35) 98864-0766\nCamila Soares Ferreira Sidrin\t(35) 99179-1204\nCamily De Souza Junqueira Costa\t(35) 98441-1782\nCarolina Otavio Baroni\t(35) 99715-5209\nCassia Moreira Francisco De Oliveira\t(35) 98886-4061\nChaiane Priscila da Silva Carvalho\t(35) 98859-4161\nCrisilane Aparecida da Costa Soares\t(35) 99932-7688\nCrislayne Eleniz de Andrade\t(35) 98702-9492\nDamaris Pereira Arlindo\t(35) 99123-4544\nDenise Bittencourt Siqueira\t(14) 98100-0879\nEliana Gomes de Noronha\t(35) 99853-9531\nElisa Matias Jorge Souza\t(35) 99961-0388\nElisangela da Silva\t(35) 99200-9797\nEllem Ribeiro Lemes\t(35) 98407-4122\nEllen Aparecida Ferreira Batista\t(35) 99126-5151\nErica Aparecida Luz\t(35) 99935-9659\nEstefane Alvarenga Cardoso\t(35) 99860-3176\nFabiana Aparecida Fonseca\t(35) 98701-6463\nFernanda Angélica Mafra\t(35) 98866-8363\nFernanda Aparecida Lemes\t(35) 99923-3153\nFernanda Carmem de Souza\t(35) 99993-0821\nFernanda Luciano Santos Gonçalves\t(35) 99949-4671\nFlávia Helena Felizardo Pereira\t(35) 98821-7940\nGabriela dos Santos Batista Figueiredo\t(35) 99269-0286\nGabriella da Silva leite\t(35) 99931-8438\nGiovanna Alexsandra Mecia\t(35) 99111-5958\nGisele Silva Batista\t(35) 98831-4210\nGislaine Santos Da Silva \t(35) 99241-3963\nGussiê Vitória Tavares Santos\t(35) 98831-0359\nHelena Resende Andrade\t(35) 99891-9065\nIara Silva Miguel\t(12) 99612-7694\nIris Fonseca de Morais\t(35) 99713-7696\nJacqueline Mantovani Dos Santos Viana De Paula\t(35) 98842-0545\nJanaína Helena Machado\t(35) 98892-5227\nJeniffer Catrine Alves de Souza\t(35) 99248-0745\nJenilda Aparecida Souza Santos\t(35) 98832-8459\nJéssica Adriana Morais Lopes\t(35) 98889-4868\nJoane Lopes Andrade\t(31) 99790-6488\nJuliana da Silva Tavares\t(35) 98812-3752\nKassiara Batista Borges\t(35) 99130-0554\nKayane Ketnny Gomes Branquinho\t(35) 98800-1074\nLara Carolyne Miguel de Paula\t(35) 98709-6389\nLara de Souza Gomes\t(35) 99815-4273\nLara De Souza Silverio\t(35) 98712-5973\nLarissa Santos Santana\t(11) 96707-3720\nLetícia Aparecida Silveira\t(35) 99208-7701\nLetícia Dias de Souza\t(35) 98456-4541\nLeticia Petrin\t(35) 98813-5747\nLívia Caldas Marins\t(35) 99952-9318\nLorena Luísa da Costa\t(35) 99824-1549\nLorenza Silva Pereira\t(35) 99198-8651\nLuana Maria Oliveira Ribeiro Bernardes\t(35) 98814-4033\nLuciana Maria Silva\t(35) 98809-1543\nLuciana Valim\t(35) 98891-7100\nLuciany Aparecida Vilela\t(35) 99911-0116\nLucíola Viviane Achilles Medeiros Araújo\t(35) 98885-5312\nMakisleide Ferreira de Souza Santos\t(35) 98412-6224\nMarcela Bellato Reis\t(35) 98408-7562\nMarcelly De Oliveira Rezende \t(35) 98427-2947\nMaria da Glória Barros Pires Ferrari\t(35) 99832-6366\nMaria Eduarda da Silva Souza\t(18) 98194-0809\nMariá Raíssa Loureira Rodrigues\t(35) 98847-3761\nMeireceli Batista Teixeira\t(35) 99128-5764\nMeirielen Santiago Levy de Souza\t(35) 98404-4719\nMilene de Souza Braga\t(35) 98864-6143\nMonalisa Mafra Gonçalves de Oliveira\t(35) 98845-9422\nNatália da Silva Silveira\t(35) 99208-2487\nNathalia Amélia Martins\t(21) 98322-5558\nPoli Antunes\t+5535999587881\nRaissa Andrade Gibram\t(35) 99137-5232\nRaissa Silva Gabriel\t(35) 98833-2186\nRayane Aparecida Zanin\t(35) 99158-3690\nRoberta Lopes Rodrigues \t(35) 99939-7164\nRosemeire Furtado de Paiva\t(35) 99970-3857\nRosimeire Pereira de Paiva\t(35) 99873-7334\nSandra Cristina Pereira Camargo\t(35) 98801-9803\nSophy Marie Ferreira Martins\t(35) 99764-9027\nSuelen Gandza Gomes\t(35) 98894-2521\nSuzane Catarine da Silva Bisi\t(35) 99938-7723\nTaciana Ribeiro Rios de Abreu\t(35) 98875-6556\nTassiana Tonioli Craveiro Chagas\t(35) 99752-5058\nTESTE TESTE\t5535991156028\nThabata Aline de Oliveira Costa\t(35) 98706-0390\nThaiane Massarim do Nascimento\t(35) 99179-8324\nThainá Batista Valim\t(35) 98409-0424\nYanka Moreira Távora\t(35) 99155-9782\n",
+  "stderr": "",
+  "execution_time_ms": 388
+}
