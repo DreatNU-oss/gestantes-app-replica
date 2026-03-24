@@ -1,0 +1,8 @@
+{
+  "query": "\nSELECT g.nome, a.codigo, a.criadoEm, a.usado\nFROM acessoAppCodigos a\nJOIN gestantes g ON g.id = a.gestanteId\nWHERE g.nome LIKE '%Chaiane%' OR g.nome LIKE '%Thaiane%' OR g.nome LIKE '%chaiane%' OR g.nome LIKE '%thaiane%'\nORDER BY a.criadoEm DESC\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT g.nome, a.codigo, a.criadoEm, a.usado\nFROM acessoAppCodigos a\nJOIN gestantes g ON g.id = a.gestanteId\nWHERE g.nome LIKE '%Chaiane%' OR g.nome LIKE '%Thaiane%' OR g.nome LIKE '%chaiane%' OR g.nome LIKE '%thaiane%'\nORDER BY a.criadoEm DESC\nLIMIT 5;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 2: Table 'bsa4q7amjsjesmafoocq7a.acessoAppCodigos' doesn't exist"
+  ]
+}

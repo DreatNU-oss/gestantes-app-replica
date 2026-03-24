@@ -2577,3 +2577,6 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Restaurar acesso das secretárias ao menu Ultrassons (menu sidebar + RoleGuard rota)
 - [x] Corrigir bug: dados da pré-consulta das secretárias não aparecem nas consultas (1ª consulta, rotina e urgência) - race condition no URL redirect
 - [x] Corrigir DPP pela DUM no ConsultaUnificadaDialog: removido dependência de tipoDum inexistente, agora verifica diretamente o valor da DUM
+- [x] Corrigir bug: sistema só aceita 1 ultrassom de seguimento e apaga o anterior a cada novo cadastro
+- [x] Permitir múltiplos ultrassons de seguimento por gestante
+- [x] Verificar gráficos de peso e CA para exibir múltiplos pontos de seguimento (já suportam múltiplos pontos)

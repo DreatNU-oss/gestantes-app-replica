@@ -527,9 +527,10 @@ export default function Ultrassons() {
 
   useEffect(() => {
     if (ultrassons && ultrassons.length > 0) {
-      // Para cada tipo, carregar o mais recente no formulário (apenas se não está editando)
-      const tipos = ['primeiro_ultrassom', 'morfologico_1tri', 'ultrassom_obstetrico', 'morfologico_2tri', 'ecocardiograma_fetal', 'ultrassom_seguimento'];
-      tipos.forEach(tipo => {
+      // Para tipos que só permitem 1 registro, carregar o mais recente no formulário (modo edição)
+      // Para tipos que permitem múltiplos registros (seguimento), NÃO carregar no formulário "Novo" — os registros salvos são exibidos via UltrassomFormularioSalvo
+      const tiposSingleRecord = ['primeiro_ultrassom', 'morfologico_1tri', 'ultrassom_obstetrico', 'morfologico_2tri', 'ecocardiograma_fetal'];
+      tiposSingleRecord.forEach(tipo => {
         const registros = ultrassons.filter((u: any) => u.tipoUltrassom === tipo);
         if (registros.length > 0 && !editingIds[tipo]) {
           // Carregar o mais recente
@@ -537,6 +538,7 @@ export default function Ultrassons() {
           carregarNoFormulario(maisRecente);
         }
       });
+      // Para ultrassom_seguimento: NÃO carregar no formulário "Novo" para evitar sobrescrever registros existentes
     }
   }, [ultrassons]);
   

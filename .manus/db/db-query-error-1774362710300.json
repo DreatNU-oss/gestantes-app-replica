@@ -1,0 +1,8 @@
+{
+  "query": "\nSELECT g.nome, c.codigo, c.criadoEm, c.usado, c.expiresAt\nFROM codigosAcessoGestante c\nJOIN gestantes g ON g.id = c.gestanteId\nWHERE g.nome LIKE '%Thaiane%' OR g.nome LIKE '%Massarim%'\nORDER BY c.criadoEm DESC\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nSELECT g.nome, c.codigo, c.criadoEm, c.usado, c.expiresAt\nFROM codigosAcessoGestante c\nJOIN gestantes g ON g.id = c.gestanteId\nWHERE g.nome LIKE '%Thaiane%' OR g.nome LIKE '%Massarim%'\nORDER BY c.criadoEm DESC\nLIMIT 5;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 2: Unknown column 'c.criadoEm' in 'order clause'"
+  ]
+}
