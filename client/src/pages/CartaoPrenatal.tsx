@@ -104,6 +104,7 @@ export default function CartaoPrenatal() {
     
     if (novaConsultaParam === 'true') {
       setMostrarFormulario(true);
+      setAbriuViaUrl(true);
       if (urgenciaParam === 'true') {
         setIsUrgencia(true);
       }
@@ -137,6 +138,8 @@ export default function CartaoPrenatal() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState<number | null>(null);
   const [isUrgencia, setIsUrgencia] = useState(false);
+  // Flag para indicar que o formulário foi aberto via URL redirect (novaConsulta=true)
+  const [abriuViaUrl, setAbriuViaUrl] = useState(false);
 
   const [isGerandoPDF, setIsGerandoPDF] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
@@ -321,6 +324,29 @@ export default function CartaoPrenatal() {
   });
   // Track which preConsulta was used for this consultation
   const [preConsultaUsadaId, setPreConsultaUsadaId] = useState<number | null>(null);
+
+  // Auto-preencher dados da pré-consulta quando aberto via URL redirect
+  // (os dados de preConsultasPendentes carregam depois do formulário já estar aberto)
+  useEffect(() => {
+    if (abriuViaUrl && mostrarFormulario && !preConsultaUsadaId && preConsultasPendentes && preConsultasPendentes.length > 0) {
+      const pc = preConsultasPendentes[0] as any;
+      clearDraft();
+      setFormData(prev => ({
+        ...prev,
+        peso: pc.peso || "",
+        pressaoArterial: pc.pressaoArterial || "",
+      }));
+      setPreConsultaUsadaId(pc.id);
+      if (pc.tipoConsulta === 'consulta_urgencia') {
+        setIsUrgencia(true);
+      }
+      setAbriuViaUrl(false);
+      toast.info('Dados da pré-consulta preenchidos automaticamente', {
+        description: `Peso: ${pc.peso} kg | PA: ${pc.pressaoArterial}`,
+        duration: 5000,
+      });
+    }
+  }, [abriuViaUrl, mostrarFormulario, preConsultasPendentes, preConsultaUsadaId]);
 
   const { data: gestantes, isLoading: loadingGestantes } = trpc.gestantes.list.useQuery();
   const { data: gestante } = trpc.gestantes.get.useQuery(
@@ -4283,7 +4309,33 @@ export default function CartaoPrenatal() {
         onClose={() => setShowConsultaUnificadaDialog(false)}
         onConfirm={(_isPrimeira, _isUrgencia) => {
           setShowConsultaUnificadaDialog(false);
-          // Scroll para a seção de nova consulta após confirmar
+          // Abrir formulário e preencher pré-consulta se disponível
+          if (_isUrgencia) {
+            setIsUrgencia(true);
+          } else {
+            setIsUrgencia(false);
+          }
+          // Auto-fill from preConsulta if available
+          if (preConsultasPendentes && preConsultasPendentes.length > 0) {
+            const pc = preConsultasPendentes[0] as any;
+            clearDraft();
+            setFormData(prev => ({
+              ...prev,
+              peso: pc.peso || "",
+              pressaoArterial: pc.pressaoArterial || "",
+            }));
+            setPreConsultaUsadaId(pc.id);
+            if (pc.tipoConsulta === 'consulta_urgencia') {
+              setIsUrgencia(true);
+            }
+            toast.info('Dados da pré-consulta preenchidos automaticamente', {
+              description: `Peso: ${pc.peso} kg | PA: ${pc.pressaoArterial}`,
+              duration: 5000,
+            });
+          }
+          setMostrarFormulario(true);
+          setConsultaEditando(null);
+          // Scroll para o formulário
           setTimeout(() => {
             const el = document.getElementById('nova-consulta');
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
