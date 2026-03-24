@@ -2576,3 +2576,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar skill webdev-autocomplete-history com a correção
 - [x] Restaurar acesso das secretárias ao menu Ultrassons (menu sidebar + RoleGuard rota)
 - [x] Corrigir bug: dados da pré-consulta das secretárias não aparecem nas consultas (1ª consulta, rotina e urgência) - race condition no URL redirect
+- [x] Corrigir DPP pela DUM no ConsultaUnificadaDialog: removido dependência de tipoDum inexistente, agora verifica diretamente o valor da DUM

@@ -100,7 +100,6 @@ interface ConsultaUnificadaDialogProps {
     id: number;
     nome: string;
     dum?: string;
-    tipoDum?: string;
     dataUltrassom?: string;
     igUltrassomSemanas?: number;
     igUltrassomDias?: number;
@@ -181,12 +180,14 @@ export default function ConsultaUnificadaDialog({
 
   // Calcular IG pela DUM
   const calcularIgDum = () => {
-    if (gestanteParaConsulta.tipoDum === "incerta") return "DUM Incerta";
-    if (gestanteParaConsulta.tipoDum === "incompativel") return "Não considerada (incompatível com US)";
     if (!gestanteParaConsulta.dum) return "Não informada";
+    const dumStr = gestanteParaConsulta.dum;
+    // Verificar se é DUM incerta ou incompatível (valor textual ao invés de data)
+    if (dumStr.toLowerCase().includes('incerta')) return "DUM Incerta";
+    if (dumStr.toLowerCase().includes('incompat')) return "Não considerada (incompatível com US)";
     const hoje = new Date();
     hoje.setHours(12, 0, 0, 0);
-    const dumNorm = normalizarData(gestanteParaConsulta.dum);
+    const dumNorm = normalizarData(dumStr);
     const dumDate = new Date(dumNorm + "T12:00:00");
     if (isNaN(dumDate.getTime())) return "Não informada";
     const diffMs = hoje.getTime() - dumDate.getTime();
@@ -214,8 +215,11 @@ export default function ConsultaUnificadaDialog({
 
   // Calcular DPP pela DUM
   const calcularDppDum = () => {
-    if (!gestanteParaConsulta.dum || gestanteParaConsulta.tipoDum !== "data") return "-";
-    const dumNorm = normalizarData(gestanteParaConsulta.dum);
+    if (!gestanteParaConsulta.dum) return "-";
+    const dumStr = gestanteParaConsulta.dum;
+    // Se DUM é incerta ou incompatível, não calcular DPP
+    if (dumStr.toLowerCase().includes('incerta') || dumStr.toLowerCase().includes('incompat')) return "-";
+    const dumNorm = normalizarData(dumStr);
     const dumDate = new Date(dumNorm + "T12:00:00");
     if (isNaN(dumDate.getTime())) return "-";
     const dppDate = new Date(dumDate);

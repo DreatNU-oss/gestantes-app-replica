@@ -112,7 +112,6 @@ export default function Dashboard() {
     id: number;
     nome: string;
     dum?: string;
-    tipoDum?: string;
     dataUltrassom?: string;
     igUltrassomSemanas?: number;
     igUltrassomDias?: number;
@@ -227,7 +226,6 @@ export default function Dashboard() {
           id: data.id,
           nome: data.nome,
           dum: data.dum,
-          tipoDum: data.tipoDum,
           dataUltrassom: data.dataUltrassom,
           igUltrassomSemanas: data.igUltrassomSemanas,
           igUltrassomDias: data.igUltrassomDias,

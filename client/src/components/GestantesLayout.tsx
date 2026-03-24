@@ -145,7 +145,6 @@ export default function GestantesLayout({
     id: number;
     nome: string;
     dum?: string;
-    tipoDum?: string;
     dataUltrassom?: string;
     igUltrassomSemanas?: number;
     igUltrassomDias?: number;
@@ -420,7 +419,6 @@ export default function GestantesLayout({
                     id: gestanteAtiva.id,
                     nome: gestanteAtiva.nome,
                     dum: (g as any).dum || undefined,
-                    tipoDum: (g as any).tipoDum || undefined,
                     dataUltrassom: (g as any).dataUltrassom || undefined,
                     igUltrassomSemanas: (g as any).igUltrassomSemanas || undefined,
                     igUltrassomDias: (g as any).igUltrassomDias || undefined,
