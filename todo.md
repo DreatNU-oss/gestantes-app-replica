@@ -2574,3 +2574,4 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir TextareaComAutocomplete: sugestões devem fechar ao perder foco (TAB, clique fora, seleção)
 - [x] Fechar sugestões quando não há mais matches compatíveis
 - [x] Atualizar skill webdev-autocomplete-history com a correção
+- [x] Restaurar acesso das secretárias ao menu Ultrassons (menu sidebar + RoleGuard rota)

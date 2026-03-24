@@ -95,7 +95,7 @@ function Router() {
         <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><ExamesLaboratoriais /></RoleGuard>
       </Route>
       <Route path={"/ultrassons"}>
-        <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><Ultrassons /></RoleGuard>
+        <RoleGuard allowedRoles={[...CLINICAL_ROLES, 'secretaria']}><Ultrassons /></RoleGuard>
       </Route>
       <Route path={"/partos-realizados"}>
         <RoleGuard allowedRoles={[...CLINICAL_ROLES]}><PartosRealizados /></RoleGuard>

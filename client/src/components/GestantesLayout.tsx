@@ -74,7 +74,7 @@ const allMenuItems = [
   { icon: Users, label: "Gestantes", path: "/dashboard", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: FileText, label: "Cartão de Pré-natal", path: "/cartao-prenatal", roles: ['superadmin', 'admin', 'obstetra'] },
   { icon: FileText, label: "Exames Laboratoriais", path: "/exames", roles: ['superadmin', 'admin', 'obstetra'] },
-  { icon: FileText, label: "Ultrassons", path: "/ultrassons", roles: ['superadmin', 'admin', 'obstetra'] },
+  { icon: FileText, label: "Ultrassons", path: "/ultrassons", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: Calendar, label: "Marcos Importantes", path: "/marcos", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: Calendar, label: "Previsão de Partos", path: "/previsao-partos", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
   { icon: Calendar, label: "Agendamento de Consultas", path: "/agendamento-consultas", roles: ['superadmin', 'admin', 'obstetra', 'secretaria'] },
