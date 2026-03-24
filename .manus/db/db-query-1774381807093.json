@@ -1,0 +1,74 @@
+{
+  "query": "DESCRIBE ultrassons;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute DESCRIBE ultrassons;",
+  "rows": [
+    {
+      "Field": "id",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": "NULL",
+      "Extra": "auto_increment"
+    },
+    {
+      "Field": "gestanteId",
+      "Type": "int",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "tipoUltrassom",
+      "Type": "enum('primeiro_ultrassom','morfologico_1tri','ultrassom_obstetrico','morfologico_2tri','ecocardiograma_fetal','ultrassom_seguimento')",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "dataExame",
+      "Type": "varchar(10)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "idadeGestacional",
+      "Type": "varchar(50)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "dados",
+      "Type": "json",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "createdAt",
+      "Type": "timestamp",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP",
+      "Extra": ""
+    },
+    {
+      "Field": "updatedAt",
+      "Type": "timestamp",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP",
+      "Extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP"
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\nid\tint\tNO\tPRI\tNULL\tauto_increment\ngestanteId\tint\tNO\t\tNULL\t\ntipoUltrassom\tenum('primeiro_ultrassom','morfologico_1tri','ultrassom_obstetrico','morfologico_2tri','ecocardiograma_fetal','ultrassom_seguimento')\tNO\t\tNULL\t\ndataExame\tvarchar(10)\tYES\t\tNULL\t\nidadeGestacional\tvarchar(50)\tYES\t\tNULL\t\ndados\tjson\tNO\t\tNULL\t\ncreatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\t\nupdatedAt\ttimestamp\tNO\t\tCURRENT_TIMESTAMP\tDEFAULT_GENERATED on update CURRENT_TIMESTAMP\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

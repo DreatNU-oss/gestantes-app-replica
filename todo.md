@@ -2584,3 +2584,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Exibir IG e DPP no Dashboard (24/03/2026)
 - [x] Exibir IG DUM e IG US no Dashboard da gestante (linha ~535)
 - [x] Exibir DPP DUM e DPP US no Dashboard da gestante (linha ~541)
+
+## Bug: CA aparece como 2525 ao invés de 252,5 nos gráficos (24/03/2026)
+- [x] Investigar parse de vírgula brasileira nos valores numéricos dos gráficos
+- [x] Corrigir dados da Andressa no banco (usar ponto decimal ao invés de vírgula)
+- [x] Atualizar skill add-usg-obst-auto para usar ponto decimal nos valores numéricos

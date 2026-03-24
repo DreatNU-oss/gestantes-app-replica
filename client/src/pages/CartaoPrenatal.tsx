@@ -3962,7 +3962,7 @@ export default function CartaoPrenatal() {
           // Extrair pontos de peso fetal de todos os ultrassons que têm pesoFetal e dataExame
           const parsePeso = (v: string | undefined | null): number => {
             if (!v) return 0;
-            const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
+            const n = parseFloat(String(v).replace(',', '.').replace(/[^0-9.]/g, ''));
             return isNaN(n) ? 0 : n;
           };
           const pontosPeso = (ultrassons as any[])
@@ -3999,7 +3999,7 @@ export default function CartaoPrenatal() {
           const parseCA = (us: any): number => {
             // Tentar campo dedicado primeiro (futuro)
             if (us.dados?.circunferenciaAbdominal) {
-              const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
+              const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(',', '.').replace(/[^0-9.]/g, ''));
               if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v; // cm→mm
             }
             // Extrair do campo biometria: CA 280mm, CA: 28.0cm, ca=280, etc.

@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, nome, dataNascimento, dum FROM gestantes WHERE nome LIKE '%Andressa%Helena%' OR nome LIKE '%Andressa%Fonseca%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataNascimento, dum FROM gestantes WHERE nome LIKE '%Andressa%Helena%' OR nome LIKE '%Andressa%Fonseca%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "330019",
+      "nome": "Andressa Helena Silva Fonseca",
+      "dataNascimento": "2000-08-07",
+      "dum": "Incompatível com US"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataNascimento\tdum\n330019\tAndressa Helena Silva Fonseca\t2000-08-07\tIncompatível com US\n",
+  "stderr": "",
+  "execution_time_ms": 432
+}
