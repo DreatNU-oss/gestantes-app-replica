@@ -1,0 +1,59 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as peso FROM ultrassons WHERE gestanteId = 330051 ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as peso FROM ultrassons WHERE gestanteId = 330051 ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1530011",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-10-08",
+      "idadeGestacional": "12 semanas e 0 dias",
+      "peso": "NULL"
+    },
+    {
+      "id": "1530012",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-11-19",
+      "idadeGestacional": "18 semanas e 0 dias",
+      "peso": "\"204\""
+    },
+    {
+      "id": "1530013",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-12-11",
+      "idadeGestacional": "21 semanas e 1 dia",
+      "peso": "\"368\""
+    },
+    {
+      "id": "1530014",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-01-19",
+      "idadeGestacional": "26 semanas e 5 dias",
+      "peso": "\"818\""
+    },
+    {
+      "id": "1530015",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-02-18",
+      "idadeGestacional": "31 semanas e 0 dias",
+      "peso": "\"1374\""
+    },
+    {
+      "id": "1530016",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-10",
+      "idadeGestacional": "33 semanas e 6 dias",
+      "peso": "\"1785\""
+    },
+    {
+      "id": "1530017",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-24",
+      "idadeGestacional": "35 semanas e 6 dias",
+      "peso": "\"2060\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tpeso\n1530011\tmorfologico_1tri\t2025-10-08\t12 semanas e 0 dias\tNULL\n1530012\tultrassom_obstetrico\t2025-11-19\t18 semanas e 0 dias\t\"204\"\n1530013\tmorfologico_2tri\t2025-12-11\t21 semanas e 1 dia\t\"368\"\n1530014\tultrassom_seguimento\t2026-01-19\t26 semanas e 5 dias\t\"818\"\n1530015\tultrassom_seguimento\t2026-02-18\t31 semanas e 0 dias\t\"1374\"\n1530016\tultrassom_seguimento\t2026-03-10\t33 semanas e 6 dias\t\"1785\"\n1530017\tultrassom_seguimento\t2026-03-24\t35 semanas e 6 dias\t\"2060\"\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

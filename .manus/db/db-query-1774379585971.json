@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, gestanteId, nomeArquivo, tipoExame, status, origemEnvio, trimestre, dataColeta FROM arquivosExames ORDER BY id DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, nomeArquivo, tipoExame, status, origemEnvio, trimestre, dataColeta FROM arquivosExames ORDER BY id DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "6",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Seguimento_24-03-2026_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "3",
+      "dataColeta": "2026-03-24"
+    },
+    {
+      "id": "5",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Seguimento_10-03-2026_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "3",
+      "dataColeta": "2026-03-10"
+    },
+    {
+      "id": "4",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Seguimento_09-02-2026_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "3",
+      "dataColeta": "2026-02-09"
+    },
+    {
+      "id": "3",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Seguimento_13-01-2026_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "3",
+      "dataColeta": "2026-01-13"
+    },
+    {
+      "id": "2",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Morfologico2tri_27-11-2025_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "2",
+      "dataColeta": "2025-11-27"
+    },
+    {
+      "id": "1",
+      "gestanteId": "330018",
+      "nomeArquivo": "USG_Obstetrico_03-11-2025_AnaClara.pdf",
+      "tipoExame": "ultrassom",
+      "status": "confirmado",
+      "origemEnvio": "web",
+      "trimestre": "2",
+      "dataColeta": "2025-11-03"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeArquivo\ttipoExame\tstatus\torigemEnvio\ttrimestre\tdataColeta\n6\t330018\tUSG_Seguimento_24-03-2026_AnaClara.pdf\tultrassom\tconfirmado\tweb\t3\t2026-03-24\n5\t330018\tUSG_Seguimento_10-03-2026_AnaClara.pdf\tultrassom\tconfirmado\tweb\t3\t2026-03-10\n4\t330018\tUSG_Seguimento_09-02-2026_AnaClara.pdf\tultrassom\tconfirmado\tweb\t3\t2026-02-09\n3\t330018\tUSG_Seguimento_13-01-2026_AnaClara.pdf\tultrassom\tconfirmado\tweb\t3\t2026-01-13\n2\t330018\tUSG_Morfologico2tri_27-11-2025_AnaClara.pdf\tultrassom\tconfirmado\tweb\t2\t2025-11-27\n1\t330018\tUSG_Obstetrico_03-11-2025_AnaClara.pdf\tultrassom\tconfirmado\tweb\t2\t2025-11-03\n",
+  "stderr": "",
+  "execution_time_ms": 368
+}

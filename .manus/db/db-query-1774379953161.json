@@ -1,0 +1,17 @@
+{
+  "query": "(SELECT 'Gisele' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos, dados FROM ultrassons WHERE gestanteId = (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%gisele%batista%' LIMIT 1) AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY id LIMIT 1)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute (SELECT 'Gisele' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos, dados FROM ultrassons WHERE gestanteId = (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%gisele%batista%' LIMIT 1) AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY id LIMIT 1)",
+  "rows": [
+    {
+      "paciente": "Gisele",
+      "id": "1530014",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "campos": "[\"apresentacao\", \"circunferenciaAbdominal\", \"conclusao\", \"liquidoAmniotico\", \"percentil\", \"pesoEstimado\", \"pesoFetal\", \"placenta\", \"situacao\"]",
+      "dados": "{\"apresentacao\": \"Transversa, polo cefálico à esquerda\", \"circunferenciaAbdominal\": \"207.9\", \"conclusao\": \"Gravidez tópica 26s5d. Peso fetal no percentil 2,1 configurando P.I.G. DBP 66,5mm, CC 242,3mm, CA 207,9mm, CF 46,1mm, Úmero 41,4mm. CC/CA 1,17, DBP/CF 1,44. BCF 140bpm. Movimentos normais. Cordão 3 vasos.\", \"liquidoAmniotico\": \"Normal\", \"percentil\": \"2.1\", \"pesoEstimado\": \"818g\", \"pesoFetal\": \"818\", \"placenta\": \"Anterior, Grau I Grannum\", \"situacao\": \"Transversa\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "paciente\tid\ttipoUltrassom\tcampos\tdados\nGisele\t1530014\tultrassom_seguimento\t[\"apresentacao\", \"circunferenciaAbdominal\", \"conclusao\", \"liquidoAmniotico\", \"percentil\", \"pesoEstimado\", \"pesoFetal\", \"placenta\", \"situacao\"]\t{\"apresentacao\": \"Transversa, polo cefálico à esquerda\", \"circunferenciaAbdominal\": \"207.9\", \"conclusao\": \"Gravidez tópica 26s5d. Peso fetal no percentil 2,1 configurando P.I.G. DBP 66,5mm, CC 242,3mm, CA 207,9mm, CF 46,1mm, Úmero 41,4mm. CC/CA 1,17, DBP/CF 1,44. BCF 140bpm. Movimentos normais. Cordão 3 vasos.\", \"liquidoAmniotico\": \"Normal\", \"percentil\": \"2.1\", \"pesoEstimado\": \"818g\", \"pesoFetal\": \"818\", \"placenta\": \"Anterior, Grau I Grannum\", \"situacao\": \"Transversa\"}\n",
+  "stderr": "",
+  "execution_time_ms": 372
+}

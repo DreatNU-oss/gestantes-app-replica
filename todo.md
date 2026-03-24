@@ -2580,3 +2580,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir bug: sistema só aceita 1 ultrassom de seguimento e apaga o anterior a cada novo cadastro
 - [x] Permitir múltiplos ultrassons de seguimento por gestante
 - [x] Verificar gráficos de peso e CA para exibir múltiplos pontos de seguimento (já suportam múltiplos pontos)
+
+## Exibir IG e DPP no Dashboard (24/03/2026)
+- [x] Exibir IG DUM e IG US no Dashboard da gestante (linha ~535)
+- [x] Exibir DPP DUM e DPP US no Dashboard da gestante (linha ~541)

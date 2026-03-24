@@ -1,0 +1,17 @@
+{
+  "query": "SELECT 'AnaClara' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos, dados FROM ultrassons WHERE gestanteId = 330018 AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY id LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'AnaClara' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos, dados FROM ultrassons WHERE gestanteId = 330018 AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY id LIMIT 1;",
+  "rows": [
+    {
+      "paciente": "AnaClara",
+      "id": "1530020",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "campos": "[\"afunilamento\", \"apresentacao\", \"bcf\", \"ca\", \"cc\", \"cf\", \"coloUterino\", \"cordaoUmbilical\", \"dbp\", \"dopplerACM\", \"dopplerArtUmbilical\", \"ila\", \"impressao\", \"liquidoAmniotico\", \"percentil\", \"peso\", \"placenta\", \"rcp\", \"umero\"]",
+      "dados": "{\"afunilamento\": \"Não\", \"apresentacao\": \"Cefálica\", \"bcf\": \"147\", \"ca\": \"236.8\", \"cc\": \"274.1\", \"cf\": \"53.5\", \"coloUterino\": \"39.8\", \"cordaoUmbilical\": \"3 vasos\", \"dbp\": \"73.2\", \"dopplerACM\": \"IP 2.55, PSV 38.6 cm/s, 0.914 MoM\", \"dopplerArtUmbilical\": \"IP 1.35, IR 0.75\", \"ila\": \"9.2\", \"impressao\": \"Gravidez tópica 29 semanas e 5 dias. Peso fetal encontra-se no percentil 7.6 para a idade gestacional, configurando P.I.G. Ausência de centralização fetal. Fluxo uteroplacentário sem alterações.\", \"liquidoAmniotico\": \"Normal\", \"percentil\": \"7.6\", \"peso\": \"1221\", \"placenta\": \"Anterior, Grau I Grannum\", \"rcp\": \"1.89\", \"umero\": \"47.3\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "paciente\tid\ttipoUltrassom\tcampos\tdados\nAnaClara\t1530020\tultrassom_seguimento\t[\"afunilamento\", \"apresentacao\", \"bcf\", \"ca\", \"cc\", \"cf\", \"coloUterino\", \"cordaoUmbilical\", \"dbp\", \"dopplerACM\", \"dopplerArtUmbilical\", \"ila\", \"impressao\", \"liquidoAmniotico\", \"percentil\", \"peso\", \"placenta\", \"rcp\", \"umero\"]\t{\"afunilamento\": \"Não\", \"apresentacao\": \"Cefálica\", \"bcf\": \"147\", \"ca\": \"236.8\", \"cc\": \"274.1\", \"cf\": \"53.5\", \"coloUterino\": \"39.8\", \"cordaoUmbilical\": \"3 vasos\", \"dbp\": \"73.2\", \"dopplerACM\": \"IP 2.55, PSV 38.6 cm/s, 0.914 MoM\", \"dopplerArtUmbilical\": \"IP 1.35, IR 0.75\", \"ila\": \"9.2\", \"impressao\": \"Gravidez tópica 29 semanas e 5 dias. Peso fetal encontra-se no percentil 7.6 para a idade gestacional, configurando P.I.G. Ausência de centralização fetal. Fluxo uteroplacentário sem alterações.\", \"liquidoAmniotico\": \"Normal\", \"percentil\": \"7.6\", \"peso\": \"1221\", \"placenta\": \"Anterior, Grau I Grannum\", \"rcp\": \"1.89\", \"umero\": \"47.3\"}\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}

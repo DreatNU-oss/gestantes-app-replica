@@ -1,0 +1,31 @@
+{
+  "query": "SELECT u.id, u.tipoUltrassom, u.dataExame, u.idadeGestacional, u.dados FROM ultrassons u INNER JOIN gestantes g ON u.gestanteId = g.id WHERE LOWER(g.nome) LIKE '%gisele%' AND LOWER(g.nome) LIKE '%batista%' ORDER BY u.dataExame LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT u.id, u.tipoUltrassom, u.dataExame, u.idadeGestacional, u.dados FROM ultrassons u INNER JOIN gestantes g ON u.gestanteId = g.id WHERE LOWER(g.nome) LIKE '%gisele%' AND LOWER(g.nome) LIKE '%batista%' ORDER BY u.dataExame LIMIT 3;",
+  "rows": [
+    {
+      "id": "1530011",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-10-08",
+      "idadeGestacional": "12 semanas e 0 dias",
+      "dados": "{\"ccn\": \"55.0\", \"coloUterino\": \"\", \"dopplerUterinas\": \"IP médio 0,895\", \"dpp\": \"2026-02-20\", \"ductoVenoso\": \"Normal (IP 1,12)\", \"fcf\": \"162\", \"observacoes\": \"Translucência intracraniana presente. Placenta anterior alta. Líquido amniótico normal. Cordão 3 vasos, inserção central. Anatomia fetal aparentemente normal. DPP corrigida para 20/02/2026.\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco\": \"\", \"tn\": \"1.20\"}"
+    },
+    {
+      "id": "1530012",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-11-19",
+      "idadeGestacional": "18 semanas e 0 dias",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"ca\": \"123.9\", \"cc\": \"145.5\", \"cf\": \"24.0\", \"dbp\": \"38.8\", \"dpp\": \"2026-02-20\", \"fcf\": \"159\", \"ila\": \"\", \"observacoes\": \"Úmero 22,7mm. CC/CA 1,17. DBP/CF 1,62. Percentil 26,2. Movimentos normais. Inserção marginal do cordão (<2cm). Colo uterino 29,3mm, sem afunilamento. Líquido amniótico normal. Cordão 3 vasos.\", \"pesoFetal\": \"204\", \"placenta\": \"Anterior, Grau 0 Grannum\"}"
+    },
+    {
+      "id": "1530013",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-12-11",
+      "idadeGestacional": "21 semanas e 1 dia",
+      "dados": "{\"avaliacaoAnatomica\": \"Crânio normal. Hemisférios, ventrículos e fossa posterior normais. Va esq 4,8mm. Face sem fenda, órbitas/nariz/mandíbula normais. DOI 11,0mm, DOE 33,6mm, Ossos nasais 6,6mm. Coluna sem espinha bífida. Prega nucal 3,5mm. Tórax normal, diafragma sem hérnias. Coração 4 câmaras normal, 3 vasos normal. Art. subclávia direita habitual. Parede abdominal sem anomalias. Estômago e intestinos normais. Rins e bexiga normais. Extremidades normais. Genitais femininos.\", \"biometria\": \"DBP 49,4mm | CC 181,3mm | CA 162,3mm | CF 31,7mm | Úmero 30,9mm | CC/CA 1,12 | DBP/CF 1,56\", \"dopplers\": \"Art. Uterina: IP esq 0,930, IP dir 0,680, IP médio 0,805, IR esq 0,60, IR dir 0,47, Sem incisura. Art. Umbilical: IP 0,96, IR 0,62. ACM: IP 1,48, PSV 21,9 cm/s, 0,805 MoM. RCP 1,54.\", \"liquidoAmniotico\": \"Normal\", \"observacoes\": \"Percentil 22,0. BCF 151bpm. Apresentação cefálica. Inserção marginal do cordão (<2cm). Colo uterino 34,3mm, sem afunilamento. Cordão 3 vasos. Hipótese: estudo morfológico sem anormalidades, fluxo uteroplacentário sem alterações, ausência de centralização fetal.\", \"pesoFetal\": \"368\", \"placentaDistanciaOI\": \"\", \"placentaGrau\": \"Grau I Grannum\", \"placentaLocalizacao\": \"Anterior\", \"sexoFetal\": \"Feminino\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\n1530011\tmorfologico_1tri\t2025-10-08\t12 semanas e 0 dias\t{\"ccn\": \"55.0\", \"coloUterino\": \"\", \"dopplerUterinas\": \"IP médio 0,895\", \"dpp\": \"2026-02-20\", \"ductoVenoso\": \"Normal (IP 1,12)\", \"fcf\": \"162\", \"observacoes\": \"Translucência intracraniana presente. Placenta anterior alta. Líquido amniótico normal. Cordão 3 vasos, inserção central. Anatomia fetal aparentemente normal. DPP corrigida para 20/02/2026.\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco\": \"\", \"tn\": \"1.20\"}\n1530012\tultrassom_obstetrico\t2025-11-19\t18 semanas e 0 dias\t{\"apresentacao\": \"Cefálica\", \"ca\": \"123.9\", \"cc\": \"145.5\", \"cf\": \"24.0\", \"dbp\": \"38.8\", \"dpp\": \"2026-02-20\", \"fcf\": \"159\", \"ila\": \"\", \"observacoes\": \"Úmero 22,7mm. CC/CA 1,17. DBP/CF 1,62. Percentil 26,2. Movimentos normais. Inserção marginal do cordão (<2cm). Colo uterino 29,3mm, sem afunilamento. Líquido amniótico normal. Cordão 3 vasos.\", \"pesoFetal\": \"204\", \"placenta\": \"Anterior, Grau 0 Grannum\"}\n1530013\tmorfologico_2tri\t2025-12-11\t21 semanas e 1 dia\t{\"avaliacaoAnatomica\": \"Crânio normal. Hemisférios, ventrículos e fossa posterior normais. Va esq 4,8mm. Face sem fenda, órbitas/nariz/mandíbula normais. DOI 11,0mm, DOE 33,6mm, Ossos nasais 6,6mm. Coluna sem espinha bífida. Prega nucal 3,5mm. Tórax normal, diafragma sem hérnias. Coração 4 câmaras normal, 3 vasos normal. Art. subclávia direita habitual. Parede abdominal sem anomalias. Estômago e intestinos normais. Rins e bexiga normais. Extremidades normais. Genitais femininos.\", \"biometria\": \"DBP 49,4mm | CC 181,3mm | CA 162,3mm | CF 31,7mm | Úmero 30,9mm | CC/CA 1,12 | DBP/CF 1,56\", \"dopplers\": \"Art. Uterina: IP esq 0,930, IP dir 0,680, IP médio 0,805, IR esq 0,60, IR dir 0,47, Sem incisura. Art. Umbilical: IP 0,96, IR 0,62. ACM: IP 1,48, PSV 21,9 cm/s, 0,805 MoM. RCP 1,54.\", \"liquidoAmniotico\": \"Normal\", \"observacoes\": \"Percentil 22,0. BCF 151bpm. Apresentação cefálica. Inserção marginal do cordão (<2cm). Colo uterino 34,3mm, sem afunilamento. Cordão 3 vasos. Hipótese: estudo morfológico sem anormalidades, fluxo uteroplacentário sem alterações, ausência de centralização fetal.\", \"pesoFetal\": \"368\", \"placentaDistanciaOI\": \"\", \"placentaGrau\": \"Grau I Grannum\", \"placentaLocalizacao\": \"Anterior\", \"sexoFetal\": \"Feminino\"}\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}

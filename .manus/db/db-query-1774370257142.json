@@ -1,0 +1,50 @@
+{
+  "query": "SELECT id, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as peso, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as CA, JSON_EXTRACT(dados, '$.percentilPeso') as percentil FROM ultrassons WHERE gestanteId = 330080 AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as peso, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as CA, JSON_EXTRACT(dados, '$.percentilPeso') as percentil FROM ultrassons WHERE gestanteId = 330080 AND tipoUltrassom = 'ultrassom_seguimento' ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1530002",
+      "dataExame": "2026-01-13",
+      "idadeGestacional": "27 semanas e 2 dias",
+      "peso": "\"953g\"",
+      "CA": "\"217.9mm\"",
+      "percentil": "\"15.9\""
+    },
+    {
+      "id": "1530003",
+      "dataExame": "2026-02-11",
+      "idadeGestacional": "31 semanas e 3 dias",
+      "peso": "\"1603g\"",
+      "CA": "\"260.2mm\"",
+      "percentil": "\"16.8\""
+    },
+    {
+      "id": "1530001",
+      "dataExame": "2026-03-04",
+      "idadeGestacional": "34 semanas e 3 dias",
+      "peso": "\"2143 g\"",
+      "CA": "\"290.9 mm\"",
+      "percentil": "\"15.9\""
+    },
+    {
+      "id": "1530004",
+      "dataExame": "2026-03-04",
+      "idadeGestacional": "34 semanas e 3 dias",
+      "peso": "\"2143g\"",
+      "CA": "\"290.9mm\"",
+      "percentil": "\"15.9\""
+    },
+    {
+      "id": "1530005",
+      "dataExame": "2026-03-24",
+      "idadeGestacional": "37 semanas e 2 dias",
+      "peso": "\"2608g\"",
+      "CA": "\"315.1mm\"",
+      "percentil": "\"12.1\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdataExame\tidadeGestacional\tpeso\tCA\tpercentil\n1530002\t2026-01-13\t27 semanas e 2 dias\t\"953g\"\t\"217.9mm\"\t\"15.9\"\n1530003\t2026-02-11\t31 semanas e 3 dias\t\"1603g\"\t\"260.2mm\"\t\"16.8\"\n1530001\t2026-03-04\t34 semanas e 3 dias\t\"2143 g\"\t\"290.9 mm\"\t\"15.9\"\n1530004\t2026-03-04\t34 semanas e 3 dias\t\"2143g\"\t\"290.9mm\"\t\"15.9\"\n1530005\t2026-03-24\t37 semanas e 2 dias\t\"2608g\"\t\"315.1mm\"\t\"12.1\"\n",
+  "stderr": "",
+  "execution_time_ms": 371
+}

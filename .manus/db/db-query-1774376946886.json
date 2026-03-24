@@ -1,0 +1,26 @@
+{
+  "query": "(SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'morfologico_1tri' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_obstetrico' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'morfologico_2tri' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_seguimento' LIMIT 1);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'morfologico_1tri' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_obstetrico' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'morfologico_2tri' LIMIT 1) UNION ALL (SELECT tipoUltrassom, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_seguimento' LIMIT 1);",
+  "rows": [
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"ca\": \"110\", \"cc\": \"125\", \"cf\": \"22\", \"dbp\": \"35\", \"fcf\": \"145\", \"ila\": \"12\", \"observacoes\": \"Feto único, vivo, biometria compatível com IG\", \"pesoFetal\": \"150\", \"placenta\": \"Anterior grau 0\"}"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "dados": "{\"avaliacaoAnatomica\": \"\", \"biometria\": \"\", \"dopplers\": \"\", \"liquidoAmniotico\": \"\", \"observacoes\": \"\", \"pesoFetal\": \"\", \"placentaDistanciaOI\": \"\", \"placentaGrau\": \"\", \"placentaLocalizacao\": \"\", \"sexoFetal\": \"\"}"
+    },
+    {
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}"
+    },
+    {
+      "tipoUltrassom": "morfologico_1tri",
+      "dados": "{\"ccn\": \"58\", \"ductoVenoso\": \"Normal\", \"fcf\": \"155\", \"observacoes\": \"Morfologia de primeiro trimestre sem alterações\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco13\": \"1:15000\", \"risco18\": \"1:10000\", \"risco21\": \"1:5000\", \"tn\": \"1.5\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipoUltrassom\tdados\nultrassom_obstetrico\t{\"apresentacao\": \"Cefálica\", \"ca\": \"110\", \"cc\": \"125\", \"cf\": \"22\", \"dbp\": \"35\", \"fcf\": \"145\", \"ila\": \"12\", \"observacoes\": \"Feto único, vivo, biometria compatível com IG\", \"pesoFetal\": \"150\", \"placenta\": \"Anterior grau 0\"}\nmorfologico_2tri\t{\"avaliacaoAnatomica\": \"\", \"biometria\": \"\", \"dopplers\": \"\", \"liquidoAmniotico\": \"\", \"observacoes\": \"\", \"pesoFetal\": \"\", \"placentaDistanciaOI\": \"\", \"placentaGrau\": \"\", \"placentaLocalizacao\": \"\", \"sexoFetal\": \"\"}\nultrassom_seguimento\t{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}\nmorfologico_1tri\t{\"ccn\": \"58\", \"ductoVenoso\": \"Normal\", \"fcf\": \"155\", \"observacoes\": \"Morfologia de primeiro trimestre sem alterações\", \"ossoNasal\": \"Presente\", \"regurgitacaoTricuspide\": \"Ausente\", \"risco13\": \"1:15000\", \"risco18\": \"1:10000\", \"risco21\": \"1:5000\", \"tn\": \"1.5\"}\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

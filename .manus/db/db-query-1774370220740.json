@@ -1,0 +1,14 @@
+{
+  "query": "SELECT id, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_seguimento' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, dados FROM ultrassons WHERE tipoUltrassom = 'ultrassom_seguimento' LIMIT 1;",
+  "rows": [
+    {
+      "id": "270004",
+      "dados": "{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdados\n270004\t{\"apresentacao\": \"Cefálica\", \"conclusao\": \"Gestação de 37 semanas e 2 dias. Feto em apresentação cefálica. Peso estimado de 3050g (percentil 50). Líquido amniótico normal. Placenta anterior grau II. Dopplervelocimetria normal. Vitalidade fetal preservada.\", \"dopplerCerebral\": \"Normal\", \"dopplerUmbilical\": \"Normal\", \"dorso\": \"Esquerda\", \"liquidoAmniotico\": \"Normal (ILA: 12 cm)\", \"pesoEstimado\": \"3050g\", \"placenta\": \"Anterior, grau II\", \"situacao\": \"Longitudinal\"}\n",
+  "stderr": "",
+  "execution_time_ms": 374
+}

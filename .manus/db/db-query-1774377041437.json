@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados) VALUES (330051, 'ultrassom_obstetrico', '2025-11-19', '18 semanas e 0 dias', '{\"dbp\":\"38.8\",\"cc\":\"145.5\",\"ca\":\"123.9\",\"cf\":\"24.0\",\"fcf\":\"159\",\"pesoFetal\":\"204\",\"placenta\":\"Anterior, Grau 0 Grannum\",\"apresentacao\":\"Cefálica\",\"ila\":\"\",\"observacoes\":\"Úmero 22,7mm. CC/CA 1,17. DBP/CF 1,62. Percentil 26,2. Movimentos normais. Inserção marginal do cordão (<2cm). Colo uterino 29,3mm, sem afunilamento. Líquido amniótico normal. Cordão 3 vasos.\",\"dpp\":\"2026-02-20\"}');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados) VALUES (330051, 'ultrassom_obstetrico', '2025-11-19', '18 semanas e 0 dias', '{\"dbp\":\"38.8\",\"cc\":\"145.5\",\"ca\":\"123.9\",\"cf\":\"24.0\",\"fcf\":\"159\",\"pesoFetal\":\"204\",\"placenta\":\"Anterior, Grau 0 Grannum\",\"apresentacao\":\"Cefálica\",\"ila\":\"\",\"observacoes\":\"Úmero 22,7mm. CC/CA 1,17. DBP/CF 1,62. Percentil 26,2. Movimentos normais. Inserção marginal do cordão (<2cm). Colo uterino 29,3mm, sem afunilamento. Líquido amniótico normal. Cordão 3 vasos.\",\"dpp\":\"2026-02-20\"}');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 350
+}

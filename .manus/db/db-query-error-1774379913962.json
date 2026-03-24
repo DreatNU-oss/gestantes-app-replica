@@ -1,0 +1,8 @@
+{
+  "query": "SELECT 'AnaClara' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId = 330018 AND tipoUltrassom = 'ultrassom_seguimento' LIMIT 1\nUNION ALL\nSELECT 'Gisele' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId IN (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%gisele%batista%') AND tipoUltrassom = 'ultrassom_seguimento' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'AnaClara' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId = 330018 AND tipoUltrassom = 'ultrassom_seguimento' LIMIT 1\nUNION ALL\nSELECT 'Gisele' as paciente, id, tipoUltrassom, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId IN (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%gisele%batista%') AND tipoUltrassom = 'ultrassom_seguimento' LIMIT 1;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1221 (HY000) at line 1: Incorrect usage of UNION and LIMIT"
+  ]
+}

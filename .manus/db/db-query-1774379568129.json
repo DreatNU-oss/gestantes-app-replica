@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, gestanteId, nomeArquivo, tipoArquivo, tipoExame, status, origemEnvio, trimestre, dataColeta, observacoes, LEFT(s3Url, 100) as s3Url_inicio, LEFT(s3Key, 80) as s3Key_inicio FROM arquivosExames WHERE gestanteId IN (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%makisleide%') ORDER BY dataColeta;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, nomeArquivo, tipoArquivo, tipoExame, status, origemEnvio, trimestre, dataColeta, observacoes, LEFT(s3Url, 100) as s3Url_inicio, LEFT(s3Key, 80) as s3Key_inicio FROM arquivosExames WHERE gestanteId IN (SELECT id FROM gestantes WHERE LOWER(nome) LIKE '%makisleide%') ORDER BY dataColeta;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 370
+}
