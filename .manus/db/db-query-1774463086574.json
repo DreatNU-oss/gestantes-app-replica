@@ -1,0 +1,30 @@
+{
+  "query": "SELECT \n  'pesoFetal' as campo,\n  COUNT(*) as total,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"' AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"0\"' THEN 1 ELSE 0 END) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL\nUNION ALL\nSELECT \n  'pesoEstimado' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\nUNION ALL\nSELECT \n  'percentilPeso' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL\nUNION ALL\nSELECT \n  'percentil' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.percentil') IS NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  'pesoFetal' as campo,\n  COUNT(*) as total,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"' AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"0\"' THEN 1 ELSE 0 END) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL\nUNION ALL\nSELECT \n  'pesoEstimado' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\nUNION ALL\nSELECT \n  'percentilPeso' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL\nUNION ALL\nSELECT \n  'percentil' as campo,\n  COUNT(*) as total,\n  COUNT(*) as com_valor\nFROM ultrassons WHERE JSON_EXTRACT(dados, '$.percentil') IS NOT NULL;",
+  "rows": [
+    {
+      "campo": "percentilPeso",
+      "total": "43",
+      "com_valor": "43"
+    },
+    {
+      "campo": "pesoEstimado",
+      "total": "8",
+      "com_valor": "8"
+    },
+    {
+      "campo": "pesoFetal",
+      "total": "76",
+      "com_valor": "76"
+    },
+    {
+      "campo": "percentil",
+      "total": "11",
+      "com_valor": "11"
+    }
+  ],
+  "messages": [],
+  "stdout": "campo\ttotal\tcom_valor\npercentilPeso\t43\t43\npesoEstimado\t8\t8\npesoFetal\t76\t76\npercentil\t11\t11\n",
+  "stderr": "",
+  "execution_time_ms": 371
+}

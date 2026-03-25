@@ -174,8 +174,8 @@ export function GraficoCrescimentoFetal({
   igUltrassomDias = 0,
 }: Props) {
   const tabela = tipo === "peso" ? FMF_PESO : FMF_CA;
-  const igMin = tipo === "peso" ? 22 : 20;
-  const igMax = 40;
+  const igMin = 20;
+  const igMax = 41;
   const unidade = tipo === "peso" ? "g" : "mm";
   const titulo = tipo === "peso" ? "Peso Fetal Estimado (g)" : "Circunferência Abdominal (mm)";
 
@@ -523,7 +523,7 @@ export function GraficoCrescimentoFetal({
       </div>
 
       <p className="text-xs text-muted-foreground text-center mt-2">
-        Curvas FMF (Fetal Medicine Foundation) — IG calculada pelo 1º ultrassom do cadastro
+        Curvas FMF — Nicolaides et al. 2018 (Peso) / Snijders & Nicolaides 1994 (CA) — IG calculada pelo 1º ultrassom do cadastro
       </p>
     </div>
   );

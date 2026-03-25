@@ -2615,3 +2615,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Atualizar skill add-usg-obst-auto com campo percentilPeso
 - [x] Atualizar skill webdev-autocomplete-history com remoção do bookmark e AutocompleteInput
 - [x] 35 testes vitest passando (autocomplete + crescimento fetal)
+
+## Atualizar tabelas de percentis FMF (Nicolaides 2018) - Peso Fetal e CA (25/03/2026)
+- [x] Extrair dados das tabelas PDF de peso fetal (20-41s) e CA (20-41s)
+- [x] Identificar todos os locais no código que usam os dados antigos de percentis
+- [x] Atualizar shared/fmfPercentis.ts com novos dados de peso fetal (Nicolaides 2018, IG 20-41)
+- [x] Atualizar shared/fmfPercentis.ts com novos dados de CA (IG 20-41)
+- [x] Calcular P50 como média geométrica de P10 e P90 para ambas as tabelas
+- [x] Atualizar GraficoCrescimentoFetal.tsx: igMin=20, igMax=41, rodapé com referência Nicolaides 2018
+- [x] Endpoint crescimentoFetal já importa FMF_PESO do shared — atualização automática
+- [x] interpretarUltrassom.ts não tem dados hardcoded — apenas instruções de extração para IA
+- [x] Atualizar testes vitest (graficoCrescimentoFetal.test.ts e crescimento-fetal.test.ts) — 52 testes passando
+- [x] Atualizar prompt do app mobile com tabelas novas (IG 20-41, referência Nicolaides 2018)

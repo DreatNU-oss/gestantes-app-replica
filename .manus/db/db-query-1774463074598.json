@@ -1,0 +1,130 @@
+{
+  "query": "SELECT \n  tipoUltrassom,\n  JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(dados, '$.pesoEstimado') as pesoEstimado,\n  JSON_EXTRACT(dados, '$.peso') as peso,\n  JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(dados, '$.percentil') as percentil\nFROM ultrassons \nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n   OR JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\n   OR JSON_EXTRACT(dados, '$.peso') IS NOT NULL\nLIMIT 15;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  tipoUltrassom,\n  JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(dados, '$.pesoEstimado') as pesoEstimado,\n  JSON_EXTRACT(dados, '$.peso') as peso,\n  JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(dados, '$.percentil') as percentil\nFROM ultrassons \nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n   OR JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\n   OR JSON_EXTRACT(dados, '$.peso') IS NOT NULL\nLIMIT 15;",
+  "rows": [
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"150\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"280\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"480\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "NULL",
+      "pesoEstimado": "\"680g\"",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "NULL",
+      "pesoEstimado": "\"3050g\"",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"460 gramas\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "NULL",
+      "pesoEstimado": "\"480g\"",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "NULL",
+      "pesoEstimado": "\"1850g\"",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "\"P50\""
+    },
+    {
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"2014 g\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "\"37,6\"",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"643 g\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"316 g\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"299 g\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"228 g\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"480\"",
+      "pesoEstimado": "NULL",
+      "peso": "NULL",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipoUltrassom\tpesoFetal\tpesoEstimado\tpeso\tpercentilPeso\tpercentil\nmorfologico_2tri\t\"\"\tNULL\tNULL\tNULL\tNULL\nultrassom_obstetrico\t\"150\"\tNULL\tNULL\tNULL\tNULL\nmorfologico_2tri\t\"280\"\tNULL\tNULL\tNULL\tNULL\nultrassom_obstetrico\t\"480\"\tNULL\tNULL\tNULL\tNULL\nmorfologico_2tri\tNULL\t\"680g\"\tNULL\tNULL\tNULL\nultrassom_seguimento\tNULL\t\"3050g\"\tNULL\tNULL\tNULL\nmorfologico_2tri\t\"460 gramas\"\tNULL\tNULL\tNULL\tNULL\nmorfologico_2tri\tNULL\t\"480g\"\tNULL\tNULL\tNULL\nultrassom_seguimento\tNULL\t\"1850g\"\tNULL\tNULL\t\"P50\"\nultrassom_seguimento\t\"2014 g\"\tNULL\tNULL\t\"37,6\"\tNULL\nmorfologico_2tri\t\"643 g\"\tNULL\tNULL\tNULL\tNULL\nultrassom_obstetrico\t\"316 g\"\tNULL\tNULL\tNULL\tNULL\nultrassom_obstetrico\t\"299 g\"\tNULL\tNULL\tNULL\tNULL\nultrassom_obstetrico\t\"228 g\"\tNULL\tNULL\tNULL\tNULL\nmorfologico_2tri\t\"480\"\tNULL\tNULL\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

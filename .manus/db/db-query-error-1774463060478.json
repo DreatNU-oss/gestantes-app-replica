@@ -1,0 +1,8 @@
+{
+  "query": "SELECT \n  tipo,\n  JSON_KEYS(dados) as campos,\n  JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(dados, '$.pesoEstimado') as pesoEstimado,\n  JSON_EXTRACT(dados, '$.peso') as peso,\n  JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(dados, '$.percentil') as percentil\nFROM ultrassons \nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n   OR JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\n   OR JSON_EXTRACT(dados, '$.peso') IS NOT NULL\nLIMIT 15;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  tipo,\n  JSON_KEYS(dados) as campos,\n  JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(dados, '$.pesoEstimado') as pesoEstimado,\n  JSON_EXTRACT(dados, '$.peso') as peso,\n  JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(dados, '$.percentil') as percentil\nFROM ultrassons \nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n   OR JSON_EXTRACT(dados, '$.pesoEstimado') IS NOT NULL\n   OR JSON_EXTRACT(dados, '$.peso') IS NOT NULL\nLIMIT 15;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'tipo' in 'field list'"
+  ]
+}

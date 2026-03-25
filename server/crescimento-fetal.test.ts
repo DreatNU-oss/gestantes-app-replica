@@ -69,13 +69,13 @@ describe('Crescimento Fetal - Helpers', () => {
   describe('interpolarFMF', () => {
     it('deve retornar valor exato para IG inteira', () => {
       const p50_30 = interpolarFMF(30, FMF_PESO, 'p50');
-      expect(p50_30).toBe(1460); // FMF_PESO ig=30, p50=1460
+      expect(p50_30).toBe(1586); // FMF_PESO ig=30, p50=1586 (Nicolaides 2018)
     });
 
     it('deve interpolar entre duas IGs', () => {
       const p50_30_5 = interpolarFMF(30.5, FMF_PESO, 'p50');
-      // Média entre 1460 (ig30) e 1650 (ig31)
-      expect(p50_30_5).toBeCloseTo(1555, 0);
+      // Média entre 1586 (ig30) e 1782 (ig31)
+      expect(p50_30_5).toBeCloseTo(1684, 0);
     });
 
     it('deve retornar 0 para IG fora da tabela', () => {
@@ -85,52 +85,52 @@ describe('Crescimento Fetal - Helpers', () => {
 
     it('deve retornar valor do extremo para IG no limite', () => {
       const p50_22 = interpolarFMF(22, FMF_PESO, 'p50');
-      expect(p50_22).toBe(470);
+      expect(p50_22).toBe(491);
       const p50_40 = interpolarFMF(40, FMF_PESO, 'p50');
-      expect(p50_40).toBe(3550);
+      expect(p50_40).toBe(3512);
     });
   });
 
   describe('pesoNoPercentil', () => {
     it('deve retornar P50 para percentil 50', () => {
       const peso = pesoNoPercentil(30, 50);
-      expect(peso).toBe(1460); // P50 na IG 30
+      expect(peso).toBe(1586); // P50 na IG 30 (Nicolaides 2018)
     });
 
     it('deve retornar P10 para percentil 10', () => {
       const peso = pesoNoPercentil(30, 10);
-      expect(peso).toBe(1230); // P10 na IG 30
+      expect(peso).toBe(1423); // P10 na IG 30 (Nicolaides 2018)
     });
 
     it('deve retornar P90 para percentil 90', () => {
       const peso = pesoNoPercentil(30, 90);
-      expect(peso).toBe(1730); // P90 na IG 30
+      expect(peso).toBe(1768); // P90 na IG 30 (Nicolaides 2018)
     });
 
     it('deve interpolar entre P10 e P50 para percentil 30', () => {
       const peso = pesoNoPercentil(30, 30);
-      // Entre P10=1230 e P50=1460, frac = (30-10)/(50-10) = 0.5
-      expect(peso).toBe(Math.round(1230 + 0.5 * (1460 - 1230)));
-      expect(peso).toBe(1345);
+      // Entre P10=1423 e P50=1586, frac = (30-10)/(50-10) = 0.5
+      expect(peso).toBe(Math.round(1423 + 0.5 * (1586 - 1423)));
+      expect(peso).toBe(1505);
     });
 
     it('deve retornar P1 para percentil <= 1', () => {
       const peso = pesoNoPercentil(30, 0.5);
-      expect(peso).toBe(1040); // P1 na IG 30
+      expect(peso).toBe(1303); // P1 na IG 30 (Nicolaides 2018)
     });
 
     it('deve retornar P99 para percentil >= 99', () => {
       const peso = pesoNoPercentil(30, 99.5);
-      expect(peso).toBe(2010); // P99 na IG 30
+      expect(peso).toBe(1931); // P99 na IG 30 (Nicolaides 2018)
     });
 
     it('deve funcionar com percentil 37.6 (caso real)', () => {
       const peso = pesoNoPercentil(32, 37.6);
-      // Entre P10=1580 e P50=1860, frac = (37.6-10)/(50-10) = 0.69
-      const expected = Math.round(1580 + 0.69 * (1860 - 1580));
+      // Entre P10=1780 e P50=1988, frac = (37.6-10)/(50-10) = 0.69
+      const expected = Math.round(1780 + 0.69 * (1988 - 1780));
       expect(peso).toBeCloseTo(expected, 0);
-      expect(peso).toBeGreaterThan(1580);
-      expect(peso).toBeLessThan(1860);
+      expect(peso).toBeGreaterThan(1780);
+      expect(peso).toBeLessThan(1988);
     });
   });
 
@@ -200,6 +200,7 @@ describe('Crescimento Fetal - Helpers', () => {
 
       const peso = pesoNoPercentil(30, percentil);
       expect(peso).toBeGreaterThan(0);
+      // percentil 37.6 < P50, então peso deve ser menor que P50
       expect(peso).toBeLessThan(interpolarFMF(30, FMF_PESO, 'p50'));
     });
 
