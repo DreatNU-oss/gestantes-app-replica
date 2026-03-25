@@ -2589,7 +2589,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Removido filtro que impedia queixas estáticas de serem rastreadas por frequência
 - [x] WizardPrimeiraConsulta agora também salva queixas para rastreamento de frequência
 - [x] Testes vitest criados e passando (10/10)
-- [ ] Atualizar skill webdev-autocomplete-history com a correção
+- [x] Atualizar skill webdev-autocomplete-history com a correção
 
 ## Remover opção de guardar como favorita no autocomplete (25/03/2026)
 - [x] Remover botão/funcionalidade de "guardar como favorita" do AutocompleteInput
@@ -2603,3 +2603,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar endpoint `gestante.crescimentoFetal` com dados do gráfico FMF + peso/comprimento personalizado
 - [x] Gerar prompt completo para o projeto do aplicativo mobile
 - [x] 25 testes vitest criados e passando para lógica de interpolação FMF
+
+## Melhorar extração IA de percentilPeso nos ultrassons (25/03/2026)
+- [x] Analisar fluxo atual de extração de dados por IA dos ultrassons
+- [x] Verificar se percentilPeso está nos prompts de extração (não estava para obstetrico e morfo2tri)
+- [x] Melhorar prompts para extrair percentilPeso de forma mais robusta (adicionado a obstetrico e morfo2tri)
+- [x] Migrar dados do campo antigo `percentil` para `percentilPeso` (10 registros migrados, cobertura 43% → 56%)
+- [x] Adicionar campo percentilPeso nos schemas Zod de obstetrico e morfo2tri
+- [x] Adicionar campo percentilPeso nos formulários de US Obstétrico e Morfo 2º Tri (frontend)
+- [x] Adicionar fallback para campo `percentil` antigo no endpoint crescimentoFetal
+- [x] Atualizar skill add-usg-obst-auto com campo percentilPeso
+- [x] Atualizar skill webdev-autocomplete-history com remoção do bookmark e AutocompleteInput
+- [x] 35 testes vitest passando (autocomplete + crescimento fetal)

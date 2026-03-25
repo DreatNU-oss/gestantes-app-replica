@@ -1,0 +1,15 @@
+{
+  "query": "SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentil') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentil') != '\"\"' THEN 1 ELSE 0 END) as com_percentil_antigo,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentilPeso') != '\"\"' AND JSON_EXTRACT(dados, '$.percentilPeso') != '' THEN 1 ELSE 0 END) as com_percentilPeso\nFROM ultrassons\nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  COUNT(*) as total,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentil') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentil') != '\"\"' THEN 1 ELSE 0 END) as com_percentil_antigo,\n  SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentilPeso') != '\"\"' AND JSON_EXTRACT(dados, '$.percentilPeso') != '' THEN 1 ELSE 0 END) as com_percentilPeso\nFROM ultrassons\nWHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"';",
+  "rows": [
+    {
+      "total": "76",
+      "com_percentil_antigo": "10",
+      "com_percentilPeso": "32"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tcom_percentil_antigo\tcom_percentilPeso\n76\t10\t32\n",
+  "stderr": "",
+  "execution_time_ms": 361
+}

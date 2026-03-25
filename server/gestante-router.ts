@@ -861,7 +861,7 @@ export const gestanteRouter = router({
             dataExame: us.dataExame,
             pesoGramas: peso,
             igSemanas: igSemDecimal ? parseFloat(igSemDecimal.toFixed(2)) : null,
-            percentilPeso: parsePercentil(us.dados?.percentilPeso),
+            percentilPeso: parsePercentil(us.dados?.percentilPeso) ?? parsePercentil(us.dados?.percentil),
           };
         })
         .filter((p: any) => p !== null && p.igSemanas !== null && p.igSemanas >= 21 && p.igSemanas <= 41);
@@ -881,7 +881,7 @@ export const gestanteRouter = router({
         // Buscar o ultrassom mais recente com percentilPeso
         const ultrassonsComPercentil = (ultrassonsList as any[])
           .filter((us: any) => {
-            const pct = parsePercentil(us.dados?.percentilPeso);
+            const pct = parsePercentil(us.dados?.percentilPeso) ?? parsePercentil(us.dados?.percentil);
             return pct !== null && us.dataExame;
           })
           .sort((a: any, b: any) => {
@@ -891,7 +891,7 @@ export const gestanteRouter = router({
 
         if (ultrassonsComPercentil.length > 0) {
           const usRecente = ultrassonsComPercentil[0];
-          percentilUtilizado = parsePercentil(usRecente.dados.percentilPeso);
+          percentilUtilizado = parsePercentil(usRecente.dados.percentilPeso) ?? parsePercentil(usRecente.dados.percentil);
           fontePercentil = `Ultrassom de ${usRecente.dataExame}`;
 
           if (percentilUtilizado !== null) {

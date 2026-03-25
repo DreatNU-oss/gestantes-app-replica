@@ -27,6 +27,7 @@ const dadosMorfo1TriSchema = z.object({
 
 const dadosUltrassomObstetricoSchema = z.object({
   pesoFetal: z.string().optional(),
+  percentilPeso: z.string().optional(),
   placentaLocalizacao: z.string().optional(),
   placentaGrau: z.string().optional(),
   placentaDistanciaOI: z.string().optional(),
@@ -37,6 +38,7 @@ const dadosUltrassomObstetricoSchema = z.object({
 const dadosMorfo2TriSchema = z.object({
   biometria: z.string().optional(),
   pesoFetal: z.string().optional(),
+  percentilPeso: z.string().optional(),
   placentaLocalizacao: z.string().optional(),
   placentaGrau: z.string().optional(),
   placentaDistanciaOI: z.string().optional(),

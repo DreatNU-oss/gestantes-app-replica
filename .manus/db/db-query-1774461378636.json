@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE ultrassons \nSET dados = JSON_SET(dados, '$.percentilPeso', \n  CASE \n    WHEN JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentil')) = 'P50' THEN '50'\n    ELSE JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentil'))\n  END\n)\nWHERE JSON_EXTRACT(dados, '$.percentil') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.percentil') != '\"\"'\n  AND JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"'\n  AND (JSON_EXTRACT(dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(dados, '$.percentilPeso') = '\"\"');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE ultrassons \nSET dados = JSON_SET(dados, '$.percentilPeso', \n  CASE \n    WHEN JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentil')) = 'P50' THEN '50'\n    ELSE JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentil'))\n  END\n)\nWHERE JSON_EXTRACT(dados, '$.percentil') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.percentil') != '\"\"'\n  AND JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"'\n  AND (JSON_EXTRACT(dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(dados, '$.percentilPeso') = '\"\"');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 383
+}

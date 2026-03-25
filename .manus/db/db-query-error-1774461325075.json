@@ -1,0 +1,8 @@
+{
+  "query": "SELECT \n  u.id, \n  u.tipo, \n  JSON_EXTRACT(u.dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil,\n  u.arquivoUrl,\n  g.nome as gestanteNome\nFROM ultrassons u\nJOIN gestantes g ON g.id = u.gestanteId\nWHERE JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != ''\n  AND (JSON_EXTRACT(u.dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '')\nORDER BY u.dataExame DESC\nLIMIT 30;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  u.id, \n  u.tipo, \n  JSON_EXTRACT(u.dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil,\n  u.arquivoUrl,\n  g.nome as gestanteNome\nFROM ultrassons u\nJOIN gestantes g ON g.id = u.gestanteId\nWHERE JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != ''\n  AND (JSON_EXTRACT(u.dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '')\nORDER BY u.dataExame DESC\nLIMIT 30;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'u.tipo' in 'field list'"
+  ]
+}

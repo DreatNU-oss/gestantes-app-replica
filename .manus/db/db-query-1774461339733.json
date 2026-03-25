@@ -1,0 +1,170 @@
+{
+  "query": "SELECT \n  u.id, \n  u.tipoUltrassom, \n  JSON_EXTRACT(u.dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil,\n  g.nome as gestanteNome\nFROM ultrassons u\nJOIN gestantes g ON g.id = u.gestanteId\nWHERE JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != '\"\"'\n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != ''\n  AND (JSON_EXTRACT(u.dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '\"\"' OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '')\nORDER BY u.dataExame DESC\nLIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  u.id, \n  u.tipoUltrassom, \n  JSON_EXTRACT(u.dados, '$.pesoFetal') as pesoFetal,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil,\n  g.nome as gestanteNome\nFROM ultrassons u\nJOIN gestantes g ON g.id = u.gestanteId\nWHERE JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != '\"\"'\n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != ''\n  AND (JSON_EXTRACT(u.dados, '$.percentilPeso') IS NULL OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '\"\"' OR JSON_EXTRACT(u.dados, '$.percentilPeso') = '')\nORDER BY u.dataExame DESC\nLIMIT 20;",
+  "rows": [
+    {
+      "id": "1530017",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"2060\"",
+      "percentilPeso": "NULL",
+      "percentil": "\"2.5\"",
+      "gestanteNome": "Gisele Silva Batista"
+    },
+    {
+      "id": "1470006",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"212 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Roberta Lopes Rodrigues "
+    },
+    {
+      "id": "1500002",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"256 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Mariá Raíssa Loureira Rodrigues"
+    },
+    {
+      "id": "1440005",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"251g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Sandra Cristina Pereira Camargo"
+    },
+    {
+      "id": "1500006",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"553 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Ana Beatriz de Oliveira Salles"
+    },
+    {
+      "id": "1200133",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"257 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Marcela Bellato Reis"
+    },
+    {
+      "id": "1170025",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"299 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Luciana Valim"
+    },
+    {
+      "id": "1140002",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"316 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Andressa Cristina Gonçalves"
+    },
+    {
+      "id": "1170059",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"2868 g\"",
+      "percentilPeso": "\"\"",
+      "percentil": "NULL",
+      "gestanteNome": "Nathalia Amélia Martins"
+    },
+    {
+      "id": "1410005",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"570 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Camila Cristina Luiz da Silva"
+    },
+    {
+      "id": "1470007",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"514G\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Luana Aparecida De Paula"
+    },
+    {
+      "id": "1350006",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"3200g\"",
+      "percentilPeso": "NULL",
+      "percentil": "\"P50\"",
+      "gestanteNome": "TESTE TESTE"
+    },
+    {
+      "id": "1110001",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"643 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Leticia Petrin"
+    },
+    {
+      "id": "1410003",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"478 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Carolina Otavio Baroni"
+    },
+    {
+      "id": "1530016",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"1785\"",
+      "percentilPeso": "NULL",
+      "percentil": "\"3.6\"",
+      "gestanteNome": "Gisele Silva Batista"
+    },
+    {
+      "id": "1200015",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"645 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Luciany Aparecida Vilela"
+    },
+    {
+      "id": "1470004",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"583 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Yanka Moreira Távora"
+    },
+    {
+      "id": "1200132",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "pesoFetal": "\"152 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Marcela Bellato Reis"
+    },
+    {
+      "id": "1530006",
+      "tipoUltrassom": "morfologico_2tri",
+      "pesoFetal": "\"618 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL",
+      "gestanteNome": "Makisleide Ferreira de Souza Santos"
+    },
+    {
+      "id": "1350005",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "pesoFetal": "\"2520g\"",
+      "percentilPeso": "NULL",
+      "percentil": "\"P50\"",
+      "gestanteNome": "TESTE TESTE"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tpesoFetal\tpercentilPeso\tpercentil\tgestanteNome\n1530017\tultrassom_seguimento\t\"2060\"\tNULL\t\"2.5\"\tGisele Silva Batista\n1470006\tultrassom_obstetrico\t\"212 g\"\tNULL\tNULL\tRoberta Lopes Rodrigues \n1500002\tultrassom_obstetrico\t\"256 g\"\tNULL\tNULL\tMariá Raíssa Loureira Rodrigues\n1440005\tultrassom_obstetrico\t\"251g\"\tNULL\tNULL\tSandra Cristina Pereira Camargo\n1500006\tmorfologico_2tri\t\"553 g\"\tNULL\tNULL\tAna Beatriz de Oliveira Salles\n1200133\tultrassom_obstetrico\t\"257 g\"\tNULL\tNULL\tMarcela Bellato Reis\n1170025\tultrassom_obstetrico\t\"299 g\"\tNULL\tNULL\tLuciana Valim\n1140002\tultrassom_obstetrico\t\"316 g\"\tNULL\tNULL\tAndressa Cristina Gonçalves\n1170059\tultrassom_seguimento\t\"2868 g\"\t\"\"\tNULL\tNathalia Amélia Martins\n1410005\tmorfologico_2tri\t\"570 g\"\tNULL\tNULL\tCamila Cristina Luiz da Silva\n1470007\tmorfologico_2tri\t\"514G\"\tNULL\tNULL\tLuana Aparecida De Paula\n1350006\tultrassom_seguimento\t\"3200g\"\tNULL\t\"P50\"\tTESTE TESTE\n1110001\tmorfologico_2tri\t\"643 g\"\tNULL\tNULL\tLeticia Petrin\n1410003\tmorfologico_2tri\t\"478 g\"\tNULL\tNULL\tCarolina Otavio Baroni\n1530016\tultrassom_seguimento\t\"1785\"\tNULL\t\"3.6\"\tGisele Silva Batista\n1200015\tmorfologico_2tri\t\"645 g\"\tNULL\tNULL\tLuciany Aparecida Vilela\n1470004\tmorfologico_2tri\t\"583 g\"\tNULL\tNULL\tYanka Moreira Távora\n1200132\tultrassom_obstetrico\t\"152 g\"\tNULL\tNULL\tMarcela Bellato Reis\n1530006\tmorfologico_2tri\t\"618 g\"\tNULL\tNULL\tMakisleide Ferreira de Souza Santos\n1350005\tultrassom_seguimento\t\"2520g\"\tNULL\t\"P50\"\tTESTE TESTE\n",
+  "stderr": "",
+  "execution_time_ms": 400
+}

@@ -66,6 +66,7 @@ export default function Ultrassons() {
         dataExame: '',
         idadeGestacional: '',
         pesoFetal: '',
+        percentilPeso: '',
         placentaLocalizacao: '',
         placentaGrau: '',
         coloUterinoMedida: '',
@@ -75,6 +76,7 @@ export default function Ultrassons() {
         idadeGestacional: '',
         biometria: '',
         pesoFetal: '',
+        percentilPeso: '',
         circunferenciaAbdominal: '',
         placentaLocalizacao: '',
         placentaGrau: '',
@@ -147,12 +149,12 @@ export default function Ultrassons() {
         case 'obstetrico':
         case 'ultrassom_obstetrico':
           usObstetricoAutoSave.clearDraft();
-          setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
-          setCamposPreenchidosIA(prev => ({ ...prev, ultrassom_obstetrico: new Set() }));
+setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+           setCamposPreenchidosIA(prev => ({ ...prev, ultrassom_obstetrico: new Set() }));
           break;
         case 'morfologico_2tri':
           morfo2TriAutoSave.clearDraft();
-          setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+          setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
           setCamposPreenchidosIA(prev => ({ ...prev, morfologico_2tri: new Set() }));
           break;
         case 'ecocardiograma':
@@ -227,11 +229,11 @@ export default function Ultrassons() {
         morfo1TriAutoSave.clearDraft();
         break;
       case 'ultrassom_obstetrico':
-        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
         usObstetricoAutoSave.clearDraft();
         break;
       case 'morfologico_2tri':
-        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
         morfo2TriAutoSave.clearDraft();
         break;
       case 'ecocardiograma_fetal':
@@ -367,6 +369,7 @@ export default function Ultrassons() {
     dataExame: '',
     idadeGestacional: '',
     pesoFetal: '',
+    percentilPeso: '',
     placentaLocalizacao: '',
     placentaGrau: '',
     coloUterinoMedida: '',
@@ -377,6 +380,7 @@ export default function Ultrassons() {
     idadeGestacional: '',
     biometria: '',
     pesoFetal: '',
+    percentilPeso: '',
     circunferenciaAbdominal: '',
     placentaLocalizacao: '',
     placentaGrau: '',
@@ -510,10 +514,10 @@ export default function Ultrassons() {
         setMorfo1Tri({ dataExame: '', idadeGestacional: '', ccn: '', bcf: '', tn: '', ossoNasal: '', dv: '', valvaTricuspide: '', dopplerUterinas: '', incisuraPresente: '', colo: '', riscoTrissomias: '', dpp: '' });
         break;
       case 'ultrassom_obstetrico':
-        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
+        setUsObstetrico({ dataExame: '', idadeGestacional: '', pesoFetal: '', percentilPeso: '', placentaLocalizacao: '', placentaGrau: '', coloUterinoMedida: '' });
         break;
       case 'morfologico_2tri':
-        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
+        setMorfo2Tri({ dataExame: '', idadeGestacional: '', biometria: '', pesoFetal: '', percentilPeso: '', circunferenciaAbdominal: '', placentaLocalizacao: '', placentaGrau: '', liquidoAmniotico: '', coloUterino: '', avaliacaoAnatomica: '', dopplers: '', sexoFetal: '', observacoes: '' });
         break;
       case 'ecocardiograma_fetal':
         setEcocardiograma({ dataExame: '', conclusao: '' });
@@ -1117,7 +1121,8 @@ export default function Ultrassons() {
                   fields={[
                     { key: 'dataExame', label: 'Data do Exame', type: 'date', required: true },
                     { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 20s 1d', required: true },
-                    { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 350g', colSpan: 3 },
+                    { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 350g' },
+                    { key: 'percentilPeso', label: 'Percentil do Peso', placeholder: 'Ex: 50, 26.2' },
                     { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Anterior' },
                     { key: 'placentaGrau', label: 'Placenta - Grau', placeholder: 'Ex: 0' },
                     { key: 'coloUterinoMedida', label: 'Colo Uterino', placeholder: 'Ex: 28.8 mm' },
@@ -1153,15 +1158,27 @@ export default function Ultrassons() {
                 </div>
               </div>
               
-              <div>
-                <Label>Peso Fetal Estimado</Label>
-                <InputComHistorico
-                  tipo="us_obstetrico_pesofetal"
-                  placeholder="Ex: 350g"
-                  className={getInputClassName('ultrassom_obstetrico', 'pesoFetal')}
-                  value={usObstetrico.pesoFetal}
-                  onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'pesoFetal'); setUsObstetrico({ ...usObstetrico, pesoFetal: v }); }}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Peso Fetal Estimado</Label>
+                  <InputComHistorico
+                    tipo="us_obstetrico_pesofetal"
+                    placeholder="Ex: 350g"
+                    className={getInputClassName('ultrassom_obstetrico', 'pesoFetal')}
+                    value={usObstetrico.pesoFetal}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'pesoFetal'); setUsObstetrico({ ...usObstetrico, pesoFetal: v }); }}
+                  />
+                </div>
+                <div>
+                  <Label>Percentil do Peso</Label>
+                  <InputComHistorico
+                    tipo="us_obstetrico_percentilpeso"
+                    placeholder="Ex: 50, 26.2"
+                    className={getInputClassName('ultrassom_obstetrico', 'percentilPeso')}
+                    value={usObstetrico.percentilPeso}
+                    onChange={(v) => { removerDestaqueIA('ultrassom_obstetrico', 'percentilPeso'); setUsObstetrico({ ...usObstetrico, percentilPeso: v }); }}
+                  />
+                </div>
               </div>
               
               <div className="grid grid-cols-3 gap-4">
@@ -1244,6 +1261,7 @@ export default function Ultrassons() {
                     { key: 'idadeGestacional', label: 'Idade Gestacional', placeholder: 'Ex: 22s 0d', required: true },
                     { key: 'biometria', label: 'Biometria Fetal', placeholder: 'DBP, CC, CA, CF...', colSpan: 3 },
                     { key: 'pesoFetal', label: 'Peso Fetal Estimado', placeholder: 'Ex: 500g' },
+                    { key: 'percentilPeso', label: 'Percentil do Peso', placeholder: 'Ex: 50, 26.2' },
                     { key: 'circunferenciaAbdominal', label: 'Circunferência Abdominal (CA)', placeholder: 'Ex: 175mm ou 17.5cm' },
                     { key: 'sexoFetal', label: 'Sexo Fetal', placeholder: 'Masculino/Feminino' },
                     { key: 'placentaLocalizacao', label: 'Placenta - Localização', placeholder: 'Ex: Posterior' },
@@ -1297,7 +1315,7 @@ export default function Ultrassons() {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Peso Fetal Estimado</Label>
                   <InputComHistorico
@@ -1306,6 +1324,16 @@ export default function Ultrassons() {
                     className={getInputClassName('morfologico_2tri', 'pesoFetal')}
                     value={morfo2Tri.pesoFetal}
                     onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'pesoFetal'); setMorfo2Tri({ ...morfo2Tri, pesoFetal: v }); }}
+                  />
+                </div>
+                <div>
+                  <Label>Percentil do Peso</Label>
+                  <InputComHistorico
+                    tipo="us_morfo2tri_percentilpeso"
+                    placeholder="Ex: 50, 26.2"
+                    className={getInputClassName('morfologico_2tri', 'percentilPeso')}
+                    value={morfo2Tri.percentilPeso}
+                    onChange={(v) => { removerDestaqueIA('morfologico_2tri', 'percentilPeso'); setMorfo2Tri({ ...morfo2Tri, percentilPeso: v }); }}
                   />
                 </div>
                 <div>

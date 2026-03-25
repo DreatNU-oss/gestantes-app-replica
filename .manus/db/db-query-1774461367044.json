@@ -1,0 +1,60 @@
+{
+  "query": "SELECT \n  u.id,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil_antigo,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso\nFROM ultrassons u\nWHERE JSON_EXTRACT(u.dados, '$.percentil') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.percentil') != '\"\"'\n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != '\"\"';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT \n  u.id,\n  JSON_EXTRACT(u.dados, '$.percentil') as percentil_antigo,\n  JSON_EXTRACT(u.dados, '$.percentilPeso') as percentilPeso\nFROM ultrassons u\nWHERE JSON_EXTRACT(u.dados, '$.percentil') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.percentil') != '\"\"'\n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') IS NOT NULL \n  AND JSON_EXTRACT(u.dados, '$.pesoFetal') != '\"\"';",
+  "rows": [
+    {
+      "id": "1350001",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1350002",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1350003",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1350004",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1350005",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1350006",
+      "percentil_antigo": "\"P50\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1530014",
+      "percentil_antigo": "\"2.1\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1530015",
+      "percentil_antigo": "\"5.3\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1530016",
+      "percentil_antigo": "\"3.6\"",
+      "percentilPeso": "NULL"
+    },
+    {
+      "id": "1530017",
+      "percentil_antigo": "\"2.5\"",
+      "percentilPeso": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpercentil_antigo\tpercentilPeso\n1350001\t\"P50\"\tNULL\n1350002\t\"P50\"\tNULL\n1350003\t\"P50\"\tNULL\n1350004\t\"P50\"\tNULL\n1350005\t\"P50\"\tNULL\n1350006\t\"P50\"\tNULL\n1530014\t\"2.1\"\tNULL\n1530015\t\"5.3\"\tNULL\n1530016\t\"3.6\"\tNULL\n1530017\t\"2.5\"\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}
