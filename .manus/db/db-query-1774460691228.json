@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso, JSON_EXTRACT(dados, '$.percentil') as percentil FROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso, JSON_EXTRACT(dados, '$.percentil') as percentil FROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL LIMIT 10;",
+  "rows": [
+    {
+      "id": "90001",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "NULL",
+      "pesoFetal": "\"\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "180003",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2024-11-04",
+      "pesoFetal": "\"150\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "180004",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2024-11-25",
+      "pesoFetal": "\"280\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "180005",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2024-12-16",
+      "pesoFetal": "\"480\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "330003",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-09-12",
+      "pesoFetal": "\"460 gramas\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "630001",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "26/01/2026",
+      "pesoFetal": "\"2014 g\"",
+      "percentilPeso": "\"37,6\"",
+      "percentil": "NULL"
+    },
+    {
+      "id": "1110001",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2026-03-12",
+      "pesoFetal": "\"643 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "1140002",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2026-03-17",
+      "pesoFetal": "\"316 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "1170025",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2026-03-17",
+      "pesoFetal": "\"299 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    },
+    {
+      "id": "1170057",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-11-12",
+      "pesoFetal": "\"228 g\"",
+      "percentilPeso": "NULL",
+      "percentil": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tpesoFetal\tpercentilPeso\tpercentil\n90001\tmorfologico_2tri\tNULL\t\"\"\tNULL\tNULL\n180003\tultrassom_obstetrico\t2024-11-04\t\"150\"\tNULL\tNULL\n180004\tmorfologico_2tri\t2024-11-25\t\"280\"\tNULL\tNULL\n180005\tultrassom_obstetrico\t2024-12-16\t\"480\"\tNULL\tNULL\n330003\tmorfologico_2tri\t2025-09-12\t\"460 gramas\"\tNULL\tNULL\n630001\tultrassom_seguimento\t26/01/2026\t\"2014 g\"\t\"37,6\"\tNULL\n1110001\tmorfologico_2tri\t2026-03-12\t\"643 g\"\tNULL\tNULL\n1140002\tultrassom_obstetrico\t2026-03-17\t\"316 g\"\tNULL\tNULL\n1170025\tultrassom_obstetrico\t2026-03-17\t\"299 g\"\tNULL\tNULL\n1170057\tultrassom_obstetrico\t2025-11-12\t\"228 g\"\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 441
+}

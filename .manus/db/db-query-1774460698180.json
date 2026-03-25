@@ -1,0 +1,14 @@
+{
+  "query": "SELECT COUNT(*) as total, SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentilPeso') != 'null' AND JSON_EXTRACT(dados, '$.percentilPeso') != '\"\"' THEN 1 ELSE 0 END) as comPercentil FROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT COUNT(*) as total, SUM(CASE WHEN JSON_EXTRACT(dados, '$.percentilPeso') IS NOT NULL AND JSON_EXTRACT(dados, '$.percentilPeso') != 'null' AND JSON_EXTRACT(dados, '$.percentilPeso') != '\"\"' THEN 1 ELSE 0 END) as comPercentil FROM ultrassons WHERE JSON_EXTRACT(dados, '$.pesoFetal') IS NOT NULL AND JSON_EXTRACT(dados, '$.pesoFetal') != '\"\"';",
+  "rows": [
+    {
+      "total": "76",
+      "comPercentil": "33"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tcomPercentil\n76\t33\n",
+  "stderr": "",
+  "execution_time_ms": 359
+}

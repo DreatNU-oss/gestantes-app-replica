@@ -2595,3 +2595,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Remover botão/funcionalidade de "guardar como favorita" do AutocompleteInput
 - [x] InputComHistorico não tinha botão de favoritar (apenas botão X para remover) - OK
 - [x] Remover botão/funcionalidade de "guardar como favorita" do TextareaComAutocomplete
+
+## Gráfico Peso Fetal e Dados Personalizados para App Mobile (25/03/2026)
+- [x] Analisar gráfico de peso fetal no CartaoPrenatal e dados FMF utilizados
+- [x] Analisar API de integração existente para o app mobile
+- [x] Garantir que API expõe dados necessários (ultrassons com percentil, dados FMF)
+- [x] Implementar endpoint `gestante.crescimentoFetal` com dados do gráfico FMF + peso/comprimento personalizado
+- [x] Gerar prompt completo para o projeto do aplicativo mobile
+- [x] 25 testes vitest criados e passando para lógica de interpolação FMF

@@ -720,6 +720,234 @@ export const gestanteRouter = router({
     }),
   
   
+  // GET /crescimento-fetal — Dados do gráfico de peso fetal FMF + peso/comprimento personalizado
+  crescimentoFetal: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(async ({ input }) => {
+      const gestante = await validateGestanteToken(input.token);
+      const ultrassonsList = await gestanteDb.getUltrassonsByGestanteId(gestante.id);
+
+      // Importar tabela FMF
+      const { FMF_PESO } = await import('../shared/fmfPercentis');
+
+      // ── Helpers ──
+      function parsePeso(v: string | undefined | null): number {
+        if (!v) return 0;
+        const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
+        return isNaN(n) ? 0 : n;
+      }
+
+      function parsePercentil(v: string | undefined | null): number | null {
+        if (!v) return null;
+        const n = parseFloat(String(v).replace(',', '.').replace(/[^0-9.]/g, ''));
+        return isNaN(n) || n <= 0 ? null : n;
+      }
+
+      function interpolarFMF(
+        igDecimal: number,
+        tabela: typeof FMF_PESO,
+        campo: keyof (typeof FMF_PESO)[0]
+      ): number {
+        const igFloor = Math.floor(igDecimal);
+        const igCeil = Math.ceil(igDecimal);
+        const frac = igDecimal - igFloor;
+        const rowFloor = tabela.find((r) => r.ig === igFloor);
+        const rowCeil = tabela.find((r) => r.ig === igCeil);
+        if (!rowFloor && !rowCeil) return 0;
+        if (!rowFloor) return rowCeil![campo] as number;
+        if (!rowCeil || igFloor === igCeil) return rowFloor[campo] as number;
+        return (rowFloor[campo] as number) * (1 - frac) + (rowCeil[campo] as number) * frac;
+      }
+
+      /**
+       * Dado um percentil numérico (ex: 37.6) e uma IG decimal,
+       * interpola o peso esperado naquele percentil usando a tabela FMF.
+       * Usa interpolação log-linear entre os percentis tabelados.
+       */
+      function pesoNoPercentil(igDecimal: number, percentil: number): number {
+        // Percentis tabelados e seus campos
+        const pcts = [
+          { p: 1, campo: 'p1' as const },
+          { p: 3, campo: 'p3' as const },
+          { p: 10, campo: 'p10' as const },
+          { p: 50, campo: 'p50' as const },
+          { p: 90, campo: 'p90' as const },
+          { p: 97, campo: 'p97' as const },
+          { p: 99, campo: 'p99' as const },
+        ];
+
+        // Obter valores interpolados para esta IG
+        const valores = pcts.map(pc => ({
+          p: pc.p,
+          valor: interpolarFMF(igDecimal, FMF_PESO, pc.campo),
+        }));
+
+        // Se percentil <= 1 ou >= 99, retornar extremo
+        if (percentil <= 1) return valores[0].valor;
+        if (percentil >= 99) return valores[valores.length - 1].valor;
+
+        // Encontrar intervalo
+        for (let i = 0; i < valores.length - 1; i++) {
+          if (percentil >= valores[i].p && percentil <= valores[i + 1].p) {
+            const frac = (percentil - valores[i].p) / (valores[i + 1].p - valores[i].p);
+            return Math.round(valores[i].valor + frac * (valores[i + 1].valor - valores[i].valor));
+          }
+        }
+        return valores[3].valor; // fallback P50
+      }
+
+      /**
+       * Estima comprimento fetal (cm) a partir do peso (g).
+       * Fórmula empírica baseada em dados da OMS/Hadlock:
+       * comprimento ≈ 0.24 * peso^0.55 (ajustado para fetos 22-40 semanas)
+       * Alternativa mais simples: tabela de comprimento por IG.
+       * Usaremos tabela de comprimento médio por IG (OMS) e ajustaremos pelo percentil.
+       */
+      function comprimentoPorIG(igSemanas: number): number {
+        // Comprimento médio (cm) por IG — dados OMS/Hadlock
+        const tabela: Record<number, number> = {
+          22: 27.8, 23: 28.9, 24: 30.0, 25: 34.6, 26: 35.6,
+          27: 36.6, 28: 37.6, 29: 38.6, 30: 39.9, 31: 41.1,
+          32: 42.4, 33: 43.7, 34: 45.0, 35: 46.2, 36: 47.4,
+          37: 48.6, 38: 49.8, 39: 50.7, 40: 51.2,
+        };
+        const igFloor = Math.max(22, Math.min(40, Math.floor(igSemanas)));
+        const igCeil = Math.min(40, igFloor + 1);
+        const frac = igSemanas - igFloor;
+        const vFloor = tabela[igFloor] || 27.8;
+        const vCeil = tabela[igCeil] || vFloor;
+        return parseFloat((vFloor + frac * (vCeil - vFloor)).toFixed(1));
+      }
+
+      // ── Calcular IG atual ──
+      const dataUS = gestante.dataUltrassom ? new Date(gestante.dataUltrassom + 'T12:00:00') : null;
+      const dumValida = gestante.dum && gestante.dum !== 'Incerta' && !gestante.dum.includes('Compatível') && !gestante.dum.includes('Incompatível');
+      const dum = dumValida ? new Date(gestante.dum + 'T12:00:00') : null;
+
+      let igAtualSemanas: number | null = null;
+      let igAtualDias: number | null = null;
+
+      if (dataUS && gestante.igUltrassomSemanas !== null) {
+        const hoje = new Date();
+        const diffDias = Math.floor((hoje.getTime() - dataUS.getTime()) / (1000 * 60 * 60 * 24));
+        const totalDias = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diffDias;
+        igAtualSemanas = Math.floor(totalDias / 7);
+        igAtualDias = totalDias % 7;
+      } else if (dum) {
+        const hoje = new Date();
+        const totalDias = Math.floor((hoje.getTime() - dum.getTime()) / (1000 * 60 * 60 * 24));
+        igAtualSemanas = Math.floor(totalDias / 7);
+        igAtualDias = totalDias % 7;
+      }
+
+      // ── Pontos do gráfico de peso fetal ──
+      const pontosPesoFetal = (ultrassonsList as any[])
+        .filter((us: any) => us.dataExame && us.dados?.pesoFetal)
+        .map((us: any) => {
+          const peso = parsePeso(us.dados.pesoFetal);
+          if (peso <= 0) return null;
+
+          // Calcular IG pelo 1º US do cadastro
+          let igSemDecimal: number | null = null;
+          if (dataUS && gestante.igUltrassomSemanas !== null) {
+            const dtExame = new Date(us.dataExame + 'T12:00:00');
+            const diffMs = dtExame.getTime() - dataUS.getTime();
+            const diffDias = diffMs / (1000 * 60 * 60 * 24);
+            const igTotalDias = (gestante.igUltrassomSemanas * 7) + (gestante.igUltrassomDias || 0) + diffDias;
+            igSemDecimal = igTotalDias / 7;
+          }
+
+          return {
+            dataExame: us.dataExame,
+            pesoGramas: peso,
+            igSemanas: igSemDecimal ? parseFloat(igSemDecimal.toFixed(2)) : null,
+            percentilPeso: parsePercentil(us.dados?.percentilPeso),
+          };
+        })
+        .filter((p: any) => p !== null && p.igSemanas !== null && p.igSemanas >= 21 && p.igSemanas <= 41);
+
+      // ── Peso e comprimento personalizados ──
+      // Regra: a partir de 22 semanas, SE houver ultrassom com percentilPeso,
+      // usar esse percentil para estimar peso atual na IG atual.
+      // Caso contrário, retornar null (app mostrará média ou nada).
+      let pesoEstimadoPersonalizado: number | null = null;
+      let comprimentoEstimado: number | null = null;
+      let percentilUtilizado: number | null = null;
+      let fontePercentil: string | null = null;
+
+      if (igAtualSemanas !== null && igAtualSemanas >= 22) {
+        const igDecimal = igAtualSemanas + (igAtualDias || 0) / 7;
+
+        // Buscar o ultrassom mais recente com percentilPeso
+        const ultrassonsComPercentil = (ultrassonsList as any[])
+          .filter((us: any) => {
+            const pct = parsePercentil(us.dados?.percentilPeso);
+            return pct !== null && us.dataExame;
+          })
+          .sort((a: any, b: any) => {
+            // Mais recente primeiro
+            return b.dataExame.localeCompare(a.dataExame);
+          });
+
+        if (ultrassonsComPercentil.length > 0) {
+          const usRecente = ultrassonsComPercentil[0];
+          percentilUtilizado = parsePercentil(usRecente.dados.percentilPeso);
+          fontePercentil = `Ultrassom de ${usRecente.dataExame}`;
+
+          if (percentilUtilizado !== null) {
+            pesoEstimadoPersonalizado = pesoNoPercentil(igDecimal, percentilUtilizado);
+            // Comprimento: usar tabela OMS por IG (ajuste fino pelo percentil é mínimo)
+            // Bebês maiores tendem a ser ligeiramente mais compridos
+            const comprBase = comprimentoPorIG(igDecimal);
+            // Ajuste sutil: ±5% para percentis extremos
+            const fatorAjuste = 1 + (percentilUtilizado - 50) / 50 * 0.05;
+            comprimentoEstimado = parseFloat((comprBase * fatorAjuste).toFixed(1));
+          }
+        }
+      }
+
+      // ── Tabela FMF completa para o gráfico ──
+      const tabelaFMF = FMF_PESO.map(row => ({
+        ig: row.ig,
+        p1: row.p1,
+        p3: row.p3,
+        p10: row.p10,
+        p50: row.p50,
+        p90: row.p90,
+        p97: row.p97,
+        p99: row.p99,
+      }));
+
+      return {
+        // Dados da gestante para cálculo de IG
+        igAtual: igAtualSemanas !== null ? {
+          semanas: igAtualSemanas,
+          dias: igAtualDias || 0,
+          decimal: parseFloat((igAtualSemanas + (igAtualDias || 0) / 7).toFixed(2)),
+        } : null,
+        dataUltrassom: gestante.dataUltrassom || null,
+        igUltrassomSemanas: gestante.igUltrassomSemanas,
+        igUltrassomDias: gestante.igUltrassomDias || 0,
+
+        // Pontos medidos nos ultrassons (para plotar no gráfico)
+        pontosPesoFetal,
+
+        // Tabela FMF completa (para desenhar as curvas de percentis)
+        tabelaFMF,
+
+        // Peso e comprimento personalizados para a IG atual
+        estimativaPersonalizada: {
+          disponivel: pesoEstimadoPersonalizado !== null,
+          pesoGramas: pesoEstimadoPersonalizado,
+          comprimentoCm: comprimentoEstimado,
+          percentilUtilizado,
+          fontePercentil,
+          igCalculoSemanas: igAtualSemanas,
+          igCalculoDias: igAtualDias || 0,
+        },
+      };
+    }),
+
   // POST /gerar-pdf-cartao
   gerarPdfCartao: publicProcedure
     .input(z.object({ token: z.string() }))
