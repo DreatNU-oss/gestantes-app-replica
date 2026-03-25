@@ -2393,9 +2393,6 @@ export default function CartaoPrenatal() {
           <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b py-2 px-1 -mx-1 rounded-lg">
             <div className="flex flex-wrap gap-1.5 justify-center">
               {[
-                { id: 'dados-gestante', label: 'Dados', icon: FileText },
-                { id: 'nova-consulta', label: 'Consulta', icon: Stethoscope, isDialog: true },
-                { id: 'historico-consultas', label: 'Histórico', icon: ClipboardList },
                 { id: 'cesarea', label: 'Cesárea', icon: Calendar },
                 { id: 'dados-bebe', label: 'Bebê', icon: Baby },
                 { id: 'fatores-risco', label: 'Fatores de Risco', icon: Heart },
