@@ -2590,3 +2590,8 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] WizardPrimeiraConsulta agora também salva queixas para rastreamento de frequência
 - [x] Testes vitest criados e passando (10/10)
 - [ ] Atualizar skill webdev-autocomplete-history com a correção
+
+## Remover opção de guardar como favorita no autocomplete (25/03/2026)
+- [x] Remover botão/funcionalidade de "guardar como favorita" do AutocompleteInput
+- [x] InputComHistorico não tinha botão de favoritar (apenas botão X para remover) - OK
+- [x] Remover botão/funcionalidade de "guardar como favorita" do TextareaComAutocomplete
