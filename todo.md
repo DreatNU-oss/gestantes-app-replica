@@ -2581,11 +2581,12 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Permitir múltiplos ultrassons de seguimento por gestante
 - [x] Verificar gráficos de peso e CA para exibir múltiplos pontos de seguimento (já suportam múltiplos pontos)
 
-## Exibir IG e DPP no Dashboard (24/03/2026)
-- [x] Exibir IG DUM e IG US no Dashboard da gestante (linha ~535)
-- [x] Exibir DPP DUM e DPP US no Dashboard da gestante (linha ~541)
-
-## Bug: CA aparece como 2525 ao invés de 252,5 nos gráficos (24/03/2026)
-- [x] Investigar parse de vírgula brasileira nos valores numéricos dos gráficos
-- [x] Corrigir dados da Andressa no banco (usar ponto decimal ao invés de vírgula)
-- [x] Atualizar skill add-usg-obst-auto para usar ponto decimal nos valores numéricos
+## Autocomplete: Ordenação por Frequência (25/03/2026)
+- [x] Corrigir autocomplete: textos mais utilizados devem aparecer primeiro (ordem decrescente de frequência)
+- [x] Foco especial no campo 'Queixa Principal' da consulta de rotina
+- [x] AutocompleteInput agora mostra contador de uso (ex: "64x") ao lado de cada sugestão
+- [x] Queixas personalizadas (com usageCount) aparecem antes das estáticas (sem uso)
+- [x] Removido filtro que impedia queixas estáticas de serem rastreadas por frequência
+- [x] WizardPrimeiraConsulta agora também salva queixas para rastreamento de frequência
+- [x] Testes vitest criados e passando (10/10)
+- [ ] Atualizar skill webdev-autocomplete-history com a correção

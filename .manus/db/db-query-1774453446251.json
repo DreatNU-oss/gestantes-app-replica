@@ -1,0 +1,25 @@
+{
+  "query": "SHOW CREATE TABLE queixasPersonalizadas;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW CREATE TABLE queixasPersonalizadas;",
+  "rows": [
+    {
+      "Table": "queixasPersonalizadas",
+      "Create Table": "CREATE TABLE `queixasPersonalizadas` ("
+    }
+  ],
+  "messages": [
+    "  `id` int NOT NULL AUTO_INCREMENT,",
+    "  `texto` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,",
+    "  `usageCount` int NOT NULL DEFAULT '1',",
+    "  `ativo` int NOT NULL DEFAULT '1',",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  `clinicaId` int DEFAULT NULL,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  UNIQUE KEY `queixasPersonalizadas_texto_unique` (`texto`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=690001"
+  ],
+  "stdout": "Table\tCreate Table\nqueixasPersonalizadas\tCREATE TABLE `queixasPersonalizadas` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `texto` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `usageCount` int NOT NULL DEFAULT '1',\n  `ativo` int NOT NULL DEFAULT '1',\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `clinicaId` int DEFAULT NULL,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  UNIQUE KEY `queixasPersonalizadas_texto_unique` (`texto`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=690001\n",
+  "stderr": "",
+  "execution_time_ms": 465
+}

@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados) VALUES (330051, 'morfologico_1tri', '2025-10-08', '12 semanas e 0 dias', '{\"ccn\":\"55.0\",\"tn\":\"1.20\",\"fcf\":\"162\",\"ossoNasal\":\"Presente\",\"ductoVenoso\":\"Normal (IP 1,12)\",\"regurgitacaoTricuspide\":\"Ausente\",\"dopplerUterinas\":\"IP médio 0,895\",\"coloUterino\":\"\",\"risco\":\"\",\"observacoes\":\"Translucência intracraniana presente. Placenta anterior alta. Líquido amniótico normal. Cordão 3 vasos, inserção central. Anatomia fetal aparentemente normal. DPP corrigida para 20/02/2026.\",\"dpp\":\"2026-02-20\"}');",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO ultrassons (gestanteId, tipoUltrassom, dataExame, idadeGestacional, dados) VALUES (330051, 'morfologico_1tri', '2025-10-08', '12 semanas e 0 dias', '{\"ccn\":\"55.0\",\"tn\":\"1.20\",\"fcf\":\"162\",\"ossoNasal\":\"Presente\",\"ductoVenoso\":\"Normal (IP 1,12)\",\"regurgitacaoTricuspide\":\"Ausente\",\"dopplerUterinas\":\"IP médio 0,895\",\"coloUterino\":\"\",\"risco\":\"\",\"observacoes\":\"Translucência intracraniana presente. Placenta anterior alta. Líquido amniótico normal. Cordão 3 vasos, inserção central. Anatomia fetal aparentemente normal. DPP corrigida para 20/02/2026.\",\"dpp\":\"2026-02-20\"}');",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 376
-}

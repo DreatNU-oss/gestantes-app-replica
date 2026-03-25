@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, nome, dataNascimento FROM gestantes WHERE LOWER(nome) LIKE '%thabata%' ORDER BY nome;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, dataNascimento FROM gestantes WHERE LOWER(nome) LIKE '%thabata%' ORDER BY nome;",
+  "rows": [
+    {
+      "id": "330006",
+      "nome": "Thabata Aline de Oliveira Costa",
+      "dataNascimento": "1989-12-06"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tdataNascimento\n330006\tThabata Aline de Oliveira Costa\t1989-12-06\n",
+  "stderr": "",
+  "execution_time_ms": 355
+}

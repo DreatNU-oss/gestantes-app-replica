@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId = 330006 ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_KEYS(dados) as campos FROM ultrassons WHERE gestanteId = 330006 ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1560001",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2025-11-19",
+      "idadeGestacional": "6s3d",
+      "campos": "[\"bcf\", \"ccn\", \"coloUterino\", \"corpoLuteo\", \"dpp\", \"hematoma\", \"sacoVitelino\"]"
+    },
+    {
+      "id": "1560002",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-12-30",
+      "idadeGestacional": "12s2d",
+      "campos": "[\"bcf\", \"ccn\", \"colo\", \"dopplerUterinas\", \"dpp\", \"dv\", \"incisuraPresente\", \"ossoNasal\", \"riscoTrissomias\", \"tn\", \"valvaTricuspide\"]"
+    },
+    {
+      "id": "1560003",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2026-02-27",
+      "idadeGestacional": "20s5d",
+      "campos": "[\"apresentacaoFetal\", \"bcfBpm\", \"coloUterinoMedida\", \"dpp\", \"liquidoAmniotico\", \"observacoes\", \"percentilPeso\", \"pesoFetal\", \"placentaGrau\", \"placentaLocalizacao\"]"
+    },
+    {
+      "id": "1560004",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2026-03-20",
+      "idadeGestacional": "23s5d",
+      "campos": "[\"avaliacaoAnatomica\", \"biometria\", \"circunferenciaAbdominal\", \"coloUterino\", \"dopplers\", \"dpp\", \"liquidoAmniotico\", \"observacoes\", \"percentilPeso\", \"pesoFetal\", \"placentaGrau\", \"placentaLocalizacao\", \"sexoFetal\"]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tcampos\n1560001\tprimeiro_ultrassom\t2025-11-19\t6s3d\t[\"bcf\", \"ccn\", \"coloUterino\", \"corpoLuteo\", \"dpp\", \"hematoma\", \"sacoVitelino\"]\n1560002\tmorfologico_1tri\t2025-12-30\t12s2d\t[\"bcf\", \"ccn\", \"colo\", \"dopplerUterinas\", \"dpp\", \"dv\", \"incisuraPresente\", \"ossoNasal\", \"riscoTrissomias\", \"tn\", \"valvaTricuspide\"]\n1560003\tultrassom_obstetrico\t2026-02-27\t20s5d\t[\"apresentacaoFetal\", \"bcfBpm\", \"coloUterinoMedida\", \"dpp\", \"liquidoAmniotico\", \"observacoes\", \"percentilPeso\", \"pesoFetal\", \"placentaGrau\", \"placentaLocalizacao\"]\n1560004\tmorfologico_2tri\t2026-03-20\t23s5d\t[\"avaliacaoAnatomica\", \"biometria\", \"circunferenciaAbdominal\", \"coloUterino\", \"dopplers\", \"dpp\", \"liquidoAmniotico\", \"observacoes\", \"percentilPeso\", \"pesoFetal\", \"placentaGrau\", \"placentaLocalizacao\", \"sexoFetal\"]\n",
+  "stderr": "",
+  "execution_time_ms": 401
+}

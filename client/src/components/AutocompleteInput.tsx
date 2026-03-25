@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { highlightMatch } from "@/lib/highlightMatch";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -6,6 +6,14 @@ import { HelpCircle, Star, X, BookmarkPlus } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { toast } from "sonner";
+
+/** Tipo interno para sugestão unificada (personalizada ou estática) */
+interface SugestaoUnificada {
+  texto: string;
+  id: number | null;
+  usageCount: number;
+  isCustom: boolean; // true = personalizada (pode ser deletada)
+}
 
 interface AutocompleteInputProps {
   value: string;
@@ -15,6 +23,8 @@ interface AutocompleteInputProps {
   className?: string;
   /** IDs das sugestões personalizadas (na mesma ordem que suggestions) */
   suggestionIds?: (number | null)[];
+  /** Usage counts das sugestões personalizadas (na mesma ordem que suggestions) */
+  suggestionUsageCounts?: (number | null)[];
 }
 
 export function AutocompleteInput({
@@ -24,20 +34,32 @@ export function AutocompleteInput({
   placeholder,
   className,
   suggestionIds,
+  suggestionUsageCounts,
 }: AutocompleteInputProps) {
   const value = rawValue || "";
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
-  const [filteredIds, setFilteredIds] = useState<(number | null)[]>([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<SugestaoUnificada[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [justSaved, setJustSaved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  // Track if a suggestion click is in progress (mouseDown on suggestion)
+  const isSelectingSuggestionRef = useRef(false);
 
   const deleteQueixaMutation = trpc.queixas.delete.useMutation();
   const upsertQueixaMutation = trpc.queixas.upsert.useMutation();
   const { refetch: refetchQueixas } = trpc.queixas.list.useQuery(undefined, { enabled: false });
+
+  // Build unified suggestion list with usage counts, maintaining order from props
+  const unifiedSuggestions = useMemo((): SugestaoUnificada[] => {
+    return suggestions.map((texto, i) => {
+      const id = suggestionIds?.[i] ?? null;
+      const usageCount = suggestionUsageCounts?.[i] ?? 0;
+      const isCustom = !SUGESTOES_QUEIXAS.includes(texto);
+      return { texto, id, usageCount, isCustom };
+    });
+  }, [suggestions, suggestionIds, suggestionUsageCounts]);
 
   // Extrair o último segmento digitado (após / ou ,) para usar no highlight
   const getLastSegment = (): string => {
@@ -56,25 +78,18 @@ export function AutocompleteInput({
       .slice(0, -1)
       .map((p) => p.trim().toLowerCase());
 
-    let filtered: string[];
-    let filtIds: (number | null)[];
+    let filtered: SugestaoUnificada[];
 
     if (!value.trim() || !lastPart) {
-      filtered = suggestions;
-      filtIds = suggestionIds || suggestions.map(() => null);
+      filtered = unifiedSuggestions;
     } else {
-      const indices: number[] = [];
-      filtered = suggestions.filter((s, i) => {
-        const match = s.toLowerCase().includes(lastPart) && !alreadyUsed.includes(s.toLowerCase());
-        if (match) indices.push(i);
-        return match;
-      });
-      filtIds = indices.map(i => suggestionIds ? suggestionIds[i] ?? null : null);
+      filtered = unifiedSuggestions.filter((s) =>
+        s.texto.toLowerCase().includes(lastPart) && !alreadyUsed.includes(s.texto.toLowerCase())
+      );
     }
 
     setFilteredSuggestions(filtered);
-    setFilteredIds(filtIds);
-  }, [value, suggestions, suggestionIds]);
+  }, [value, unifiedSuggestions]);
 
   // Reset selected index when filtered suggestions change
   useEffect(() => {
@@ -87,6 +102,8 @@ export function AutocompleteInput({
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
+        // Don't close if a suggestion click is in progress
+        if (isSelectingSuggestionRef.current) return;
         setShowSuggestions(false);
         setSelectedIndex(-1);
       }
@@ -95,36 +112,45 @@ export function AutocompleteInput({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelectSuggestion = useCallback((suggestion: string) => {
+  const handleSelectSuggestion = useCallback((suggestion: SugestaoUnificada) => {
     const separators = /[/,]/;
     const parts = value.split(separators);
 
     if (parts.length > 1) {
       const separator = value.includes("/") ? " / " : ", ";
       const prefix = parts.slice(0, -1).join(separator).trim();
-      onChange(`${prefix}${separator}${suggestion}`);
+      onChange(`${prefix}${separator}${suggestion.texto}`);
     } else {
-      onChange(suggestion);
+      onChange(suggestion.texto);
     }
 
     setShowSuggestions(false);
     setSelectedIndex(-1);
+    isSelectingSuggestionRef.current = false;
     inputRef.current?.focus();
   }, [value, onChange]);
 
   const handleDeleteSuggestion = useCallback((e: React.MouseEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
-    const id = filteredIds[index];
-    if (id != null) {
-      deleteQueixaMutation.mutate({ id }, {
+    isSelectingSuggestionRef.current = true;
+    const sugestao = filteredSuggestions[index];
+    if (sugestao.id != null) {
+      deleteQueixaMutation.mutate({ id: sugestao.id }, {
         onSuccess: () => refetchQueixas(),
       });
       // Remover localmente da lista imediatamente
-      setFilteredSuggestions(prev => prev.filter((_, i) => i !== index));
-      setFilteredIds(prev => prev.filter((_, i) => i !== index));
+      setFilteredSuggestions(prev => {
+        const updated = prev.filter((_, i) => i !== index);
+        if (updated.length === 0) {
+          setShowSuggestions(false);
+        }
+        return updated;
+      });
     }
-  }, [filteredIds, deleteQueixaMutation, refetchQueixas]);
+    // Reset after a tick
+    setTimeout(() => { isSelectingSuggestionRef.current = false; }, 200);
+  }, [filteredSuggestions, deleteQueixaMutation, refetchQueixas]);
 
   // Salvar frase atual como sugestão favorita com um clique
   const salvarComoFavorita = useCallback(() => {
@@ -147,14 +173,8 @@ export function AutocompleteInput({
     let alreadyExistCount = 0;
 
     frases.forEach(frase => {
-      // Verifica se já é uma sugestão estática
-      if (SUGESTOES_QUEIXAS.includes(frase)) {
-        alreadyExistCount++;
-        return;
-      }
-
       // Verifica se já existe nas sugestões personalizadas
-      const jaExiste = suggestions.some(s => s.toLowerCase() === frase.toLowerCase() && !SUGESTOES_QUEIXAS.includes(s));
+      const jaExiste = suggestions.some(s => s.toLowerCase() === frase.toLowerCase());
       if (jaExiste) {
         alreadyExistCount++;
         return;
@@ -305,12 +325,10 @@ export function AutocompleteInput({
           ref={listRef}
           className="absolute z-50 w-full mt-1 bg-popover text-popover-foreground border border-border rounded-md shadow-lg max-h-60 overflow-y-auto"
         >
-          {filteredSuggestions.map((suggestion, index) => {
-            const isCustom = !SUGESTOES_QUEIXAS.includes(suggestion);
-            const id = filteredIds[index];
+          {filteredSuggestions.map((sugestao, index) => {
             return (
               <div
-                key={index}
+                key={`${sugestao.texto}-${index}`}
                 data-suggestion-item
                 className={`group flex items-center w-full text-sm transition-colors ${
                   index === selectedIndex
@@ -324,22 +342,34 @@ export function AutocompleteInput({
                   className="flex-1 text-left px-3 py-2"
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    handleSelectSuggestion(suggestion);
+                    isSelectingSuggestionRef.current = true;
+                    handleSelectSuggestion(sugestao);
                   }}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="flex-1">{highlightMatch(suggestion, lastSegment)}</span>
-                    {index === 0 && (
-                      <Star className="h-3 w-3 fill-yellow-500 text-yellow-500 shrink-0" />
-                    )}
+                    <span className="flex-1">{highlightMatch(sugestao.texto, lastSegment)}</span>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {index === 0 && (
+                        <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                      )}
+                      {sugestao.usageCount > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          {sugestao.usageCount}x
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </button>
-                {isCustom && id != null && (
+                {sugestao.isCustom && sugestao.id != null && (
                   <button
                     type="button"
                     title="Remover sugestão"
                     className="px-2 py-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                    onMouseDown={(e) => handleDeleteSuggestion(e, index)}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      isSelectingSuggestionRef.current = true;
+                      handleDeleteSuggestion(e, index);
+                    }}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

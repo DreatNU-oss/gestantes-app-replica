@@ -1,0 +1,73 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, idadeGestacional, \n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.pesoFetal')) as pesoFetal,\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentilPeso')) as percentilPeso,\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.circunferenciaAbdominal')) as ca\nFROM ultrassons WHERE gestanteId = '330062' ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, idadeGestacional, \n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.pesoFetal')) as pesoFetal,\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.percentilPeso')) as percentilPeso,\n  JSON_UNQUOTE(JSON_EXTRACT(dados, '$.circunferenciaAbdominal')) as ca\nFROM ultrassons WHERE gestanteId = '330062' ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1560005",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2025-08-27",
+      "idadeGestacional": "7s2d",
+      "pesoFetal": "NULL",
+      "percentilPeso": "NULL",
+      "ca": "NULL"
+    },
+    {
+      "id": "1560006",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-10-28",
+      "idadeGestacional": "16s1d",
+      "pesoFetal": "150 g",
+      "percentilPeso": "48.0",
+      "ca": "NULL"
+    },
+    {
+      "id": "1560007",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-11-24",
+      "idadeGestacional": "20s0d",
+      "pesoFetal": "338 g",
+      "percentilPeso": "56.3",
+      "ca": "NULL"
+    },
+    {
+      "id": "1560008",
+      "tipoUltrassom": "morfologico_2tri",
+      "dataExame": "2025-12-18",
+      "idadeGestacional": "23s3d",
+      "pesoFetal": "621 g",
+      "percentilPeso": "54.5",
+      "ca": "199.4 mm"
+    },
+    {
+      "id": "1560009",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2026-01-28",
+      "idadeGestacional": "29s2d",
+      "pesoFetal": "1326 g",
+      "percentilPeso": "29.2",
+      "ca": "NULL"
+    },
+    {
+      "id": "1560010",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-02-24",
+      "idadeGestacional": "33s1d",
+      "pesoFetal": "2066 g",
+      "percentilPeso": "33.2",
+      "ca": "296.4 mm"
+    },
+    {
+      "id": "1560011",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-16",
+      "idadeGestacional": "36s0d",
+      "pesoFetal": "2701 g",
+      "percentilPeso": "38.2",
+      "ca": "324.2 mm"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tpesoFetal\tpercentilPeso\tca\n1560005\tprimeiro_ultrassom\t2025-08-27\t7s2d\tNULL\tNULL\tNULL\n1560006\tultrassom_obstetrico\t2025-10-28\t16s1d\t150 g\t48.0\tNULL\n1560007\tultrassom_obstetrico\t2025-11-24\t20s0d\t338 g\t56.3\tNULL\n1560008\tmorfologico_2tri\t2025-12-18\t23s3d\t621 g\t54.5\t199.4 mm\n1560009\tultrassom_obstetrico\t2026-01-28\t29s2d\t1326 g\t29.2\tNULL\n1560010\tultrassom_seguimento\t2026-02-24\t33s1d\t2066 g\t33.2\t296.4 mm\n1560011\tultrassom_seguimento\t2026-03-16\t36s0d\t2701 g\t38.2\t324.2 mm\n",
+  "stderr": "",
+  "execution_time_ms": 351
+}

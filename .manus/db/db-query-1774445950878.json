@@ -1,0 +1,28 @@
+{
+  "query": "SELECT g.nome, c.codigo, c.usado, c.createdAt\nFROM codigosAcessoGestante c\nJOIN gestantes g ON g.id = c.gestanteId\nWHERE g.nome LIKE '%Juliana%Tavares%'\nORDER BY c.createdAt DESC\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.nome, c.codigo, c.usado, c.createdAt\nFROM codigosAcessoGestante c\nJOIN gestantes g ON g.id = c.gestanteId\nWHERE g.nome LIKE '%Juliana%Tavares%'\nORDER BY c.createdAt DESC\nLIMIT 5;",
+  "rows": [
+    {
+      "nome": "Juliana da Silva Tavares",
+      "codigo": "298807",
+      "usado": "0",
+      "createdAt": "2026-03-25 13:38:46"
+    },
+    {
+      "nome": "Juliana da Silva Tavares",
+      "codigo": "672434",
+      "usado": "0",
+      "createdAt": "2026-03-25 13:34:28"
+    },
+    {
+      "nome": "Juliana da Silva Tavares",
+      "codigo": "610218",
+      "usado": "0",
+      "createdAt": "2026-03-25 13:33:40"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\tcodigo\tusado\tcreatedAt\nJuliana da Silva Tavares\t298807\t0\t2026-03-25 13:38:46\nJuliana da Silva Tavares\t672434\t0\t2026-03-25 13:34:28\nJuliana da Silva Tavares\t610218\t0\t2026-03-25 13:33:40\n",
+  "stderr": "",
+  "execution_time_ms": 361
+}

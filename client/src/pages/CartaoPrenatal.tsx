@@ -483,6 +483,8 @@ export default function CartaoPrenatal() {
   });
 
   // Combinar sugestões estáticas com queixas personalizadas ordenadas por frequência
+  // Personalizadas vêm primeiro (já ordenadas por usageCount DESC do backend)
+  // Estáticas que não existem nas personalizadas vêm depois (usageCount = 0)
   const sugestoesQueixasCombinadas = [
     ...(queixasPersonalizadas?.map((q: any) => q.texto) || []),
     ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s))
@@ -491,6 +493,11 @@ export default function CartaoPrenatal() {
   const sugestoesQueixasIds: (number | null)[] = [
     ...(queixasPersonalizadas?.map((q: any) => q.id as number) || []),
     ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => null)
+  ];
+  // Usage counts: personalizadas têm usageCount, estáticas têm 0
+  const sugestoesQueixasUsageCounts: (number | null)[] = [
+    ...(queixasPersonalizadas?.map((q: any) => q.usageCount as number) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => 0)
   ];
   const deleteCondutaMutation = trpc.condutas.delete.useMutation({
     onSuccess: () => {
@@ -2022,14 +2029,12 @@ export default function CartaoPrenatal() {
     const textoGerado = gerarTextoPEP();
     setTextoPEP(textoGerado);
 
-    // Salvar queixas personalizadas para rastreamento de frequência
+    // Salvar TODAS as queixas para rastreamento de frequência (incluindo estáticas)
+    // Isso permite ordenar por frequência de uso no autocomplete
     if (formData.queixas && formData.queixas.trim()) {
       const queixasArray = formData.queixas.split(/[/,]/).map(q => q.trim()).filter(q => q.length > 0);
       queixasArray.forEach(queixa => {
-        // Apenas queixas que não são sugestões estáticas
-        if (!SUGESTOES_QUEIXAS.includes(queixa)) {
-          upsertQueixaMutation.mutate({ texto: queixa });
-        }
+        upsertQueixaMutation.mutate({ texto: queixa });
       });
     }
 
@@ -2662,6 +2667,7 @@ export default function CartaoPrenatal() {
                          onChange={(val) => setFormData({ ...formData, queixas: val })}
                          suggestions={sugestoesQueixasCombinadas}
                          suggestionIds={sugestoesQueixasIds}
+                         suggestionUsageCounts={sugestoesQueixasUsageCounts}
                          placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                        />
                     )}
@@ -3962,7 +3968,7 @@ export default function CartaoPrenatal() {
           // Extrair pontos de peso fetal de todos os ultrassons que têm pesoFetal e dataExame
           const parsePeso = (v: string | undefined | null): number => {
             if (!v) return 0;
-            const n = parseFloat(String(v).replace(',', '.').replace(/[^0-9.]/g, ''));
+            const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
             return isNaN(n) ? 0 : n;
           };
           const pontosPeso = (ultrassons as any[])
@@ -3999,7 +4005,7 @@ export default function CartaoPrenatal() {
           const parseCA = (us: any): number => {
             // Tentar campo dedicado primeiro (futuro)
             if (us.dados?.circunferenciaAbdominal) {
-              const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(',', '.').replace(/[^0-9.]/g, ''));
+              const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
               if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v; // cm→mm
             }
             // Extrair do campo biometria: CA 280mm, CA: 28.0cm, ca=280, etc.

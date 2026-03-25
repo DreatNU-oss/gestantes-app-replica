@@ -132,6 +132,7 @@ export default function WizardPrimeiraConsulta({
   const [observacoes, setObservacoes] = useState("");
 
   const createConsulta = trpc.consultasPrenatal.create.useMutation();
+  const upsertQueixaMutation = trpc.queixas.upsert.useMutation();
 
   // Buscar pré-consulta pendente para auto-fill de peso e PA
   const { data: preConsultasPendentes } = trpc.preConsulta.listarPendentesPorGestante.useQuery(
@@ -163,6 +164,11 @@ export default function WizardPrimeiraConsulta({
   const sugestoesQueixasIds: (number | null)[] = [
     ...(queixasPersonalizadas?.map((q: any) => q.id as number) || []),
     ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => null)
+  ];
+  // Usage counts: personalizadas têm usageCount, estáticas têm 0
+  const sugestoesQueixasUsageCounts: (number | null)[] = [
+    ...(queixasPersonalizadas?.map((q: any) => q.usageCount as number) || []),
+    ...SUGESTOES_QUEIXAS.filter(s => !queixasPersonalizadas?.some((q: any) => q.texto === s)).map(() => 0)
   ];
 
   // Calcular IG pela DUM
@@ -405,6 +411,14 @@ export default function WizardPrimeiraConsulta({
       const pep = gerarTextoPEP();
       setTextoPEP(pep);
       
+      // Salvar TODAS as queixas para rastreamento de frequência
+      if (exameFisico.queixas && exameFisico.queixas.trim()) {
+        const queixasArray = exameFisico.queixas.split(/[/,]/).map((q: string) => q.trim()).filter((q: string) => q.length > 0);
+        queixasArray.forEach((queixa: string) => {
+          upsertQueixaMutation.mutate({ texto: queixa });
+        });
+      }
+
       toast.success("1ª Consulta registrada com sucesso!");
 
       // Marcar pré-consulta como utilizada
@@ -621,6 +635,7 @@ export default function WizardPrimeiraConsulta({
                   onChange={(val) => setExameFisico({ ...exameFisico, queixas: val })}
                   suggestions={sugestoesQueixasCombinadas}
                   suggestionIds={sugestoesQueixasIds}
+                  suggestionUsageCounts={sugestoesQueixasUsageCounts}
                   placeholder="Ex: Sem queixas hoje / Dor lombar / Náuseas..."
                 />
               </div>

@@ -532,11 +532,15 @@ export default function Dashboard() {
                         <AltoRiscoBadge gestanteId={gestanteSelecionada.id} />
                       </div>
                       <div className="flex flex-wrap gap-3 mt-1 text-sm text-muted-foreground">
-                        <span className="font-medium">IG: {igDUM ? <span className="text-emerald-600 font-bold" title="IG pela DUM">DUM {igDUM.semanas}s{igDUM.dias}d</span> : <span className="text-muted-foreground/60">DUM -</span>}{' '}{igUS ? <span className="text-blue-600 font-bold" title="IG pelo Ultrassom">US {igUS.semanas}s{igUS.dias}d</span> : <span className="text-muted-foreground/60">US -</span>}</span>
+                        <span className="font-medium">IG: <span className="text-emerald-600 font-bold">{igTexto}</span></span>
                         <span>|</span>
                         <span className="font-medium">Paridade: <span className="text-pink-600 font-bold">{paridade}</span></span>
-                        <span>|</span>
-                        <span className="font-medium">DPP: {gestanteSelecionada.calculado?.dpp ? <span className="text-emerald-600 font-bold" title="DPP pela DUM">DUM {formatarDataSegura(gestanteSelecionada.calculado.dpp)}</span> : <span className="text-muted-foreground/60">DUM -</span>}{' '}{gestanteSelecionada.calculado?.dppUS ? <span className="text-blue-600 font-bold" title="DPP pelo Ultrassom">US {formatarDataSegura(gestanteSelecionada.calculado.dppUS)}</span> : <span className="text-muted-foreground/60">US -</span>}</span>
+                        {gestanteSelecionada.calculado?.dppUS && (
+                          <>
+                            <span>|</span>
+                            <span className="font-medium">DPP: <span className="text-blue-600 font-bold">{formatarDataSegura(gestanteSelecionada.calculado.dppUS)}</span></span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -541,7 +541,7 @@ export default function CartaoPrenatalImpressao() {
       {gestante && gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined && (() => {
         const parsePeso = (v: string | undefined | null): number => {
           if (!v) return 0;
-          const n = parseFloat(String(v).replace(',', '.').replace(/[^0-9.]/g, ''));
+          const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
           return isNaN(n) ? 0 : n;
         };
         const pontosPeso = (ultrassons as any[])
@@ -551,7 +551,7 @@ export default function CartaoPrenatalImpressao() {
 
         const parseCA = (us: any): number => {
           if (us.dados?.circunferenciaAbdominal) {
-            const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(',', '.').replace(/[^0-9.]/g, ''));
+            const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
             if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v;
           }
           const bio: string = us.dados?.biometria || '';
