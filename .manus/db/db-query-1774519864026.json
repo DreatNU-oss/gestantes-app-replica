@@ -1,0 +1,26 @@
+{
+  "query": "SELECT nomeExame COLLATE utf8mb4_bin as nome, COUNT(*) as total FROM resultadosExames WHERE nomeExame COLLATE utf8mb4_bin IN ('hiv', 'tsh', 'urocultura', 'vdrl') GROUP BY nomeExame COLLATE utf8mb4_bin",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame COLLATE utf8mb4_bin as nome, COUNT(*) as total FROM resultadosExames WHERE nomeExame COLLATE utf8mb4_bin IN ('hiv', 'tsh', 'urocultura', 'vdrl') GROUP BY nomeExame COLLATE utf8mb4_bin",
+  "rows": [
+    {
+      "nome": "tsh",
+      "total": "4"
+    },
+    {
+      "nome": "vdrl",
+      "total": "8"
+    },
+    {
+      "nome": "hiv",
+      "total": "9"
+    },
+    {
+      "nome": "urocultura",
+      "total": "14"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttotal\ntsh\t4\nvdrl\t8\nhiv\t9\nurocultura\t14\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

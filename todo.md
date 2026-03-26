@@ -2652,3 +2652,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Corrigir teste de gestante-router (gestante-router.test.ts) - tratar caso de SMTP não configurado
 - [x] Corrigir teste de preConsulta (preConsulta.test.ts) - ajustar string de verificação
 - [x] Suite completa: 1133/1133 testes passando em 84 arquivos
+
+## Correção de Duplicatas de Exames por Capitalização (26/03/2026)
+- [x] Investigar variantes de capitalização na base: hiv(9), tsh(4), urocultura(14), vdrl(8) encontrados
+- [x] Executar UPDATE na base: hiv→HIV, tsh→TSH, urocultura→Urocultura, vdrl→VDRL (35 registros corrigidos)
+- [x] Aplicar normalizeExamName no salvamento (routers.ts) e leitura (gestante-router.ts, gestanteApi.ts)
+- [x] Rodar testes: 1133/1133 passando, 32 nomes únicos normalizados na base

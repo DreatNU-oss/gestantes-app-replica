@@ -1,0 +1,35 @@
+{
+  "query": "SELECT id, tipoExame, LEFT(resultado, 300) as resultado_preview FROM examesLaboratoriais LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoExame, LEFT(resultado, 300) as resultado_preview FROM examesLaboratoriais LIMIT 5",
+  "rows": [
+    {
+      "id": "1",
+      "tipoExame": "Hemograma Completo",
+      "resultado_preview": "Hemoglobina: 12.5 g/dL - Normal"
+    },
+    {
+      "id": "2",
+      "tipoExame": "Glicemia de Jejum",
+      "resultado_preview": "85 mg/dL - Normal"
+    },
+    {
+      "id": "3",
+      "tipoExame": "Toxoplasmose IgG/IgM",
+      "resultado_preview": "IgG: Positivo | IgM: Negativo"
+    },
+    {
+      "id": "30001",
+      "tipoExame": "Hemograma 1º tri",
+      "resultado_preview": "Resultados normais"
+    },
+    {
+      "id": "30002",
+      "tipoExame": "Sorologias 1º tri",
+      "resultado_preview": "Resultados normais"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoExame\tresultado_preview\n1\tHemograma Completo\tHemoglobina: 12.5 g/dL - Normal\n2\tGlicemia de Jejum\t85 mg/dL - Normal\n3\tToxoplasmose IgG/IgM\tIgG: Positivo | IgM: Negativo\n30001\tHemograma 1º tri\tResultados normais\n30002\tSorologias 1º tri\tResultados normais\n",
+  "stderr": "",
+  "execution_time_ms": 363
+}

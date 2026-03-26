@@ -1,0 +1,138 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY LOWER(nomeExame), nomeExame",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY LOWER(nomeExame), nomeExame",
+  "rows": [
+    {
+      "nomeExame": "Anti-HBs",
+      "total": "28"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgG",
+      "total": "38"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgM",
+      "total": "34"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "total": "28"
+    },
+    {
+      "nomeExame": "Eletroforese de Hemoglobina",
+      "total": "1"
+    },
+    {
+      "nomeExame": "EPF (Parasitológico de Fezes)",
+      "total": "21"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B (EGB)",
+      "total": "12"
+    },
+    {
+      "nomeExame": "Ferritina",
+      "total": "59"
+    },
+    {
+      "nomeExame": "FTA-ABS IgG",
+      "total": "5"
+    },
+    {
+      "nomeExame": "FTA-ABS IgM",
+      "total": "2"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "total": "68"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "total": "113"
+    },
+    {
+      "nomeExame": "Hepatite B (HBsAg)",
+      "total": "68"
+    },
+    {
+      "nomeExame": "Hepatite C (Anti-HCV)",
+      "total": "45"
+    },
+    {
+      "nomeExame": "HIV",
+      "total": "72"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "total": "62"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "total": "38"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "total": "38"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "total": "44"
+    },
+    {
+      "nomeExame": "Tipagem Sanguínea (ABO/Rh)",
+      "total": "49"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "total": "16"
+    },
+    {
+      "nomeExame": "TOTG 75g - 1 hora",
+      "total": "5"
+    },
+    {
+      "nomeExame": "TOTG 75g - 2 horas",
+      "total": "5"
+    },
+    {
+      "nomeExame": "TOTG 75g - Jejum",
+      "total": "5"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "total": "58"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "total": "73"
+    },
+    {
+      "nomeExame": "TSH",
+      "total": "71"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "total": "94"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "total": "80"
+    },
+    {
+      "nomeExame": "VDRL",
+      "total": "92"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "total": "58"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "total": "58"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttotal\nAnti-HBs\t28\nCitomegalovírus IgG\t38\nCitomegalovírus IgM\t34\nCoombs Indireto\t28\nEletroforese de Hemoglobina\t1\nEPF (Parasitológico de Fezes)\t21\nEstreptococo Grupo B (EGB)\t12\nFerritina\t59\nFTA-ABS IgG\t5\nFTA-ABS IgM\t2\nGlicemia de Jejum\t68\nHemoglobina/Hematócrito\t113\nHepatite B (HBsAg)\t68\nHepatite C (Anti-HCV)\t45\nHIV\t72\nPlaquetas\t62\nRubéola IgG\t38\nRubéola IgM\t38\nT4 Livre\t44\nTipagem Sanguínea (ABO/Rh)\t49\nTOTG 75g\t16\nTOTG 75g - 1 hora\t5\nTOTG 75g - 2 horas\t5\nTOTG 75g - Jejum\t5\nToxoplasmose IgG\t58\nToxoplasmose IgM\t73\nTSH\t71\nUrina Tipo I\t94\nUrocultura\t80\nVDRL\t92\nVitamina B12\t58\nVitamina D (25-OH)\t58\n",
+  "stderr": "",
+  "execution_time_ms": 354
+}

@@ -23,6 +23,7 @@ import {
   calcularDPPPorUS,
   parseIGParaDias
 } from './calculos';
+import { normalizeExamName } from '../shared/examNormalization';
 
 const router = Router();
 
@@ -352,16 +353,17 @@ router.get('/exames', authMiddleware, async (req: GestanteRequest, res: Response
       .where(eq(examesLaboratoriais.gestanteId, req.gestante!.gestanteId))
       .orderBy(desc(examesLaboratoriais.createdAt));
     
-    // Agrupar por tipo de exame
+    // Agrupar por tipo de exame (normalizar nomes para evitar duplicatas)
     const examesAgrupados: Record<string, any> = {};
     for (const exame of exames) {
-      if (!examesAgrupados[exame.tipoExame]) {
-        examesAgrupados[exame.tipoExame] = {
-          nome: exame.tipoExame,
+      const nomeNormalizado = normalizeExamName(exame.tipoExame);
+      if (!examesAgrupados[nomeNormalizado]) {
+        examesAgrupados[nomeNormalizado] = {
+          nome: nomeNormalizado,
           resultados: [],
         };
       }
-      examesAgrupados[exame.tipoExame].resultados.push({
+      examesAgrupados[nomeNormalizado].resultados.push({
         data: exame.dataExame,
         resultado: exame.resultado,
         igSemanas: exame.igSemanas,

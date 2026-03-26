@@ -680,14 +680,15 @@ export const gestanteRouter = router({
       const gestante = await validateGestanteToken(input.token);
       const examesList = await gestanteDb.getExamesByGestanteId(gestante.id);
       
-      // Group exams by name - agora usando campos da tabela resultadosExames
+      // Group exams by name - normalizar nomes para evitar duplicatas de capitalização
       const examesByName: Record<string, Array<{ data: string; resultado: string; trimestre: number }>> = {};
       
       for (const exame of examesList) {
-        if (!examesByName[exame.nomeExame]) {
-          examesByName[exame.nomeExame] = [];
+        const nomeNormalizado = normalizeExamName(exame.nomeExame);
+        if (!examesByName[nomeNormalizado]) {
+          examesByName[nomeNormalizado] = [];
         }
-        examesByName[exame.nomeExame].push({
+        examesByName[nomeNormalizado].push({
           data: exame.dataExame ? new Date(exame.dataExame).toISOString().split("T")[0] : "",
           resultado: exame.resultado || "",
           trimestre: exame.trimestre,

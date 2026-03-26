@@ -1,0 +1,46 @@
+{
+  "query": "SELECT DISTINCT BINARY nomeExame as nome FROM resultadosExames ORDER BY nome LIMIT 20 OFFSET 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT DISTINCT BINARY nomeExame as nome FROM resultadosExames ORDER BY nome LIMIT 20 OFFSET 20",
+  "rows": [
+    {
+      "nome": "TOTG 75g - 1 hora"
+    },
+    {
+      "nome": "TOTG 75g - 2 horas"
+    },
+    {
+      "nome": "TOTG 75g - Jejum"
+    },
+    {
+      "nome": "TSH"
+    },
+    {
+      "nome": "Tipagem Sanguínea (ABO/Rh)"
+    },
+    {
+      "nome": "Toxoplasmose IgG"
+    },
+    {
+      "nome": "Toxoplasmose IgM"
+    },
+    {
+      "nome": "Urina Tipo I"
+    },
+    {
+      "nome": "Urocultura"
+    },
+    {
+      "nome": "VDRL"
+    },
+    {
+      "nome": "Vitamina B12"
+    },
+    {
+      "nome": "Vitamina D (25-OH)"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\nTOTG 75g - 1 hora\nTOTG 75g - 2 horas\nTOTG 75g - Jejum\nTSH\nTipagem Sanguínea (ABO/Rh)\nToxoplasmose IgG\nToxoplasmose IgM\nUrina Tipo I\nUrocultura\nVDRL\nVitamina B12\nVitamina D (25-OH)\n",
+  "stderr": "",
+  "execution_time_ms": 345
+}

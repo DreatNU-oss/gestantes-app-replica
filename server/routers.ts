@@ -1779,7 +1779,7 @@ export const appRouter = router({
                 
                 resultadosParaInserir.push({
                   gestanteId: input.gestanteId,
-                  nomeExame,
+                  nomeExame: normalizeExamName(nomeExame),
                   trimestre: trimestreNum,
                   resultado,
                   dataExame,

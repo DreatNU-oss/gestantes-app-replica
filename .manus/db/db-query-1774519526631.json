@@ -1,0 +1,58 @@
+{
+  "query": "SELECT BINARY nomeExame as nome, COUNT(*) as total FROM resultadosExames GROUP BY BINARY nomeExame ORDER BY nome LIMIT 20 OFFSET 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT BINARY nomeExame as nome, COUNT(*) as total FROM resultadosExames GROUP BY BINARY nomeExame ORDER BY nome LIMIT 20 OFFSET 20",
+  "rows": [
+    {
+      "nome": "TOTG 75g - 1 hora",
+      "total": "5"
+    },
+    {
+      "nome": "TOTG 75g - 2 horas",
+      "total": "5"
+    },
+    {
+      "nome": "TOTG 75g - Jejum",
+      "total": "5"
+    },
+    {
+      "nome": "TSH",
+      "total": "71"
+    },
+    {
+      "nome": "Tipagem Sanguínea (ABO/Rh)",
+      "total": "49"
+    },
+    {
+      "nome": "Toxoplasmose IgG",
+      "total": "58"
+    },
+    {
+      "nome": "Toxoplasmose IgM",
+      "total": "73"
+    },
+    {
+      "nome": "Urina Tipo I",
+      "total": "94"
+    },
+    {
+      "nome": "Urocultura",
+      "total": "80"
+    },
+    {
+      "nome": "VDRL",
+      "total": "92"
+    },
+    {
+      "nome": "Vitamina B12",
+      "total": "58"
+    },
+    {
+      "nome": "Vitamina D (25-OH)",
+      "total": "58"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttotal\nTOTG 75g - 1 hora\t5\nTOTG 75g - 2 horas\t5\nTOTG 75g - Jejum\t5\nTSH\t71\nTipagem Sanguínea (ABO/Rh)\t49\nToxoplasmose IgG\t58\nToxoplasmose IgM\t73\nUrina Tipo I\t94\nUrocultura\t80\nVDRL\t92\nVitamina B12\t58\nVitamina D (25-OH)\t58\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

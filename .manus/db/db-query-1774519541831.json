@@ -1,0 +1,82 @@
+{
+  "query": "SELECT BINARY nomeExame as nome, COUNT(*) as total FROM resultadosExames WHERE gestanteId IN (SELECT id FROM gestantes WHERE nome LIKE '%Vivian%' LIMIT 1) GROUP BY BINARY nomeExame ORDER BY nome",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT BINARY nomeExame as nome, COUNT(*) as total FROM resultadosExames WHERE gestanteId IN (SELECT id FROM gestantes WHERE nome LIKE '%Vivian%' LIMIT 1) GROUP BY BINARY nomeExame ORDER BY nome",
+  "rows": [
+    {
+      "nome": "Citomegalovírus IgG",
+      "total": "1"
+    },
+    {
+      "nome": "Coombs Indireto",
+      "total": "1"
+    },
+    {
+      "nome": "FTA-ABS IgG",
+      "total": "1"
+    },
+    {
+      "nome": "Ferritina",
+      "total": "1"
+    },
+    {
+      "nome": "Glicemia de Jejum",
+      "total": "1"
+    },
+    {
+      "nome": "HIV",
+      "total": "1"
+    },
+    {
+      "nome": "Hemoglobina/Hematócrito",
+      "total": "1"
+    },
+    {
+      "nome": "Hepatite B (HBsAg)",
+      "total": "1"
+    },
+    {
+      "nome": "Hepatite C (Anti-HCV)",
+      "total": "1"
+    },
+    {
+      "nome": "Rubéola IgG",
+      "total": "1"
+    },
+    {
+      "nome": "T4 Livre",
+      "total": "1"
+    },
+    {
+      "nome": "TSH",
+      "total": "1"
+    },
+    {
+      "nome": "Tipagem Sanguínea (ABO/Rh)",
+      "total": "1"
+    },
+    {
+      "nome": "Toxoplasmose IgG",
+      "total": "1"
+    },
+    {
+      "nome": "Urina Tipo I",
+      "total": "1"
+    },
+    {
+      "nome": "VDRL",
+      "total": "1"
+    },
+    {
+      "nome": "Vitamina B12",
+      "total": "1"
+    },
+    {
+      "nome": "Vitamina D (25-OH)",
+      "total": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nome\ttotal\nCitomegalovírus IgG\t1\nCoombs Indireto\t1\nFTA-ABS IgG\t1\nFerritina\t1\nGlicemia de Jejum\t1\nHIV\t1\nHemoglobina/Hematócrito\t1\nHepatite B (HBsAg)\t1\nHepatite C (Anti-HCV)\t1\nRubéola IgG\t1\nT4 Livre\t1\nTSH\t1\nTipagem Sanguínea (ABO/Rh)\t1\nToxoplasmose IgG\t1\nUrina Tipo I\t1\nVDRL\t1\nVitamina B12\t1\nVitamina D (25-OH)\t1\n",
+  "stderr": "",
+  "execution_time_ms": 372
+}

@@ -1,0 +1,8 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY BINARY nomeExame ORDER BY LOWER(nomeExame), nomeExame",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY BINARY nomeExame ORDER BY LOWER(nomeExame), nomeExame",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1055 (42000) at line 1: Expression #1 of ORDER BY is not in GROUP BY clause and contains nonaggregated column '' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
+  ]
+}

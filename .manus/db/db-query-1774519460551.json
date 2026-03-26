@@ -1,0 +1,38 @@
+{
+  "query": "SELECT tipoExame, COUNT(*) as total FROM examesLaboratoriais GROUP BY tipoExame ORDER BY LOWER(tipoExame), tipoExame",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT tipoExame, COUNT(*) as total FROM examesLaboratoriais GROUP BY tipoExame ORDER BY LOWER(tipoExame), tipoExame",
+  "rows": [
+    {
+      "tipoExame": "Glicemia de Jejum",
+      "total": "1"
+    },
+    {
+      "tipoExame": "Hemograma 1º tri",
+      "total": "1"
+    },
+    {
+      "tipoExame": "Hemograma 2º tri",
+      "total": "1"
+    },
+    {
+      "tipoExame": "Hemograma Completo",
+      "total": "1"
+    },
+    {
+      "tipoExame": "Sorologias 1º tri",
+      "total": "1"
+    },
+    {
+      "tipoExame": "TOTG 75g",
+      "total": "1"
+    },
+    {
+      "tipoExame": "Toxoplasmose IgG/IgM",
+      "total": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "tipoExame\ttotal\nGlicemia de Jejum\t1\nHemograma 1º tri\t1\nHemograma 2º tri\t1\nHemograma Completo\t1\nSorologias 1º tri\t1\nTOTG 75g\t1\nToxoplasmose IgG/IgM\t1\n",
+  "stderr": "",
+  "execution_time_ms": 344
+}
