@@ -440,6 +440,12 @@ export default function CartaoPrenatal() {
     keys: resultadosExamesLab ? Object.keys(resultadosExamesLab) : 'undefined'
   });
   
+  // Buscar todos os resultados de exames para o PDF (inclui múltiplos resultados por trimestre)
+  const { data: dadosExamesPdf } = trpc.examesLab.buscarTodosParaPdf.useQuery(
+    { gestanteId: gestanteSelecionada! },
+    { enabled: !!gestanteSelecionada }
+  );
+  
   // Buscar fatores de risco e medicamentos para o PDF
   const { data: fatoresRisco } = trpc.fatoresRisco.list.useQuery(
     { gestanteId: gestanteSelecionada! },
@@ -1193,8 +1199,12 @@ export default function CartaoPrenatal() {
         y += 5;
       }
       
-      // Exames Laboratoriais
-      if (resultadosExamesLab && Object.keys(resultadosExamesLab).length > 0) {
+      // Exames Laboratoriais - usa dadosExamesPdf para mostrar TODOS os resultados por trimestre
+      const examesPdfData = dadosExamesPdf || { resultadoUnico: {}, todosResultados: {} };
+      const todosResultadosPdf = examesPdfData.todosResultados || {};
+      const resultadoUnicoPdf = examesPdfData.resultadoUnico || {};
+      
+      if (Object.keys(todosResultadosPdf).length > 0 || (resultadosExamesLab && Object.keys(resultadosExamesLab).length > 0)) {
         if (y > 250) {
           pdf.addPage();
           y = 20;
@@ -1205,8 +1215,7 @@ export default function CartaoPrenatal() {
         pdf.text('Exames Laboratoriais', 20, y);
         y += 10;
         
-        // Sequência canônica de exames (mesma do frontend examesConfig.ts)
-         // Hemograma removido (redundante com Hb+Ht+Plaq separados), IgM incluídos como linhas separadas
+        // Sequência canônica de exames
         const EXAMES_SANGUE_PDF = [
             'Tipagem Sanguínea (ABO/Rh)', 'Coombs Indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
             'Glicemia de Jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
@@ -1218,9 +1227,8 @@ export default function CartaoPrenatal() {
         const EXAMES_URINA_PDF = ['Urina Tipo I', 'Urocultura', 'Proteinúria de 24 Horas'];
         const EXAMES_FEZES_PDF = ['EPF (Parasitológico de Fezes)'];
         const EXAMES_OUTROS_PDF = ['Estreptococo Grupo B (EGB)'];
-        const todosCanonicosPdf = new Set([...EXAMES_SANGUE_PDF, ...EXAMES_URINA_PDF, ...EXAMES_FEZES_PDF, ...EXAMES_OUTROS_PDF]);
         
-        // Colunas do layout
+        // Colunas do layout - ajustadas para incluir data
         const colExameX = 20;
         const col1X = 72;
         const col2X = 112;
@@ -1259,32 +1267,20 @@ export default function CartaoPrenatal() {
           drawExameHeaderPdf();
         };
         
-          // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
-        // Hemoglobina, Hematócrito e Plaquetas separados; Hemograma removido do PDF (redundante)
-        // Usar normalização centralizada do shared/examNormalization
         const normExamName = normalizeExamName;
         
-        // Normalizar resultadosExamesLab: mesclar variações sob nome canônico
-        const normalizedResults: Record<string, Record<string, string>> = {};
-        for (const [rawName, valor] of Object.entries(resultadosExamesLab)) {
-          if (rawName === 'outros_observacoes') continue;
+        // Normalizar todosResultadosPdf: agrupar variantes sob nome canônico
+        const normalizedTodos: Record<string, Record<string, Array<{ resultado: string; data: string | null }>>> = {};
+        for (const [rawName, trimestres] of Object.entries(todosResultadosPdf)) {
           const canon = normExamName(rawName);
-          if (!normalizedResults[canon]) normalizedResults[canon] = {};
-          if (valor && typeof valor === 'object') {
-            for (const [tri, res] of Object.entries(valor as Record<string, string>)) {
-              if (res && typeof res === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(res.trim()) && !normalizedResults[canon][tri]) {
-                normalizedResults[canon][tri] = res;
-              }
-            }
+          if (!normalizedTodos[canon]) normalizedTodos[canon] = {};
+          for (const [tri, arr] of Object.entries(trimestres as Record<string, Array<{ resultado: string; data: string | null }>>)) {
+            // Filtrar chaves de data (data1, data2, data3)
+            if (tri.startsWith('data')) continue;
+            if (!normalizedTodos[canon][tri]) normalizedTodos[canon][tri] = [];
+            normalizedTodos[canon][tri].push(...arr);
           }
         }
-        
-        // Função para obter resultado de um exame por nome (usa dados normalizados)
-        const getExameResultado = (nomeExame: string, trimestre: string): string => {
-          const dados = normalizedResults[nomeExame];
-          if (!dados) return '-';
-          return dados[trimestre] || '-';
-        };
         
         // Função para verificar se resultado de exame é alterado/anormal
         const isResultadoAlteradoPdf = (nomeExame: string, resultado: string): boolean => {
@@ -1296,9 +1292,9 @@ export default function CartaoPrenatal() {
             'insuficien', 'deficien'
           ];
           const palavrasNormais = [
-            'n\u00e3o reagente', 'nao reagente', 'n reagente', 'nr',
-            'n\u00e3o reag', 'nao reag', 'negativ', 'n\u00e3o detecta', 'nao detecta',
-            'n\u00e3o reativo', 'nao reativo', 'imune', 'normal', 'adequad',
+            'não reagente', 'nao reagente', 'n reagente', 'nr',
+            'não reag', 'nao reag', 'negativ', 'não detecta', 'nao detecta',
+            'não reativo', 'nao reativo', 'imune', 'normal', 'adequad',
             'ausente', 'suficien'
           ];
           for (const normal of palavrasNormais) {
@@ -1334,9 +1330,7 @@ export default function CartaoPrenatal() {
           return false;
         };
         
-        // Função para limpar resultados de IgG/IgM:
-        // "IgG reagente / IgM não reagente" → "Reagente"
-        // Remove prefixos "IgG "/"IgM " e parte combinada após " / "
+        // Função para limpar resultados de IgG/IgM
         const cleanIgResult = (nomeExame: string, resultado: string): string => {
           if (!resultado || resultado === '-') return resultado;
           const isIgExam = /Ig[GM]$/i.test(nomeExame);
@@ -1358,78 +1352,132 @@ export default function CartaoPrenatal() {
           }
           return resultado;
         };
+        
+        // Truncar texto para caber na coluna
+        const truncResult = (text: string) => {
+          if (pdf.getTextWidth(text) > colTriW - 4) {
+            while (pdf.getTextWidth(text + '...') > colTriW - 4 && text.length > 0) {
+              text = text.slice(0, -1);
+            }
+            text += '...';
+          }
+          return text;
+        };
+        
+        // Função para formatar data YYYY-MM-DD para DD/MM
+        const formatDataCurta = (data: string | null): string => {
+          if (!data) return '';
+          const parts = data.split('-');
+          if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+          return data;
+        };
 
-        // Função para desenhar uma linha de exame
+        // Função para desenhar uma linha de exame com TODOS os resultados por trimestre
         let rowIdx = 0;
         const drawExameRowPdf = (nomeExame: string) => {
-          const r1 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '1'));
-          const r2 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '2'));
-          const r3 = cleanIgResult(nomeExame, getExameResultado(nomeExame, '3'));
-          if (r1 === '-' && r2 === '-' && r3 === '-') return; // Sem resultados
+          const exameData = normalizedTodos[nomeExame];
           
-          if (y > 270) {
+          // Verificar se tem algum resultado
+          const tri1 = exameData?.['1'] || [];
+          const tri2 = exameData?.['2'] || [];
+          const tri3 = exameData?.['3'] || [];
+          
+          // Filtrar resultados vazios
+          const tri1Filtrado = tri1.filter(r => r.resultado && r.resultado.trim());
+          const tri2Filtrado = tri2.filter(r => r.resultado && r.resultado.trim());
+          const tri3Filtrado = tri3.filter(r => r.resultado && r.resultado.trim());
+          
+          if (tri1Filtrado.length === 0 && tri2Filtrado.length === 0 && tri3Filtrado.length === 0) return;
+          
+          // Calcular número máximo de linhas necessárias
+          const maxLinhas = Math.max(1, tri1Filtrado.length, tri2Filtrado.length, tri3Filtrado.length);
+          
+          // Verificar se cabe na página (cada linha = 4.5mm)
+          const alturaTotal = maxLinhas * 4.5;
+          if (y + alturaTotal > 275) {
             pdf.addPage();
             y = 20;
             drawExameHeaderPdf();
           }
           
-          if (rowIdx % 2 === 0) {
-            pdf.setFillColor(252, 250, 249);
-            pdf.rect(colExameX, y - 3.5, 170, 5.5, 'F');
-          }
-          rowIdx++;
-          
-          pdf.setFontSize(7.5);
-          pdf.setFont('', 'bold');
-          pdf.setTextColor(0, 0, 0);
-          // Truncar nome se necessário
-          let nomeDisplay = nomeExame;
-          if (pdf.getTextWidth(nomeDisplay) > colExameW - 4) {
-            while (pdf.getTextWidth(nomeDisplay + '...') > colExameW - 4 && nomeDisplay.length > 0) {
-              nomeDisplay = nomeDisplay.slice(0, -1);
+          // Desenhar linhas para este exame
+          for (let linhaIdx = 0; linhaIdx < maxLinhas; linhaIdx++) {
+            if (y > 275) {
+              pdf.addPage();
+              y = 20;
+              drawExameHeaderPdf();
             }
-            nomeDisplay += '...';
-          }
-          pdf.text(nomeDisplay, colExameX + 2, y);
-          
-          pdf.setFontSize(7);
-          // Truncar resultados se necessário
-          const truncResult = (text: string) => {
-            if (pdf.getTextWidth(text) > colTriW - 4) {
-              while (pdf.getTextWidth(text + '...') > colTriW - 4 && text.length > 0) {
-                text = text.slice(0, -1);
-              }
-              text += '...';
+            
+            // Fundo alternado (baseado no rowIdx do exame, não da linha)
+            if (rowIdx % 2 === 0) {
+              pdf.setFillColor(252, 250, 249);
+              pdf.rect(colExameX, y - 3.5, 170, 4.5, 'F');
             }
-            return text;
-          };
-          // Renderizar cada resultado com cor baseada em alteração
-          const resultados = [r1, r2, r3];
-          const colXs = [col1X, col2X, col3X];
-          resultados.forEach((res, i) => {
-            const alterado = isResultadoAlteradoPdf(nomeExame, res);
-            if (alterado) {
+            
+            // Nome do exame apenas na primeira linha
+            if (linhaIdx === 0) {
+              pdf.setFontSize(7.5);
               pdf.setFont('', 'bold');
-              pdf.setTextColor(200, 30, 30);
-            } else {
-              pdf.setFont('', 'normal');
               pdf.setTextColor(0, 0, 0);
+              let nomeDisplay = nomeExame;
+              if (pdf.getTextWidth(nomeDisplay) > colExameW - 4) {
+                while (pdf.getTextWidth(nomeDisplay + '...') > colExameW - 4 && nomeDisplay.length > 0) {
+                  nomeDisplay = nomeDisplay.slice(0, -1);
+                }
+                nomeDisplay += '...';
+              }
+              pdf.text(nomeDisplay, colExameX + 2, y);
             }
-            pdf.text(truncResult(res), colXs[i] + 2, y);
-          });
-          pdf.setFont('', 'normal');
-          pdf.setTextColor(0, 0, 0);
-          y += 5;
+            
+            pdf.setFontSize(7);
+            
+            // Renderizar resultado de cada trimestre para esta linha
+            const colXs = [col1X, col2X, col3X];
+            const tris = [tri1Filtrado, tri2Filtrado, tri3Filtrado];
+            
+            tris.forEach((triArr, i) => {
+              if (linhaIdx < triArr.length) {
+                const item = triArr[linhaIdx];
+                const resultado = cleanIgResult(nomeExame, item.resultado);
+                const alterado = isResultadoAlteradoPdf(nomeExame, resultado);
+                
+                if (alterado) {
+                  pdf.setFont('', 'bold');
+                  pdf.setTextColor(200, 30, 30);
+                } else {
+                  pdf.setFont('', 'normal');
+                  pdf.setTextColor(0, 0, 0);
+                }
+                
+                // Resultado + data curta
+                let textoCompleto = resultado;
+                if (item.data && maxLinhas > 1) {
+                  textoCompleto = `${resultado} (${formatDataCurta(item.data)})`;
+                }
+                pdf.text(truncResult(textoCompleto), colXs[i] + 2, y);
+              }
+            });
+            
+            pdf.setFont('', 'normal');
+            pdf.setTextColor(0, 0, 0);
+            y += 4.5;
+          }
+          
+          rowIdx++;
+        };
+        
+        // Função auxiliar para verificar se exame tem resultados
+        const temResultadoExame = (nomeExame: string): boolean => {
+          const exameData = normalizedTodos[nomeExame];
+          if (!exameData) return false;
+          const tri1 = (exameData['1'] || []).filter(r => r.resultado && r.resultado.trim());
+          const tri2 = (exameData['2'] || []).filter(r => r.resultado && r.resultado.trim());
+          const tri3 = (exameData['3'] || []).filter(r => r.resultado && r.resultado.trim());
+          return tri1.length > 0 || tri2.length > 0 || tri3.length > 0;
         };
         
         // Renderizar por categoria
-        // Exames de Sangue
-        const temSangue = EXAMES_SANGUE_PDF.some(n => {
-          const r1 = getExameResultado(n, '1');
-          const r2 = getExameResultado(n, '2');
-          const r3 = getExameResultado(n, '3');
-          return r1 !== '-' || r2 !== '-' || r3 !== '-';
-        });
+        const temSangue = EXAMES_SANGUE_PDF.some(temResultadoExame);
         if (temSangue) {
           drawCategoriaTituloPdf('Exames de Sangue');
           rowIdx = 0;
@@ -1437,13 +1485,7 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Exames de Urina
-        const temUrina = EXAMES_URINA_PDF.some(n => {
-          const r1 = getExameResultado(n, '1');
-          const r2 = getExameResultado(n, '2');
-          const r3 = getExameResultado(n, '3');
-          return r1 !== '-' || r2 !== '-' || r3 !== '-';
-        });
+        const temUrina = EXAMES_URINA_PDF.some(temResultadoExame);
         if (temUrina) {
           drawCategoriaTituloPdf('Exames de Urina');
           rowIdx = 0;
@@ -1451,13 +1493,7 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Exames de Fezes
-        const temFezes = EXAMES_FEZES_PDF.some(n => {
-          const r1 = getExameResultado(n, '1');
-          const r2 = getExameResultado(n, '2');
-          const r3 = getExameResultado(n, '3');
-          return r1 !== '-' || r2 !== '-' || r3 !== '-';
-        });
+        const temFezes = EXAMES_FEZES_PDF.some(temResultadoExame);
         if (temFezes) {
           drawCategoriaTituloPdf('Exames de Fezes');
           rowIdx = 0;
@@ -1465,13 +1501,7 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Pesquisa para E.G.B.
-        const temOutros = EXAMES_OUTROS_PDF.some(n => {
-          const r1 = getExameResultado(n, '1');
-          const r2 = getExameResultado(n, '2');
-          const r3 = getExameResultado(n, '3');
-          return r1 !== '-' || r2 !== '-' || r3 !== '-';
-        });
+        const temOutros = EXAMES_OUTROS_PDF.some(temResultadoExame);
         if (temOutros) {
           drawCategoriaTituloPdf('Pesquisa para E.G.B.');
           rowIdx = 0;
@@ -1479,10 +1509,8 @@ export default function CartaoPrenatal() {
           y += 3;
         }
         
-        // Não renderizar extras - todos os exames devem estar em uma das 4 categorias canônicas
-        
         // Observações gerais
-        if (resultadosExamesLab.outros_observacoes && typeof resultadosExamesLab.outros_observacoes === 'string' && resultadosExamesLab.outros_observacoes.trim()) {
+        if (resultadosExamesLab && resultadosExamesLab.outros_observacoes && typeof resultadosExamesLab.outros_observacoes === 'string' && resultadosExamesLab.outros_observacoes.trim()) {
           if (y > 260) {
             pdf.addPage();
             y = 20;

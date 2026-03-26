@@ -18,6 +18,7 @@ export default function CartaoPrenatalImpressao() {
   const { data: consultas = [] } = trpc.consultasPrenatal.list.useQuery({ gestanteId });
   const { data: ultrassons = [] } = trpc.ultrassons.buscar.useQuery({ gestanteId });
   const { data: exames = [] } = trpc.examesLab.buscar.useQuery({ gestanteId });
+  const { data: dadosExamesPdf } = trpc.examesLab.buscarTodosParaPdf.useQuery({ gestanteId });
   const { data: fatoresRisco = [] } = trpc.fatoresRisco.list.useQuery({ gestanteId });
   const { data: medicamentos = [] } = trpc.medicamentos.list.useQuery({ gestanteId });
   // const { data: marcos = [] } = trpc.marcos.list.useQuery({ gestanteId });
@@ -373,25 +374,24 @@ export default function CartaoPrenatalImpressao() {
         />
       </div>
 
-      {/* Exames Laboratoriais */}
-      {exames && Object.keys(exames).length > 0 && (
+      {/* Exames Laboratoriais - mostra TODOS os resultados por trimestre */}
+      {dadosExamesPdf && Object.keys(dadosExamesPdf.todosResultados || {}).length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#6B4226]">Exames Laboratoriais</h2>
           <div className="grid grid-cols-3 gap-4">
             {[1, 2, 3].map((trimestre) => {
-              // Filtrar exames que têm resultado para este trimestre
-              const examesTrimestre = Object.entries(exames)
-                .filter(([nomeExame, valor]) => {
-                  if (nomeExame === 'outros_observacoes') return false;
-                  if (typeof valor === 'object' && valor !== null) {
-                    return (valor as Record<string, string>)[trimestre.toString()] !== undefined;
+              const todosRes = dadosExamesPdf.todosResultados || {};
+              // Coletar exames que têm resultado para este trimestre
+              const examesTrimestre: Array<{ nomeExame: string; resultados: Array<{ resultado: string; data: string | null }> }> = [];
+              for (const [nomeExame, trimestres] of Object.entries(todosRes)) {
+                const triArr = (trimestres as any)[trimestre.toString()] as Array<{ resultado: string; data: string | null }> | undefined;
+                if (triArr && triArr.length > 0) {
+                  const filtrados = triArr.filter(r => r.resultado && r.resultado.trim());
+                  if (filtrados.length > 0) {
+                    examesTrimestre.push({ nomeExame, resultados: filtrados });
                   }
-                  return false;
-                })
-                .map(([nomeExame, valor]) => ({
-                  nomeExame,
-                  resultado: (valor as Record<string, string>)[trimestre.toString()]
-                }));
+                }
+              }
               
               if (examesTrimestre.length === 0) return null;
               return (
@@ -401,9 +401,22 @@ export default function CartaoPrenatalImpressao() {
                   </h3>
                   <div className="space-y-1 text-xs">
                     {examesTrimestre.map((exame) => (
-                      <div key={exame.nomeExame} className="flex justify-between">
-                        <span className="font-medium">{exame.nomeExame.replace(/_/g, ' ')}:</span>
-                        <span>{exame.resultado || '-'}</span>
+                      <div key={exame.nomeExame}>
+                        {exame.resultados.map((r, idx) => (
+                          <div key={idx} className="flex justify-between">
+                            <span className="font-medium">
+                              {idx === 0 ? `${exame.nomeExame.replace(/_/g, ' ')}:` : ''}
+                            </span>
+                            <span>
+                              {r.resultado || '-'}
+                              {r.data && exame.resultados.length > 1 ? (
+                                <span className="text-gray-400 ml-1">
+                                  ({r.data.split('-').reverse().slice(0, 2).join('/')})
+                                </span>
+                              ) : null}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>

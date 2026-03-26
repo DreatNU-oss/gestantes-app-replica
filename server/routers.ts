@@ -2136,6 +2136,73 @@ export const appRouter = router({
         return { exames: examesEstruturados, historico, todosResultados };
       }),
 
+    // Buscar todos os resultados para geração de PDF (inclui todos, não apenas o mais recente)
+    buscarTodosParaPdf: protectedProcedure
+      .input(z.object({
+        gestanteId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { resultadoUnico: {}, todosResultados: {} };
+        
+        const resultados = await db.select()
+          .from(resultadosExames)
+          .where(eq(resultadosExames.gestanteId, input.gestanteId))
+          .orderBy(resultadosExames.dataExame);
+        
+        // Resultado único (mais recente por exame/trimestre) - compatível com formato antigo
+        const resultadoUnico: Record<string, Record<string, string> | string> = {};
+        
+        // Todos os resultados: { "HIV": { "1": [{resultado, data}], "2": [...] } }
+        const todosResultados: Record<string, Record<string, Array<{
+          resultado: string;
+          data: string | null;
+        }>>> = {};
+        
+        for (const resultado of resultados) {
+          // Formatar data
+          let dataFormatada: string | null = null;
+          if (resultado.dataExame) {
+            const data = new Date(resultado.dataExame);
+            const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+            const ano = dataLocal.getFullYear();
+            const mes = String(dataLocal.getMonth() + 1).padStart(2, '0');
+            const dia = String(dataLocal.getDate()).padStart(2, '0');
+            dataFormatada = `${ano}-${mes}-${dia}`;
+          }
+          
+          // Resultado único (sobrescreve com o mais recente)
+          if (resultado.nomeExame === 'outros_observacoes') {
+            resultadoUnico[resultado.nomeExame] = resultado.resultado || '';
+          } else {
+            if (!resultadoUnico[resultado.nomeExame]) {
+              resultadoUnico[resultado.nomeExame] = {};
+            }
+            (resultadoUnico[resultado.nomeExame] as Record<string, string>)[resultado.trimestre.toString()] = resultado.resultado || '';
+            if (dataFormatada) {
+              (resultadoUnico[resultado.nomeExame] as Record<string, string>)[`data${resultado.trimestre}`] = dataFormatada;
+            }
+          }
+          
+          // Todos os resultados (array por trimestre, ordem cronológica ASC)
+          if (resultado.nomeExame !== 'outros_observacoes') {
+            if (!todosResultados[resultado.nomeExame]) {
+              todosResultados[resultado.nomeExame] = {};
+            }
+            const triKey = resultado.trimestre.toString();
+            if (!todosResultados[resultado.nomeExame][triKey]) {
+              todosResultados[resultado.nomeExame][triKey] = [];
+            }
+            todosResultados[resultado.nomeExame][triKey].push({
+              resultado: resultado.resultado || '',
+              data: dataFormatada,
+            });
+          }
+        }
+        
+        return { resultadoUnico, todosResultados };
+      }),
+
     // Excluir resultado específico do histórico
     excluirResultado: protectedProcedure
       .input(z.object({

@@ -2669,3 +2669,11 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Cada resultado com sua data na coluna de datas do respectivo trimestre
 - [x] Escrever testes: 13 testes em todosResultados.test.ts + 1146/1146 total passando
 - [ ] Validar com dados da paciente Teste Teste
+
+## Cartão Pré-Natal PDF - Exibir Todos os Resultados por Trimestre (26/03/2026)
+- [x] Investigar como o CartaoPrenatal.tsx busca e renderiza exames no PDF
+- [x] Criar endpoint buscarTodosParaPdf no backend (retorna todos os resultados com datas)
+- [x] Modificar handleGerarPDFAntigo (jsPDF) para exibir todos os resultados com datas curtas
+- [x] Modificar CartaoPrenatalImpressao.tsx para exibir todos os resultados
+- [x] Escrever testes: 12 testes em buscarTodosParaPdf.test.ts + 1158/1158 total passando
+- [ ] Validar geração do PDF com paciente real
