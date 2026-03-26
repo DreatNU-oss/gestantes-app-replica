@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, gestanteId, nomeExame, resultado, trimestre FROM resultadosExames WHERE nomeExame IN ('citomegalovirus', 'rubeola', 'toxoplasmose') ORDER BY nomeExame, gestanteId, trimestre LIMIT 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, nomeExame, resultado, trimestre FROM resultadosExames WHERE nomeExame IN ('citomegalovirus', 'rubeola', 'toxoplasmose') ORDER BY nomeExame, gestanteId, trimestre LIMIT 20",
+  "rows": [
+    {
+      "id": "630011",
+      "gestanteId": "1560002",
+      "nomeExame": "citomegalovirus",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410120",
+      "gestanteId": "1560002",
+      "nomeExame": "citomegalovirus",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410041",
+      "gestanteId": "1560002",
+      "nomeExame": "citomegalovirus",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1320081",
+      "gestanteId": "1560002",
+      "nomeExame": "citomegalovirus",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410057",
+      "gestanteId": "1560002",
+      "nomeExame": "rubeola",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1320083",
+      "gestanteId": "1560002",
+      "nomeExame": "rubeola",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410134",
+      "gestanteId": "1560002",
+      "nomeExame": "rubeola",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "630010",
+      "gestanteId": "1560002",
+      "nomeExame": "rubeola",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410044",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "630009",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1320091",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410121",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "1"
+    },
+    {
+      "id": "1410045",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "2"
+    },
+    {
+      "id": "1410122",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "2"
+    },
+    {
+      "id": "630017",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "2"
+    },
+    {
+      "id": "1320092",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "2"
+    },
+    {
+      "id": "1410123",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "3"
+    },
+    {
+      "id": "630024",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "3"
+    },
+    {
+      "id": "1410046",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "3"
+    },
+    {
+      "id": "1320093",
+      "gestanteId": "1560002",
+      "nomeExame": "toxoplasmose",
+      "resultado": "IgG reagente / IgM não reagente",
+      "trimestre": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tnomeExame\tresultado\ttrimestre\n630011\t1560002\tcitomegalovirus\tIgG reagente / IgM não reagente\t1\n1410120\t1560002\tcitomegalovirus\tIgG reagente / IgM não reagente\t1\n1410041\t1560002\tcitomegalovirus\tIgG reagente / IgM não reagente\t1\n1320081\t1560002\tcitomegalovirus\tIgG reagente / IgM não reagente\t1\n1410057\t1560002\trubeola\tIgG reagente / IgM não reagente\t1\n1320083\t1560002\trubeola\tIgG reagente / IgM não reagente\t1\n1410134\t1560002\trubeola\tIgG reagente / IgM não reagente\t1\n630010\t1560002\trubeola\tIgG reagente / IgM não reagente\t1\n1410044\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t1\n630009\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t1\n1320091\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t1\n1410121\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t1\n1410045\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t2\n1410122\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t2\n630017\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t2\n1320092\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t2\n1410123\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t3\n630024\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t3\n1410046\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t3\n1320093\t1560002\ttoxoplasmose\tIgG reagente / IgM não reagente\t3\n",
+  "stderr": "",
+  "execution_time_ms": 375
+}

@@ -1030,20 +1030,19 @@ export async function gerarPdfComJsPDF(dados: DadosPdf): Promise<Buffer> {
     checkNewPage(40);
     drawSectionTitle('Exames Laboratoriais');
     
-    // Sequência canônica de exames (mesma do frontend examesConfig.ts)
-    // Hemoglobina, Hematócrito e Plaquetas separados (Hemograma removido pois é redundante)
+    // Sequência canônica de exames (nomes padronizados 25/03/2026)
     // IgM de Toxo/Rubéola/CMV incluídos como linhas separadas
     const EXAMES_SANGUE = [
-      'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
-      'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+      'Tipagem Sanguínea (ABO/Rh)', 'Coombs Indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
+      'Glicemia de Jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
       'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
       'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
       'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
-      'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
+      'Vitamina D (25-OH)', 'Vitamina B12', 'TOTG 75g'
     ];
-    const EXAMES_URINA = ['EAS (Urina tipo 1)', 'Urocultura', 'Proteinúria de 24 horas'];
+    const EXAMES_URINA = ['Urina Tipo I', 'Urocultura', 'Proteinúria de 24 Horas'];
     const EXAMES_FEZES = ['EPF (Parasitológico de Fezes)'];
-    const EXAMES_OUTROS = ['Swab vaginal/retal EGB'];
+    const EXAMES_OUTROS = ['Estreptococo Grupo B (EGB)'];
     
     // Criar mapa de exames por nome canônico para acesso rápido (normaliza variações)
     const examesPorNome = new Map<string, typeof dados.exames[0]>();

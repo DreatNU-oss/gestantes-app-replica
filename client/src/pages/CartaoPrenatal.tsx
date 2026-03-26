@@ -18,6 +18,7 @@ import { InputComHistorico } from "@/components/InputComHistorico";
 import { SUGESTOES_QUEIXAS } from "@/lib/sugestoesQueixas";
 import { trpc } from "@/lib/trpc";
 import { formatarParidade } from "@shared/paridade";
+import { normalizeExamName } from "@shared/examNormalization";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
@@ -1207,16 +1208,16 @@ export default function CartaoPrenatal() {
         // Sequência canônica de exames (mesma do frontend examesConfig.ts)
          // Hemograma removido (redundante com Hb+Ht+Plaq separados), IgM incluídos como linhas separadas
         const EXAMES_SANGUE_PDF = [
-            'Tipagem sanguínea ABO/Rh', 'Coombs indireto', 'Hemoglobina', 'Hematócrito', 'Plaquetas',
-            'Glicemia de jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+            'Tipagem Sanguínea (ABO/Rh)', 'Coombs Indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
+            'Glicemia de Jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
             'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
             'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
             'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',
-           'Vitamina D (25-OH)', 'Vitamina B12', 'TTGO 75g (Curva Glicêmica)'
-         ];
-        const EXAMES_URINA_PDF = ['EAS (Urina tipo 1)', 'Urocultura', 'Protein\u00faria de 24 horas'];
-        const EXAMES_FEZES_PDF = ['EPF (Parasitol\u00f3gico de Fezes)'];
-        const EXAMES_OUTROS_PDF = ['Swab vaginal/retal EGB'];
+           'Vitamina D (25-OH)', 'Vitamina B12', 'TOTG 75g'
+          ];
+        const EXAMES_URINA_PDF = ['Urina Tipo I', 'Urocultura', 'Proteinúria de 24 Horas'];
+        const EXAMES_FEZES_PDF = ['EPF (Parasitológico de Fezes)'];
+        const EXAMES_OUTROS_PDF = ['Estreptococo Grupo B (EGB)'];
         const todosCanonicosPdf = new Set([...EXAMES_SANGUE_PDF, ...EXAMES_URINA_PDF, ...EXAMES_FEZES_PDF, ...EXAMES_OUTROS_PDF]);
         
         // Colunas do layout
@@ -1260,44 +1261,8 @@ export default function CartaoPrenatal() {
         
           // Mapa de normalização de nomes de exames (variantes do banco -> nome canônico)
         // Hemoglobina, Hematócrito e Plaquetas separados; Hemograma removido do PDF (redundante)
-        const EXAM_NORM: Record<string, string> = {
-          'Tipagem sanguínea': 'Tipagem sanguínea ABO/Rh', 'tipagem_sanguinea': 'Tipagem sanguínea ABO/Rh',
-          'Tipagem Sanguínea': 'Tipagem sanguínea ABO/Rh',
-          'tipoSanguineo': 'Tipagem sanguínea ABO/Rh', 'Grupo sanguíneo e Rh': 'Tipagem sanguínea ABO/Rh',
-          'hemoglobina_hematocrito': 'Hemograma', 'Hemoglobina/Hematócrito': 'Hemograma',
-          'Hemograma Completo': 'Hemograma', 'hemograma': 'Hemograma',
-          'Coombs Indireto': 'Coombs indireto',
-          'Urina Tipo I': 'EAS (Urina tipo 1)',
-          'vdrl': 'VDRL', 'hiv': 'HIV', 'tsh': 'TSH', 'urocultura': 'Urocultura',
-          'Glicemia jejum': 'Glicemia de jejum', 'glicemia_jejum': 'Glicemia de jejum',
-          'glicemiaJejum': 'Glicemia de jejum', 'Glicemia de Jejum': 'Glicemia de jejum',
-          'vdrl_sifilis': 'VDRL',
-          'Hepatite B HBsAg': 'Hepatite B (HBsAg)', 'hepatiteB': 'Hepatite B (HBsAg)',
-          'Hepatite C Anti-HCV': 'Hepatite C (Anti-HCV)', 'Hepatite C': 'Hepatite C (Anti-HCV)', 'hepatiteC': 'Hepatite C (Anti-HCV)',
-          'toxoplasmose_igg': 'Toxoplasmose IgG', 'toxoplasmose_igm': 'Toxoplasmose IgM', 'toxoplasmose': 'Toxoplasmose IgG',
-          'rubeola_igg': 'Rub\u00e9ola IgG', 'rubeola_igm': 'Rub\u00e9ola IgM', 'rubeola': 'Rub\u00e9ola IgG',
-          'CMV IgG': 'Citomegalov\u00edrus IgG', 'CMV IgM': 'Citomegalov\u00edrus IgM', 'citomegalovirus': 'Citomegalov\u00edrus IgG',
-          'vitamina_d_25_oh': 'Vitamina D (25-OH)', 'vitamina_b12': 'Vitamina B12',
-          'TTGO 75g (Curva Glic\u00eamica) - Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica) - 1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica) - 2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)__Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)__1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)__2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)-Jejum': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)-1 hora': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (Curva Glic\u00eamica)-2 horas': 'TTGO 75g (Curva Glic\u00eamica)',
-          'ttgo_75g_curva_glicemica_jejum': 'TTGO 75g (Curva Glic\u00eamica)',
-          'ttgo_75g_curva_glicemica_1_hora': 'TTGO 75g (Curva Glic\u00eamica)',
-          'ttgo_75g_curva_glicemica_2_horas': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (0min)': 'TTGO 75g (Curva Glic\u00eamica)', 'TTGO 75g (60min)': 'TTGO 75g (Curva Glic\u00eamica)',
-          'TTGO 75g (120min)': 'TTGO 75g (Curva Glic\u00eamica)', 'TOTG 75g': 'TTGO 75g (Curva Glic\u00eamica)', 'totg': 'TTGO 75g (Curva Glic\u00eamica)',
-          'eas': 'EAS (Urina tipo 1)', 'eas_urina_tipo_1': 'EAS (Urina tipo 1)',
-          'EAS (Urina tipo 1)__Nitrito': 'EAS (Urina tipo 1)', 'Urina tipo I': 'EAS (Urina tipo 1)',
-          'Swab EGB': 'Swab vaginal/retal EGB', 'streptococcusB': 'Swab vaginal/retal EGB',
-          'Estreptococo Grupo B': 'Swab vaginal/retal EGB',
-        };
-        const normExamName = (n: string) => EXAM_NORM[n] || n;
+        // Usar normalização centralizada do shared/examNormalization
+        const normExamName = normalizeExamName;
         
         // Normalizar resultadosExamesLab: mesclar variações sob nome canônico
         const normalizedResults: Record<string, Record<string, string>> = {};
@@ -1354,7 +1319,7 @@ export default function CartaoPrenatal() {
             }
             if (nome.includes('glicemia') && nome.includes('jejum') && val >= 92) return true;
             if (nome === 'tsh' && (val > 4.0 || val < 0.1)) return true;
-            if (nome.includes('ttgo') || nome.includes('curva glic')) {
+            if (nome.includes('totg') || nome.includes('ttgo') || nome.includes('curva glic')) {
               const partes = r.split(/[\/|;,]/).map(p => parseFloat(p.replace(',', '.')));
               if (partes.length >= 1 && partes[0] >= 92) return true;
               if (partes.length >= 2 && partes[1] >= 180) return true;

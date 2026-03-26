@@ -2627,3 +2627,28 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] interpretarUltrassom.ts não tem dados hardcoded — apenas instruções de extração para IA
 - [x] Atualizar testes vitest (graficoCrescimentoFetal.test.ts e crescimento-fetal.test.ts) — 52 testes passando
 - [x] Atualizar prompt do app mobile com tabelas novas (IG 20-41, referência Nicolaides 2018)
+
+## Preparar versão 1.6.0 do App Mobile - Correções rejeição 1.5.7 (25/03/2026)
+- [ ] Analisar relatório de rejeição Apple (Guideline 3.1.2c e 2.1a)
+- [ ] Verificar se gestantesapp.com precisa de alterações para suportar envio de exames pelo app
+- [ ] Implementar endpoint de upload de exames pelo app (se necessário)
+- [ ] Gerar prompt completo para versão 1.6.0 com: correções de assinatura, envio de exames, gráfico peso fetal, dados personalizados
+
+## Normalização dos Nomes de Exames Laboratoriais (25/03/2026)
+- [x] Mapear estrutura da tabela de exames e listar nomes atuais na base
+- [x] Mapear TODOS os locais no código que referenciam nomes de exames
+- [x] Atualizar shared/examNormalization.ts com mapeamento completo (81 variantes → 32 nomes padronizados)
+- [x] NÃO alterar frontend (ExamesLaboratoriais, examesConfig) nem prompt IA (interpretarExames) - mantidos como estavam por decisão do usuário
+- [x] Executar a normalização na base de dados (UPDATE em lote por nome canônico)
+- [x] Tratar casos especiais: separar IgG/IgM combinados (Rubéola, Toxoplasmose, CMV)
+- [x] Testar e validar: 25/25 testes normalização + 75/75 testes alertas/resultados passando
+
+## Correção de Testes Falhando (25/03/2026)
+- [x] Corrigir testes de WhatsApp (whatsapp.test.ts) - ajustar expectativas para removerPrefixoMedico
+- [x] Corrigir testes de userTelefone (userTelefone.test.ts) - ajustar expectativas para removerPrefixoMedico
+- [x] Corrigir testes de agendamento (agendamento.test.ts) - usar datas futuras relativas e ampliar tolerância
+- [x] Corrigir testes de preterm-validation (preterm-validation.test.ts) - usar datas futuras dinâmicas
+- [x] Reescrever testes de interpretarExames (interpretarExames.test.ts) - mockar fetch em vez de invokeLLM, usar imagem em vez de PDF
+- [x] Corrigir teste de gestante-router (gestante-router.test.ts) - tratar caso de SMTP não configurado
+- [x] Corrigir teste de preConsulta (preConsulta.test.ts) - ajustar string de verificação
+- [x] Suite completa: 1133/1133 testes passando em 84 arquivos

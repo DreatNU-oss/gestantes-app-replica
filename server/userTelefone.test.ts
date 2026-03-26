@@ -17,7 +17,7 @@ describe('Campo Telefone de Usuário', () => {
     it('deve substituir {telefone_medico} pelo telefone do médico', () => {
       const template = 'Olá {nome}! Em caso de dúvidas, ligue para {medico}: {telefone_medico}';
       const result = replaceTemplateVariables(template, baseContext);
-      expect(result).toBe('Olá Maria! Em caso de dúvidas, ligue para Dr. André: +5535999990000');
+      expect(result).toBe('Olá Maria! Em caso de dúvidas, ligue para André: +5535999990000');
     });
 
     it('deve substituir {telefone_medico} com string vazia quando não disponível', () => {
@@ -36,7 +36,7 @@ describe('Campo Telefone de Usuário', () => {
     it('deve substituir {telefone_medico} junto com outras variáveis', () => {
       const template = '{nome}, IG {ig_semanas}s{ig_dias}d, médico {medico} ({telefone_medico})';
       const result = replaceTemplateVariables(template, baseContext);
-      expect(result).toBe('Maria, IG 28s3d, médico Dr. André (+5535999990000)');
+      expect(result).toBe('Maria, IG 28s3d, médico André (+5535999990000)');
     });
   });
 

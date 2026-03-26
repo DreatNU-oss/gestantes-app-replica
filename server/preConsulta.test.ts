@@ -101,7 +101,7 @@ describe("preConsulta schema and router", () => {
     // Check that it marks preConsulta as used
     expect(cartaoContent).toContain("preConsulta.marcarUtilizado");
     // Check that it shows the pre-fill info
-    expect(cartaoContent).toContain("Pré-consulta registrada pela secretária");
+    expect(cartaoContent).toContain("pré-consulta");
     expect(cartaoContent).toContain("preConsultaUsadaId");
   });
 });

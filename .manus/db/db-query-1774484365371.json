@@ -1,0 +1,130 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 50;",
+  "rows": [
+    {
+      "nomeExame": "TOTG 75g",
+      "total": "5"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "total": "12"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "total": "45"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "total": "59"
+    },
+    {
+      "nomeExame": "toxoplasmose_igg",
+      "total": "1"
+    },
+    {
+      "nomeExame": "toxoplasmose_igm",
+      "total": "2"
+    },
+    {
+      "nomeExame": "TSH",
+      "total": "71"
+    },
+    {
+      "nomeExame": "TTGO 75g (0min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (120min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (60min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)",
+      "total": "7"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_1_hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_2_horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Urina tipo I",
+      "total": "14"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "total": "80"
+    },
+    {
+      "nomeExame": "VDRL",
+      "total": "90"
+    },
+    {
+      "nomeExame": "vdrl_sifilis",
+      "total": "2"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "total": "57"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "total": "57"
+    },
+    {
+      "nomeExame": "vitamina_b12",
+      "total": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttotal\nTOTG 75g\t5\ntoxoplasmose\t12\nToxoplasmose IgG\t45\nToxoplasmose IgM\t59\ntoxoplasmose_igg\t1\ntoxoplasmose_igm\t2\nTSH\t71\nTTGO 75g (0min)\t1\nTTGO 75g (120min)\t1\nTTGO 75g (60min)\t1\nTTGO 75g (Curva Glicêmica)\t7\nTTGO 75g (Curva Glicêmica) - 1 hora\t1\nTTGO 75g (Curva Glicêmica) - 2 horas\t1\nTTGO 75g (Curva Glicêmica) - Jejum\t1\nTTGO 75g (Curva Glicêmica)__1 hora\t1\nTTGO 75g (Curva Glicêmica)__2 horas\t1\nTTGO 75g (Curva Glicêmica)__Jejum\t1\nTTGO 75g (Curva Glicêmica)-1 hora\t1\nTTGO 75g (Curva Glicêmica)-2 horas\t1\nTTGO 75g (Curva Glicêmica)-Jejum\t1\nttgo_75g_curva_glicemica_1_hora\t1\nttgo_75g_curva_glicemica_2_horas\t1\nttgo_75g_curva_glicemica_jejum\t1\nUrina tipo I\t14\nUrocultura\t80\nVDRL\t90\nvdrl_sifilis\t2\nVitamina B12\t57\nVitamina D (25-OH)\t57\nvitamina_b12\t1\n",
+  "stderr": "",
+  "execution_time_ms": 370
+}

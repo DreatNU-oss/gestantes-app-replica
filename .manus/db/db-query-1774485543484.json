@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 20",
+  "rows": [
+    {
+      "nomeExame": "glicemiaJejum",
+      "cnt": "8"
+    },
+    {
+      "nomeExame": "Grupo sanguíneo e Rh",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "cnt": "12"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "cnt": "12"
+    },
+    {
+      "nomeExame": "hemoglobina_hematocrito",
+      "cnt": "3"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "cnt": "72"
+    },
+    {
+      "nomeExame": "Hemograma",
+      "cnt": "14"
+    },
+    {
+      "nomeExame": "Hepatite B (HBsAg)",
+      "cnt": "52"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "cnt": "8"
+    },
+    {
+      "nomeExame": "Hepatite C",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "Hepatite C (Anti-HCV)",
+      "cnt": "36"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "cnt": "8"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "HIV",
+      "cnt": "72"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "cnt": "62"
+    },
+    {
+      "nomeExame": "rubeola",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "cnt": "33"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "cnt": "33"
+    },
+    {
+      "nomeExame": "rubeola_igg",
+      "cnt": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\tcnt\nglicemiaJejum\t8\nGrupo sanguíneo e Rh\t1\nHematócrito\t12\nHemoglobina\t12\nhemoglobina_hematocrito\t3\nHemoglobina/Hematócrito\t72\nHemograma\t14\nHepatite B (HBsAg)\t52\nHepatite B HBsAg\t8\nHepatite C\t1\nHepatite C (Anti-HCV)\t36\nHepatite C Anti-HCV\t4\nhepatiteB\t8\nhepatiteC\t4\nHIV\t72\nPlaquetas\t62\nrubeola\t4\nRubéola IgG\t33\nRubéola IgM\t33\nrubeola_igg\t1\n",
+  "stderr": "",
+  "execution_time_ms": 357
+}

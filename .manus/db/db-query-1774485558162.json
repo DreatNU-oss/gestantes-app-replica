@@ -1,0 +1,94 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 60",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 60",
+  "rows": [
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)",
+      "cnt": "7"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 1 hora",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 2 horas",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - Jejum",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__1 hora",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__2 horas",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__Jejum",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-1 hora",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-2 horas",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-Jejum",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_1_hora",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_2_horas",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_jejum",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "Urina tipo I",
+      "cnt": "14"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "cnt": "80"
+    },
+    {
+      "nomeExame": "VDRL",
+      "cnt": "90"
+    },
+    {
+      "nomeExame": "vdrl_sifilis",
+      "cnt": "2"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "cnt": "57"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "cnt": "57"
+    },
+    {
+      "nomeExame": "vitamina_b12",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "vitamina_d_25_oh",
+      "cnt": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\tcnt\nTTGO 75g (Curva Glicêmica)\t7\nTTGO 75g (Curva Glicêmica) - 1 hora\t1\nTTGO 75g (Curva Glicêmica) - 2 horas\t1\nTTGO 75g (Curva Glicêmica) - Jejum\t1\nTTGO 75g (Curva Glicêmica)__1 hora\t1\nTTGO 75g (Curva Glicêmica)__2 horas\t1\nTTGO 75g (Curva Glicêmica)__Jejum\t1\nTTGO 75g (Curva Glicêmica)-1 hora\t1\nTTGO 75g (Curva Glicêmica)-2 horas\t1\nTTGO 75g (Curva Glicêmica)-Jejum\t1\nttgo_75g_curva_glicemica_1_hora\t1\nttgo_75g_curva_glicemica_2_horas\t1\nttgo_75g_curva_glicemica_jejum\t1\nUrina tipo I\t14\nUrocultura\t80\nVDRL\t90\nvdrl_sifilis\t2\nVitamina B12\t57\nVitamina D (25-OH)\t57\nvitamina_b12\t1\nvitamina_d_25_oh\t1\n",
+  "stderr": "",
+  "execution_time_ms": 394
+}

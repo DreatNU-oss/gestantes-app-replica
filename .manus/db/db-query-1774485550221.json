@@ -1,0 +1,90 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 40",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 40",
+  "rows": [
+    {
+      "nomeExame": "rubeola_igm",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "Swab EGB",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "cnt": "3"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "cnt": "44"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea",
+      "cnt": "5"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "cnt": "38"
+    },
+    {
+      "nomeExame": "tipagem_sanguinea",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "totg",
+      "cnt": "4"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "cnt": "5"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "cnt": "12"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "cnt": "45"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "cnt": "59"
+    },
+    {
+      "nomeExame": "toxoplasmose_igg",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "toxoplasmose_igm",
+      "cnt": "2"
+    },
+    {
+      "nomeExame": "TSH",
+      "cnt": "71"
+    },
+    {
+      "nomeExame": "TTGO 75g (0min)",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (120min)",
+      "cnt": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (60min)",
+      "cnt": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\tcnt\nrubeola_igm\t1\nstreptococcusB\t4\nSwab EGB\t1\nSwab vaginal/retal EGB\t3\nT4 Livre\t44\nTipagem sanguínea\t5\nTipagem sanguínea ABO/Rh\t38\ntipagem_sanguinea\t1\ntipoSanguineo\t4\ntotg\t4\nTOTG 75g\t5\ntoxoplasmose\t12\nToxoplasmose IgG\t45\nToxoplasmose IgM\t59\ntoxoplasmose_igg\t1\ntoxoplasmose_igm\t2\nTSH\t71\nTTGO 75g (0min)\t1\nTTGO 75g (120min)\t1\nTTGO 75g (60min)\t1\n",
+  "stderr": "",
+  "execution_time_ms": 353
+}

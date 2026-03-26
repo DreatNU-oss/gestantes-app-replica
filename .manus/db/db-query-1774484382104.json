@@ -1,0 +1,14 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 80;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 80;",
+  "rows": [
+    {
+      "nomeExame": "vitamina_d_25_oh",
+      "total": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttotal\nvitamina_d_25_oh\t1\n",
+  "stderr": "",
+  "execution_time_ms": 348
+}

@@ -1,0 +1,142 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "abortamentos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "agendamentosConsultas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "alertasEnviados"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "arquivosExames"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "clinicas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "codigosAcessoGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "condutasPersonalizadas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "configuracoesEmail"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "consultasPrenatal"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "credenciaisHilum"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "emailsAutorizados"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "examesLaboratoriais"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "fatoresRisco"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "feedbackInterpretacoes"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "gestantes"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "historicoInterpretacoes"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "historicoTextos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "hospitais"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "justificativasAlerta"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "lembretesConduta"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "logsAcessoGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "logsEmails"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "medicamentosGestacao"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "medicos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "mensagemTemplates"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "mensagensAgendadas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "observacoesPersonalizadas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "opcoesFatoresRisco"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "opcoesMedicamentos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "orientacoesEnviadas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "parametrosExames"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "partosRealizados"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "pedidosExames"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "planosSaude"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "preConsulta"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "procedimentos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "queixasPersonalizadas"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "resultadosExames"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "sessoesGestante"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "ultrassons"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "users"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "whatsappConfig"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A": "whatsappHistorico"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_bSA4q7aMJsJeSmafooCq7A\n__drizzle_migrations\nabortamentos\nagendamentosConsultas\nalertasEnviados\narquivosExames\nclinicas\ncodigosAcessoGestante\ncondutasPersonalizadas\nconfiguracoesEmail\nconsultasPrenatal\ncredenciaisHilum\nemailsAutorizados\nexamesLaboratoriais\nfatoresRisco\nfeedbackInterpretacoes\ngestantes\nhistoricoInterpretacoes\nhistoricoTextos\nhospitais\njustificativasAlerta\nlembretesConduta\nlogsAcessoGestante\nlogsEmails\nmedicamentosGestacao\nmedicos\nmensagemTemplates\nmensagensAgendadas\nobservacoesPersonalizadas\nopcoesFatoresRisco\nopcoesMedicamentos\norientacoesEnviadas\nparametrosExames\npartosRealizados\npedidosExames\nplanosSaude\npreConsulta\nprocedimentos\nqueixasPersonalizadas\nresultadosExames\nsessoesGestante\nultrassons\nusers\nwhatsappConfig\nwhatsappHistorico\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}

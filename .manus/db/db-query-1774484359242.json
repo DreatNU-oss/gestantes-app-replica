@@ -1,0 +1,130 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 30 OFFSET 20;",
+  "rows": [
+    {
+      "nomeExame": "glicemiaJejum",
+      "total": "8"
+    },
+    {
+      "nomeExame": "Grupo sanguíneo e Rh",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "total": "12"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "total": "12"
+    },
+    {
+      "nomeExame": "hemoglobina_hematocrito",
+      "total": "3"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "total": "72"
+    },
+    {
+      "nomeExame": "Hemograma",
+      "total": "14"
+    },
+    {
+      "nomeExame": "Hepatite B (HBsAg)",
+      "total": "52"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "total": "8"
+    },
+    {
+      "nomeExame": "Hepatite C",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Hepatite C (Anti-HCV)",
+      "total": "36"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "total": "4"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "total": "8"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "total": "4"
+    },
+    {
+      "nomeExame": "HIV",
+      "total": "72"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "total": "62"
+    },
+    {
+      "nomeExame": "rubeola",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "total": "33"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "total": "33"
+    },
+    {
+      "nomeExame": "rubeola_igg",
+      "total": "1"
+    },
+    {
+      "nomeExame": "rubeola_igm",
+      "total": "1"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Swab EGB",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "total": "3"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "total": "44"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea",
+      "total": "5"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "total": "38"
+    },
+    {
+      "nomeExame": "tipagem_sanguinea",
+      "total": "1"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "total": "4"
+    },
+    {
+      "nomeExame": "totg",
+      "total": "4"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttotal\nglicemiaJejum\t8\nGrupo sanguíneo e Rh\t1\nHematócrito\t12\nHemoglobina\t12\nhemoglobina_hematocrito\t3\nHemoglobina/Hematócrito\t72\nHemograma\t14\nHepatite B (HBsAg)\t52\nHepatite B HBsAg\t8\nHepatite C\t1\nHepatite C (Anti-HCV)\t36\nHepatite C Anti-HCV\t4\nhepatiteB\t8\nhepatiteC\t4\nHIV\t72\nPlaquetas\t62\nrubeola\t4\nRubéola IgG\t33\nRubéola IgM\t33\nrubeola_igg\t1\nrubeola_igm\t1\nstreptococcusB\t4\nSwab EGB\t1\nSwab vaginal/retal EGB\t3\nT4 Livre\t44\nTipagem sanguínea\t5\nTipagem sanguínea ABO/Rh\t38\ntipagem_sanguinea\t1\ntipoSanguineo\t4\ntotg\t4\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}

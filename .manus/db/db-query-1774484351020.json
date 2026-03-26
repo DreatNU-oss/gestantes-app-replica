@@ -1,0 +1,334 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as total FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame;",
+  "rows": [
+    {
+      "nomeExame": "Anti-HBs",
+      "total": "28"
+    },
+    {
+      "nomeExame": "citomegalovirus",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgG",
+      "total": "33"
+    },
+    {
+      "nomeExame": "Citomegalovírus IgM",
+      "total": "29"
+    },
+    {
+      "nomeExame": "CMV IgG",
+      "total": "1"
+    },
+    {
+      "nomeExame": "CMV IgM",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Coombs indireto",
+      "total": "28"
+    },
+    {
+      "nomeExame": "eas",
+      "total": "12"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)",
+      "total": "64"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)__Nitrito",
+      "total": "1"
+    },
+    {
+      "nomeExame": "eas_urina_tipo_1",
+      "total": "3"
+    },
+    {
+      "nomeExame": "Eletroforese de Hemoglobina",
+      "total": "1"
+    },
+    {
+      "nomeExame": "EPF (Parasitológico de Fezes)",
+      "total": "21"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Ferritina",
+      "total": "59"
+    },
+    {
+      "nomeExame": "FTA-ABS IgG",
+      "total": "5"
+    },
+    {
+      "nomeExame": "FTA-ABS IgM",
+      "total": "2"
+    },
+    {
+      "nomeExame": "Glicemia de jejum",
+      "total": "56"
+    },
+    {
+      "nomeExame": "Glicemia jejum",
+      "total": "2"
+    },
+    {
+      "nomeExame": "glicemia_jejum",
+      "total": "2"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "total": "8"
+    },
+    {
+      "nomeExame": "Grupo sanguíneo e Rh",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "total": "12"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "total": "12"
+    },
+    {
+      "nomeExame": "hemoglobina_hematocrito",
+      "total": "3"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "total": "72"
+    },
+    {
+      "nomeExame": "Hemograma",
+      "total": "14"
+    },
+    {
+      "nomeExame": "Hepatite B (HBsAg)",
+      "total": "52"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "total": "8"
+    },
+    {
+      "nomeExame": "Hepatite C",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Hepatite C (Anti-HCV)",
+      "total": "36"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "total": "4"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "total": "8"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "total": "4"
+    },
+    {
+      "nomeExame": "HIV",
+      "total": "72"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "total": "62"
+    },
+    {
+      "nomeExame": "rubeola",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "total": "33"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "total": "33"
+    },
+    {
+      "nomeExame": "rubeola_igg",
+      "total": "1"
+    },
+    {
+      "nomeExame": "rubeola_igm",
+      "total": "1"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "total": "4"
+    },
+    {
+      "nomeExame": "Swab EGB",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "total": "3"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "total": "44"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea",
+      "total": "5"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "total": "38"
+    },
+    {
+      "nomeExame": "tipagem_sanguinea",
+      "total": "1"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "total": "4"
+    },
+    {
+      "nomeExame": "totg",
+      "total": "4"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "total": "5"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "total": "12"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "total": "45"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "total": "59"
+    },
+    {
+      "nomeExame": "toxoplasmose_igg",
+      "total": "1"
+    },
+    {
+      "nomeExame": "toxoplasmose_igm",
+      "total": "2"
+    },
+    {
+      "nomeExame": "TSH",
+      "total": "71"
+    },
+    {
+      "nomeExame": "TTGO 75g (0min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (120min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (60min)",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)",
+      "total": "7"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - 2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica) - Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)__Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-1 hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-2 horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "TTGO 75g (Curva Glicêmica)-Jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_1_hora",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_2_horas",
+      "total": "1"
+    },
+    {
+      "nomeExame": "ttgo_75g_curva_glicemica_jejum",
+      "total": "1"
+    },
+    {
+      "nomeExame": "Urina tipo I",
+      "total": "14"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "total": "80"
+    },
+    {
+      "nomeExame": "VDRL",
+      "total": "90"
+    },
+    {
+      "nomeExame": "vdrl_sifilis",
+      "total": "2"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "total": "57"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "total": "57"
+    },
+    {
+      "nomeExame": "vitamina_b12",
+      "total": "1"
+    },
+    {
+      "nomeExame": "vitamina_d_25_oh",
+      "total": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttotal\nAnti-HBs\t28\ncitomegalovirus\t4\nCitomegalovírus IgG\t33\nCitomegalovírus IgM\t29\nCMV IgG\t1\nCMV IgM\t1\nCoombs indireto\t28\neas\t12\nEAS (Urina tipo 1)\t64\nEAS (Urina tipo 1)__Nitrito\t1\neas_urina_tipo_1\t3\nEletroforese de Hemoglobina\t1\nEPF (Parasitológico de Fezes)\t21\nEstreptococo Grupo B\t4\nFerritina\t59\nFTA-ABS IgG\t5\nFTA-ABS IgM\t2\nGlicemia de jejum\t56\nGlicemia jejum\t2\nglicemia_jejum\t2\nglicemiaJejum\t8\nGrupo sanguíneo e Rh\t1\nHematócrito\t12\nHemoglobina\t12\nhemoglobina_hematocrito\t3\nHemoglobina/Hematócrito\t72\nHemograma\t14\nHepatite B (HBsAg)\t52\nHepatite B HBsAg\t8\nHepatite C\t1\nHepatite C (Anti-HCV)\t36\nHepatite C Anti-HCV\t4\nhepatiteB\t8\nhepatiteC\t4\nHIV\t72\nPlaquetas\t62\nrubeola\t4\nRubéola IgG\t33\nRubéola IgM\t33\nrubeola_igg\t1\nrubeola_igm\t1\nstreptococcusB\t4\nSwab EGB\t1\nSwab vaginal/retal EGB\t3\nT4 Livre\t44\nTipagem sanguínea\t5\nTipagem sanguínea ABO/Rh\t38\ntipagem_sanguinea\t1\ntipoSanguineo\t4\ntotg\t4\nTOTG 75g\t5\ntoxoplasmose\t12\nToxoplasmose IgG\t45\nToxoplasmose IgM\t59\ntoxoplasmose_igg\t1\ntoxoplasmose_igm\t2\nTSH\t71\nTTGO 75g (0min)\t1\nTTGO 75g (120min)\t1\nTTGO 75g (60min)\t1\nTTGO 75g (Curva Glicêmica)\t7\nTTGO 75g (Curva Glicêmica) - 1 hora\t1\nTTGO 75g (Curva Glicêmica) - 2 horas\t1\nTTGO 75g (Curva Glicêmica) - Jejum\t1\nTTGO 75g (Curva Glicêmica)__1 hora\t1\nTTGO 75g (Curva Glicêmica)__2 horas\t1\nTTGO 75g (Curva Glicêmica)__Jejum\t1\nTTGO 75g (Curva Glicêmica)-1 hora\t1\nTTGO 75g (Curva Glicêmica)-2 horas\t1\nTTGO 75g (Curva Glicêmica)-Jejum\t1\nttgo_75g_curva_glicemica_1_hora\t1\nttgo_75g_curva_glicemica_2_horas\t1\nttgo_75g_curva_glicemica_jejum\t1\nUrina tipo I\t14\nUrocultura\t80\nVDRL\t90\nvdrl_sifilis\t2\nVitamina B12\t57\nVitamina D (25-OH)\t57\nvitamina_b12\t1\nvitamina_d_25_oh\t1\n",
+  "stderr": "",
+  "execution_time_ms": 383
+}

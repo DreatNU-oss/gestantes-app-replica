@@ -1,0 +1,1672 @@
+{
+  "query": "SELECT r.nomeExame, r.trimestre, r.resultado, r.dataExame FROM resultadosExames r JOIN gestantes g ON r.gestanteId = g.id WHERE g.nome LIKE '%Teste%' ORDER BY r.nomeExame, r.trimestre;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT r.nomeExame, r.trimestre, r.resultado, r.dataExame FROM resultadosExames r JOIN gestantes g ON r.gestanteId = g.id WHERE g.nome LIKE '%Teste%' ORDER BY r.nomeExame, r.trimestre;",
+  "rows": [
+    {
+      "nomeExame": "citomegalovirus",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "citomegalovirus",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "citomegalovirus",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "citomegalovirus",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "1",
+      "resultado": "Negativo",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "1",
+      "resultado": "Negativo",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Coombs indireto",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "NULL"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "1",
+      "resultado": "Negativo",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "1",
+      "resultado": "Negativo",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "2",
+      "resultado": "Negativo",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "2",
+      "resultado": "Negativo",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "2",
+      "resultado": "Negativo",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "2",
+      "resultado": "Negativo",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Coombs Indireto",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "eas",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "EAS (Urina tipo 1)",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Estreptococo Grupo B",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Ferritina",
+      "trimestre": "3",
+      "resultado": "62.4 ng/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Ferritina",
+      "trimestre": "3",
+      "resultado": "62.4 ng/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "3",
+      "resultado": "80 mg/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "3",
+      "resultado": "80 mg/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Glicemia de jejum",
+      "trimestre": "3",
+      "resultado": "104,0 mg/dL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Glicemia de jejum",
+      "trimestre": "3",
+      "resultado": "104,0 mg/dL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "3",
+      "resultado": "80 mg/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Glicemia de Jejum",
+      "trimestre": "3",
+      "resultado": "80 mg/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "1",
+      "resultado": "85 mg/dL",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "glicemiaJejum",
+      "trimestre": "2",
+      "resultado": "82 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "1",
+      "resultado": "38%",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "1",
+      "resultado": "38%",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "1",
+      "resultado": "38%",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "1",
+      "resultado": "38%",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "2",
+      "resultado": "36%",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "2",
+      "resultado": "36%",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "2",
+      "resultado": "36%",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "2",
+      "resultado": "36%",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "3",
+      "resultado": "34%",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "3",
+      "resultado": "34%",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "3",
+      "resultado": "34%",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hematócrito",
+      "trimestre": "3",
+      "resultado": "34%",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "1",
+      "resultado": "12.5 g/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "2",
+      "resultado": "11.8 g/dL",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "3",
+      "resultado": "11.2 g/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "3",
+      "resultado": "11.2 g/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "3",
+      "resultado": "11.2 g/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hemoglobina",
+      "trimestre": "3",
+      "resultado": "11.2 g/dL",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "resultado": "11.8 g/dL / 35.0%",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "resultado": "11.8 g/dL / 35.0%",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "1",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "1",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "1",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "1",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "2",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "2",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "2",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "2",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "3",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "3",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "3",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hemograma",
+      "trimestre": "3",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hepatite B HBsAg",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Hepatite C Anti-HCV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hepatiteB",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hepatiteC",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "HIV",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "hiv",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "trimestre": "3",
+      "resultado": "259.000 /mm³",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "trimestre": "3",
+      "resultado": "259.000 /mm³",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "rubeola",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "rubeola",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "rubeola",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "rubeola",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Rubéola IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "streptococcusB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-03-12"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-03-12"
+    },
+    {
+      "nomeExame": "Swab vaginal/retal EGB",
+      "trimestre": "3",
+      "resultado": "Negativo",
+      "dataExame": "2026-03-12"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "1",
+      "resultado": "1.2 ng/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "1",
+      "resultado": "1.2 ng/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "1",
+      "resultado": "1.2 ng/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "1",
+      "resultado": "1.2 ng/dL",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "3",
+      "resultado": "0,94 ng/dL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "T4 Livre",
+      "trimestre": "3",
+      "resultado": "0,94 ng/dL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Tipagem Sanguínea",
+      "trimestre": "1",
+      "resultado": "O+",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Tipagem Sanguínea",
+      "trimestre": "1",
+      "resultado": "O+",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Tipagem Sanguínea",
+      "trimestre": "1",
+      "resultado": "O+",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Tipagem Sanguínea",
+      "trimestre": "1",
+      "resultado": "O+",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "trimestre": "1",
+      "resultado": "A-",
+      "dataExame": "2026-05-15"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "trimestre": "1",
+      "resultado": "A-",
+      "dataExame": "2026-05-15"
+    },
+    {
+      "nomeExame": "Tipagem sanguínea ABO/Rh",
+      "trimestre": "1",
+      "resultado": "A-",
+      "dataExame": "2026-05-15"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "trimestre": "1",
+      "resultado": "A+",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "trimestre": "1",
+      "resultado": "A+",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "trimestre": "1",
+      "resultado": "A+",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "tipoSanguineo",
+      "trimestre": "1",
+      "resultado": "A+",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "totg",
+      "trimestre": "2",
+      "resultado": "Jejum: 80, 1h: 140, 2h: 110 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "totg",
+      "trimestre": "2",
+      "resultado": "Jejum: 80, 1h: 140, 2h: 110 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "totg",
+      "trimestre": "2",
+      "resultado": "Jejum: 80, 1h: 140, 2h: 110 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "totg",
+      "trimestre": "2",
+      "resultado": "Jejum: 80, 1h: 140, 2h: 110 mg/dL",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "trimestre": "2",
+      "resultado": "Jejum: 78 | 1h: 145 | 2h: 118",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "trimestre": "2",
+      "resultado": "Jejum: 78 | 1h: 145 | 2h: 118",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "trimestre": "2",
+      "resultado": "Jejum: 78 | 1h: 145 | 2h: 118",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "TOTG 75g",
+      "trimestre": "2",
+      "resultado": "Jejum: 78 | 1h: 145 | 2h: 118",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "1",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "2",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "2",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "2",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "2",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "3",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "3",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "3",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "toxoplasmose",
+      "trimestre": "3",
+      "resultado": "IgG reagente / IgM não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "trimestre": "1",
+      "resultado": "Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "tsh",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "tsh",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "tsh",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "tsh",
+      "trimestre": "1",
+      "resultado": "2.1 mUI/L",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "3",
+      "resultado": "3,09 microUI/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "TSH",
+      "trimestre": "3",
+      "resultado": "3,09 microUI/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "1",
+      "resultado": "Normal",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "2",
+      "resultado": "Normal",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "trimestre": "3",
+      "resultado": "Normal",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "1",
+      "resultado": "Negativa",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-28"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "2",
+      "resultado": "Negativa",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "urocultura",
+      "trimestre": "3",
+      "resultado": "Negativa",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "1",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-05-15"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "1",
+      "resultado": "Não reagente",
+      "dataExame": "2025-07-08"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "2",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-07-20"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "vdrl",
+      "trimestre": "3",
+      "resultado": "Não reagente",
+      "dataExame": "2026-01-07"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "VDRL",
+      "trimestre": "3",
+      "resultado": "Não Reagente",
+      "dataExame": "2025-10-10"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "trimestre": "3",
+      "resultado": "198 pg/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "trimestre": "3",
+      "resultado": "198 pg/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "trimestre": "3",
+      "resultado": "25,0 ng/mL",
+      "dataExame": "2026-02-26"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "trimestre": "3",
+      "resultado": "25,0 ng/mL",
+      "dataExame": "2026-02-26"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttrimestre\tresultado\tdataExame\ncitomegalovirus\t1\tIgG reagente / IgM não reagente\t2025-07-08\ncitomegalovirus\t1\tIgG reagente / IgM não reagente\t2025-07-08\ncitomegalovirus\t1\tIgG reagente / IgM não reagente\t2025-07-08\ncitomegalovirus\t1\tIgG reagente / IgM não reagente\t2025-07-08\nCoombs Indireto\t1\tNegativo\t2025-05-15\nCoombs Indireto\t1\tNegativo\t2025-05-15\nCoombs indireto\t1\tNão Reagente\tNULL\nCoombs Indireto\t1\tNegativo\t2025-05-15\nCoombs Indireto\t1\tNegativo\t2025-05-15\nCoombs Indireto\t2\tNegativo\t2025-07-20\nCoombs Indireto\t2\tNegativo\t2025-07-20\nCoombs Indireto\t2\tNegativo\t2025-07-20\nCoombs Indireto\t2\tNegativo\t2025-07-20\nCoombs Indireto\t3\tNegativo\t2025-10-10\nCoombs Indireto\t3\tNegativo\t2025-10-10\nCoombs Indireto\t3\tNegativo\t2025-10-10\nCoombs Indireto\t3\tNegativo\t2025-10-10\neas\t1\tNormal\t2025-07-08\neas\t1\tNormal\t2025-07-08\neas\t1\tNormal\t2025-07-08\neas\t1\tNormal\t2025-07-08\neas\t2\tNormal\t2025-10-28\neas\t2\tNormal\t2025-10-28\neas\t2\tNormal\t2025-10-28\neas\t2\tNormal\t2025-10-28\neas\t3\tNormal\t2026-01-07\neas\t3\tNormal\t2026-01-07\neas\t3\tNormal\t2026-01-07\neas\t3\tNormal\t2026-01-07\nEAS (Urina tipo 1)\t3\tNormal\t2026-02-26\nEAS (Urina tipo 1)\t3\tNormal\t2026-02-26\nEstreptococo Grupo B\t3\tNegativo\t2025-10-10\nEstreptococo Grupo B\t3\tNegativo\t2025-10-10\nEstreptococo Grupo B\t3\tNegativo\t2025-10-10\nEstreptococo Grupo B\t3\tNegativo\t2025-10-10\nFerritina\t3\t62.4 ng/mL\t2026-02-26\nFerritina\t3\t62.4 ng/mL\t2026-02-26\nGlicemia de Jejum\t1\t85 mg/dL\t2025-05-15\nGlicemia de Jejum\t1\t85 mg/dL\t2025-05-15\nGlicemia de Jejum\t1\t85 mg/dL\t2025-05-15\nGlicemia de Jejum\t1\t85 mg/dL\t2025-05-15\nGlicemia de Jejum\t2\t82 mg/dL\t2025-07-20\nGlicemia de Jejum\t2\t82 mg/dL\t2025-07-20\nGlicemia de Jejum\t2\t82 mg/dL\t2025-07-20\nGlicemia de Jejum\t2\t82 mg/dL\t2025-07-20\nGlicemia de Jejum\t3\t80 mg/dL\t2025-10-10\nGlicemia de Jejum\t3\t80 mg/dL\t2025-10-10\nGlicemia de jejum\t3\t104,0 mg/dL\t2026-02-26\nGlicemia de jejum\t3\t104,0 mg/dL\t2026-02-26\nGlicemia de Jejum\t3\t80 mg/dL\t2025-10-10\nGlicemia de Jejum\t3\t80 mg/dL\t2025-10-10\nglicemiaJejum\t1\t85 mg/dL\t2025-07-08\nglicemiaJejum\t1\t85 mg/dL\t2025-07-08\nglicemiaJejum\t1\t85 mg/dL\t2025-07-08\nglicemiaJejum\t1\t85 mg/dL\t2025-07-08\nglicemiaJejum\t2\t82 mg/dL\t2025-10-28\nglicemiaJejum\t2\t82 mg/dL\t2025-10-28\nglicemiaJejum\t2\t82 mg/dL\t2025-10-28\nglicemiaJejum\t2\t82 mg/dL\t2025-10-28\nHematócrito\t1\t38%\t2025-05-15\nHematócrito\t1\t38%\t2025-05-15\nHematócrito\t1\t38%\t2025-05-15\nHematócrito\t1\t38%\t2025-05-15\nHematócrito\t2\t36%\t2025-07-20\nHematócrito\t2\t36%\t2025-07-20\nHematócrito\t2\t36%\t2025-07-20\nHematócrito\t2\t36%\t2025-07-20\nHematócrito\t3\t34%\t2025-10-10\nHematócrito\t3\t34%\t2025-10-10\nHematócrito\t3\t34%\t2025-10-10\nHematócrito\t3\t34%\t2025-10-10\nHemoglobina\t1\t12.5 g/dL\t2025-05-15\nHemoglobina\t1\t12.5 g/dL\t2025-05-15\nHemoglobina\t1\t12.5 g/dL\t2025-05-15\nHemoglobina\t1\t12.5 g/dL\t2025-05-15\nHemoglobina\t2\t11.8 g/dL\t2025-07-20\nHemoglobina\t2\t11.8 g/dL\t2025-07-20\nHemoglobina\t2\t11.8 g/dL\t2025-07-20\nHemoglobina\t2\t11.8 g/dL\t2025-07-20\nHemoglobina\t3\t11.2 g/dL\t2025-10-10\nHemoglobina\t3\t11.2 g/dL\t2025-10-10\nHemoglobina\t3\t11.2 g/dL\t2025-10-10\nHemoglobina\t3\t11.2 g/dL\t2025-10-10\nHemoglobina/Hematócrito\t3\t11.8 g/dL / 35.0%\t2026-02-26\nHemoglobina/Hematócrito\t3\t11.8 g/dL / 35.0%\t2026-02-26\nhemograma\t1\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2025-07-08\nhemograma\t1\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2025-07-08\nhemograma\t1\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2025-07-08\nhemograma\t1\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2025-07-08\nhemograma\t2\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2025-10-28\nhemograma\t2\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2025-10-28\nhemograma\t2\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2025-10-28\nhemograma\t2\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2025-10-28\nhemograma\t3\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-01-07\nhemograma\t3\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-01-07\nhemograma\t3\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-01-07\nhemograma\t3\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-01-07\nHepatite B HBsAg\t1\tNão Reagente\t2025-05-15\nHepatite B HBsAg\t1\tNão Reagente\t2025-05-15\nHepatite B HBsAg\t1\tNão Reagente\t2025-05-15\nHepatite B HBsAg\t1\tNão Reagente\t2025-05-15\nHepatite B HBsAg\t3\tNão Reagente\t2025-10-10\nHepatite B HBsAg\t3\tNão Reagente\t2025-10-10\nHepatite B HBsAg\t3\tNão Reagente\t2025-10-10\nHepatite B HBsAg\t3\tNão Reagente\t2025-10-10\nHepatite C Anti-HCV\t1\tNão Reagente\t2025-05-15\nHepatite C Anti-HCV\t1\tNão Reagente\t2025-05-15\nHepatite C Anti-HCV\t1\tNão Reagente\t2025-05-15\nHepatite C Anti-HCV\t1\tNão Reagente\t2025-05-15\nhepatiteB\t1\tNão reagente\t2025-07-08\nhepatiteB\t1\tNão reagente\t2025-07-08\nhepatiteB\t1\tNão reagente\t2025-07-08\nhepatiteB\t1\tNão reagente\t2025-07-08\nhepatiteB\t3\tNão reagente\t2026-01-07\nhepatiteB\t3\tNão reagente\t2026-01-07\nhepatiteB\t3\tNão reagente\t2026-01-07\nhepatiteB\t3\tNão reagente\t2026-01-07\nhepatiteC\t1\tNão reagente\t2025-07-08\nhepatiteC\t1\tNão reagente\t2025-07-08\nhepatiteC\t1\tNão reagente\t2025-07-08\nhepatiteC\t1\tNão reagente\t2025-07-08\nHIV\t1\tNão Reagente\t2025-05-15\nHIV\t1\tNão Reagente\t2025-05-15\nHIV\t1\tNão Reagente\t2025-05-15\nhiv\t1\tNão reagente\t2025-07-08\nHIV\t1\tNão Reagente\t2025-05-15\nhiv\t1\tNão reagente\t2025-07-08\nhiv\t1\tNão reagente\t2025-07-08\nhiv\t1\tNão reagente\t2025-07-08\nHIV\t3\tNão Reagente\t2025-10-10\nHIV\t3\tNão Reagente\t2025-10-10\nHIV\t3\tNão Reagente\t2025-10-10\nhiv\t3\tNão reagente\t2026-01-07\nhiv\t3\tNão reagente\t2026-01-07\nhiv\t3\tNão reagente\t2026-01-07\nHIV\t3\tNão Reagente\t2025-10-10\nhiv\t3\tNão reagente\t2026-01-07\nPlaquetas\t3\t259.000 /mm³\t2026-02-26\nPlaquetas\t3\t259.000 /mm³\t2026-02-26\nrubeola\t1\tIgG reagente / IgM não reagente\t2025-07-08\nrubeola\t1\tIgG reagente / IgM não reagente\t2025-07-08\nrubeola\t1\tIgG reagente / IgM não reagente\t2025-07-08\nrubeola\t1\tIgG reagente / IgM não reagente\t2025-07-08\nRubéola IgG\t1\tReagente\t2025-05-15\nRubéola IgG\t1\tReagente\t2025-05-15\nRubéola IgG\t1\tReagente\t2025-05-15\nRubéola IgG\t1\tReagente\t2025-05-15\nRubéola IgM\t1\tNão Reagente\t2025-05-15\nRubéola IgM\t1\tNão Reagente\t2025-05-15\nRubéola IgM\t1\tNão Reagente\t2025-05-15\nRubéola IgM\t1\tNão Reagente\t2025-05-15\nstreptococcusB\t3\tNegativo\t2026-01-07\nstreptococcusB\t3\tNegativo\t2026-01-07\nstreptococcusB\t3\tNegativo\t2026-01-07\nstreptococcusB\t3\tNegativo\t2026-01-07\nSwab vaginal/retal EGB\t3\tNegativo\t2026-03-12\nSwab vaginal/retal EGB\t3\tNegativo\t2026-03-12\nSwab vaginal/retal EGB\t3\tNegativo\t2026-03-12\nT4 Livre\t1\t1.2 ng/dL\t2025-05-15\nT4 Livre\t1\t1.2 ng/dL\t2025-05-15\nT4 Livre\t1\t1.2 ng/dL\t2025-05-15\nT4 Livre\t1\t1.2 ng/dL\t2025-05-15\nT4 Livre\t3\t0,94 ng/dL\t2026-02-26\nT4 Livre\t3\t0,94 ng/dL\t2026-02-26\nTipagem Sanguínea\t1\tO+\t2025-05-15\nTipagem Sanguínea\t1\tO+\t2025-05-15\nTipagem Sanguínea\t1\tO+\t2025-05-15\nTipagem Sanguínea\t1\tO+\t2025-05-15\nTipagem sanguínea ABO/Rh\t1\tA-\t2026-05-15\nTipagem sanguínea ABO/Rh\t1\tA-\t2026-05-15\nTipagem sanguínea ABO/Rh\t1\tA-\t2026-05-15\ntipoSanguineo\t1\tA+\t2025-07-08\ntipoSanguineo\t1\tA+\t2025-07-08\ntipoSanguineo\t1\tA+\t2025-07-08\ntipoSanguineo\t1\tA+\t2025-07-08\ntotg\t2\tJejum: 80, 1h: 140, 2h: 110 mg/dL\t2025-10-28\ntotg\t2\tJejum: 80, 1h: 140, 2h: 110 mg/dL\t2025-10-28\ntotg\t2\tJejum: 80, 1h: 140, 2h: 110 mg/dL\t2025-10-28\ntotg\t2\tJejum: 80, 1h: 140, 2h: 110 mg/dL\t2025-10-28\nTOTG 75g\t2\tJejum: 78 | 1h: 145 | 2h: 118\t2025-07-20\nTOTG 75g\t2\tJejum: 78 | 1h: 145 | 2h: 118\t2025-07-20\nTOTG 75g\t2\tJejum: 78 | 1h: 145 | 2h: 118\t2025-07-20\nTOTG 75g\t2\tJejum: 78 | 1h: 145 | 2h: 118\t2025-07-20\ntoxoplasmose\t1\tIgG reagente / IgM não reagente\t2025-07-08\ntoxoplasmose\t1\tIgG reagente / IgM não reagente\t2025-07-08\ntoxoplasmose\t1\tIgG reagente / IgM não reagente\t2025-07-08\ntoxoplasmose\t1\tIgG reagente / IgM não reagente\t2025-07-08\ntoxoplasmose\t2\tIgG reagente / IgM não reagente\t2025-10-28\ntoxoplasmose\t2\tIgG reagente / IgM não reagente\t2025-10-28\ntoxoplasmose\t2\tIgG reagente / IgM não reagente\t2025-10-28\ntoxoplasmose\t2\tIgG reagente / IgM não reagente\t2025-10-28\ntoxoplasmose\t3\tIgG reagente / IgM não reagente\t2026-01-07\ntoxoplasmose\t3\tIgG reagente / IgM não reagente\t2026-01-07\ntoxoplasmose\t3\tIgG reagente / IgM não reagente\t2026-01-07\ntoxoplasmose\t3\tIgG reagente / IgM não reagente\t2026-01-07\nToxoplasmose IgG\t1\tReagente\t2025-05-15\nToxoplasmose IgG\t1\tReagente\t2025-05-15\nToxoplasmose IgG\t1\tReagente\t2025-05-15\nToxoplasmose IgG\t1\tReagente\t2025-05-15\nToxoplasmose IgM\t1\tNão Reagente\t2025-05-15\nToxoplasmose IgM\t1\tNão Reagente\t2025-05-15\nToxoplasmose IgM\t1\tNão Reagente\t2025-05-15\nToxoplasmose IgM\t1\tNão Reagente\t2025-05-15\nToxoplasmose IgM\t2\tNão Reagente\t2025-07-20\nToxoplasmose IgM\t2\tNão Reagente\t2025-07-20\nToxoplasmose IgM\t2\tNão Reagente\t2025-07-20\nToxoplasmose IgM\t2\tNão Reagente\t2025-07-20\nTSH\t1\t2.1 mUI/L\t2025-05-15\ntsh\t1\t2.1 mUI/L\t2025-07-08\nTSH\t1\t2.1 mUI/L\t2025-05-15\nTSH\t1\t2.1 mUI/L\t2025-05-15\ntsh\t1\t2.1 mUI/L\t2025-07-08\ntsh\t1\t2.1 mUI/L\t2025-07-08\nTSH\t1\t2.1 mUI/L\t2025-05-15\ntsh\t1\t2.1 mUI/L\t2025-07-08\nTSH\t3\t3,09 microUI/mL\t2026-02-26\nTSH\t3\t3,09 microUI/mL\t2026-02-26\nUrina Tipo I\t1\tNormal\t2025-05-15\nUrina Tipo I\t1\tNormal\t2025-05-15\nUrina Tipo I\t1\tNormal\t2025-05-15\nUrina Tipo I\t1\tNormal\t2025-05-15\nUrina Tipo I\t2\tNormal\t2025-07-20\nUrina Tipo I\t2\tNormal\t2025-07-20\nUrina Tipo I\t2\tNormal\t2025-07-20\nUrina Tipo I\t2\tNormal\t2025-07-20\nUrina Tipo I\t3\tNormal\t2025-10-10\nUrina Tipo I\t3\tNormal\t2025-10-10\nUrina Tipo I\t3\tNormal\t2025-10-10\nUrina Tipo I\t3\tNormal\t2025-10-10\nUrocultura\t1\tNegativa\t2025-05-15\nurocultura\t1\tNegativa\t2025-07-08\nUrocultura\t1\tNegativa\t2025-05-15\nurocultura\t1\tNegativa\t2025-07-08\nUrocultura\t1\tNegativa\t2025-05-15\nurocultura\t1\tNegativa\t2025-07-08\nurocultura\t1\tNegativa\t2025-07-08\nUrocultura\t1\tNegativa\t2025-05-15\nurocultura\t2\tNegativa\t2025-10-28\nurocultura\t2\tNegativa\t2025-10-28\nUrocultura\t2\tNegativa\t2025-07-20\nurocultura\t2\tNegativa\t2025-10-28\nUrocultura\t2\tNegativa\t2025-07-20\nUrocultura\t2\tNegativa\t2025-07-20\nurocultura\t2\tNegativa\t2025-10-28\nUrocultura\t2\tNegativa\t2025-07-20\nurocultura\t3\tNegativa\t2026-01-07\nUrocultura\t3\tNegativa\t2025-10-10\nUrocultura\t3\tNegativa\t2025-10-10\nUrocultura\t3\tNegativa\t2025-10-10\nurocultura\t3\tNegativa\t2026-01-07\nurocultura\t3\tNegativa\t2026-01-07\nUrocultura\t3\tNegativa\t2025-10-10\nurocultura\t3\tNegativa\t2026-01-07\nvdrl\t1\tNão reagente\t2025-07-08\nVDRL\t1\tNão Reagente\t2025-05-15\nVDRL\t1\tNão Reagente\t2025-05-15\nvdrl\t1\tNão reagente\t2025-07-08\nvdrl\t1\tNão reagente\t2025-07-08\nVDRL\t1\tNão Reagente\t2025-05-15\nVDRL\t1\tNão Reagente\t2025-05-15\nvdrl\t1\tNão reagente\t2025-07-08\nVDRL\t2\tNão Reagente\t2025-07-20\nVDRL\t2\tNão Reagente\t2025-07-20\nVDRL\t2\tNão Reagente\t2025-07-20\nVDRL\t2\tNão Reagente\t2025-07-20\nVDRL\t3\tNão Reagente\t2025-10-10\nvdrl\t3\tNão reagente\t2026-01-07\nvdrl\t3\tNão reagente\t2026-01-07\nvdrl\t3\tNão reagente\t2026-01-07\nvdrl\t3\tNão reagente\t2026-01-07\nVDRL\t3\tNão Reagente\t2025-10-10\nVDRL\t3\tNão Reagente\t2025-10-10\nVDRL\t3\tNão Reagente\t2025-10-10\nVitamina B12\t3\t198 pg/mL\t2026-02-26\nVitamina B12\t3\t198 pg/mL\t2026-02-26\nVitamina D (25-OH)\t3\t25,0 ng/mL\t2026-02-26\nVitamina D (25-OH)\t3\t25,0 ng/mL\t2026-02-26\n",
+  "stderr": "",
+  "execution_time_ms": 363
+}

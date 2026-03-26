@@ -1,60 +1,60 @@
 /**
  * Mapa de normalização de nomes de exames laboratoriais.
- * Converte todas as variações encontradas no banco de dados para o nome canônico
- * usado no examesConfig.ts do frontend.
+ * Converte todas as variações encontradas no banco de dados para o nome canônico padronizado.
  * 
- * IMPORTANTE: Hemoglobina, Hematócrito, Hemograma e Plaquetas são exames SEPARADOS.
- * Não devem ser mesclados em um único nome canônico.
+ * Nomes padronizados conforme documento de normalização (25/03/2026):
+ * - Title Case para nomes compostos
+ * - Siglas médicas em MAIÚSCULAS (HIV, VDRL, TSH, EGB, HBsAg, Anti-HCV, ABO/Rh, IgG, IgM)
+ * 
+ * IMPORTANTE: Hemoglobina/Hematócrito é o nome canônico para Hemograma, Hemoglobina e Hematócrito combinados.
+ * Plaquetas é exame separado.
  * 
  * Categorias:
- * - SANGUE: Tipagem sanguínea ABO/Rh, Coombs indireto, Hemoglobina, Hematócrito,
- *           Hemograma, Plaquetas, Glicemia de jejum, VDRL, FTA-ABS IgG, FTA-ABS IgM,
+ * - SANGUE: Tipagem Sanguínea (ABO/Rh), Coombs Indireto, Hemoglobina/Hematócrito,
+ *           Plaquetas, Glicemia de Jejum, VDRL, FTA-ABS IgG, FTA-ABS IgM,
  *           HIV, Hepatite B (HBsAg), Anti-HBs, Hepatite C (Anti-HCV),
  *           Toxoplasmose IgG, Toxoplasmose IgM, Rubéola IgG, Rubéola IgM,
  *           Citomegalovírus IgG, Citomegalovírus IgM, TSH, T4 Livre,
  *           Eletroforese de Hemoglobina, Ferritina, Vitamina D (25-OH),
- *           Vitamina B12, TTGO 75g (Curva Glicêmica)
- * - URINA: EAS (Urina tipo 1), Urocultura, Proteinúria de 24 horas
+ *           Vitamina B12, TOTG 75g
+ * - URINA: Urina Tipo I, Urocultura, Proteinúria de 24 Horas
  * - FEZES: EPF (Parasitológico de Fezes)
- * - EGB: Swab vaginal/retal EGB
+ * - EGB: Estreptococo Grupo B (EGB)
  */
 
 // Map from any variation -> canonical name
 export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
-  // === TIPAGEM SANGUÍNEA ===
-  'Tipagem sanguínea ABO/Rh': 'Tipagem sanguínea ABO/Rh',
-  'Tipagem sanguínea': 'Tipagem sanguínea ABO/Rh',
-  'Tipagem Sanguínea': 'Tipagem sanguínea ABO/Rh',
-  'tipagem_sanguinea': 'Tipagem sanguínea ABO/Rh',
-  'tipoSanguineo': 'Tipagem sanguínea ABO/Rh',
-  'Grupo sanguíneo e Rh': 'Tipagem sanguínea ABO/Rh',
+  // === TIPAGEM SANGUÍNEA (ABO/Rh) ===
+  'Tipagem Sanguínea (ABO/Rh)': 'Tipagem Sanguínea (ABO/Rh)',
+  'Tipagem sanguínea ABO/Rh': 'Tipagem Sanguínea (ABO/Rh)',
+  'Tipagem sanguínea': 'Tipagem Sanguínea (ABO/Rh)',
+  'Tipagem Sanguínea': 'Tipagem Sanguínea (ABO/Rh)',
+  'tipagem_sanguinea': 'Tipagem Sanguínea (ABO/Rh)',
+  'tipoSanguineo': 'Tipagem Sanguínea (ABO/Rh)',
+  'Grupo sanguíneo e Rh': 'Tipagem Sanguínea (ABO/Rh)',
 
   // === COOMBS INDIRETO ===
-  'Coombs indireto': 'Coombs indireto',
-  'Coombs Indireto': 'Coombs indireto',
+  'Coombs Indireto': 'Coombs Indireto',
+  'Coombs indireto': 'Coombs Indireto',
 
-  // === HEMOGLOBINA (separado) ===
-  'Hemoglobina': 'Hemoglobina',
-
-  // === HEMATÓCRITO (separado) ===
-  'Hematócrito': 'Hematócrito',
-
-  // === HEMOGRAMA (combinado: Hb + Ht + Plaquetas) ===
-  'Hemograma': 'Hemograma',
-  'hemograma': 'Hemograma',
-  'Hemograma Completo': 'Hemograma',
-  'hemoglobina_hematocrito': 'Hemograma',
-  'Hemoglobina/Hematócrito': 'Hemograma',
+  // === HEMOGLOBINA/HEMATÓCRITO (unificado) ===
+  'Hemoglobina/Hematócrito': 'Hemoglobina/Hematócrito',
+  'Hemograma': 'Hemoglobina/Hematócrito',
+  'hemograma': 'Hemoglobina/Hematócrito',
+  'Hemograma Completo': 'Hemoglobina/Hematócrito',
+  'hemoglobina_hematocrito': 'Hemoglobina/Hematócrito',
+  'Hemoglobina': 'Hemoglobina/Hematócrito',
+  'Hematócrito': 'Hemoglobina/Hematócrito',
 
   // === PLAQUETAS ===
   'Plaquetas': 'Plaquetas',
 
   // === GLICEMIA DE JEJUM ===
-  'Glicemia de jejum': 'Glicemia de jejum',
-  'Glicemia jejum': 'Glicemia de jejum',
-  'glicemia_jejum': 'Glicemia de jejum',
-  'glicemiaJejum': 'Glicemia de jejum',
-  'Glicemia de Jejum': 'Glicemia de jejum',
+  'Glicemia de Jejum': 'Glicemia de Jejum',
+  'Glicemia de jejum': 'Glicemia de Jejum',
+  'Glicemia jejum': 'Glicemia de Jejum',
+  'glicemia_jejum': 'Glicemia de Jejum',
+  'glicemiaJejum': 'Glicemia de Jejum',
 
   // === VDRL ===
   'VDRL': 'VDRL',
@@ -125,49 +125,56 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
   'Vitamina B12': 'Vitamina B12',
   'vitamina_b12': 'Vitamina B12',
 
-  // === TTGO / CURVA GLICÊMICA ===
-  'TTGO 75g (Curva Glicêmica)': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica) - Jejum': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica) - 1 hora': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica) - 2 horas': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)__Jejum': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)__1 hora': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)__2 horas': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)-Jejum': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)-1 hora': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (Curva Glicêmica)-2 horas': 'TTGO 75g (Curva Glicêmica)',
-  'ttgo_75g_curva_glicemica_jejum': 'TTGO 75g (Curva Glicêmica)',
-  'ttgo_75g_curva_glicemica_1_hora': 'TTGO 75g (Curva Glicêmica)',
-  'ttgo_75g_curva_glicemica_2_horas': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (0min)': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (60min)': 'TTGO 75g (Curva Glicêmica)',
-  'TTGO 75g (120min)': 'TTGO 75g (Curva Glicêmica)',
-  'TOTG 75g': 'TTGO 75g (Curva Glicêmica)',
-  'totg': 'TTGO 75g (Curva Glicêmica)',
+  // === TOTG 75g (antes TTGO 75g / Curva Glicêmica) ===
+  'TOTG 75g': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica) - Jejum': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica) - 1 hora': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica) - 2 horas': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)__Jejum': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)__1 hora': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)__2 horas': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)-Jejum': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)-1 hora': 'TOTG 75g',
+  'TTGO 75g (Curva Glicêmica)-2 horas': 'TOTG 75g',
+  'ttgo_75g_curva_glicemica_jejum': 'TOTG 75g',
+  'ttgo_75g_curva_glicemica_1_hora': 'TOTG 75g',
+  'ttgo_75g_curva_glicemica_2_horas': 'TOTG 75g',
+  'TTGO 75g (0min)': 'TOTG 75g',
+  'TTGO 75g (60min)': 'TOTG 75g',
+  'TTGO 75g (120min)': 'TOTG 75g',
+  'totg': 'TOTG 75g',
+  'TOTG 75g (Curva Glicêmica)': 'TOTG 75g',
+  // TTGO subcampos salvos no banco
+  'TTGO-Jejum': 'TOTG 75g',
+  'TTGO-1h': 'TOTG 75g',
+  'TTGO-2h': 'TOTG 75g',
 
-  // === EAS (URINA) ===
-  'EAS (Urina tipo 1)': 'EAS (Urina tipo 1)',
-  'eas': 'EAS (Urina tipo 1)',
-  'eas_urina_tipo_1': 'EAS (Urina tipo 1)',
-  'EAS (Urina tipo 1)__Nitrito': 'EAS (Urina tipo 1)',
-  'Urina tipo I': 'EAS (Urina tipo 1)',
-  'Urina Tipo I': 'EAS (Urina tipo 1)',
+  // === URINA TIPO I (antes EAS) ===
+  'Urina Tipo I': 'Urina Tipo I',
+  'EAS (Urina tipo 1)': 'Urina Tipo I',
+  'eas': 'Urina Tipo I',
+  'eas_urina_tipo_1': 'Urina Tipo I',
+  'EAS (Urina tipo 1)__Nitrito': 'Urina Tipo I',
+  'Urina tipo I': 'Urina Tipo I',
 
   // === UROCULTURA ===
   'Urocultura': 'Urocultura',
   'urocultura': 'Urocultura',
 
   // === PROTEINÚRIA ===
-  'Proteinúria de 24 horas': 'Proteinúria de 24 horas',
+  'Proteinúria de 24 Horas': 'Proteinúria de 24 Horas',
+  'Proteinúria de 24 horas': 'Proteinúria de 24 Horas',
 
   // === EPF (FEZES) ===
   'EPF (Parasitológico de Fezes)': 'EPF (Parasitológico de Fezes)',
 
-  // === EGB (SWAB) ===
-  'Swab vaginal/retal EGB': 'Swab vaginal/retal EGB',
-  'Swab EGB': 'Swab vaginal/retal EGB',
-  'streptococcusB': 'Swab vaginal/retal EGB',
-  'Estreptococo Grupo B': 'Swab vaginal/retal EGB',
+  // === ESTREPTOCOCO GRUPO B (EGB) ===
+  'Estreptococo Grupo B (EGB)': 'Estreptococo Grupo B (EGB)',
+  'Swab vaginal/retal EGB': 'Estreptococo Grupo B (EGB)',
+  'Swab EGB': 'Estreptococo Grupo B (EGB)',
+  'streptococcusB': 'Estreptococo Grupo B (EGB)',
+  'Estreptococo Grupo B': 'Estreptococo Grupo B (EGB)',
 };
 
 /**
@@ -182,13 +189,11 @@ export function normalizeExamName(nome: string): string {
  * Categorias canônicas de exames - define a qual categoria cada exame canônico pertence.
  */
 export const EXAM_CATEGORIES: Record<string, 'sangue' | 'urina' | 'fezes' | 'egb'> = {
-  'Tipagem sanguínea ABO/Rh': 'sangue',
-  'Coombs indireto': 'sangue',
-  'Hemoglobina': 'sangue',
-  'Hematócrito': 'sangue',
-  'Hemograma': 'sangue',
+  'Tipagem Sanguínea (ABO/Rh)': 'sangue',
+  'Coombs Indireto': 'sangue',
+  'Hemoglobina/Hematócrito': 'sangue',
   'Plaquetas': 'sangue',
-  'Glicemia de jejum': 'sangue',
+  'Glicemia de Jejum': 'sangue',
   'VDRL': 'sangue',
   'FTA-ABS IgG': 'sangue',
   'FTA-ABS IgM': 'sangue',
@@ -208,12 +213,12 @@ export const EXAM_CATEGORIES: Record<string, 'sangue' | 'urina' | 'fezes' | 'egb
   'Ferritina': 'sangue',
   'Vitamina D (25-OH)': 'sangue',
   'Vitamina B12': 'sangue',
-  'TTGO 75g (Curva Glicêmica)': 'sangue',
-  'EAS (Urina tipo 1)': 'urina',
+  'TOTG 75g': 'sangue',
+  'Urina Tipo I': 'urina',
   'Urocultura': 'urina',
-  'Proteinúria de 24 horas': 'urina',
+  'Proteinúria de 24 Horas': 'urina',
   'EPF (Parasitológico de Fezes)': 'fezes',
-  'Swab vaginal/retal EGB': 'egb',
+  'Estreptococo Grupo B (EGB)': 'egb',
 };
 
 /**

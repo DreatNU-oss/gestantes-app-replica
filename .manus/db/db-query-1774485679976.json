@@ -1,0 +1,62 @@
+{
+  "query": "SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT nomeExame, COUNT(*) as cnt FROM resultadosExames GROUP BY nomeExame ORDER BY nomeExame LIMIT 20 OFFSET 20",
+  "rows": [
+    {
+      "nomeExame": "TOTG 75g",
+      "cnt": "16"
+    },
+    {
+      "nomeExame": "TOTG 75g - 1 hora",
+      "cnt": "5"
+    },
+    {
+      "nomeExame": "TOTG 75g - 2 horas",
+      "cnt": "5"
+    },
+    {
+      "nomeExame": "TOTG 75g - Jejum",
+      "cnt": "5"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgG",
+      "cnt": "58"
+    },
+    {
+      "nomeExame": "Toxoplasmose IgM",
+      "cnt": "73"
+    },
+    {
+      "nomeExame": "TSH",
+      "cnt": "71"
+    },
+    {
+      "nomeExame": "Urina Tipo I",
+      "cnt": "94"
+    },
+    {
+      "nomeExame": "Urocultura",
+      "cnt": "80"
+    },
+    {
+      "nomeExame": "VDRL",
+      "cnt": "92"
+    },
+    {
+      "nomeExame": "Vitamina B12",
+      "cnt": "58"
+    },
+    {
+      "nomeExame": "Vitamina D (25-OH)",
+      "cnt": "57"
+    },
+    {
+      "nomeExame": "vitamina_d_25_oh",
+      "cnt": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\tcnt\nTOTG 75g\t16\nTOTG 75g - 1 hora\t5\nTOTG 75g - 2 horas\t5\nTOTG 75g - Jejum\t5\nToxoplasmose IgG\t58\nToxoplasmose IgM\t73\nTSH\t71\nUrina Tipo I\t94\nUrocultura\t80\nVDRL\t92\nVitamina B12\t58\nVitamina D (25-OH)\t57\nvitamina_d_25_oh\t1\n",
+  "stderr": "",
+  "execution_time_ms": 390
+}

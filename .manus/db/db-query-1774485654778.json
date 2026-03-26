@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame)\nSELECT gestanteId, 'Citomegalovírus IgG', trimestre, 'Reagente', dataExame\nFROM resultadosExames WHERE nomeExame = 'citomegalovirus' AND resultado LIKE '%IgG reagente%';\n\nINSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame)\nSELECT gestanteId, 'Citomegalovírus IgM', trimestre, 'Não Reagente', dataExame\nFROM resultadosExames WHERE nomeExame = 'citomegalovirus' AND resultado LIKE '%IgM não reagente%';\n\nDELETE FROM resultadosExames WHERE nomeExame = 'citomegalovirus';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute \nINSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame)\nSELECT gestanteId, 'Citomegalovírus IgG', trimestre, 'Reagente', dataExame\nFROM resultadosExames WHERE nomeExame = 'citomegalovirus' AND resultado LIKE '%IgG reagente%';\n\nINSERT INTO resultadosExames (gestanteId, nomeExame, trimestre, resultado, dataExame)\nSELECT gestanteId, 'Citomegalovírus IgM', trimestre, 'Não Reagente', dataExame\nFROM resultadosExames WHERE nomeExame = 'citomegalovirus' AND resultado LIKE '%IgM não reagente%';\n\nDELETE FROM resultadosExames WHERE nomeExame = 'citomegalovirus';\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 496
+}

@@ -10,14 +10,14 @@ describe('WhatsApp - replaceTemplateVariables', () => {
     igSemanas: 28,
     igDias: 3,
     dpp: '15/06/2026',
-    medico: 'Dr. André',
+    medico: 'Dr. André', // removerPrefixoMedico remove 'Dr.' para evitar duplicação
     gestanteId: 1,
   };
 
   it('deve substituir todas as variáveis no template', () => {
     const template = 'Olá {nome}, você está com {ig_semanas} semanas e {ig_dias} dias. Sua DPP é {dpp}. Médico: {medico}.';
     const result = replaceTemplateVariables(template, baseContext);
-    expect(result).toBe('Olá Maria, você está com 28 semanas e 3 dias. Sua DPP é 15/06/2026. Médico: Dr. André.');
+    expect(result).toBe('Olá Maria, você está com 28 semanas e 3 dias. Sua DPP é 15/06/2026. Médico: André.');
   });
 
   it('deve substituir múltiplas ocorrências da mesma variável', () => {
@@ -52,7 +52,7 @@ describe('WhatsApp - replaceTemplateVariables', () => {
     const result = replaceTemplateVariables(template, baseContext);
     expect(result).toContain('Maria');
     expect(result).toContain('28 semanas');
-    expect(result).toContain('Dr. André');
+    expect(result).toContain('André'); // removerPrefixoMedico strips 'Dr.' prefix
   });
 });
 // ─── Testes de Extração de Primeiro Nome ────────────────────────────────────────
