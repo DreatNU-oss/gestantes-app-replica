@@ -2114,22 +2114,45 @@ export const appRouter = router({
           }
         }
         
-        // Ordenar todosResultados: mais recente primeiro (DESC) e remover o mais recente
-        // pois ele já aparece na linha editável do frontend
+        // Deduplicar todosResultados: para cada exame/trimestre, agrupar por data
+        // e manter apenas o registro mais recente (maior createdAt) para cada data distinta.
+        // Depois ordenar por data DESC e remover o mais recente (já na linha editável).
         for (const nomeExame of Object.keys(todosResultados)) {
           for (const tri of Object.keys(todosResultados[nomeExame])) {
             const arr = todosResultados[nomeExame][tri];
-            // Ordenar por data DESC (mais recente primeiro)
-            arr.sort((a, b) => {
+            
+            // Agrupar por dataExame, mantendo apenas o mais recente (maior createdAt) por data
+            const porData = new Map<string, typeof arr[0]>();
+            for (const item of arr) {
+              const key = item.dataExame || `sem-data-${item.id}`;
+              const existing = porData.get(key);
+              if (!existing) {
+                porData.set(key, item);
+              } else {
+                // Manter o que tem createdAt mais recente
+                const existingTime = existing.criadoEm ? new Date(existing.criadoEm).getTime() : 0;
+                const itemTime = item.criadoEm ? new Date(item.criadoEm).getTime() : 0;
+                if (itemTime > existingTime) {
+                  porData.set(key, item);
+                }
+              }
+            }
+            
+            // Converter de volta para array e ordenar por data DESC
+            const deduplicado = Array.from(porData.values());
+            deduplicado.sort((a, b) => {
               if (!a.dataExame && !b.dataExame) return 0;
               if (!a.dataExame) return 1;
               if (!b.dataExame) return -1;
               return b.dataExame.localeCompare(a.dataExame);
             });
+            
             // Remover o primeiro (mais recente) - ele já está na linha editável
-            if (arr.length > 0) {
-              arr.shift();
+            if (deduplicado.length > 0) {
+              deduplicado.shift();
             }
+            
+            todosResultados[nomeExame][tri] = deduplicado;
           }
         }
         
@@ -2184,7 +2207,7 @@ export const appRouter = router({
             }
           }
           
-          // Todos os resultados (array por trimestre, ordem cronológica ASC)
+          // Todos os resultados (array por trimestre) - acumular para deduplicar depois
           if (resultado.nomeExame !== 'outros_observacoes') {
             if (!todosResultados[resultado.nomeExame]) {
               todosResultados[resultado.nomeExame] = {};
@@ -2196,7 +2219,39 @@ export const appRouter = router({
             todosResultados[resultado.nomeExame][triKey].push({
               resultado: resultado.resultado || '',
               data: dataFormatada,
-            });
+              _createdAt: resultado.createdAt, // temporário para deduplicação
+            } as any);
+          }
+        }
+        
+        // Deduplicar: para cada exame/trimestre, manter apenas 1 resultado por data distinta
+        // (o mais recente por createdAt)
+        for (const nomeExame of Object.keys(todosResultados)) {
+          for (const tri of Object.keys(todosResultados[nomeExame])) {
+            const arr = todosResultados[nomeExame][tri] as Array<any>;
+            const porData = new Map<string, any>();
+            for (const item of arr) {
+              const key = item.data || `sem-data-${Math.random()}`;
+              const existing = porData.get(key);
+              if (!existing) {
+                porData.set(key, item);
+              } else {
+                const existingTime = existing._createdAt ? new Date(existing._createdAt).getTime() : 0;
+                const itemTime = item._createdAt ? new Date(item._createdAt).getTime() : 0;
+                if (itemTime > existingTime) {
+                  porData.set(key, item);
+                }
+              }
+            }
+            // Converter de volta, remover _createdAt, ordenar por data ASC
+            todosResultados[nomeExame][tri] = Array.from(porData.values())
+              .map(({ _createdAt, ...rest }: any) => rest)
+              .sort((a, b) => {
+                if (!a.data && !b.data) return 0;
+                if (!a.data) return 1;
+                if (!b.data) return -1;
+                return a.data.localeCompare(b.data);
+              });
           }
         }
         

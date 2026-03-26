@@ -1,0 +1,290 @@
+{
+  "query": "SELECT re.nomeExame, re.trimestre, re.dataExame, re.resultado, re.createdAt \nFROM resultadosExames re \nJOIN gestantes g ON re.gestanteId = g.id \nWHERE g.nome = 'TESTE TESTE' \nAND re.nomeExame IN ('Hemoglobina/Hematócrito', 'Plaquetas')\nORDER BY re.nomeExame, re.trimestre, re.dataExame",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT re.nomeExame, re.trimestre, re.dataExame, re.resultado, re.createdAt \nFROM resultadosExames re \nJOIN gestantes g ON re.gestanteId = g.id \nWHERE g.nome = 'TESTE TESTE' \nAND re.nomeExame IN ('Hemoglobina/Hematócrito', 'Plaquetas')\nORDER BY re.nomeExame, re.trimestre, re.dataExame",
+  "rows": [
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "12.5 g/dL",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "12.5 g/dL",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "12.5 g/dL",
+      "createdAt": "2026-01-22 22:05:33"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "38%",
+      "createdAt": "2026-01-22 22:05:33"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "38%",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "38%",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "38%",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-05-15",
+      "resultado": "12.5 g/dL",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-07-08",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-07-08",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "createdAt": "2026-01-21 16:18:46"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-07-08",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "1",
+      "dataExame": "2025-07-08",
+      "resultado": "Hb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "36%",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "36%",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "11.8 g/dL",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "11.8 g/dL",
+      "createdAt": "2026-01-22 22:05:43"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "36%",
+      "createdAt": "2026-01-22 22:05:43"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "11.8 g/dL",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "36%",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-07-20",
+      "resultado": "11.8 g/dL",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-10-28",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-10-28",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-10-28",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "2",
+      "dataExame": "2025-10-28",
+      "resultado": "Hb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000",
+      "createdAt": "2026-01-21 16:18:47"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "11.2 g/dL",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "11.2 g/dL",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "11.2 g/dL",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "34%",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "34%",
+      "createdAt": "2026-01-22 22:05:53"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "11.2 g/dL",
+      "createdAt": "2026-01-22 22:05:53"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "34%",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2025-10-10",
+      "resultado": "34%",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-01-07",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "createdAt": "2026-01-21 16:18:47"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-01-07",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "createdAt": "2026-03-15 23:32:17"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-01-07",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-01-07",
+      "resultado": "Hb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-02-26",
+      "resultado": "11.8 g/dL / 35.0%",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Hemoglobina/Hematócrito",
+      "trimestre": "3",
+      "dataExame": "2026-02-26",
+      "resultado": "11.8 g/dL / 35.0%",
+      "createdAt": "2026-03-16 17:58:03"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "trimestre": "3",
+      "dataExame": "2026-02-26",
+      "resultado": "259.000 /mm³",
+      "createdAt": "2026-03-16 17:09:09"
+    },
+    {
+      "nomeExame": "Plaquetas",
+      "trimestre": "3",
+      "dataExame": "2026-02-26",
+      "resultado": "259.000 /mm³",
+      "createdAt": "2026-03-16 17:58:03"
+    }
+  ],
+  "messages": [],
+  "stdout": "nomeExame\ttrimestre\tdataExame\tresultado\tcreatedAt\nHemoglobina/Hematócrito\t1\t2025-05-15\t12.5 g/dL\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t1\t2025-05-15\t12.5 g/dL\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t1\t2025-05-15\t12.5 g/dL\t2026-01-22 22:05:33\nHemoglobina/Hematócrito\t1\t2025-05-15\t38%\t2026-01-22 22:05:33\nHemoglobina/Hematócrito\t1\t2025-05-15\t38%\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t1\t2025-05-15\t38%\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t1\t2025-05-15\t38%\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t1\t2025-05-15\t12.5 g/dL\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t1\t2025-07-08\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t1\t2025-07-08\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2026-01-21 16:18:46\nHemoglobina/Hematócrito\t1\t2025-07-08\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t1\t2025-07-08\tHb: 12.5 g/dL, Ht: 38%, Plaquetas: 250.000\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t2\t2025-07-20\t36%\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t2\t2025-07-20\t36%\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t2\t2025-07-20\t11.8 g/dL\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t2\t2025-07-20\t11.8 g/dL\t2026-01-22 22:05:43\nHemoglobina/Hematócrito\t2\t2025-07-20\t36%\t2026-01-22 22:05:43\nHemoglobina/Hematócrito\t2\t2025-07-20\t11.8 g/dL\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t2\t2025-07-20\t36%\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t2\t2025-07-20\t11.8 g/dL\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t2\t2025-10-28\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t2\t2025-10-28\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t2\t2025-10-28\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t2\t2025-10-28\tHb: 11.8 g/dL, Ht: 36%, Plaquetas: 240.000\t2026-01-21 16:18:47\nHemoglobina/Hematócrito\t3\t2025-10-10\t11.2 g/dL\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t3\t2025-10-10\t11.2 g/dL\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t3\t2025-10-10\t11.2 g/dL\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t3\t2025-10-10\t34%\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t3\t2025-10-10\t34%\t2026-01-22 22:05:53\nHemoglobina/Hematócrito\t3\t2025-10-10\t11.2 g/dL\t2026-01-22 22:05:53\nHemoglobina/Hematócrito\t3\t2025-10-10\t34%\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t3\t2025-10-10\t34%\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t3\t2026-01-07\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-01-21 16:18:47\nHemoglobina/Hematócrito\t3\t2026-01-07\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-03-15 23:32:17\nHemoglobina/Hematócrito\t3\t2026-01-07\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t3\t2026-01-07\tHb: 11.5 g/dL, Ht: 35%, Plaquetas: 235.000\t2026-03-16 17:58:03\nHemoglobina/Hematócrito\t3\t2026-02-26\t11.8 g/dL / 35.0%\t2026-03-16 17:09:09\nHemoglobina/Hematócrito\t3\t2026-02-26\t11.8 g/dL / 35.0%\t2026-03-16 17:58:03\nPlaquetas\t3\t2026-02-26\t259.000 /mm³\t2026-03-16 17:09:09\nPlaquetas\t3\t2026-02-26\t259.000 /mm³\t2026-03-16 17:58:03\n",
+  "stderr": "",
+  "execution_time_ms": 444
+}

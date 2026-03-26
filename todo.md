@@ -2677,3 +2677,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Modificar CartaoPrenatalImpressao.tsx para exibir todos os resultados
 - [x] Escrever testes: 12 testes em buscarTodosParaPdf.test.ts + 1158/1158 total passando
 - [ ] Validar geração do PDF com paciente real
+
+## BUG: Page Not Found ao clicar em Exames Laboratoriais (26/03/2026)
+- [x] Investigar causa: botão Exames no card da gestante (Dashboard.tsx:599) navegava para /exames-laboratoriais (rota inexistente) em vez de /exames
+- [x] Corrigir: alterado setLocation("/exames-laboratoriais") para setLocation("/exames")
+- [x] Validar correção: botão Exames agora navega corretamente para /exames
+
+## Deduplicação de Resultados por Data (26/03/2026)
+- [x] Implementar deduplicação no buscarComHistorico: agrupar por data, manter apenas o mais recente (createdAt)
+- [x] Implementar deduplicação no buscarTodosParaPdf: mesma lógica
+- [x] Testar: 1158/1158 testes passando
+- [x] Validar visualmente: TESTE TESTE mostra linhas extras corretas (sem explosão de duplicatas)

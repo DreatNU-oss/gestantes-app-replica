@@ -596,7 +596,7 @@ export default function Dashboard() {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => setLocation("/exames-laboratoriais")}
+                      onClick={() => setLocation("/exames")}
                       className="gap-2 bg-amber-600 hover:bg-amber-700"
                     >
                       <TestTube className="h-4 w-4" />
