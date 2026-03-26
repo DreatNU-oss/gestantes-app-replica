@@ -249,6 +249,7 @@ export default function ExamesLaboratoriais() {
   // Extrair exames e histórico
   const resultadosSalvos = dadosExames?.exames;
   const historicoExames = dadosExames?.historico || {};
+  const todosResultadosPorExame = dadosExames?.todosResultados || {};
 
   // Mutation para salvar resultados
   const salvarMutation = trpc.examesLab.salvar.useMutation({
@@ -307,6 +308,11 @@ export default function ExamesLaboratoriais() {
           description: 'Todos os exames já estavam cadastrados.',
           duration: 4000,
         });
+      }
+      
+      // Invalidar buscarComHistorico para recarregar todos os resultados (reordenação cronológica)
+      if (gestanteSelecionada) {
+        utils.examesLab.buscarComHistorico.invalidate({ gestanteId: gestanteSelecionada });
       }
     },
     onError: (error) => {
@@ -1252,293 +1258,232 @@ export default function ExamesLaboratoriais() {
     );
   };
 
+  // Helper: obter resultados de um exame para um trimestre do todosResultadosPorExame
+  const getResultadosTrimestre = (nomeExame: string, trimestre: number) => {
+    return todosResultadosPorExame[nomeExame]?.[trimestre.toString()] || [];
+  };
+
+  // Helper: calcular número máximo de linhas necessárias para um exame
+  // todosResultados já exclui o mais recente (que está na linha editável)
+  // Então total de linhas = 1 (editável) + max(extras por trimestre)
+  const getMaxLinhas = (nomeExame: string, trimestresConfig: { primeiro: boolean; segundo: boolean; terceiro: boolean }) => {
+    const extra1 = trimestresConfig.primeiro ? getResultadosTrimestre(nomeExame, 1).length : 0;
+    const extra2 = trimestresConfig.segundo ? getResultadosTrimestre(nomeExame, 2).length : 0;
+    const extra3 = trimestresConfig.terceiro ? getResultadosTrimestre(nomeExame, 3).length : 0;
+    return 1 + Math.max(extra1, extra2, extra3);
+  };
+
+  // Helper: formatar data de YYYY-MM-DD para DD/MM/YYYY
+  const formatarDataExibicao = (data: string | null) => {
+    if (!data) return '';
+    const partes = data.split('-');
+    if (partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return data;
+  };
+
+  // Helper: renderizar célula de resultado read-only para linhas extras do histórico
+  const renderResultadoReadOnly = (nomeExame: string, resultado: string, trimestre: number) => {
+    const EXAMES_SOROLOGICOS_LOCAL = [
+      "VDRL", "FTA-ABS IgG", "FTA-ABS IgM", "HIV",
+      "Hepatite B (HBsAg)", "Anti-HBs", "Hepatite C (Anti-HCV)",
+      "Toxoplasmose IgG", "Toxoplasmose IgM",
+      "Rubéola IgG", "Rubéola IgM",
+      "Citomegalovírus IgG", "Citomegalovírus IgM",
+    ];
+    const ehSorologico = EXAMES_SOROLOGICOS_LOCAL.includes(nomeExame);
+    const ehReagente = ehSorologico && resultado?.toLowerCase().includes('reagente') && !resultado?.toLowerCase().includes('não');
+    const ehNaoReagente = ehSorologico && resultado?.toLowerCase().includes('não reagente');
+    const ehUrocultura = nomeExame === "Urocultura";
+    const ehPositivaUro = ehUrocultura && resultado === "Positiva";
+    const ehEAS = nomeExame === "EAS (Urina tipo 1)";
+    const ehAlteradoEAS = ehEAS && resultado === "Alterado";
+    
+    let className = 'text-xs px-2 py-1 rounded border ';
+    if (ehReagente) className += 'border-red-500 bg-red-50 text-red-900 font-bold';
+    else if (ehNaoReagente) className += 'border-green-500 bg-green-50 text-green-900';
+    else if (ehPositivaUro) className += 'border-red-500 bg-red-50 text-red-900';
+    else if (ehAlteradoEAS) className += 'border-orange-500 bg-orange-50 text-orange-900';
+    else if (resultado) className += 'border-gray-200 bg-gray-50 text-gray-700';
+    else className += 'border-transparent';
+    
+    return <div className={className}>{resultado || ''}</div>;
+  };
+
   const renderExameRow = (exame: ExameConfig) => {
     // Se o exame tem subcampos (ex: TTGO), renderizar múltiplas linhas
     if (exame.subcampos) {
       return (
         <React.Fragment key={exame.nome}>
-          {exame.subcampos.map((subcampo, index) => (
-            <TableRow key={`${exame.nome}-${subcampo}`}>
-              <TableCell className="font-medium" data-exame-nome={exame.nome}>
-                {index === 0 ? exame.nome : ""}
-                <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
-              </TableCell>
-              {/* 1º Trimestre - Data */}
-              <TableCell className="text-center">
-                {exame.trimestres.primeiro ? (
-                  <div className="flex flex-col gap-1">
-                    <Input
-                      type="date"
-                      data-field-type="data"
-                      data-trimestre={1}
-                      data-exame-nome={exame.nome}
-                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(exame.nome, "data1", e.target.value)
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Tab' && !e.shiftKey) {
-                          const row = (e.target as HTMLElement).closest('tr');
-                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="1"]`) as HTMLElement;
-                          if (campoResultado) {
-                            e.preventDefault();
-                            campoResultado.focus();
-                          }
-                        }
-                      }}
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_1`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
-                      placeholder="Data"
-                    />
-
-                  </div>
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-              {/* 1º Trimestre - Resultado */}
-              <TableCell className="text-center">
-                {exame.trimestres.primeiro ? (
-                  renderCampoResultado(
-                    exame.nome,
-                    1,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_1`] : "") || "",
-                    subcampo
-                  )
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-              {/* 2º Trimestre - Data */}
-              <TableCell className="text-center">
-                {exame.trimestres.segundo ? (
-                  <div className="flex flex-col gap-1">
-                    <Input
-                      type="date"
-                      data-field-type="data"
-                      data-trimestre={2}
-                      data-exame-nome={exame.nome}
-                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(exame.nome, "data2", e.target.value)
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Tab' && !e.shiftKey) {
-                          const row = (e.target as HTMLElement).closest('tr');
-                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="2"]`) as HTMLElement;
-                          if (campoResultado) {
-                            e.preventDefault();
-                            campoResultado.focus();
-                          }
-                        }
-                      }}
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_2`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
-                      placeholder="Data"
-                    />
-
-                  </div>
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-              {/* 2º Trimestre - Resultado */}
-              <TableCell className="text-center">
-                {exame.trimestres.segundo ? (
-                  renderCampoResultado(
-                    exame.nome,
-                    2,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_2`] : "") || "",
-                    subcampo
-                  )
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-              {/* 3º Trimestre - Data */}
-              <TableCell className="text-center">
-                {exame.trimestres.terceiro ? (
-                  <div className="flex flex-col gap-1">
-                    <Input
-                      type="date"
-                      data-field-type="data"
-                      data-trimestre={3}
-                      data-exame-nome={exame.nome}
-                      value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
-                      onChange={(e) =>
-                        handleResultadoChange(exame.nome, "data3", e.target.value)
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Tab' && !e.shiftKey) {
-                          const row = (e.target as HTMLElement).closest('tr');
-                          const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="3"]`) as HTMLElement;
-                          if (campoResultado) {
-                            e.preventDefault();
-                            campoResultado.focus();
-                          }
-                        }
-                      }}
-                      className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_3`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
-                      placeholder="Data"
-                    />
-
-                  </div>
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-              {/* 3º Trimestre - Resultado */}
-              <TableCell className="text-center">
-                {exame.trimestres.terceiro ? (
-                  renderCampoResultado(
-                    exame.nome,
-                    3,
-                    (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_3`] : "") || "",
-                    subcampo
-                  )
-                ) : (
-                  <div className="text-gray-400">-</div>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+          {exame.subcampos.map((subcampo, index) => {
+            // Para subcampos, calcular linhas extras baseado no histórico
+            // Subcampos compartilham a mesma data, então usamos o nome do exame principal
+            const maxLinhas = getMaxLinhas(exame.nome, exame.trimestres);
+            
+            return Array.from({ length: maxLinhas }, (_, rowIdx) => (
+              <TableRow key={`${exame.nome}-${subcampo}-${rowIdx}`} className={rowIdx > 0 ? 'bg-gray-50/50' : ''}>
+                <TableCell className="font-medium" data-exame-nome={exame.nome}>
+                  {rowIdx === 0 ? (
+                    <>
+                      {index === 0 ? exame.nome : ""}
+                      <span className="text-sm text-gray-500 ml-2">{subcampo}</span>
+                    </>
+                  ) : (
+                    index === 0 ? <span className="text-xs text-gray-400 italic">({rowIdx + 1}º)</span> : ''
+                  )}
+                </TableCell>
+                {[1, 2, 3].map((tri) => {
+                  const triKey = tri === 1 ? 'primeiro' : tri === 2 ? 'segundo' : 'terceiro';
+                  const habilitado = exame.trimestres[triKey as keyof typeof exame.trimestres];
+                  const resultadosTri = getResultadosTrimestre(exame.nome, tri);
+                  // rowIdx 0 = linha editável, rowIdx > 0 = histórico (index = rowIdx - 1)
+                  const extraItem = rowIdx > 0 ? resultadosTri[rowIdx - 1] : null;
+                  
+                  if (!habilitado) {
+                    return (
+                      <React.Fragment key={`tri-${tri}`}>
+                        <TableCell className="text-center"><div className="text-gray-400">-</div></TableCell>
+                        <TableCell className="text-center"><div className="text-gray-400">-</div></TableCell>
+                      </React.Fragment>
+                    );
+                  }
+                  
+                  if (rowIdx === 0) {
+                    // Primeira linha: editável (comportamento original)
+                    return (
+                      <React.Fragment key={`tri-${tri}`}>
+                        <TableCell className="text-center">
+                          <div className="flex flex-col gap-1">
+                            <Input
+                              type="date"
+                              data-field-type="data"
+                              data-trimestre={tri}
+                              data-exame-nome={exame.nome}
+                              value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`data${tri}`] : "") || ""}
+                              onChange={(e) => handleResultadoChange(exame.nome, `data${tri}`, e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Tab' && !e.shiftKey) {
+                                  const row = (e.target as HTMLElement).closest('tr');
+                                  const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="${tri}"]`) as HTMLElement;
+                                  if (campoResultado) { e.preventDefault(); campoResultado.focus(); }
+                                }
+                              }}
+                              className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && exame.subcampos?.some(sc => (resultados[exame.nome] as Record<string, string>)[`${sc}_${tri}`]?.trim())) ? 'border-green-500 bg-green-50' : ''}`}
+                              placeholder="Data"
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {renderCampoResultado(
+                            exame.nome,
+                            tri as 1 | 2 | 3,
+                            (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`${subcampo}_${tri}`] : "") || "",
+                            subcampo
+                          )}
+                        </TableCell>
+                      </React.Fragment>
+                    );
+                  }
+                  
+                  // Linhas extras: read-only mostrando histórico
+                  return (
+                    <React.Fragment key={`tri-${tri}`}>
+                      <TableCell className="text-center">
+                        <div className="text-xs text-gray-500">
+                          {extraItem ? formatarDataExibicao(extraItem.dataExame) : ''}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {extraItem ? renderResultadoReadOnly(exame.nome, extraItem.resultado, tri) : ''}
+                      </TableCell>
+                    </React.Fragment>
+                  );
+                })}
+              </TableRow>
+            ));
+          })}
         </React.Fragment>
       );
     }
 
-    // Renderização normal para exames sem subcampos
+    // Renderização para exames sem subcampos - com múltiplas linhas
+    const maxLinhas = getMaxLinhas(exame.nome, exame.trimestres);
+    
     return (
-      <TableRow key={exame.nome}>
-        <TableCell className="font-medium" data-exame-nome={exame.nome}>{exame.nome}</TableCell>
-        {/* 1º Trimestre - Data */}
-        <TableCell className="text-center">
-          {exame.trimestres.primeiro ? (
-            <div className="flex flex-col gap-1">
-              <Input
-                type="date"
-                data-field-type="data"
-                data-trimestre={1}
-                data-exame-nome={exame.nome}
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data1"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data1", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Tab' && !e.shiftKey) {
-                    // Ao TAB de um campo de data, ir para o campo de resultado da mesma linha
-                    const row = (e.target as HTMLElement).closest('tr');
-                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="1"]`) as HTMLElement;
-                    if (campoResultado) {
-                      e.preventDefault();
-                      campoResultado.focus();
-                    }
-                  }
-                }}
-                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["1"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
-                placeholder="Data"
-              />
-            </div>
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-        {/* 1º Trimestre - Resultado */}
-        <TableCell className="text-center">
-          {exame.trimestres.primeiro ? (
-            renderCampoResultado(
-              exame.nome,
-              1,
-              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["1"] : "") || ""
-            )
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-        {/* 2º Trimestre - Data */}
-        <TableCell className="text-center">
-          {exame.trimestres.segundo ? (
-            <div className="flex flex-col gap-1">
-              <Input
-                type="date"
-                data-field-type="data"
-                data-trimestre={2}
-                data-exame-nome={exame.nome}
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data2"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data2", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Tab' && !e.shiftKey) {
-                    const row = (e.target as HTMLElement).closest('tr');
-                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="2"]`) as HTMLElement;
-                    if (campoResultado) {
-                      e.preventDefault();
-                      campoResultado.focus();
-                    }
-                  }
-                }}
-                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["2"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
-                placeholder="Data"
-              />
-            </div>
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-        {/* 2º Trimestre - Resultado */}
-        <TableCell className="text-center">
-          {exame.trimestres.segundo ? (
-            renderCampoResultado(
-              exame.nome,
-              2,
-              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["2"] : "") || ""
-            )
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-        {/* 3º Trimestre - Data */}
-        <TableCell className="text-center">
-          {exame.trimestres.terceiro ? (
-            <div className="flex flex-col gap-1">
-              <Input
-                type="date"
-                data-field-type="data"
-                data-trimestre={3}
-                data-exame-nome={exame.nome}
-                value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["data3"] : "") || ""}
-                onChange={(e) =>
-                  handleResultadoChange(exame.nome, "data3", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Tab' && !e.shiftKey) {
-                    const row = (e.target as HTMLElement).closest('tr');
-                    const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="3"]`) as HTMLElement;
-                    if (campoResultado) {
-                      e.preventDefault();
-                      campoResultado.focus();
-                    }
-                  }
-                }}
-                className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)["3"]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
-                placeholder="Data"
-              />
-            </div>
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-        {/* 3º Trimestre - Resultado */}
-        <TableCell className="text-center">
-          {exame.trimestres.terceiro ? (
-            renderCampoResultado(
-              exame.nome,
-              3,
-              (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)["3"] : "") || ""
-            )
-          ) : (
-            <div className="text-gray-400">-</div>
-          )}
-        </TableCell>
-      </TableRow>
+      <React.Fragment key={exame.nome}>
+        {Array.from({ length: maxLinhas }, (_, rowIdx) => (
+          <TableRow key={`${exame.nome}-${rowIdx}`} className={rowIdx > 0 ? 'bg-gray-50/50' : ''}>
+            <TableCell className="font-medium" data-exame-nome={exame.nome}>
+              {rowIdx === 0 ? exame.nome : <span className="text-xs text-gray-400 italic">({rowIdx + 1}º)</span>}
+            </TableCell>
+            {[1, 2, 3].map((tri) => {
+              const triKey = tri === 1 ? 'primeiro' : tri === 2 ? 'segundo' : 'terceiro';
+              const habilitado = exame.trimestres[triKey as keyof typeof exame.trimestres];
+              const resultadosTri = getResultadosTrimestre(exame.nome, tri);
+              // rowIdx 0 = linha editável, rowIdx > 0 = histórico (index = rowIdx - 1)
+              const extraItem = rowIdx > 0 ? resultadosTri[rowIdx - 1] : null;
+              
+              if (!habilitado) {
+                return (
+                  <React.Fragment key={`tri-${tri}`}>
+                    <TableCell className="text-center"><div className="text-gray-400">-</div></TableCell>
+                    <TableCell className="text-center"><div className="text-gray-400">-</div></TableCell>
+                  </React.Fragment>
+                );
+              }
+              
+              if (rowIdx === 0) {
+                // Primeira linha: editável (comportamento original)
+                return (
+                  <React.Fragment key={`tri-${tri}`}>
+                    <TableCell className="text-center">
+                      <div className="flex flex-col gap-1">
+                        <Input
+                          type="date"
+                          data-field-type="data"
+                          data-trimestre={tri}
+                          data-exame-nome={exame.nome}
+                          value={(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[`data${tri}`] : "") || ""}
+                          onChange={(e) => handleResultadoChange(exame.nome, `data${tri}`, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Tab' && !e.shiftKey) {
+                              const row = (e.target as HTMLElement).closest('tr');
+                              const campoResultado = row?.querySelector(`[data-field-type="resultado"][data-trimestre="${tri}"]`) as HTMLElement;
+                              if (campoResultado) { e.preventDefault(); campoResultado.focus(); }
+                            }
+                          }}
+                          className={`w-full text-xs ${(typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null && (resultados[exame.nome] as Record<string, string>)[tri.toString()]?.trim()) ? 'border-green-500 bg-green-50' : ''}`}
+                          placeholder="Data"
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {renderCampoResultado(
+                        exame.nome,
+                        tri as 1 | 2 | 3,
+                        (typeof resultados[exame.nome] === 'object' && resultados[exame.nome] !== null ? (resultados[exame.nome] as Record<string, string>)[tri.toString()] : "") || ""
+                      )}
+                    </TableCell>
+                  </React.Fragment>
+                );
+              }
+              
+              // Linhas extras: read-only mostrando histórico anterior
+              return (
+                <React.Fragment key={`tri-${tri}`}>
+                  <TableCell className="text-center">
+                    <div className="text-xs text-gray-500">
+                      {extraItem ? formatarDataExibicao(extraItem.dataExame) : ''}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {extraItem ? renderResultadoReadOnly(exame.nome, extraItem.resultado, tri) : ''}
+                  </TableCell>
+                </React.Fragment>
+              );
+            })}
+          </TableRow>
+        ))}
+      </React.Fragment>
     );
   };
 

@@ -2658,3 +2658,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Executar UPDATE na base: hiv→HIV, tsh→TSH, urocultura→Urocultura, vdrl→VDRL (35 registros corrigidos)
 - [x] Aplicar normalizeExamName no salvamento (routers.ts) e leitura (gestante-router.ts, gestanteApi.ts)
 - [x] Rodar testes: 1133/1133 passando, 32 nomes únicos normalizados na base
+
+## Exibir TODOS os Resultados por Trimestre na Tabela de Exames (26/03/2026)
+- [x] Confirmar que o trimestre é extraído automaticamente pela IA ao interpretar exames (sim, via DUM + data coleta ou manual)
+- [x] Modificar backend (buscarComHistorico) para retornar todosResultados com arrays por exame/trimestre
+- [x] Modificar frontend (renderExameRow) para criar linhas extras quando há múltiplos resultados no mesmo trimestre
+- [x] Primeira linha = editável (mais recente), linhas abaixo = read-only (histórico, DESC)
+- [x] Ao salvar, invalidar buscarComHistorico para recarregar e reordenar cronologicamente
+- [x] Nome do exame aparece apenas na primeira linha, linhas extras com indicador (2º), (3º)
+- [x] Cada resultado com sua data na coluna de datas do respectivo trimestre
+- [x] Escrever testes: 13 testes em todosResultados.test.ts + 1146/1146 total passando
+- [ ] Validar com dados da paciente Teste Teste

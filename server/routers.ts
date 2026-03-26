@@ -2031,7 +2031,7 @@ export const appRouter = router({
       }))
       .query(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { exames: {}, historico: {} };
+        if (!db) return { exames: {}, historico: {}, todosResultados: {} };
         
         const resultados = await db.select()
           .from(resultadosExames)
@@ -2048,6 +2048,15 @@ export const appRouter = router({
           dataExame: string | null;
           criadoEm: Date | null;
         }>> = {};
+        
+        // NOVO: Todos os resultados agrupados por exame, com array por trimestre
+        // Formato: { "HIV": { "1": [{id, resultado, dataExame}], "2": [...], "3": [...] } }
+        const todosResultados: Record<string, Record<string, Array<{
+          id: number;
+          resultado: string;
+          dataExame: string | null;
+          criadoEm: Date | null;
+        }>>> = {};
         
         for (const resultado of resultados) {
           const chaveHistorico = `${resultado.nomeExame}::${resultado.trimestre}`;
@@ -2074,6 +2083,23 @@ export const appRouter = router({
             criadoEm: resultado.createdAt,
           });
           
+          // NOVO: Adicionar a todosResultados (array por trimestre, ordem cronológica)
+          if (resultado.nomeExame !== 'outros_observacoes') {
+            if (!todosResultados[resultado.nomeExame]) {
+              todosResultados[resultado.nomeExame] = {};
+            }
+            const triKey = resultado.trimestre.toString();
+            if (!todosResultados[resultado.nomeExame][triKey]) {
+              todosResultados[resultado.nomeExame][triKey] = [];
+            }
+            todosResultados[resultado.nomeExame][triKey].push({
+              id: resultado.id,
+              resultado: resultado.resultado || '',
+              dataExame: dataFormatada,
+              criadoEm: resultado.createdAt,
+            });
+          }
+          
           // Estruturar exames (manter o mais recente)
           if (resultado.nomeExame === 'outros_observacoes') {
             examesEstruturados[resultado.nomeExame] = resultado.resultado || '';
@@ -2088,7 +2114,26 @@ export const appRouter = router({
           }
         }
         
-        return { exames: examesEstruturados, historico };
+        // Ordenar todosResultados: mais recente primeiro (DESC) e remover o mais recente
+        // pois ele já aparece na linha editável do frontend
+        for (const nomeExame of Object.keys(todosResultados)) {
+          for (const tri of Object.keys(todosResultados[nomeExame])) {
+            const arr = todosResultados[nomeExame][tri];
+            // Ordenar por data DESC (mais recente primeiro)
+            arr.sort((a, b) => {
+              if (!a.dataExame && !b.dataExame) return 0;
+              if (!a.dataExame) return 1;
+              if (!b.dataExame) return -1;
+              return b.dataExame.localeCompare(a.dataExame);
+            });
+            // Remover o primeiro (mais recente) - ele já está na linha editável
+            if (arr.length > 0) {
+              arr.shift();
+            }
+          }
+        }
+        
+        return { exames: examesEstruturados, historico, todosResultados };
       }),
 
     // Excluir resultado específico do histórico
