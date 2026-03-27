@@ -160,6 +160,12 @@ function gerarPromptDetalhado(tipoUltrassom: TipoUltrassom): string {
    - Converta a vírgula para ponto no JSON: "357,9" → "357.9".
    - Esta regra se aplica a TODOS os campos numéricos: CA, CC, DBP, CF, CCN, ILA, IP, IR, etc.
 
+10. **PESO FETAL - SEPARADOR DE MILHAR** - REGRA CRÍTICA:
+   - Laudos brasileiros usam PONTO como separador de milhar no peso: "1.531 g" significa 1531 gramas, NÃO 1.531 gramas.
+   - SEMPRE remova o ponto de milhar no peso fetal: "1.531 g" → retorne "1531 g"; "2.537 g" → "2537 g".
+   - Se o peso for >= 1000g, NUNCA inclua ponto de milhar no JSON. Retorne apenas o número inteiro com a unidade.
+   - Exemplos: "1.890 g" → "1890 g"; "2.100 g" → "2100 g"; "3.250 g" → "3250 g".
+
 **CAMPOS A EXTRAIR:**
 
 ${listaCampos}
@@ -294,6 +300,7 @@ REGRAS OBRIGATÓRIAS:
 7. Use formato DD/MM/AAAA para todas as datas.
 8. Mantenha unidades de medida (mm, cm, g, bpm, etc.).
 9. VÍRGULA DECIMAL (PADRÃO BRASILEIRO): laudos usam vírgula como separador decimal. "357,9 mm" = 357.9 mm, NÃO 3579 mm. Converta vírgula para ponto no JSON. Exemplos: "CA 357,9 mm" → "357.9 mm"; "DBP 89,1 mm" → "89.1 mm". NUNCA concatene os dígitos removendo a vírgula.
+12. PESO FETAL - SEPARADOR DE MILHAR: laudos brasileiros usam PONTO como separador de milhar no peso: "1.531 g" = 1531 gramas. SEMPRE remova o ponto de milhar: "1.531 g" → "1531 g"; "2.537 g" → "2537 g"; "1.890 g" → "1890 g". Se peso >= 1000g, retorne apenas o número inteiro sem pontos.
 10. PERCENTIL DO PESO FETAL (percentilPeso) - CRÍTICO: Este campo é essencial para o gráfico de crescimento fetal. Procure INTENSAMENTE por qualquer menção de percentil de peso no laudo: 'percentil X', 'pX', 'p X', 'PFE no percentil X', 'peso no percentil X'. Também procure na hipótese diagnóstica e conclusão. Se encontrar 'AIG' (adequado para IG), 'PIG' (pequeno para IG) ou 'GIG' (grande para IG), retorne essas siglas. NUNCA omita este campo se houver qualquer indicação de percentil no laudo.
 11. VERIFICAÇÃO DE TIPO: Se o laudo não corresponde ao tipo solicitado (ex: US de 9 semanas classificado como morfológico 1º tri), inclua "tipoSugerido" no JSON com o tipo correto. Tipos: primeiro_ultrassom, morfologico_1tri, ultrassom_obstetrico, morfologico_2tri, ecocardiograma, ultrassom_seguimento. Ainda assim extraia todos os dados possíveis.`
           },
@@ -350,6 +357,70 @@ REGRAS OBRIGATÓRIAS:
     if (dadosExtraidos.tipoSugerido) {
       dadosFiltrados.tipoSugerido = String(dadosExtraidos.tipoSugerido);
       console.log(`[Ultrassom] IA sugere tipo diferente: ${dadosExtraidos.tipoSugerido} (selecionado: ${tipoUltrassom})`);
+    }
+
+    // Post-processing: normalizar valores numéricos (formato brasileiro → formato computacional)
+    // Corrige: vírgula decimal (268,8 → 268.8), ponto de milhar (1.531 → 1531)
+    const camposNumericos = [
+      'circunferenciaAbdominal', 'pesoFetal', 'ccn', 'bcf',
+      'percentilPeso', 'coloUterinoMedida', 'coloUterino'
+    ];
+    const camposMedidaMM = ['circunferenciaAbdominal', 'ccn', 'coloUterinoMedida', 'coloUterino'];
+    const camposPeso = ['pesoFetal'];
+
+    for (const campo of camposNumericos) {
+      if (dadosFiltrados[campo]) {
+        let val = dadosFiltrados[campo];
+        
+        // Extrair a parte numérica e a unidade
+        const matchNumUnit = val.match(/^([\d.,\s]+)\s*(mm|cm|g|kg|bpm|%)?(.*)$/i);
+        if (matchNumUnit) {
+          let numStr = matchNumUnit[1].trim();
+          const unit = matchNumUnit[2] || '';
+          const rest = matchNumUnit[3] || '';
+          
+          // Detectar formato brasileiro: "1.531" (ponto de milhar) vs "268,8" (vírgula decimal)
+          // Regra: se tem ponto E vírgula → ponto é milhar, vírgula é decimal (ex: 1.531,5)
+          // Se tem apenas ponto → verificar se é milhar (3 dígitos após) ou decimal
+          // Se tem apenas vírgula → é decimal
+          
+          if (numStr.includes(',') && numStr.includes('.')) {
+            // Formato: 1.531,5 → remover ponto de milhar, trocar vírgula por ponto
+            numStr = numStr.replace(/\./g, '').replace(',', '.');
+          } else if (numStr.includes(',')) {
+            // Formato: 268,8 → trocar vírgula por ponto
+            numStr = numStr.replace(',', '.');
+          } else if (numStr.includes('.')) {
+            // Formato: 1.531 ou 268.8
+            // Se tem exatamente 3 dígitos após o ponto, provavelmente é milhar
+            const parts = numStr.split('.');
+            if (parts.length === 2 && parts[1].length === 3) {
+              // Para campos de peso: 1.531 = 1531g (milhar)
+              // Para campos de medida em mm: 268.800 seria absurdo, então é milhar
+              if (camposPeso.includes(campo)) {
+                numStr = numStr.replace('.', ''); // remover ponto de milhar
+              } else if (camposMedidaMM.includes(campo)) {
+                // Para CA: 268.800 não faz sentido, mas 268.8 sim
+                // Se 3 dígitos após ponto E valor > 1000, é milhar
+                const testVal = parseFloat(numStr.replace('.', ''));
+                if (testVal > 500) {
+                  numStr = numStr.replace('.', ''); // milhar
+                }
+                // senão manter como decimal (268.8)
+              }
+            }
+            // Se não tem 3 dígitos após ponto, é decimal normal (268.8)
+          }
+          
+          // Reconstruir o valor
+          const cleanNum = parseFloat(numStr);
+          if (!isNaN(cleanNum)) {
+            dadosFiltrados[campo] = unit ? `${cleanNum} ${unit}${rest}` : (rest ? `${cleanNum}${rest}` : `${cleanNum}`);
+          }
+        }
+        
+        console.log(`[Ultrassom] Normalizado ${campo}: "${val}" → "${dadosFiltrados[campo]}"`);
+      }
     }
 
     // Post-processing: garantir que campos binários tenham valor padrão

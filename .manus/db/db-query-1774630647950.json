@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE gestanteId = 330025 AND id >= 1770006 ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE gestanteId = 330025 AND id >= 1770006 ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1770006",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-02-18",
+      "pesoFetal": "\"1531 g\"",
+      "ca": "\"268.8 mm\""
+    },
+    {
+      "id": "1770007",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-04",
+      "pesoFetal": "\"1890 g\"",
+      "ca": "\"289.4 mm\""
+    },
+    {
+      "id": "1770008",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-25",
+      "pesoFetal": "\"2537 g\"",
+      "ca": "\"319.4 mm\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tpesoFetal\tca\n1770006\tultrassom_seguimento\t2026-02-18\t\"1531 g\"\t\"268.8 mm\"\n1770007\tultrassom_seguimento\t2026-03-04\t\"1890 g\"\t\"289.4 mm\"\n1770008\tultrassom_seguimento\t2026-03-25\t\"2537 g\"\t\"319.4 mm\"\n",
+  "stderr": "",
+  "execution_time_ms": 352
+}

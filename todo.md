@@ -2703,3 +2703,14 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Step 5: routers.ts - verificar normalização (já automática)
 - [x] Step 6: CartaoPrenatal.tsx - adicionar ao PDF se aplicável
 - [x] Step 7: Escrever testes de normalização
+
+## Logo Dra. Fabiana Mautoni - Clínica 00003 (27/03/2026)
+- [x] Investigar sistema de logos por clínica (banco de dados, frontend) - já suportado via campo logoUrl na tabela clinicas
+- [x] Upload da logo para S3 via manus-upload-file (CDN: logo_fabiana_mautoni_5bcfba38.webp)
+- [x] Configurar logo no banco de dados para clínica 00003 (id=60001, logoUrl atualizada)
+- [x] Verificar exibição na página de login e sidebar - CONFIRMADO: logo aparece corretamente
+
+## Bug Fix: Peso Fetal e CA nos Ultrassons (27/03/2026)
+- [x] Investigar e corrigir peso fetal incorreto (queda irreal na curva) nos USGs inseridos da Bruna
+- [x] Investigar e corrigir CA com casa decimal a mais nos USGs inseridos da Bruna + 2 outras gestantes
+- [x] Corrigir DEFINITIVAMENTE o problema da CA no sistema de interpretação IA (interpretarUltrassom.ts) - 3 camadas de proteção

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '1531 g') WHERE id = 1770006;\nUPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '1890 g') WHERE id = 1770007;\nUPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '2537 g') WHERE id = 1770008;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute UPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '1531 g') WHERE id = 1770006;\nUPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '1890 g') WHERE id = 1770007;\nUPDATE ultrassons SET dados = JSON_SET(dados, '$.pesoFetal', '2537 g') WHERE id = 1770008;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 468
+}

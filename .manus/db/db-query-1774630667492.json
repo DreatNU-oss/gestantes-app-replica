@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, gestanteId, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE JSON_EXTRACT(dados, '$.circunferenciaAbdominal') LIKE '%,%' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, gestanteId, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE JSON_EXTRACT(dados, '$.circunferenciaAbdominal') LIKE '%,%' LIMIT 10;",
+  "rows": [
+    {
+      "id": "1410003",
+      "gestanteId": "2850002",
+      "ca": "\"174,0 mm\""
+    },
+    {
+      "id": "1470007",
+      "gestanteId": "2580003",
+      "ca": "\"182,5\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\tca\n1410003\t2850002\t\"174,0 mm\"\n1470007\t2580003\t\"182,5\"\n",
+  "stderr": "",
+  "execution_time_ms": 358
+}

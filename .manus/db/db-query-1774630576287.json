@@ -1,0 +1,82 @@
+{
+  "query": "SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE gestanteId = 330025 ORDER BY dataExame;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, tipoUltrassom, dataExame, idadeGestacional, JSON_EXTRACT(dados, '$.pesoFetal') as pesoFetal, JSON_EXTRACT(dados, '$.percentilPeso') as percentilPeso, JSON_EXTRACT(dados, '$.circunferenciaAbdominal') as ca FROM ultrassons WHERE gestanteId = 330025 ORDER BY dataExame;",
+  "rows": [
+    {
+      "id": "1770001",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2025-09-01",
+      "idadeGestacional": "6 semanas e 6 dias",
+      "pesoFetal": "NULL",
+      "percentilPeso": "NULL",
+      "ca": "NULL"
+    },
+    {
+      "id": "1770002",
+      "tipoUltrassom": "morfologico_1tri",
+      "dataExame": "2025-10-21",
+      "idadeGestacional": "13 semanas e 2 dias",
+      "pesoFetal": "NULL",
+      "percentilPeso": "NULL",
+      "ca": "NULL"
+    },
+    {
+      "id": "1770003",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-11-26",
+      "idadeGestacional": "18 semanas e 3 dias",
+      "pesoFetal": "\"231 g\"",
+      "percentilPeso": "\"34,0\"",
+      "ca": "NULL"
+    },
+    {
+      "id": "1770004",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2025-12-29",
+      "idadeGestacional": "23 semanas e 1 dia",
+      "pesoFetal": "\"563 g\"",
+      "percentilPeso": "\"40,0\"",
+      "ca": "NULL"
+    },
+    {
+      "id": "1770005",
+      "tipoUltrassom": "ultrassom_obstetrico",
+      "dataExame": "2026-01-21",
+      "idadeGestacional": "26 semanas e 3 dias",
+      "pesoFetal": "\"907 g\"",
+      "percentilPeso": "\"30,3\"",
+      "ca": "NULL"
+    },
+    {
+      "id": "1770006",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-02-18",
+      "idadeGestacional": "30 semanas e 3 dias",
+      "pesoFetal": "\"1.531 g\"",
+      "percentilPeso": "\"30,7\"",
+      "ca": "\"268,8 mm\""
+    },
+    {
+      "id": "1770007",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-04",
+      "idadeGestacional": "32 semanas e 3 dias",
+      "pesoFetal": "\"1.890 g\"",
+      "percentilPeso": "\"28,7\"",
+      "ca": "\"289,4 mm\""
+    },
+    {
+      "id": "1770008",
+      "tipoUltrassom": "ultrassom_seguimento",
+      "dataExame": "2026-03-25",
+      "idadeGestacional": "35 semanas e 3 dias",
+      "pesoFetal": "\"2.537 g\"",
+      "percentilPeso": "\"33,6\"",
+      "ca": "\"319,4 mm\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttipoUltrassom\tdataExame\tidadeGestacional\tpesoFetal\tpercentilPeso\tca\n1770001\tprimeiro_ultrassom\t2025-09-01\t6 semanas e 6 dias\tNULL\tNULL\tNULL\n1770002\tmorfologico_1tri\t2025-10-21\t13 semanas e 2 dias\tNULL\tNULL\tNULL\n1770003\tultrassom_obstetrico\t2025-11-26\t18 semanas e 3 dias\t\"231 g\"\t\"34,0\"\tNULL\n1770004\tultrassom_obstetrico\t2025-12-29\t23 semanas e 1 dia\t\"563 g\"\t\"40,0\"\tNULL\n1770005\tultrassom_obstetrico\t2026-01-21\t26 semanas e 3 dias\t\"907 g\"\t\"30,3\"\tNULL\n1770006\tultrassom_seguimento\t2026-02-18\t30 semanas e 3 dias\t\"1.531 g\"\t\"30,7\"\t\"268,8 mm\"\n1770007\tultrassom_seguimento\t2026-03-04\t32 semanas e 3 dias\t\"1.890 g\"\t\"28,7\"\t\"289,4 mm\"\n1770008\tultrassom_seguimento\t2026-03-25\t35 semanas e 3 dias\t\"2.537 g\"\t\"33,6\"\t\"319,4 mm\"\n",
+  "stderr": "",
+  "execution_time_ms": 345
+}

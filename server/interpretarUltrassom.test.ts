@@ -296,3 +296,205 @@ describe('Interpretação de Ultrassons com IA', () => {
     expect(resultado.dataExame).toContain('10/10/2025');
   }, 60000);
 });
+
+
+/**
+ * Testes para a lógica de normalização de valores numéricos brasileiros
+ * usada no pós-processamento do interpretarUltrassom.ts e nos parsers do frontend
+ */
+
+// Reproduzir a lógica de normalização do backend (interpretarUltrassom.ts)
+function normalizarValorNumericoBR(val: string, campo: string): string {
+  const camposMedidaMM = ['circunferenciaAbdominal', 'ccn', 'coloUterinoMedida', 'coloUterino'];
+  const camposPeso = ['pesoFetal'];
+
+  const matchNumUnit = val.match(/^([\d.,\s]+)\s*(mm|cm|g|kg|bpm|%)?(.*)$/i);
+  if (!matchNumUnit) return val;
+
+  let numStr = matchNumUnit[1].trim();
+  const unit = matchNumUnit[2] || '';
+  const rest = matchNumUnit[3] || '';
+
+  if (numStr.includes(',') && numStr.includes('.')) {
+    numStr = numStr.replace(/\./g, '').replace(',', '.');
+  } else if (numStr.includes(',')) {
+    numStr = numStr.replace(',', '.');
+  } else if (numStr.includes('.')) {
+    const parts = numStr.split('.');
+    if (parts.length === 2 && parts[1].length === 3) {
+      if (camposPeso.includes(campo)) {
+        numStr = numStr.replace('.', '');
+      } else if (camposMedidaMM.includes(campo)) {
+        const testVal = parseFloat(numStr.replace('.', ''));
+        if (testVal > 500) {
+          numStr = numStr.replace('.', '');
+        }
+      }
+    }
+  }
+
+  const cleanNum = parseFloat(numStr);
+  if (isNaN(cleanNum)) return val;
+  return unit ? `${cleanNum} ${unit}${rest}` : (rest ? `${cleanNum}${rest}` : `${cleanNum}`);
+}
+
+// Reproduzir a lógica do parsePeso do frontend
+function parsePeso(v: string | undefined | null): number {
+  if (!v) return 0;
+  let s = String(v);
+  if (s.includes(',') && s.includes('.')) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (s.includes(',')) {
+    s = s.replace(',', '.');
+  } else {
+    const m = s.match(/(\d+)\.(\d{3})(?!\d)/);
+    if (m) s = s.replace('.', '');
+  }
+  const n = parseFloat(s.replace(/[^0-9.]/g, ''));
+  return isNaN(n) ? 0 : n;
+}
+
+// Reproduzir a lógica do normalizarNumBR do frontend (parseCA)
+function normalizarNumBR(s: string): number {
+  let clean = s;
+  if (clean.includes(',') && clean.includes('.')) {
+    clean = clean.replace(/\./g, '').replace(',', '.');
+  } else if (clean.includes(',')) {
+    clean = clean.replace(',', '.');
+  }
+  return parseFloat(clean.replace(/[^0-9.]/g, ''));
+}
+
+describe('Normalização de valores numéricos brasileiros (Backend)', () => {
+  describe('Peso Fetal - ponto de milhar', () => {
+    it('deve converter "1.531 g" para "1531 g" (ponto de milhar)', () => {
+      expect(normalizarValorNumericoBR('1.531 g', 'pesoFetal')).toBe('1531 g');
+    });
+
+    it('deve converter "1.890 g" para "1890 g"', () => {
+      expect(normalizarValorNumericoBR('1.890 g', 'pesoFetal')).toBe('1890 g');
+    });
+
+    it('deve converter "2.537 g" para "2537 g"', () => {
+      expect(normalizarValorNumericoBR('2.537 g', 'pesoFetal')).toBe('2537 g');
+    });
+
+    it('deve converter "3.250 g" para "3250 g"', () => {
+      expect(normalizarValorNumericoBR('3.250 g', 'pesoFetal')).toBe('3250 g');
+    });
+
+    it('deve manter "231 g" sem alteração (sem ponto)', () => {
+      expect(normalizarValorNumericoBR('231 g', 'pesoFetal')).toBe('231 g');
+    });
+
+    it('deve manter "563 g" sem alteração', () => {
+      expect(normalizarValorNumericoBR('563 g', 'pesoFetal')).toBe('563 g');
+    });
+
+    it('deve manter "907 g" sem alteração', () => {
+      expect(normalizarValorNumericoBR('907 g', 'pesoFetal')).toBe('907 g');
+    });
+
+    it('deve converter "1.531,5 g" (milhar + decimal) para "1531.5 g"', () => {
+      expect(normalizarValorNumericoBR('1.531,5 g', 'pesoFetal')).toBe('1531.5 g');
+    });
+  });
+
+  describe('Circunferência Abdominal - vírgula decimal', () => {
+    it('deve converter "268,8 mm" para "268.8 mm"', () => {
+      expect(normalizarValorNumericoBR('268,8 mm', 'circunferenciaAbdominal')).toBe('268.8 mm');
+    });
+
+    it('deve converter "289,4 mm" para "289.4 mm"', () => {
+      expect(normalizarValorNumericoBR('289,4 mm', 'circunferenciaAbdominal')).toBe('289.4 mm');
+    });
+
+    it('deve converter "319,4 mm" para "319.4 mm"', () => {
+      expect(normalizarValorNumericoBR('319,4 mm', 'circunferenciaAbdominal')).toBe('319.4 mm');
+    });
+
+    it('deve converter "174,0 mm" para "174 mm"', () => {
+      expect(normalizarValorNumericoBR('174,0 mm', 'circunferenciaAbdominal')).toBe('174 mm');
+    });
+
+    it('deve manter "268.8 mm" sem alteração (já com ponto decimal)', () => {
+      expect(normalizarValorNumericoBR('268.8 mm', 'circunferenciaAbdominal')).toBe('268.8 mm');
+    });
+
+    it('deve manter "280 mm" sem alteração (inteiro)', () => {
+      expect(normalizarValorNumericoBR('280 mm', 'circunferenciaAbdominal')).toBe('280 mm');
+    });
+  });
+});
+
+describe('parsePeso (Frontend)', () => {
+  it('deve parsear "1.531 g" como 1531', () => {
+    expect(parsePeso('1.531 g')).toBe(1531);
+  });
+
+  it('deve parsear "1.890 g" como 1890', () => {
+    expect(parsePeso('1.890 g')).toBe(1890);
+  });
+
+  it('deve parsear "2.537 g" como 2537', () => {
+    expect(parsePeso('2.537 g')).toBe(2537);
+  });
+
+  it('deve parsear "231 g" como 231', () => {
+    expect(parsePeso('231 g')).toBe(231);
+  });
+
+  it('deve parsear "907 g" como 907', () => {
+    expect(parsePeso('907 g')).toBe(907);
+  });
+
+  it('deve parsear "1531 g" como 1531 (sem ponto)', () => {
+    expect(parsePeso('1531 g')).toBe(1531);
+  });
+
+  it('deve parsear "1.531,5 g" como 1531.5', () => {
+    expect(parsePeso('1.531,5 g')).toBe(1531.5);
+  });
+
+  it('deve retornar 0 para null', () => {
+    expect(parsePeso(null)).toBe(0);
+  });
+
+  it('deve retornar 0 para undefined', () => {
+    expect(parsePeso(undefined)).toBe(0);
+  });
+});
+
+describe('normalizarNumBR / parseCA (Frontend)', () => {
+  it('deve parsear "268,8 mm" como 268.8', () => {
+    expect(normalizarNumBR('268,8 mm')).toBe(268.8);
+  });
+
+  it('deve parsear "289,4 mm" como 289.4', () => {
+    expect(normalizarNumBR('289,4 mm')).toBe(289.4);
+  });
+
+  it('deve parsear "319,4 mm" como 319.4', () => {
+    expect(normalizarNumBR('319,4 mm')).toBe(319.4);
+  });
+
+  it('deve parsear "174,0 mm" como 174', () => {
+    expect(normalizarNumBR('174,0 mm')).toBe(174);
+  });
+
+  it('deve parsear "268.8 mm" como 268.8 (já com ponto)', () => {
+    expect(normalizarNumBR('268.8 mm')).toBe(268.8);
+  });
+
+  it('deve parsear "280 mm" como 280', () => {
+    expect(normalizarNumBR('280 mm')).toBe(280);
+  });
+
+  it('deve parsear "182,5" como 182.5 (sem unidade)', () => {
+    expect(normalizarNumBR('182,5')).toBe(182.5);
+  });
+
+  it('deve parsear "1.531,5 g" como 1531.5 (milhar + decimal)', () => {
+    expect(normalizarNumBR('1.531,5 g')).toBe(1531.5);
+  });
+});

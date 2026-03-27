@@ -554,7 +554,16 @@ export default function CartaoPrenatalImpressao() {
       {gestante && gestante.dataUltrassom && gestante.igUltrassomSemanas !== null && gestante.igUltrassomSemanas !== undefined && (() => {
         const parsePeso = (v: string | undefined | null): number => {
           if (!v) return 0;
-          const n = parseFloat(String(v).replace(/[^0-9.]/g, ''));
+          let s = String(v);
+          if (s.includes(',') && s.includes('.')) {
+            s = s.replace(/\./g, '').replace(',', '.');
+          } else if (s.includes(',')) {
+            s = s.replace(',', '.');
+          } else {
+            const m = s.match(/(\d+)\.(\d{3})(?!\d)/);
+            if (m) s = s.replace('.', '');
+          }
+          const n = parseFloat(s.replace(/[^0-9.]/g, ''));
           return isNaN(n) ? 0 : n;
         };
         const pontosPeso = (ultrassons as any[])
@@ -563,14 +572,23 @@ export default function CartaoPrenatalImpressao() {
           .filter((p: any) => p.valor > 0);
 
         const parseCA = (us: any): number => {
+          const normalizarNumBR = (s: string): number => {
+            let clean = s;
+            if (clean.includes(',') && clean.includes('.')) {
+              clean = clean.replace(/\./g, '').replace(',', '.');
+            } else if (clean.includes(',')) {
+              clean = clean.replace(',', '.');
+            }
+            return parseFloat(clean.replace(/[^0-9.]/g, ''));
+          };
           if (us.dados?.circunferenciaAbdominal) {
-            const v = parseFloat(String(us.dados.circunferenciaAbdominal).replace(/[^0-9.]/g, ''));
+            const v = normalizarNumBR(String(us.dados.circunferenciaAbdominal));
             if (!isNaN(v) && v > 0) return v <= 100 ? v * 10 : v;
           }
           const bio: string = us.dados?.biometria || '';
-          const match = bio.match(/\bCA\s*[=:\s]?\s*(\d+(?:\.\d+)?)\s*(mm|cm)?/i);
+          const match = bio.match(/\bCA\s*[=:\s]?\s*([\d.,]+)\s*(mm|cm)?/i);
           if (match) {
-            const val = parseFloat(match[1]);
+            const val = normalizarNumBR(match[1]);
             const unit = (match[2] || '').toLowerCase();
             if (!isNaN(val) && val > 0) return unit === 'cm' || val <= 100 ? val * 10 : val;
           }

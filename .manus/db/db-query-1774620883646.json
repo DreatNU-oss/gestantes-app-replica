@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, codigo, nome, logoUrl, corFundo FROM clinicas WHERE codigo = '00003';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, codigo, nome, logoUrl, corFundo FROM clinicas WHERE codigo = '00003';",
+  "rows": [
+    {
+      "id": "60001",
+      "codigo": "00003",
+      "nome": "Clínica 00003",
+      "logoUrl": "NULL",
+      "corFundo": "#FFFFFF"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcodigo\tnome\tlogoUrl\tcorFundo\n60001\t00003\tClínica 00003\tNULL\t#FFFFFF\n",
+  "stderr": "",
+  "execution_time_ms": 387
+}
