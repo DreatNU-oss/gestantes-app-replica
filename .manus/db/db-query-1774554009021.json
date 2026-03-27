@@ -1,0 +1,19 @@
+{
+  "query": "SELECT u.id, u.name, u.email, u.role, u.clinicaId, c.nome as clinicaNome, c.codigo FROM users u LEFT JOIN clinicas c ON u.clinicaId = c.id WHERE u.name LIKE '%Fabiana%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT u.id, u.name, u.email, u.role, u.clinicaId, c.nome as clinicaNome, c.codigo FROM users u LEFT JOIN clinicas c ON u.clinicaId = c.id WHERE u.name LIKE '%Fabiana%';",
+  "rows": [
+    {
+      "id": "30870137",
+      "name": "Fabiana Mautoni",
+      "email": "fabiana.mautoni@gmail.com",
+      "role": "admin",
+      "clinicaId": "60001",
+      "clinicaNome": "Clínica 00003",
+      "codigo": "00003"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tclinicaId\tclinicaNome\tcodigo\n30870137\tFabiana Mautoni\tfabiana.mautoni@gmail.com\tadmin\t60001\tClínica 00003\t00003\n",
+  "stderr": "",
+  "execution_time_ms": 405
+}

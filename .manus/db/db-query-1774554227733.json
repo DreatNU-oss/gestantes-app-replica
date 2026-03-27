@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, name, email, clinicaId FROM users WHERE id = 1 OR email = 'dreatnu@yahoo.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, name, email, clinicaId FROM users WHERE id = 1 OR email = 'dreatnu@yahoo.com';",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Andre Schlemper",
+      "email": "DreatNU@yahoo.com",
+      "clinicaId": "1"
+    },
+    {
+      "id": "29610021",
+      "name": "Andre Schlemper",
+      "email": "DreatNU@yahoo.com",
+      "clinicaId": "30001"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\tclinicaId\n1\tAndre Schlemper\tDreatNU@yahoo.com\t1\n29610021\tAndre Schlemper\tDreatNU@yahoo.com\t30001\n",
+  "stderr": "",
+  "execution_time_ms": 347
+}

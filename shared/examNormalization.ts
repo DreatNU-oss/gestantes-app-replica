@@ -12,7 +12,7 @@
  * Categorias:
  * - SANGUE: Tipagem Sanguínea (ABO/Rh), Coombs Indireto, Hemoglobina/Hematócrito,
  *           Plaquetas, Glicemia de Jejum, VDRL, FTA-ABS IgG, FTA-ABS IgM,
- *           HIV, Hepatite B (HBsAg), Anti-HBs, Hepatite C (Anti-HCV),
+ *           HIV, HTLV 1 e 2, Hepatite B (HBsAg), Anti-HBs, Hepatite C (Anti-HCV),
  *           Toxoplasmose IgG, Toxoplasmose IgM, Rubéola IgG, Rubéola IgM,
  *           Citomegalovírus IgG, Citomegalovírus IgM, TSH, T4 Livre,
  *           Eletroforese de Hemoglobina, Ferritina, Vitamina D (25-OH),
@@ -68,6 +68,27 @@ export const EXAM_NAME_NORMALIZATION: Record<string, string> = {
   // === HIV ===
   'HIV': 'HIV',
   'hiv': 'HIV',
+
+  // === HTLV 1 e 2 ===
+  'HTLV 1 e 2': 'HTLV 1 e 2',
+  'HTLV': 'HTLV 1 e 2',
+  'htlv': 'HTLV 1 e 2',
+  'HTLV I/II': 'HTLV 1 e 2',
+  'HTLV 1/2': 'HTLV 1 e 2',
+  'Anti-HTLV': 'HTLV 1 e 2',
+  'Anti-HTLV I e II': 'HTLV 1 e 2',
+  'Anti-HTLV 1 e 2': 'HTLV 1 e 2',
+  'HTLV I e II': 'HTLV 1 e 2',
+  'HTLV-1/2': 'HTLV 1 e 2',
+  'HTLV I': 'HTLV 1 e 2',
+  'HTLV II': 'HTLV 1 e 2',
+  'HTLV 1': 'HTLV 1 e 2',
+  'HTLV 2': 'HTLV 1 e 2',
+  'Anti HTLV': 'HTLV 1 e 2',
+  'Anti HTLV I e II': 'HTLV 1 e 2',
+  'Anti HTLV 1 e 2': 'HTLV 1 e 2',
+  'Anticorpos Anti-HTLV I/II': 'HTLV 1 e 2',
+  'Pesquisa de Anticorpos Anti-HTLV I/II': 'HTLV 1 e 2',
 
   // === HEPATITE B ===
   'Hepatite B (HBsAg)': 'Hepatite B (HBsAg)',
@@ -198,6 +219,7 @@ export const EXAM_CATEGORIES: Record<string, 'sangue' | 'urina' | 'fezes' | 'egb
   'FTA-ABS IgG': 'sangue',
   'FTA-ABS IgM': 'sangue',
   'HIV': 'sangue',
+  'HTLV 1 e 2': 'sangue',
   'Hepatite B (HBsAg)': 'sangue',
   'Anti-HBs': 'sangue',
   'Hepatite C (Anti-HCV)': 'sangue',

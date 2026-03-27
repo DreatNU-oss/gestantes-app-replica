@@ -1,0 +1,142 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "__drizzle_migrations"
+    },
+    {
+      "TABLE_NAME": "abortamentos"
+    },
+    {
+      "TABLE_NAME": "agendamentosConsultas"
+    },
+    {
+      "TABLE_NAME": "alertasEnviados"
+    },
+    {
+      "TABLE_NAME": "arquivosExames"
+    },
+    {
+      "TABLE_NAME": "clinicas"
+    },
+    {
+      "TABLE_NAME": "codigosAcessoGestante"
+    },
+    {
+      "TABLE_NAME": "condutasPersonalizadas"
+    },
+    {
+      "TABLE_NAME": "configuracoesEmail"
+    },
+    {
+      "TABLE_NAME": "consultasPrenatal"
+    },
+    {
+      "TABLE_NAME": "credenciaisHilum"
+    },
+    {
+      "TABLE_NAME": "emailsAutorizados"
+    },
+    {
+      "TABLE_NAME": "examesLaboratoriais"
+    },
+    {
+      "TABLE_NAME": "fatoresRisco"
+    },
+    {
+      "TABLE_NAME": "feedbackInterpretacoes"
+    },
+    {
+      "TABLE_NAME": "gestantes"
+    },
+    {
+      "TABLE_NAME": "historicoInterpretacoes"
+    },
+    {
+      "TABLE_NAME": "historicoTextos"
+    },
+    {
+      "TABLE_NAME": "hospitais"
+    },
+    {
+      "TABLE_NAME": "justificativasAlerta"
+    },
+    {
+      "TABLE_NAME": "lembretesConduta"
+    },
+    {
+      "TABLE_NAME": "logsAcessoGestante"
+    },
+    {
+      "TABLE_NAME": "logsEmails"
+    },
+    {
+      "TABLE_NAME": "medicamentosGestacao"
+    },
+    {
+      "TABLE_NAME": "medicos"
+    },
+    {
+      "TABLE_NAME": "mensagemTemplates"
+    },
+    {
+      "TABLE_NAME": "mensagensAgendadas"
+    },
+    {
+      "TABLE_NAME": "observacoesPersonalizadas"
+    },
+    {
+      "TABLE_NAME": "opcoesFatoresRisco"
+    },
+    {
+      "TABLE_NAME": "opcoesMedicamentos"
+    },
+    {
+      "TABLE_NAME": "orientacoesEnviadas"
+    },
+    {
+      "TABLE_NAME": "parametrosExames"
+    },
+    {
+      "TABLE_NAME": "partosRealizados"
+    },
+    {
+      "TABLE_NAME": "pedidosExames"
+    },
+    {
+      "TABLE_NAME": "planosSaude"
+    },
+    {
+      "TABLE_NAME": "preConsulta"
+    },
+    {
+      "TABLE_NAME": "procedimentos"
+    },
+    {
+      "TABLE_NAME": "queixasPersonalizadas"
+    },
+    {
+      "TABLE_NAME": "resultadosExames"
+    },
+    {
+      "TABLE_NAME": "sessoesGestante"
+    },
+    {
+      "TABLE_NAME": "ultrassons"
+    },
+    {
+      "TABLE_NAME": "users"
+    },
+    {
+      "TABLE_NAME": "whatsappConfig"
+    },
+    {
+      "TABLE_NAME": "whatsappHistorico"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\n__drizzle_migrations\nabortamentos\nagendamentosConsultas\nalertasEnviados\narquivosExames\nclinicas\ncodigosAcessoGestante\ncondutasPersonalizadas\nconfiguracoesEmail\nconsultasPrenatal\ncredenciaisHilum\nemailsAutorizados\nexamesLaboratoriais\nfatoresRisco\nfeedbackInterpretacoes\ngestantes\nhistoricoInterpretacoes\nhistoricoTextos\nhospitais\njustificativasAlerta\nlembretesConduta\nlogsAcessoGestante\nlogsEmails\nmedicamentosGestacao\nmedicos\nmensagemTemplates\nmensagensAgendadas\nobservacoesPersonalizadas\nopcoesFatoresRisco\nopcoesMedicamentos\norientacoesEnviadas\nparametrosExames\npartosRealizados\npedidosExames\nplanosSaude\npreConsulta\nprocedimentos\nqueixasPersonalizadas\nresultadosExames\nsessoesGestante\nultrassons\nusers\nwhatsappConfig\nwhatsappHistorico\n",
+  "stderr": "",
+  "execution_time_ms": 346
+}

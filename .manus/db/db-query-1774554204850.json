@@ -1,0 +1,42 @@
+{
+  "query": "SELECT 'justificativasAlerta' as tabela, COUNT(*) as total FROM justificativasAlerta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'preConsulta', COUNT(*) FROM preConsulta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'pedidosExames', COUNT(*) FROM pedidosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'arquivosExames', COUNT(*) FROM arquivosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'lembretesConduta', COUNT(*) FROM lembretesConduta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'abortamentos', COUNT(*) FROM abortamentos WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'historicoInterpretacoes', COUNT(*) FROM historicoInterpretacoes WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'orientacoesEnviadas', COUNT(*) FROM orientacoesEnviadas WHERE gestanteId IN (1560002, 2640025);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'justificativasAlerta' as tabela, COUNT(*) as total FROM justificativasAlerta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'preConsulta', COUNT(*) FROM preConsulta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'pedidosExames', COUNT(*) FROM pedidosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'arquivosExames', COUNT(*) FROM arquivosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'lembretesConduta', COUNT(*) FROM lembretesConduta WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'abortamentos', COUNT(*) FROM abortamentos WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'historicoInterpretacoes', COUNT(*) FROM historicoInterpretacoes WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'orientacoesEnviadas', COUNT(*) FROM orientacoesEnviadas WHERE gestanteId IN (1560002, 2640025);",
+  "rows": [
+    {
+      "tabela": "arquivosExames",
+      "total": "0"
+    },
+    {
+      "tabela": "preConsulta",
+      "total": "0"
+    },
+    {
+      "tabela": "justificativasAlerta",
+      "total": "3"
+    },
+    {
+      "tabela": "pedidosExames",
+      "total": "0"
+    },
+    {
+      "tabela": "lembretesConduta",
+      "total": "0"
+    },
+    {
+      "tabela": "historicoInterpretacoes",
+      "total": "1"
+    },
+    {
+      "tabela": "orientacoesEnviadas",
+      "total": "11"
+    },
+    {
+      "tabela": "abortamentos",
+      "total": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "tabela\ttotal\narquivosExames\t0\npreConsulta\t0\njustificativasAlerta\t3\npedidosExames\t0\nlembretesConduta\t0\nhistoricoInterpretacoes\t1\norientacoesEnviadas\t11\nabortamentos\t0\n",
+  "stderr": "",
+  "execution_time_ms": 379
+}

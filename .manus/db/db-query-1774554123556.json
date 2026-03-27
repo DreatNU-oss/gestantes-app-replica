@@ -1,0 +1,106 @@
+{
+  "query": "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME = 'gestanteId' ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME = 'gestanteId' ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "abortamentos",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "agendamentosConsultas",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "alertasEnviados",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "arquivosExames",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "codigosAcessoGestante",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "consultasPrenatal",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "examesLaboratoriais",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "fatoresRisco",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "feedbackInterpretacoes",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "historicoInterpretacoes",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "justificativasAlerta",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "lembretesConduta",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "logsAcessoGestante",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "logsEmails",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "medicamentosGestacao",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "mensagensAgendadas",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "orientacoesEnviadas",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "partosRealizados",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "pedidosExames",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "preConsulta",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "resultadosExames",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "sessoesGestante",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "ultrassons",
+      "COLUMN_NAME": "gestanteId"
+    },
+    {
+      "TABLE_NAME": "whatsappHistorico",
+      "COLUMN_NAME": "gestanteId"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\tCOLUMN_NAME\nabortamentos\tgestanteId\nagendamentosConsultas\tgestanteId\nalertasEnviados\tgestanteId\narquivosExames\tgestanteId\ncodigosAcessoGestante\tgestanteId\nconsultasPrenatal\tgestanteId\nexamesLaboratoriais\tgestanteId\nfatoresRisco\tgestanteId\nfeedbackInterpretacoes\tgestanteId\nhistoricoInterpretacoes\tgestanteId\njustificativasAlerta\tgestanteId\nlembretesConduta\tgestanteId\nlogsAcessoGestante\tgestanteId\nlogsEmails\tgestanteId\nmedicamentosGestacao\tgestanteId\nmensagensAgendadas\tgestanteId\norientacoesEnviadas\tgestanteId\npartosRealizados\tgestanteId\npedidosExames\tgestanteId\npreConsulta\tgestanteId\nresultadosExames\tgestanteId\nsessoesGestante\tgestanteId\nultrassons\tgestanteId\nwhatsappHistorico\tgestanteId\n",
+  "stderr": "",
+  "execution_time_ms": 362
+}

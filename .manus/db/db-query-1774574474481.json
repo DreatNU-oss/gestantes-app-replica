@@ -1,0 +1,9 @@
+{
+  "query": "SELECT 'gestantes_modificadas' as acao, g.id, g.nome, g.updatedAt FROM gestantes g WHERE g.clinicaId = 30001 AND DATE(g.updatedAt) = CURDATE(); SELECT 'exames_criados' as acao, re.id, re.nomeExame, re.resultado, re.createdAt FROM resultadosExames re JOIN gestantes g2 ON re.gestanteId = g2.id WHERE g2.clinicaId = 30001 AND DATE(re.createdAt) = CURDATE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'gestantes_modificadas' as acao, g.id, g.nome, g.updatedAt FROM gestantes g WHERE g.clinicaId = 30001 AND DATE(g.updatedAt) = CURDATE(); SELECT 'exames_criados' as acao, re.id, re.nomeExame, re.resultado, re.createdAt FROM resultadosExames re JOIN gestantes g2 ON re.gestanteId = g2.id WHERE g2.clinicaId = 30001 AND DATE(re.createdAt) = CURDATE()",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 417
+}

@@ -1,0 +1,42 @@
+{
+  "query": "SELECT 'consultasPrenatal' as tabela, COUNT(*) as total FROM consultasPrenatal WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'examesLaboratoriais', COUNT(*) FROM examesLaboratoriais WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'medicamentosGestacao', COUNT(*) FROM medicamentosGestacao WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'fatoresRisco', COUNT(*) FROM fatoresRisco WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'partosRealizados', COUNT(*) FROM partosRealizados WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'agendamentosConsultas', COUNT(*) FROM agendamentosConsultas WHERE gestanteId IN (1560002, 2640025);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'consultasPrenatal' as tabela, COUNT(*) as total FROM consultasPrenatal WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'examesLaboratoriais', COUNT(*) FROM examesLaboratoriais WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'medicamentosGestacao', COUNT(*) FROM medicamentosGestacao WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'fatoresRisco', COUNT(*) FROM fatoresRisco WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'partosRealizados', COUNT(*) FROM partosRealizados WHERE gestanteId IN (1560002, 2640025) UNION ALL SELECT 'agendamentosConsultas', COUNT(*) FROM agendamentosConsultas WHERE gestanteId IN (1560002, 2640025);",
+  "rows": [
+    {
+      "tabela": "examesLaboratoriais",
+      "total": "0"
+    },
+    {
+      "tabela": "ultrassons",
+      "total": "11"
+    },
+    {
+      "tabela": "resultadosExames",
+      "total": "324"
+    },
+    {
+      "tabela": "partosRealizados",
+      "total": "0"
+    },
+    {
+      "tabela": "consultasPrenatal",
+      "total": "10"
+    },
+    {
+      "tabela": "agendamentosConsultas",
+      "total": "12"
+    },
+    {
+      "tabela": "fatoresRisco",
+      "total": "5"
+    },
+    {
+      "tabela": "medicamentosGestacao",
+      "total": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "tabela\ttotal\nexamesLaboratoriais\t0\nultrassons\t11\nresultadosExames\t324\npartosRealizados\t0\nconsultasPrenatal\t10\nagendamentosConsultas\t12\nfatoresRisco\t5\nmedicamentosGestacao\t3\n",
+  "stderr": "",
+  "execution_time_ms": 390
+}

@@ -1,0 +1,19 @@
+{
+  "query": "SELECT id, name, email, role, clinicaId, lastSignedIn, createdAt FROM users WHERE email = 'gustavo@bravainovacao.com.br' OR name LIKE '%Gustavo%' OR name LIKE '%gustavo%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, name, email, role, clinicaId, lastSignedIn, createdAt FROM users WHERE email = 'gustavo@bravainovacao.com.br' OR name LIKE '%Gustavo%' OR name LIKE '%gustavo%'",
+  "rows": [
+    {
+      "id": "33630020",
+      "name": "Gustavo Franco",
+      "email": "gustavo@bravainovacao.com.br",
+      "role": "admin",
+      "clinicaId": "30001",
+      "lastSignedIn": "2026-03-26 19:58:01",
+      "createdAt": "2026-03-26 19:50:09"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tclinicaId\tlastSignedIn\tcreatedAt\n33630020\tGustavo Franco\tgustavo@bravainovacao.com.br\tadmin\t30001\t2026-03-26 19:58:01\t2026-03-26 19:50:09\n",
+  "stderr": "",
+  "execution_time_ms": 377
+}

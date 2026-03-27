@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO historicoInterpretacoes (gestanteId, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt) SELECT 3090002, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt FROM historicoInterpretacoes WHERE gestanteId = 1560002;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute INSERT INTO historicoInterpretacoes (gestanteId, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt) SELECT 3090002, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt FROM historicoInterpretacoes WHERE gestanteId = 1560002;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 379
+}

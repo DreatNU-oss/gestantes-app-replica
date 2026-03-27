@@ -1,0 +1,13 @@
+{
+  "query": "SELECT GROUP_CONCAT(TABLE_NAME ORDER BY TABLE_NAME SEPARATOR ', ') as all_tables FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT GROUP_CONCAT(TABLE_NAME ORDER BY TABLE_NAME SEPARATOR ', ') as all_tables FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE();",
+  "rows": [
+    {
+      "all_tables": "__drizzle_migrations, abortamentos, agendamentosConsultas, alertasEnviados, arquivosExames, clinicas, codigosAcessoGestante, condutasPersonalizadas, configuracoesEmail, consultasPrenatal, credenciaisHilum, emailsAutorizados, examesLaboratoriais, fatoresRisco, feedbackInterpretacoes, gestantes, historicoInterpretacoes, historicoTextos, hospitais, justificativasAlerta, lembretesConduta, logsAcessoGestante, logsEmails, medicamentosGestacao, medicos, mensagemTemplates, mensagensAgendadas, observacoesPersonalizadas, opcoesFatoresRisco, opcoesMedicamentos, orientacoesEnviadas, parametrosExames, partosRealizados, pedidosExames, planosSaude, preConsulta, procedimentos, queixasPersonalizadas, resultadosExames, sessoesGestante, ultrassons, users, whatsappConfig, whatsappHistorico"
+    }
+  ],
+  "messages": [],
+  "stdout": "all_tables\n__drizzle_migrations, abortamentos, agendamentosConsultas, alertasEnviados, arquivosExames, clinicas, codigosAcessoGestante, condutasPersonalizadas, configuracoesEmail, consultasPrenatal, credenciaisHilum, emailsAutorizados, examesLaboratoriais, fatoresRisco, feedbackInterpretacoes, gestantes, historicoInterpretacoes, historicoTextos, hospitais, justificativasAlerta, lembretesConduta, logsAcessoGestante, logsEmails, medicamentosGestacao, medicos, mensagemTemplates, mensagensAgendadas, observacoesPersonalizadas, opcoesFatoresRisco, opcoesMedicamentos, orientacoesEnviadas, parametrosExames, partosRealizados, pedidosExames, planosSaude, preConsulta, procedimentos, queixasPersonalizadas, resultadosExames, sessoesGestante, ultrassons, users, whatsappConfig, whatsappHistorico\n",
+  "stderr": "",
+  "execution_time_ms": 402
+}

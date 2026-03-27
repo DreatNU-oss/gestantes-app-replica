@@ -1,0 +1,13 @@
+{
+  "query": "SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') as cols FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'historicoInterpretacoes';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT GROUP_CONCAT(COLUMN_NAME ORDER BY ORDINAL_POSITION SEPARATOR ', ') as cols FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'historicoInterpretacoes';",
+  "rows": [
+    {
+      "cols": "id, gestanteId, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt"
+    }
+  ],
+  "messages": [],
+  "stdout": "cols\nid, gestanteId, tipoInterpretacao, tipoExame, arquivosProcessados, resultadoJson, dataInterpretacao, createdAt\n",
+  "stderr": "",
+  "execution_time_ms": 358
+}

@@ -1218,7 +1218,7 @@ export default function CartaoPrenatal() {
         // Sequência canônica de exames
         const EXAMES_SANGUE_PDF = [
             'Tipagem Sanguínea (ABO/Rh)', 'Coombs Indireto', 'Hemoglobina/Hematócrito', 'Plaquetas',
-            'Glicemia de Jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'Hepatite B (HBsAg)',
+            'Glicemia de Jejum', 'VDRL', 'FTA-ABS IgG', 'FTA-ABS IgM', 'HIV', 'HTLV 1 e 2', 'Hepatite B (HBsAg)',
             'Anti-HBs', 'Hepatite C (Anti-HCV)', 'Toxoplasmose IgG', 'Toxoplasmose IgM',
             'Rubéola IgG', 'Rubéola IgM', 'Citomegalovírus IgG', 'Citomegalovírus IgM',
             'TSH', 'T4 Livre', 'Eletroforese de Hemoglobina', 'Ferritina',

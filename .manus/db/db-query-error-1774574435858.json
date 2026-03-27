@@ -1,0 +1,8 @@
+{
+  "query": "SELECT 'gestantes' as tabela, COUNT(*) as total FROM gestantes WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'consultasPrenatal', COUNT(*) FROM consultasPrenatal WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE userId = 33630020 AND DATE(createdAt) = CURDATE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'gestantes' as tabela, COUNT(*) as total FROM gestantes WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'consultasPrenatal', COUNT(*) FROM consultasPrenatal WHERE userId = 33630020 AND DATE(createdAt) = CURDATE() UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE userId = 33630020 AND DATE(createdAt) = CURDATE()",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'userid' in 'where clause'"
+  ]
+}

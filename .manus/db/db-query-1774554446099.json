@@ -1,0 +1,50 @@
+{
+  "query": "SELECT 'gestantes' as tabela, COUNT(*) as total FROM gestantes WHERE id IN (3090002, 3090003) UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'consultasPrenatal', COUNT(*) FROM consultasPrenatal WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'agendamentosConsultas', COUNT(*) FROM agendamentosConsultas WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'fatoresRisco', COUNT(*) FROM fatoresRisco WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'medicamentosGestacao', COUNT(*) FROM medicamentosGestacao WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'justificativasAlerta', COUNT(*) FROM justificativasAlerta WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'historicoInterpretacoes', COUNT(*) FROM historicoInterpretacoes WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'orientacoesEnviadas', COUNT(*) FROM orientacoesEnviadas WHERE gestanteId IN (3090002, 3090003);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'gestantes' as tabela, COUNT(*) as total FROM gestantes WHERE id IN (3090002, 3090003) UNION ALL SELECT 'resultadosExames', COUNT(*) FROM resultadosExames WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'consultasPrenatal', COUNT(*) FROM consultasPrenatal WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'ultrassons', COUNT(*) FROM ultrassons WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'agendamentosConsultas', COUNT(*) FROM agendamentosConsultas WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'fatoresRisco', COUNT(*) FROM fatoresRisco WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'medicamentosGestacao', COUNT(*) FROM medicamentosGestacao WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'justificativasAlerta', COUNT(*) FROM justificativasAlerta WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'historicoInterpretacoes', COUNT(*) FROM historicoInterpretacoes WHERE gestanteId IN (3090002, 3090003) UNION ALL SELECT 'orientacoesEnviadas', COUNT(*) FROM orientacoesEnviadas WHERE gestanteId IN (3090002, 3090003);",
+  "rows": [
+    {
+      "tabela": "gestantes",
+      "total": "2"
+    },
+    {
+      "tabela": "agendamentosConsultas",
+      "total": "12"
+    },
+    {
+      "tabela": "ultrassons",
+      "total": "11"
+    },
+    {
+      "tabela": "consultasPrenatal",
+      "total": "10"
+    },
+    {
+      "tabela": "resultadosExames",
+      "total": "324"
+    },
+    {
+      "tabela": "fatoresRisco",
+      "total": "5"
+    },
+    {
+      "tabela": "medicamentosGestacao",
+      "total": "3"
+    },
+    {
+      "tabela": "justificativasAlerta",
+      "total": "3"
+    },
+    {
+      "tabela": "historicoInterpretacoes",
+      "total": "1"
+    },
+    {
+      "tabela": "orientacoesEnviadas",
+      "total": "11"
+    }
+  ],
+  "messages": [],
+  "stdout": "tabela\ttotal\ngestantes\t2\nagendamentosConsultas\t12\nultrassons\t11\nconsultasPrenatal\t10\nresultadosExames\t324\nfatoresRisco\t5\nmedicamentosGestacao\t3\njustificativasAlerta\t3\nhistoricoInterpretacoes\t1\norientacoesEnviadas\t11\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}

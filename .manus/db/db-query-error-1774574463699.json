@@ -1,0 +1,8 @@
+{
+  "query": "SELECT 'gestantes_modificadas' as acao, g.id, g.nome, g.updatedAt FROM gestantes g WHERE g.clinicaId = 30001 AND DATE(g.updatedAt) = CURDATE() UNION ALL SELECT 'exames_criados', re.id, re.nomeExame, re.createdAt FROM resultadosExames re JOIN gestantes g2 ON re.gestanteId = g2.id WHERE g2.clinicaId = 30001 AND DATE(re.createdAt) = CURDATE() UNION ALL SELECT 'consultas_criadas', cp.id, CAST(cp.idadeGestacional AS CHAR), cp.createdAt FROM consultasPrenatal cp JOIN gestantes g3 ON cp.gestanteId = g3.id WHERE g3.clinicaId = 30001 AND DATE(cp.createdAt) = CURDATE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'gestantes_modificadas' as acao, g.id, g.nome, g.updatedAt FROM gestantes g WHERE g.clinicaId = 30001 AND DATE(g.updatedAt) = CURDATE() UNION ALL SELECT 'exames_criados', re.id, re.nomeExame, re.createdAt FROM resultadosExames re JOIN gestantes g2 ON re.gestanteId = g2.id WHERE g2.clinicaId = 30001 AND DATE(re.createdAt) = CURDATE() UNION ALL SELECT 'consultas_criadas', cp.id, CAST(cp.idadeGestacional AS CHAR), cp.createdAt FROM consultasPrenatal cp JOIN gestantes g3 ON cp.gestanteId = g3.id WHERE g3.clinicaId = 30001 AND DATE(cp.createdAt) = CURDATE()",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'cp.idadegestacional' in 'field list'"
+  ]
+}

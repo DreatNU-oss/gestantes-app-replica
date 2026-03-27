@@ -1,0 +1,22 @@
+{
+  "query": "SELECT g.id, g.nome, g.updatedAt, g.createdAt FROM gestantes g WHERE g.clinicaId = 30001 ORDER BY g.updatedAt DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, g.updatedAt, g.createdAt FROM gestantes g WHERE g.clinicaId = 30001 ORDER BY g.updatedAt DESC",
+  "rows": [
+    {
+      "id": "3090003",
+      "nome": "Poli Antunes",
+      "updatedAt": "2026-03-18 18:00:31",
+      "createdAt": "2026-03-18 18:00:31"
+    },
+    {
+      "id": "3090002",
+      "nome": "TESTE TESTE",
+      "updatedAt": "2026-03-15 04:22:11",
+      "createdAt": "2026-01-21 16:18:45"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tupdatedAt\tcreatedAt\n3090003\tPoli Antunes\t2026-03-18 18:00:31\t2026-03-18 18:00:31\n3090002\tTESTE TESTE\t2026-03-15 04:22:11\t2026-01-21 16:18:45\n",
+  "stderr": "",
+  "execution_time_ms": 374
+}

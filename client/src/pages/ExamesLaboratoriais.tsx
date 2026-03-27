@@ -182,6 +182,7 @@ const EXAMES_SOROLOGICOS = [
   "Citomegalovírus IgG",
   "Citomegalovírus IgM",
   "HIV",
+  "HTLV 1 e 2",
   "Hepatite C (Anti-HCV)",
   "Hepatite B (HBsAg)",
   "Anti-HBs",
@@ -1284,7 +1285,7 @@ export default function ExamesLaboratoriais() {
   // Helper: renderizar célula de resultado read-only para linhas extras do histórico
   const renderResultadoReadOnly = (nomeExame: string, resultado: string, trimestre: number) => {
     const EXAMES_SOROLOGICOS_LOCAL = [
-      "VDRL", "FTA-ABS IgG", "FTA-ABS IgM", "HIV",
+      "VDRL", "FTA-ABS IgG", "FTA-ABS IgM", "HIV", "HTLV 1 e 2",
       "Hepatite B (HBsAg)", "Anti-HBs", "Hepatite C (Anti-HCV)",
       "Toxoplasmose IgG", "Toxoplasmose IgM",
       "Rubéola IgG", "Rubéola IgM",

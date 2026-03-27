@@ -1,0 +1,25 @@
+{
+  "query": "SHOW TABLES LIKE '%ativ%'; SHOW TABLES LIKE '%audit%'; SHOW TABLES LIKE '%session%'; SHOW TABLES LIKE '%hist%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SHOW TABLES LIKE '%ativ%'; SHOW TABLES LIKE '%audit%'; SHOW TABLES LIKE '%session%'; SHOW TABLES LIKE '%hist%'",
+  "rows": [
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)": "justificativasAlerta"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)": "Tables_in_bSA4q7aMJsJeSmafooCq7A (%hist%)"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)": "historicoInterpretacoes"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)": "historicoTextos"
+    },
+    {
+      "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)": "whatsappHistorico"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_bSA4q7aMJsJeSmafooCq7A (%ativ%)\njustificativasAlerta\nTables_in_bSA4q7aMJsJeSmafooCq7A (%hist%)\nhistoricoInterpretacoes\nhistoricoTextos\nwhatsappHistorico\n",
+  "stderr": "",
+  "execution_time_ms": 528
+}

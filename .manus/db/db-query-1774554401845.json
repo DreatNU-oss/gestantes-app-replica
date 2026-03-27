@@ -1,0 +1,20 @@
+{
+  "query": "SELECT * FROM ultrassons WHERE gestanteId = 1560002 LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT * FROM ultrassons WHERE gestanteId = 1560002 LIMIT 1;",
+  "rows": [
+    {
+      "id": "510001",
+      "gestanteId": "1560002",
+      "tipoUltrassom": "primeiro_ultrassom",
+      "dataExame": "2025-08-08",
+      "idadeGestacional": "7s 0d",
+      "dados": "{\"bcf\": \"145 bpm\", \"ccn\": \"10mm\", \"corpoLuteo\": \"Presente\", \"dpp\": \"2026-02-18\", \"hematoma\": \"Não\", \"sacoVitelino\": \"Presente\"}",
+      "createdAt": "2026-01-21 16:18:46",
+      "updatedAt": "2026-02-13 12:54:09"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tgestanteId\ttipoUltrassom\tdataExame\tidadeGestacional\tdados\tcreatedAt\tupdatedAt\n510001\t1560002\tprimeiro_ultrassom\t2025-08-08\t7s 0d\t{\"bcf\": \"145 bpm\", \"ccn\": \"10mm\", \"corpoLuteo\": \"Presente\", \"dpp\": \"2026-02-18\", \"hematoma\": \"Não\", \"sacoVitelino\": \"Presente\"}\t2026-01-21 16:18:46\t2026-02-13 12:54:09\n",
+  "stderr": "",
+  "execution_time_ms": 356
+}

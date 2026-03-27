@@ -1,0 +1,9 @@
+{
+  "query": "SELECT 'exames_atualizados' as acao, re.id, re.nomeExame, re.resultado, re.updatedAt FROM resultadosExames re WHERE re.gestanteId IN (3090002, 3090003) AND DATE(re.updatedAt) = CURDATE(); SELECT 'consultas' as acao, cp.id, cp.createdAt, cp.updatedAt FROM consultasPrenatal cp WHERE cp.gestanteId IN (3090002, 3090003) AND DATE(cp.updatedAt) = CURDATE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'exames_atualizados' as acao, re.id, re.nomeExame, re.resultado, re.updatedAt FROM resultadosExames re WHERE re.gestanteId IN (3090002, 3090003) AND DATE(re.updatedAt) = CURDATE(); SELECT 'consultas' as acao, cp.id, cp.createdAt, cp.updatedAt FROM consultasPrenatal cp WHERE cp.gestanteId IN (3090002, 3090003) AND DATE(cp.updatedAt) = CURDATE()",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 403
+}

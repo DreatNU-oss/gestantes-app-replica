@@ -1,0 +1,8 @@
+{
+  "query": "SELECT 'gestantes_criadas' as acao, COUNT(*) as total FROM gestantes WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'gestantes_atualizadas', COUNT(*) FROM gestantes WHERE `userId` = 33630020 AND DATE(`updatedAt`) = CURDATE() UNION ALL SELECT 'exames_criados', COUNT(*) FROM `resultadosExames` WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'consultas_criadas', COUNT(*) FROM `consultasPrenatal` WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'ultrassons_criados', COUNT(*) FROM ultrassons WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT 'gestantes_criadas' as acao, COUNT(*) as total FROM gestantes WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'gestantes_atualizadas', COUNT(*) FROM gestantes WHERE `userId` = 33630020 AND DATE(`updatedAt`) = CURDATE() UNION ALL SELECT 'exames_criados', COUNT(*) FROM `resultadosExames` WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'consultas_criadas', COUNT(*) FROM `consultasPrenatal` WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE() UNION ALL SELECT 'ultrassons_criados', COUNT(*) FROM ultrassons WHERE `userId` = 33630020 AND DATE(`createdAt`) = CURDATE()",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'userid' in 'where clause'"
+  ]
+}

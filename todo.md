@@ -2688,3 +2688,18 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Implementar deduplicação no buscarTodosParaPdf: mesma lógica
 - [x] Testar: 1158/1158 testes passando
 - [x] Validar visualmente: TESTE TESTE mostra linhas extras corretas (sem explosão de duplicatas)
+
+## Copiar Pacientes para Clínica 00002 e Mensagem WhatsApp (26/03/2026)
+- [x] Copiar TESTE TESTE (id=1560002 → id=3090002) para clínica 00002 (clinicaId=30001)
+- [x] Copiar Poli Antunes (id=2640025 → id=3090003) para clínica 00002 (clinicaId=30001)
+- [x] Copiar todas as tabelas filhas: resultadosExames(324), consultasPrenatal(10), ultrassons(11), agendamentos(12), fatoresRisco(5), medicamentos(3), justificativas(3), historico(1), orientacoes(11)
+- [x] Enviar mensagem WhatsApp para Gustavo (+55 35 99958-7881) explicando como acessar (msgId: 37592400)
+
+## Adicionar Exame HTLV 1 e 2 (26/03/2026)
+- [x] Step 1: examesConfig.ts - adicionar após HIV, antes de HBsAg
+- [x] Step 2: ExamesLaboratoriais.tsx - adicionar a EXAMES_SOROLOGICOS e EXAMES_SOROLOGICOS_LOCAL
+- [x] Step 3: examNormalization.ts - adicionar variantes
+- [x] Step 4: interpretarExames.ts - adicionar ao prompt IA, getAllExames e getExamesEsperadosPorTrimestre
+- [x] Step 5: routers.ts - verificar normalização (já automática)
+- [x] Step 6: CartaoPrenatal.tsx - adicionar ao PDF se aplicável
+- [x] Step 7: Escrever testes de normalização

@@ -87,6 +87,28 @@ describe('normalizeExamName', () => {
     expect(normalizeExamName('Swab vaginal/retal EGB')).toBe('Estreptococo Grupo B (EGB)');
   });
 
+  it('normalizes HTLV 1 e 2 variations', () => {
+    expect(normalizeExamName('HTLV 1 e 2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('htlv')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV I/II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV 1/2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti-HTLV')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti-HTLV I e II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti-HTLV 1 e 2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV I e II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV-1/2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV I')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV 1')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('HTLV 2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti HTLV')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti HTLV I e II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anti HTLV 1 e 2')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Anticorpos Anti-HTLV I/II')).toBe('HTLV 1 e 2');
+    expect(normalizeExamName('Pesquisa de Anticorpos Anti-HTLV I/II')).toBe('HTLV 1 e 2');
+  });
+
   it('normalizes Coombs Indireto', () => {
     expect(normalizeExamName('Coombs indireto')).toBe('Coombs Indireto');
     expect(normalizeExamName('Coombs Indireto')).toBe('Coombs Indireto');
@@ -124,6 +146,7 @@ describe('getExamCategory', () => {
   it('returns sangue for blood exams', () => {
     expect(getExamCategory('Tipagem Sanguínea (ABO/Rh)')).toBe('sangue');
     expect(getExamCategory('HIV')).toBe('sangue');
+    expect(getExamCategory('HTLV 1 e 2')).toBe('sangue');
     expect(getExamCategory('TSH')).toBe('sangue');
     expect(getExamCategory('Hemoglobina/Hematócrito')).toBe('sangue');
     expect(getExamCategory('TOTG 75g')).toBe('sangue');

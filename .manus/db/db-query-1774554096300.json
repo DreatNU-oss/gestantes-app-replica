@@ -1,0 +1,25 @@
+{
+  "query": "SELECT id, nome, clinicaId FROM gestantes WHERE nome LIKE '%TESTE%' OR nome LIKE '%Poli%' OR nome LIKE '%poli%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome, clinicaId FROM gestantes WHERE nome LIKE '%TESTE%' OR nome LIKE '%Poli%' OR nome LIKE '%poli%';",
+  "rows": [
+    {
+      "id": "330082",
+      "nome": "Poliane Amado Silva do Prado",
+      "clinicaId": "1"
+    },
+    {
+      "id": "1560002",
+      "nome": "TESTE TESTE",
+      "clinicaId": "1"
+    },
+    {
+      "id": "2640025",
+      "nome": "Poli Antunes",
+      "clinicaId": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tclinicaId\n330082\tPoliane Amado Silva do Prado\t1\n1560002\tTESTE TESTE\t1\n2640025\tPoli Antunes\t1\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

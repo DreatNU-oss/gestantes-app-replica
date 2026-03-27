@@ -88,6 +88,9 @@ export async function interpretarExamesComIA(
    **HIV:**
    - "Anti-HIV", "HIV 1 e 2", "HIV", "Sorologia para HIV", "HIV 1/2" → "HIV"
 
+   **HTLV:**
+   - "HTLV", "HTLV I/II", "HTLV 1/2", "HTLV 1 e 2", "HTLV I e II", "Anti-HTLV", "Anti-HTLV I e II", "Anti-HTLV 1 e 2", "Anticorpos Anti-HTLV I/II", "Pesquisa de Anticorpos Anti-HTLV I/II" → "HTLV 1 e 2"
+
    **HEPATITES:**
    - "HBsAg", "Antígeno de Superfície Hepatite B", "Hepatite B", "AgHBs" → "Hepatite B (HBsAg)"
    - "Anti-HBs", "Anticorpo Anti-HBs" → "Anti-HBs"
@@ -138,7 +141,7 @@ export async function interpretarExamesComIA(
    - Para exames de contagem: extraia o valor com unidade (ex: "12.5 g/dL", "191.000 /mm³")
    - Para resultados qualitativos: use "Reagente", "Não Reagente", "Positivo", "Negativo"
    
-   **REGRA CRÍTICA PARA SOROLOGIAS (IgG, IgM, HIV, Hepatites, Anti-HBs, Coombs):**
+   **REGRA CRÍTICA PARA SOROLOGIAS (IgG, IgM, HIV, HTLV, Hepatites, Anti-HBs, Coombs):**
    - O valor DEVE SEMPRE conter a interpretação qualitativa (Reagente/Não Reagente/Indeterminado)
    - Se houver valor numérico, inclua-o JUNTO com a interpretação: "0.08 (Não Reagente)"
    - NUNCA retorne apenas o valor numérico sem a interpretação qualitativa
@@ -453,6 +456,7 @@ function getExamesEsperadosPorTrimestre(trimestre: "primeiro" | "segundo" | "ter
     { nome: "FTA-ABS IgG", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "FTA-ABS IgM", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "HIV", trimestres: { primeiro: true, segundo: true, terceiro: true } },
+    { nome: "HTLV 1 e 2", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Hepatite B (HBsAg)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Anti-HBs", trimestres: { primeiro: true, segundo: true, terceiro: true } },
     { nome: "Hepatite C (Anti-HCV)", trimestres: { primeiro: true, segundo: true, terceiro: true } },
@@ -510,6 +514,7 @@ function getAllExames(): string[] {
     "FTA-ABS IgG",
     "FTA-ABS IgM",
     "HIV",
+    "HTLV 1 e 2",
     "Hepatite B (HBsAg)",
     "Anti-HBs",
     "Hepatite C (Anti-HCV)",
