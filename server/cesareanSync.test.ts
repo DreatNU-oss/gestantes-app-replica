@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from "./cesareanSync";
+import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin, normalizarConvenioParaApi } from "./cesareanSync";
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -186,13 +186,13 @@ describe("cesareanSync", () => {
       expect(progressCalls[0]).toEqual({ current: 1, total: 3, nome: "Maria" });
     });
 
-    it("maps plano de saude to convenio correctly", async () => {
+    it("maps plano de saude to convenio correctly when convenioCirurgia is null", async () => {
       mockFetch.mockResolvedValueOnce({
         json: async () => ({ success: true, atualizado: false }),
       });
 
       await sincronizarTodasCesareasComAdmin([
-        { id: 1, nome: "Maria", dataPartoProgramado: "2026-04-15", planoSaudeNome: "Unimed Nacional" },
+        { id: 1, nome: "Maria", dataPartoProgramado: "2026-04-15", planoSaudeNome: "Unimed Nacional", convenioCirurgia: null },
       ]);
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
@@ -238,6 +238,60 @@ describe("cesareanSync", () => {
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.convenio).toBe("Particular");
       expect(body.procedimento).toBe("Laparoscopia diagnóstica");
+    });
+  });
+
+  describe("normalizarConvenioParaApi", () => {
+    it("normalizes 'Unimed (inclui o parto)' to 'Unimed'", () => {
+      expect(normalizarConvenioParaApi("Unimed (inclui o parto)")).toBe("Unimed");
+    });
+
+    it("normalizes 'Unimed (ambulatorial)' to 'Unimed'", () => {
+      expect(normalizarConvenioParaApi("Unimed (ambulatorial)")).toBe("Unimed");
+    });
+
+    it("normalizes 'Unimed Nacional' to 'Unimed'", () => {
+      expect(normalizarConvenioParaApi("Unimed Nacional")).toBe("Unimed");
+    });
+
+    it("normalizes plain 'Unimed' to 'Unimed'", () => {
+      expect(normalizarConvenioParaApi("Unimed")).toBe("Unimed");
+    });
+
+    it("normalizes 'FUSEX' to 'FUSEX'", () => {
+      expect(normalizarConvenioParaApi("FUSEX")).toBe("FUSEX");
+    });
+
+    it("normalizes 'Fusex' to 'FUSEX'", () => {
+      expect(normalizarConvenioParaApi("Fusex")).toBe("FUSEX");
+    });
+
+    it("normalizes 'CORTESIA' to 'Cortesia'", () => {
+      expect(normalizarConvenioParaApi("CORTESIA")).toBe("Cortesia");
+    });
+
+    it("normalizes 'Particular' to 'Particular'", () => {
+      expect(normalizarConvenioParaApi("Particular")).toBe("Particular");
+    });
+
+    it("returns 'Particular' for null", () => {
+      expect(normalizarConvenioParaApi(null)).toBe("Particular");
+    });
+
+    it("returns 'Particular' for undefined", () => {
+      expect(normalizarConvenioParaApi(undefined)).toBe("Particular");
+    });
+
+    it("returns 'Particular' for empty string", () => {
+      expect(normalizarConvenioParaApi("")).toBe("Particular");
+    });
+
+    it("normalizes 'COPASS' to 'COPASS'", () => {
+      expect(normalizarConvenioParaApi("COPASS")).toBe("COPASS");
+    });
+
+    it("returns original value for unknown convenio", () => {
+      expect(normalizarConvenioParaApi("Bradesco Saúde")).toBe("Bradesco Saúde");
     });
   });
 });

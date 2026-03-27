@@ -1,0 +1,54 @@
+{
+  "query": "SELECT id, nome FROM planosSaude ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT id, nome FROM planosSaude ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "Particular"
+    },
+    {
+      "id": "2",
+      "nome": "Unimed (ambulatorial)"
+    },
+    {
+      "id": "3",
+      "nome": "Unimed (inclui o parto)"
+    },
+    {
+      "id": "4",
+      "nome": "S.P.A. Saúde"
+    },
+    {
+      "id": "5",
+      "nome": "FUSEX"
+    },
+    {
+      "id": "6",
+      "nome": "COPASS"
+    },
+    {
+      "id": "30001",
+      "nome": "CORTESIA"
+    },
+    {
+      "id": "60001",
+      "nome": "Unimed"
+    },
+    {
+      "id": "60002",
+      "nome": "Fusex"
+    },
+    {
+      "id": "60003",
+      "nome": "Particular"
+    },
+    {
+      "id": "90001",
+      "nome": "Unimed"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\n1\tParticular\n2\tUnimed (ambulatorial)\n3\tUnimed (inclui o parto)\n4\tS.P.A. Saúde\n5\tFUSEX\n6\tCOPASS\n30001\tCORTESIA\n60001\tUnimed\n60002\tFusex\n60003\tParticular\n90001\tUnimed\n",
+  "stderr": "",
+  "execution_time_ms": 350
+}

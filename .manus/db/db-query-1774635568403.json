@@ -1,0 +1,26 @@
+{
+  "query": "SELECT DISTINCT convenioCirurgia, COUNT(*) as total FROM gestantes WHERE convenioCirurgia IS NOT NULL GROUP BY convenioCirurgia",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT DISTINCT convenioCirurgia, COUNT(*) as total FROM gestantes WHERE convenioCirurgia IS NOT NULL GROUP BY convenioCirurgia",
+  "rows": [
+    {
+      "convenioCirurgia": "Unimed",
+      "total": "153"
+    },
+    {
+      "convenioCirurgia": "Particular",
+      "total": "1"
+    },
+    {
+      "convenioCirurgia": "FUSEX",
+      "total": "1"
+    },
+    {
+      "convenioCirurgia": "Unimed (inclui o parto)",
+      "total": "7"
+    }
+  ],
+  "messages": [],
+  "stdout": "convenioCirurgia\ttotal\nUnimed\t153\nParticular\t1\nFUSEX\t1\nUnimed (inclui o parto)\t7\n",
+  "stderr": "",
+  "execution_time_ms": 366
+}

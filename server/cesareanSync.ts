@@ -143,7 +143,9 @@ export async function sincronizarTodasCesareasComAdmin(
       id: gestante.id,
       nomeCompleto: gestante.nome,
       dataCesarea: gestante.dataPartoProgramado,
-      convenio: gestante.convenioCirurgia || mapearConvenio(gestante.planoSaudeNome),
+      convenio: normalizarConvenioParaApi(gestante.convenioCirurgia) !== 'Particular' 
+        ? normalizarConvenioParaApi(gestante.convenioCirurgia) 
+        : mapearConvenio(gestante.planoSaudeNome),
       procedimento: gestante.procedimentoCirurgia || 'Cesárea',
       hospital: gestante.hospitalParto || 'Hospital Unimed',
       observacoes: 'Sincronização em lote - APP Gestantes',
@@ -171,17 +173,29 @@ export async function sincronizarTodasCesareasComAdmin(
 }
 
 /**
- * Mapeia o nome do plano de saúde para o formato esperado pela API do sistema administrativo.
+ * Normaliza qualquer string de convênio para o formato esperado pela API do Mapa Cirúrgico.
+ * Regra: "Unimed (inclui o parto)", "Unimed (ambulatorial)", "Unimed Nacional" etc → "Unimed"
+ * Aplica-se tanto ao campo convenioCirurgia quanto ao nome do plano de saúde.
  */
-function mapearConvenio(planoSaudeNome?: string): string {
-  if (!planoSaudeNome) return 'Particular';
+export function normalizarConvenioParaApi(convenio?: string | null): string {
+  if (!convenio) return 'Particular';
   
-  const nome = planoSaudeNome.toLowerCase();
+  const nome = convenio.toLowerCase().trim();
   if (nome.includes('unimed')) return 'Unimed';
   if (nome.includes('fusex') || nome.includes('fus')) return 'FUSEX';
+  if (nome.includes('copass')) return 'COPASS';
+  if (nome.includes('s.p.a') || nome.includes('spa')) return 'S.P.A. Saúde';
   if (nome.includes('cortesia')) return 'Cortesia';
   if (nome.includes('particular')) return 'Particular';
   
   // Se não reconhecer, retorna o nome original
-  return planoSaudeNome;
+  return convenio;
+}
+
+/**
+ * Mapeia o nome do plano de saúde para o formato esperado pela API do sistema administrativo.
+ * Usa normalizarConvenioParaApi internamente.
+ */
+function mapearConvenio(planoSaudeNome?: string): string {
+  return normalizarConvenioParaApi(planoSaudeNome);
 }

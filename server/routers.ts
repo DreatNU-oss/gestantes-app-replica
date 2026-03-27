@@ -117,7 +117,7 @@ import { registrarParto, listarPartosRealizados, buscarPartoPorId, deletarParto 
 import { registrarAbortamento, listarAbortamentos, getEstatisticasAbortamentos, deletarAbortamento } from './abortamentos';
 import { getDb } from './db';
 import { TRPCError } from '@trpc/server';
-import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin } from './cesareanSync';
+import { sincronizarCesareaComAdmin, sincronizarTodasCesareasComAdmin, normalizarConvenioParaApi } from './cesareanSync';
 import { enviarLembreteFloresAdmin } from './flowerReminder';
 import { sendWhatsApp, sendToGestante, sendManualMessage, replaceTemplateVariables, uploadPdf } from './whatsapp';
 import { processarMensagemEvento, agendarMensagensPosConsulta } from './whatsappScheduler';
@@ -814,7 +814,7 @@ export const appRouter = router({
               id: novaGestante.id,
               nomeCompleto: novaGestante.nome,
               dataCesarea: input.dataPartoProgramado,
-              convenio: input.convenioCirurgia || 'Unimed',
+              convenio: normalizarConvenioParaApi(input.convenioCirurgia),
               hospital: input.hospitalParto || 'Hospital Unimed',
               procedimento: input.procedimentoCirurgia || 'Cesárea',
             }).catch(err => console.error('[Integração] Erro na sincronização:', err));
@@ -932,7 +932,7 @@ export const appRouter = router({
               id: gestante.id,
               nomeCompleto: gestante.nome,
               dataCesarea: dataPartoProgramadoDepois,
-              convenio: gestante.convenioCirurgia || 'Unimed',
+              convenio: normalizarConvenioParaApi(gestante.convenioCirurgia),
               hospital: gestante.hospitalParto || 'Hospital Unimed',
               procedimento: gestante.procedimentoCirurgia || 'Cesárea',
             }).catch(err => console.error('[Integração] Erro na sincronização:', err));

@@ -2714,3 +2714,10 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Investigar e corrigir peso fetal incorreto (queda irreal na curva) nos USGs inseridos da Bruna
 - [x] Investigar e corrigir CA com casa decimal a mais nos USGs inseridos da Bruna + 2 outras gestantes
 - [x] Corrigir DEFINITIVAMENTE o problema da CA no sistema de interpretação IA (interpretarUltrassom.ts) - 3 camadas de proteção
+
+## Bug Fix: Convênio Unimed enviado como Particular na API do Mapa Cirúrgico (27/03/2026)
+- [x] Investigar fluxo de agendamento de cesárea e API de integração
+- [x] Identificar onde o convênio é mapeado/enviado e corrigir - normalizarConvenioParaApi()
+- [x] Tratar 'Unimed' e 'Unimed ambulatorial' como 'Unimed' na API - 24 testes passando
+- [x] Corrigir agendamento da Bruna Ribeiro Costa se necessário - usuário corrigiu manualmente no outro sistema
+- [x] Fornecer prompt para correção no outro projeto se necessário - não necessário, bug era no APP Gestantes

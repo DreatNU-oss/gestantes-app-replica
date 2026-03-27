@@ -1,0 +1,21 @@
+{
+  "query": "SELECT g.id, g.nome, g.convenioCirurgia, g.planoSaudeId, g.hospitalParto, g.procedimentoCirurgia, g.dataPartoProgramado, g.tipoPartoDesejado, p.nome as planoNome FROM gestantes g LEFT JOIN planosSaude p ON g.planoSaudeId = p.id WHERE g.id = 330025",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3v7At4WPQpm4aRf.9e6a8ae0e28e --database bSA4q7aMJsJeSmafooCq7A --execute SELECT g.id, g.nome, g.convenioCirurgia, g.planoSaudeId, g.hospitalParto, g.procedimentoCirurgia, g.dataPartoProgramado, g.tipoPartoDesejado, p.nome as planoNome FROM gestantes g LEFT JOIN planosSaude p ON g.planoSaudeId = p.id WHERE g.id = 330025",
+  "rows": [
+    {
+      "id": "330025",
+      "nome": "Bruna Ribeiro Costa",
+      "convenioCirurgia": "Unimed (inclui o parto)",
+      "planoSaudeId": "3",
+      "hospitalParto": "Hospital Unimed",
+      "procedimentoCirurgia": "Cesárea + DIU",
+      "dataPartoProgramado": "2026-04-14",
+      "tipoPartoDesejado": "cesariana",
+      "planoNome": "Unimed (inclui o parto)"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\tconvenioCirurgia\tplanoSaudeId\thospitalParto\tprocedimentoCirurgia\tdataPartoProgramado\ttipoPartoDesejado\tplanoNome\n330025\tBruna Ribeiro Costa\tUnimed (inclui o parto)\t3\tHospital Unimed\tCesárea + DIU\t2026-04-14\tcesariana\tUnimed (inclui o parto)\n",
+  "stderr": "",
+  "execution_time_ms": 359
+}
