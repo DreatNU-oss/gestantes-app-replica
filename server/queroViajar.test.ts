@@ -211,11 +211,13 @@ describe("Quero Viajar - Cálculos de IG", () => {
         id: 1,
         nome: "Maria",
         dum: "2025-07-01", // DPP ~2026-04-07, IG em 28/03/2026 ~38s4d
+        medicoId: 1,
       },
       {
         id: 2,
         nome: "Ana",
         dum: "2025-09-01", // DPP ~2026-06-08, IG em 28/03/2026 ~29s6d
+        medicoId: 2,
       },
       {
         id: 3,
@@ -223,6 +225,7 @@ describe("Quero Viajar - Cálculos de IG", () => {
         dataUltrassom: "2026-01-15",
         igUltrassomSemanas: 25,
         igUltrassomDias: 0,
+        medicoId: 1,
         // IG em 28/03/2026: 25*7 + 72 = 247 dias = 35s2d
         // IG em 15/04/2026: 25*7 + 90 = 265 dias = 37s6d
       },
@@ -230,6 +233,7 @@ describe("Quero Viajar - Cálculos de IG", () => {
         id: 4,
         nome: "Julia",
         dum: "2025-12-01", // DPP ~2026-09-07, IG em 28/03/2026 ~16s5d
+        medicoId: 2,
       },
     ];
 
@@ -237,10 +241,14 @@ describe("Quero Viajar - Cálculos de IG", () => {
       lista: typeof gestantes,
       dataInicio: string,
       dataFim: string,
-      igMinSemanas: number
+      igMinSemanas: number,
+      medicoFiltro: string = "todos"
     ) {
       const igMinDias = igMinSemanas * 7;
       return lista.filter((g) => {
+        // Filtro por médico
+        if (medicoFiltro !== "todos" && g.medicoId?.toString() !== medicoFiltro) return false;
+
         const inicio = new Date(dataInicio + "T12:00:00");
         const fim = new Date(dataFim + "T12:00:00");
         const igNoInicio = calcularIgNaData(g, new Date(inicio));
@@ -292,6 +300,43 @@ describe("Quero Viajar - Cálculos de IG", () => {
       const nomes = resultado.map(g => g.nome);
       expect(nomes).toContain("Maria");
       expect(nomes).not.toContain("Carla");
+    });
+
+    it("deve filtrar por médico específico (médico 1)", () => {
+      // Médico 1: Maria (id=1) e Carla (id=3)
+      const resultado = filtrarGestantes(gestantes, "2026-04-01", "2026-04-30", 34, "1");
+      const nomes = resultado.map(g => g.nome);
+      expect(nomes).toContain("Maria");
+      expect(nomes).toContain("Carla");
+      expect(nomes).not.toContain("Ana"); // Médico 2
+      expect(nomes).not.toContain("Julia"); // Médico 2
+    });
+
+    it("deve filtrar por médico específico (médico 2)", () => {
+      // Médico 2: Ana (id=2) e Julia (id=4)
+      // Com IG mínima 34, Ana atinge 34s no período, Julia não
+      const resultado = filtrarGestantes(gestantes, "2026-04-01", "2026-04-30", 34, "2");
+      const nomes = resultado.map(g => g.nome);
+      expect(nomes).toContain("Ana");
+      expect(nomes).not.toContain("Maria"); // Médico 1
+      expect(nomes).not.toContain("Carla"); // Médico 1
+      expect(nomes).not.toContain("Julia"); // IG muito baixa
+    });
+
+    it("deve retornar todas as gestantes a termo quando filtro é 'todos'", () => {
+      const resultadoTodos = filtrarGestantes(gestantes, "2026-04-01", "2026-04-30", 34, "todos");
+      const resultadoSemFiltro = filtrarGestantes(gestantes, "2026-04-01", "2026-04-30", 34);
+      expect(resultadoTodos.length).toBe(resultadoSemFiltro.length);
+      expect(resultadoTodos.map(g => g.nome).sort()).toEqual(resultadoSemFiltro.map(g => g.nome).sort());
+    });
+
+    it("deve combinar filtro de médico com IG mínima alta", () => {
+      // Médico 1 com IG >= 37: Maria sim, Carla sim (atinge 37 no período)
+      const resultado = filtrarGestantes(gestantes, "2026-04-01", "2026-04-30", 37, "1");
+      const nomes = resultado.map(g => g.nome);
+      expect(nomes).toContain("Maria");
+      expect(nomes).toContain("Carla");
+      expect(resultado.length).toBe(2);
     });
   });
 });

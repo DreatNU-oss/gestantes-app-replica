@@ -2745,3 +2745,7 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Informações no card: nome, IG atual, DPP, tipo de parto, paridade, fatores de risco, medicamentos, observações, nome do bebê
 - [x] Gerar lista formatada em texto para copiar e enviar via WhatsApp
 - [x] Testes vitest para a lógica de filtragem
+
+## Filtro por Médico no "Quero Viajar!" (28/03/2026)
+
+- [x] Adicionar filtro/seletor de médico na funcionalidade "Quero Viajar!" para filtrar gestantes por obstetra

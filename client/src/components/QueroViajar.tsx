@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Plane,
   Calendar,
@@ -225,6 +226,7 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [igMinima, setIgMinima] = useState([37]);
+  const [medicoFiltro, setMedicoFiltro] = useState("todos");
   const [copiado, setCopiado] = useState(false);
   const [expandidos, setExpandidos] = useState<Set<number>>(new Set());
 
@@ -236,6 +238,9 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
     const igMinDias = igMinSemanas * 7;
 
     return gestantes.filter((g) => {
+      // Filtro por médico
+      if (medicoFiltro !== "todos" && g.medicoId?.toString() !== medicoFiltro) return false;
+
       // Verificar se a gestante terá IG >= igMinima em algum momento durante o período
       const inicio = new Date(dataInicio + "T12:00:00");
       const fim = new Date(dataFim + "T12:00:00");
@@ -264,7 +269,7 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
       if (!dppB) return -1;
       return dppA.data.getTime() - dppB.data.getTime();
     });
-  }, [gestantes, dataInicio, dataFim, igMinima]);
+  }, [gestantes, dataInicio, dataFim, igMinima, medicoFiltro]);
 
   // IDs para buscar dados em lote
   const gestanteIds = useMemo(() => gestantesFiltradas.map(g => g.id), [gestantesFiltradas]);
@@ -300,6 +305,10 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
     linhas.push(`*GESTANTES A TERMO*`);
     linhas.push(`Período de ausência: ${formatDateBR(dataInicio)} a ${formatDateBR(dataFim)}`);
     linhas.push(`IG mínima: ${igMinima[0]} semanas`);
+    if (medicoFiltro !== "todos") {
+      const medicoNome = medicos.find(m => m.id.toString() === medicoFiltro)?.nome || "";
+      linhas.push(`Médico: ${medicoNome}`);
+    }
     linhas.push(`Total: ${gestantesFiltradas.length} gestante${gestantesFiltradas.length > 1 ? "s" : ""}`);
     linhas.push("");
     linhas.push("─────────────────");
@@ -440,6 +449,26 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
             />
           </div>
         </div>
+
+        {/* Filtro por médico */}
+        {dataInicio && dataFim && (
+          <div className="space-y-2">
+            <Label className="text-sky-800 font-medium">Filtrar por Médico</Label>
+            <Select value={medicoFiltro} onValueChange={setMedicoFiltro}>
+              <SelectTrigger className="border-sky-200 focus:border-sky-400">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os médicos</SelectItem>
+                {medicos.map((m) => (
+                  <SelectItem key={m.id} value={m.id.toString()}>
+                    {m.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* Filtro de IG mínima */}
         {dataInicio && dataFim && (
