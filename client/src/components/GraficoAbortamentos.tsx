@@ -8,13 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
   LabelList,
-  PieChart,
-  Pie,
 } from "recharts";
 import { Card } from "@/components/ui/card";
-import { AlertTriangle, TrendingUp } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -39,35 +36,10 @@ const TIPO_LABELS: Record<string, string> = {
   outro: "Outro",
 };
 
-const TIPO_COLORS: Record<string, string> = {
-  espontaneo: "#f59e0b",
-  retido: "#ef4444",
-  incompleto: "#f97316",
-  inevitavel: "#dc2626",
-  outro: "#6b7280",
-};
-
-const IG_COLORS: Record<string, string> = {
-  "< 8 semanas": "#fbbf24",
-  "8-12 semanas": "#f59e0b",
-  "12-20 semanas": "#f97316",
-  "≥ 20 semanas": "#ef4444",
-  "Não informado": "#9ca3af",
-};
-
 export function GraficoAbortamentos() {
   const { data: estatisticas, isLoading } = trpc.abortamentos.estatisticas.useQuery();
   const { data: listaAbortamentos } = trpc.abortamentos.listar.useQuery();
   const [modalAberto, setModalAberto] = useState(false);
-
-  const dadosPorTipo = useMemo(() => {
-    if (!estatisticas?.porTipo) return [];
-    return estatisticas.porTipo.map((item) => ({
-      name: TIPO_LABELS[item.tipo || "outro"] || item.tipo,
-      value: item.count,
-      tipo: item.tipo,
-    }));
-  }, [estatisticas]);
 
   const dadosPorMes = useMemo(() => {
     if (!estatisticas?.porMes) return [];
@@ -81,14 +53,6 @@ export function GraficoAbortamentos() {
         chave: item.mes,
       };
     });
-  }, [estatisticas]);
-
-  const dadosPorIG = useMemo(() => {
-    if (!estatisticas?.porIG) return [];
-    return estatisticas.porIG.map((item) => ({
-      name: item.faixa as string,
-      value: item.count,
-    }));
   }, [estatisticas]);
 
   if (isLoading) {
@@ -150,78 +114,8 @@ export function GraficoAbortamentos() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Gráfico por Tipo */}
-        {dadosPorTipo.length > 0 && (
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Por Tipo</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={dadosPorTipo}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={70}
-                  dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
-                  labelLine={false}
-                >
-                  {dadosPorTipo.map((entry, index) => (
-                    <Cell
-                      key={`cell-tipo-${index}`}
-                      fill={TIPO_COLORS[entry.tipo || "outro"] || "#6b7280"}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-
-        {/* Gráfico por IG */}
-        {dadosPorIG.length > 0 && (
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Por Idade Gestacional</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={dadosPorIG} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis type="number" allowDecimals={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  width={110}
-                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--popover))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
-                  {dadosPorIG.map((entry, index) => (
-                    <Cell
-                      key={`cell-ig-${index}`}
-                      fill={IG_COLORS[entry.name] || "#f59e0b"}
-                    />
-                  ))}
-                  <LabelList
-                    dataKey="value"
-                    position="insideRight"
-                    style={{ fill: "white", fontWeight: "bold", fontSize: "12px" }}
-                    formatter={(value: number) => (value > 0 ? value : "")}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </div>
-
-      {/* Gráfico por Mês (se houver mais de 1 mês) */}
-      {dadosPorMes.length > 1 && (
+      {/* Gráfico por Mês */}
+      {dadosPorMes.length > 0 && (
         <div className="mt-6">
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Evolução Mensal</h3>
           <ResponsiveContainer width="100%" height={200}>
