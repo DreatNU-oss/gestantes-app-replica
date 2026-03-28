@@ -8,6 +8,7 @@ import { loginWithPassword, createPasswordResetToken, validateResetToken, setPas
 import { sendPasswordResetEmail } from "./email-service";
 import { sdk } from "./_core/sdk";
 import { gestanteRouter } from "./gestante-router";
+import { whatsappSubscriptionRouter } from "./whatsapp-subscription-router";
 import { normalizeExamName } from "../shared/examNormalization";
 import { z } from "zod";
 import type { GestanteComCalculos } from "../drizzle/schema";
@@ -209,6 +210,7 @@ function calculateAgeFromDate(dateString: string): number | null {
 export const appRouter = router({
   system: systemRouter,
   gestante: gestanteRouter,
+  whatsappAssinatura: whatsappSubscriptionRouter,
   
   auth: router({
     me: publicProcedure.query(async (opts) => {
@@ -4172,13 +4174,46 @@ export const appRouter = router({
   // ─── WhatsApp Mensagens ─────────────────────────────────────────────────
   whatsapp: router({
     // Verificar se o serviço WhatsApp está autorizado para a clínica do usuário
+    // Considera tanto o campo legado whatsappAutorizado quanto a assinatura Stripe ativa
     verificarAutorizacao: protectedProcedure.query(async ({ ctx }) => {
-      if (!ctx.user.clinicaId) return { autorizado: false };
+      if (!ctx.user.clinicaId) return { autorizado: false, motivo: 'sem_clinica' };
       const db = await getDb();
-      if (!db) return { autorizado: false };
+      if (!db) return { autorizado: false, motivo: 'db_error' };
+
+      // Verificar assinatura Stripe ativa
+      const { whatsappAssinaturas } = await import('../drizzle/schema');
+      const [assinatura] = await db.select({ status: whatsappAssinaturas.status })
+        .from(whatsappAssinaturas)
+        .where(eq(whatsappAssinaturas.clinicaId, ctx.user.clinicaId))
+        .limit(1);
+
+      if (assinatura?.status === 'ativa') {
+        // Verificar se este obstetra especificamente tem acesso
+        if (ctx.user.role === 'obstetra') {
+          const { whatsappAssinaturaObstetras } = await import('../drizzle/schema');
+          const [acesso] = await db.select({ ativo: whatsappAssinaturaObstetras.ativo })
+            .from(whatsappAssinaturaObstetras)
+            .where(
+              and(
+                eq(whatsappAssinaturaObstetras.clinicaId, ctx.user.clinicaId),
+                eq(whatsappAssinaturaObstetras.userId, ctx.user.id)
+              )
+            ).limit(1);
+          return { autorizado: acesso?.ativo === 1, motivo: acesso?.ativo === 1 ? 'assinatura_ativa' : 'obstetra_sem_acesso' };
+        }
+        // Admin e superadmin sempre têm acesso se a assinatura está ativa
+        return { autorizado: true, motivo: 'assinatura_ativa' };
+      }
+
+      // Fallback: verificar campo legado whatsappAutorizado (para clínicas antigas)
       const [clinica] = await db.select({ whatsappAutorizado: clinicas.whatsappAutorizado })
         .from(clinicas).where(eq(clinicas.id, ctx.user.clinicaId)).limit(1);
-      return { autorizado: clinica?.whatsappAutorizado === 1 };
+
+      const autorizadoLegado = clinica?.whatsappAutorizado === 1;
+      return {
+        autorizado: autorizadoLegado,
+        motivo: autorizadoLegado ? 'autorizado_legado' : (assinatura ? `assinatura_${assinatura.status}` : 'sem_assinatura')
+      };
     }),
 
     // Listar templates de mensagem da clínica

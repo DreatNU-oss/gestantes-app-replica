@@ -969,3 +969,49 @@ export const preConsulta = mysqlTable("preConsulta", {
 
 export type PreConsulta = typeof preConsulta.$inferSelect;
 export type InsertPreConsulta = typeof preConsulta.$inferInsert;
+
+/**
+ * Tabela de assinaturas WhatsApp por clínica (Stripe)
+ * Controla o acesso ao módulo de mensagens WhatsApp
+ */
+export const whatsappAssinaturas = mysqlTable("whatsappAssinaturas", {
+  id: int("id").autoincrement().primaryKey(),
+  clinicaId: int("clinicaId").notNull(), // FK para clinicas.id
+  // Stripe IDs
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  // Status da assinatura
+  status: mysqlEnum("status", [
+    "pendente_instalacao", // Admin solicitou, aguarda suporte instalar
+    "aguardando_pagamento", // Suporte instalou, aguarda admin pagar
+    "ativa",               // Assinatura ativa e paga
+    "cancelada",           // Cancelada pelo admin ou por inadimplência
+    "suspensa",            // Suspensa por falha de pagamento
+  ]).default("pendente_instalacao").notNull(),
+  // Quantidade de obstetras selecionados (para cálculo do valor)
+  quantidadeObstetras: int("quantidadeObstetras").default(1).notNull(),
+  // Controle de ativação pelo suporte
+  instalacaoConfirmadaEm: timestamp("instalacaoConfirmadaEm"), // Quando o suporte confirmou a instalação
+  instalacaoConfirmadaPor: int("instalacaoConfirmadaPor"), // userId do suporte que confirmou
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WhatsappAssinatura = typeof whatsappAssinaturas.$inferSelect;
+export type InsertWhatsappAssinatura = typeof whatsappAssinaturas.$inferInsert;
+
+/**
+ * Obstetras selecionados para acesso ao WhatsApp em cada assinatura
+ */
+export const whatsappAssinaturaObstetras = mysqlTable("whatsappAssinaturaObstetras", {
+  id: int("id").autoincrement().primaryKey(),
+  assinaturaId: int("assinaturaId").notNull(), // FK para whatsappAssinaturas.id
+  userId: int("userId").notNull(), // FK para users.id (obstetra selecionado)
+  clinicaId: int("clinicaId").notNull(), // FK para clinicas.id (redundante para queries rápidas)
+  ativo: int("ativo").default(1).notNull(), // 1 = ativo, 0 = removido
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type WhatsappAssinaturaObstetra = typeof whatsappAssinaturaObstetras.$inferSelect;
+export type InsertWhatsappAssinaturaObstetra = typeof whatsappAssinaturaObstetras.$inferInsert;

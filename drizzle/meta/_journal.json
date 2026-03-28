@@ -589,6 +589,13 @@
       "when": 1774193401154,
       "tag": "0083_friendly_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "5",
+      "when": 1774666939121,
+      "tag": "0084_orange_machine_man",
+      "breakpoints": true
     }
   ]
 }

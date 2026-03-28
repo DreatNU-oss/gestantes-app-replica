@@ -38,6 +38,8 @@ import ExamesPendentes from "./pages/ExamesPendentes";
 import PreCadastro from "./pages/PreCadastro";
 import PreConsulta from "./pages/PreConsulta";
 import AcessoApp from "./pages/AcessoApp";
+import AssinaturaWhatsApp from "./pages/AssinaturaWhatsApp";
+import SuperAdminAssinaturas from "./pages/SuperAdminAssinaturas";
 
 // Roles que podem acessar conteúdo clínico (cartão, exames, ultrassons, partos)
 const CLINICAL_ROLES = ["superadmin", "admin", "obstetra"] as const;
@@ -136,6 +138,16 @@ function Router() {
       {/* Admin Clínicas - superadmin (owner) e admin */}
       <Route path={"/admin/clinicas"}>
         <RoleGuard allowedRoles={["superadmin", "admin"]}><AdminClinicas /></RoleGuard>
+      </Route>
+
+      {/* Assinatura WhatsApp - admin da clínica */}
+      <Route path={"/assinatura-whatsapp"}>
+        <RoleGuard allowedRoles={[...CONFIG_ROLES]}><AssinaturaWhatsApp /></RoleGuard>
+      </Route>
+
+      {/* Painel Superadmin - gerenciamento de assinaturas */}
+      <Route path={"/superadmin/assinaturas"}>
+        <RoleGuard allowedRoles={["superadmin"]}><SuperAdminAssinaturas /></RoleGuard>
       </Route>
 
       <Route path={"/404"} component={NotFound} />

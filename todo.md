@@ -2721,3 +2721,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Tratar 'Unimed' e 'Unimed ambulatorial' como 'Unimed' na API - 24 testes passando
 - [x] Corrigir agendamento da Bruna Ribeiro Costa se necessário - usuário corrigiu manualmente no outro sistema
 - [x] Fornecer prompt para correção no outro projeto se necessário - não necessário, bug era no APP Gestantes
+
+## Módulo Stripe - Assinatura WhatsApp
+
+- [x] Configurar Stripe via webdev_add_feature e injetar chaves
+- [x] Atualizar schema: tabelas whatsappAssinaturas e whatsappAssinaturaObstetras (migração 0084)
+- [x] Criar produto/preço no Stripe (R$ 49,90/mês por obstetra) via script
+- [x] Configurar webhook Stripe no servidor (/api/stripe/webhook)
+- [x] Backend: procedures tRPC (solicitar, ativar, cancelar, verificar acesso)
+- [x] Frontend admin: AssinaturaWhatsApp.tsx - seleção de obstetras e checkout Stripe
+- [x] Painel superadmin: SuperAdminAssinaturas.tsx - solicitações pendentes + ativação
+- [x] Bloqueio automático do WhatsApp ao vencer/cancelar assinatura (verificarAutorizacao)
+- [x] Testes: 20 testes unitários passando (whatsapp-subscription.test.ts)

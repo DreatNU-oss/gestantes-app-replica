@@ -10,6 +10,7 @@ import { uploadLaudoRouter } from "../uploadLaudo";
 // import { processarLembretes } from "../lembretes"; // [REMOVIDO] Envio automático de e-mails desativado
 import gestanteApiRouter from "../gestanteApi";
 import { integrationCallbackRouter } from "../integrationCallback";
+import { stripeWebhookHandler } from "../stripe-webhook";
 import { serveStatic, setupVite } from "./vite";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -77,6 +78,9 @@ async function startServer() {
     next();
   });
   
+  // ⚠️ Stripe webhook DEVE ser registrado ANTES do express.json() para verificação de assinatura
+  app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhookHandler);
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

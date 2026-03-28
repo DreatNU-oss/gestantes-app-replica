@@ -95,6 +95,7 @@ const allConfigMenuItems = [
   { label: "Alterar Senha", path: "/alterar-senha" },
   // [REMOVIDO] Monitoramento de E-mails desativado
   { label: "Integrações", path: "/integracoes", clinicaOnly: "00001" },
+  { label: "Assinatura WhatsApp", path: "/assinatura-whatsapp" },
 ];
 
 // Helper para verificar se o usuário tem acesso a Configurações
