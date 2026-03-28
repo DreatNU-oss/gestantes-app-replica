@@ -339,4 +339,58 @@ describe("Quero Viajar - Cálculos de IG", () => {
       expect(resultado.length).toBe(2);
     });
   });
+
+  describe("Detecção de cesárea agendada no período", () => {
+    function temCesareaAgendadaNoPeriodo(
+      g: { tipoPartoDesejado?: string | null; dataPartoProgramado?: string | null },
+      dataInicio: string,
+      dataFim: string
+    ): boolean {
+      if (!dataInicio || !dataFim) return false;
+      if (g.tipoPartoDesejado !== "cesariana") return false;
+      if (!g.dataPartoProgramado) return false;
+      const dataParto = normalizarData(g.dataPartoProgramado);
+      return dataParto >= dataInicio && dataParto <= dataFim;
+    }
+
+    it("deve detectar cesárea agendada dentro do período", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: "2026-04-15" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(true);
+    });
+
+    it("deve detectar cesárea agendada no primeiro dia do período", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: "2026-04-01" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(true);
+    });
+
+    it("deve detectar cesárea agendada no último dia do período", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: "2026-04-30" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(true);
+    });
+
+    it("não deve detectar cesárea agendada fora do período", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: "2026-05-10" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(false);
+    });
+
+    it("não deve detectar cesárea para parto normal", () => {
+      const g = { tipoPartoDesejado: "normal", dataPartoProgramado: "2026-04-15" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(false);
+    });
+
+    it("não deve detectar cesárea sem data programada", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: null };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(false);
+    });
+
+    it("não deve detectar cesárea com tipo a_definir", () => {
+      const g = { tipoPartoDesejado: "a_definir", dataPartoProgramado: "2026-04-15" };
+      expect(temCesareaAgendadaNoPeriodo(g, "2026-04-01", "2026-04-30")).toBe(false);
+    });
+
+    it("não deve detectar cesárea sem período definido", () => {
+      const g = { tipoPartoDesejado: "cesariana", dataPartoProgramado: "2026-04-15" };
+      expect(temCesareaAgendadaNoPeriodo(g, "", "")).toBe(false);
+    });
+  });
 });

@@ -2749,3 +2749,9 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 ## Filtro por Médico no "Quero Viajar!" (28/03/2026)
 
 - [x] Adicionar filtro/seletor de médico na funcionalidade "Quero Viajar!" para filtrar gestantes por obstetra
+
+## Destaque visual cesárea agendada no "Quero Viajar!" (28/03/2026)
+
+- [x] Destaque visual (cor/ícone) para gestantes com cesárea agendada durante o período de ausência
+- [x] Indicação no texto WhatsApp quando cesárea está agendada no período
+- [x] Testes vitest para lógica de detecção de cesárea no período

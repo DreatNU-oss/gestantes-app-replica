@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
   Users,
+  Scissors,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -326,12 +327,16 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
       });
 
       linhas.push("");
-      linhas.push(`*${index + 1}. ${g.nome}*`);
+      const cesareanoPeriodoWpp = g.tipoPartoDesejado === "cesariana" && g.dataPartoProgramado && (() => {
+        const dp = normalizarData(g.dataPartoProgramado!);
+        return dp >= dataInicio && dp <= dataFim;
+      })();
+      linhas.push(`*${index + 1}. ${g.nome}*${cesareanoPeriodoWpp ? " ✂️ CESÁREA AGENDADA NO PERÍODO" : ""}`);
       if (g.nomeBebe) linhas.push(`   Bebê: ${g.nomeBebe}`);
       linhas.push(`   IG atual: ${igAtual}`);
       linhas.push(`   DPP: ${dpp}`);
       linhas.push(`   Tipo de parto: ${tipoParto}`);
-      if (g.dataPartoProgramado) linhas.push(`   Data programada: ${formatDateBR(g.dataPartoProgramado)}`);
+      if (g.dataPartoProgramado) linhas.push(`   Data programada: ${formatDateBR(g.dataPartoProgramado)}${cesareanoPeriodoWpp ? " ⚠️" : ""}`);
       if (g.motivoCesarea) {
         let motivo = g.motivoCesarea;
         if (motivo === "Outro motivo" && g.motivoCesareaOutro) motivo += ` - ${g.motivoCesareaOutro}`;
@@ -395,6 +400,21 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
       igFim: igFim ? `${igFim.semanas}s ${igFim.dias}d` : "-",
     };
   }, [dataInicio, dataFim]);
+
+  // Verifica se a gestante tem cesárea agendada dentro do período de ausência
+  const temCesareaAgendadaNoPeriodo = useCallback((g: GestanteComCalculos): boolean => {
+    if (!dataInicio || !dataFim) return false;
+    // Deve ter tipo de parto = cesariana E data de parto programado dentro do período
+    if (g.tipoPartoDesejado !== "cesariana") return false;
+    if (!g.dataPartoProgramado) return false;
+    const dataParto = normalizarData(g.dataPartoProgramado);
+    return dataParto >= dataInicio && dataParto <= dataFim;
+  }, [dataInicio, dataFim]);
+
+  // Contagem de cesáreas agendadas no período
+  const cesareasNoPeriodo = useMemo(() => {
+    return gestantesFiltradas.filter(g => temCesareaAgendadaNoPeriodo(g)).length;
+  }, [gestantesFiltradas, temCesareaAgendadaNoPeriodo]);
 
   if (!aberto) {
     return (
@@ -507,12 +527,20 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
           <>
             <Separator className="bg-sky-200" />
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-sky-600" />
-                <span className="font-semibold text-sky-900">
-                  {gestantesFiltradas.length} {gestantesFiltradas.length === 1 ? "gestante" : "gestantes"} possivelmente a termo
-                </span>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-sky-600" />
+                  <span className="font-semibold text-sky-900">
+                    {gestantesFiltradas.length} {gestantesFiltradas.length === 1 ? "gestante" : "gestantes"} possivelmente a termo
+                  </span>
+                </div>
+                {cesareasNoPeriodo > 0 && (
+                  <Badge className="bg-red-100 text-red-800 border-red-300 gap-1">
+                    <Scissors className="h-3 w-3" />
+                    {cesareasNoPeriodo} {cesareasNoPeriodo === 1 ? "cesárea agendada" : "cesáreas agendadas"} no período
+                  </Badge>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 {gestantesFiltradas.length > 0 && (
@@ -568,13 +596,17 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
                   const meds = extras?.medicamentos || [];
                   const medico = medicos.find(m => m.id === g.medicoId);
 
+                  const cesareanoPeriodo = temCesareaAgendadaNoPeriodo(g);
+
                   return (
                     <div
                       key={g.id}
                       className={`rounded-lg border transition-all ${
-                        g.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400 border-blue-200 bg-blue-50/50" :
-                        g.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400 border-pink-200 bg-pink-50/50" :
-                        "border-gray-200 bg-white"
+                        cesareanoPeriodo
+                          ? "border-l-4 border-l-red-500 border-red-300 bg-red-50/60 ring-1 ring-red-200"
+                          : g.sexoBebe === "masculino" ? "border-l-4 border-l-blue-400 border-blue-200 bg-blue-50/50"
+                          : g.sexoBebe === "feminino" ? "border-l-4 border-l-pink-400 border-pink-200 bg-pink-50/50"
+                          : "border-gray-200 bg-white"
                       }`}
                     >
                       {/* Header do card - sempre visível */}
@@ -595,12 +627,22 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
                             {g.sexoBebe === "feminino" && (
                               <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700 shrink-0">♀</span>
                             )}
+                            {cesareanoPeriodo && (
+                              <Badge className="bg-red-600 text-white border-red-700 text-xs gap-1 shrink-0 animate-pulse">
+                                <Scissors className="h-3 w-3" />
+                                Cesárea no período
+                              </Badge>
+                            )}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300 text-xs">
                               IG: {igAtual}
                             </Badge>
-                            <Badge variant="outline" className="bg-sky-100 text-sky-800 border-sky-300 text-xs">
+                            <Badge variant="outline" className={`text-xs ${
+                              cesareanoPeriodo
+                                ? "bg-red-100 text-red-800 border-red-300 font-bold"
+                                : "bg-sky-100 text-sky-800 border-sky-300"
+                            }`}>
                               {tipoParto}
                             </Badge>
                             {isExpanded ? (
@@ -616,6 +658,11 @@ export default function QueroViajar({ gestantes, medicos }: { gestantes: Gestant
                           <span>{paridade}</span>
                           {medico && <span>Médico: {medico.nome}</span>}
                           {g.nomeBebe && <span>Bebê: {g.nomeBebe}</span>}
+                          {cesareanoPeriodo && g.dataPartoProgramado && (
+                            <span className="text-red-600 font-semibold">
+                              ✂️ Cesárea em {formatDateBR(g.dataPartoProgramado)}
+                            </span>
+                          )}
                         </div>
                       </div>
 
