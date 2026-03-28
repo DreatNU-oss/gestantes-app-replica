@@ -2733,3 +2733,15 @@ Nota: A abordagem final é a mais confiável pois usa o motor de renderização 
 - [x] Painel superadmin: SuperAdminAssinaturas.tsx - solicitações pendentes + ativação
 - [x] Bloqueio automático do WhatsApp ao vencer/cancelar assinatura (verificarAutorizacao)
 - [x] Testes: 20 testes unitários passando (whatsapp-subscription.test.ts)
+
+
+## Funcionalidade "Quero Viajar!" na Previsão de Partos (28/03/2026)
+
+- [x] Adicionar botão "Quero Viajar!" na página Previsão de Partos
+- [x] Implementar seletor de datas (início e fim da ausência)
+- [x] Implementar filtro de IG mínima (slider/seletor de 34 a 41 semanas, padrão 37)
+- [x] Buscar gestantes que estarão a termo (>= IG mínima) durante o período de ausência
+- [x] Exibir cards com informações básicas de cada gestante (similar ao ConsultaUnificadaDialog)
+- [x] Informações no card: nome, IG atual, DPP, tipo de parto, paridade, fatores de risco, medicamentos, observações, nome do bebê
+- [x] Gerar lista formatada em texto para copiar e enviar via WhatsApp
+- [x] Testes vitest para a lógica de filtragem

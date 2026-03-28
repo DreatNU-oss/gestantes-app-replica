@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 import { Calendar, Baby, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import QueroViajar from "@/components/QueroViajar";
 import {
   Table,
   TableBody,
@@ -251,6 +252,11 @@ export default function PrevisaoPartos() {
               </p>
             </CardContent>
           </Card>
+        )}
+
+        {/* Quero Viajar */}
+        {gestantes && gestantes.length > 0 && (
+          <QueroViajar gestantes={gestantes} medicos={medicos} />
         )}
       </div>
     </GestantesLayout>

@@ -3552,6 +3552,49 @@ export const appRouter = router({
       }),
   }),
 
+  // Quero Viajar - buscar fatores de risco e medicamentos em lote
+  queroViajar: router({
+    dadosGestantes: protectedProcedure
+      .input(z.object({ gestanteIds: z.array(z.number()) }))
+      .query(async ({ input }) => {
+        const { gestanteIds } = input;
+        if (gestanteIds.length === 0) return {};
+        
+        const db = await getDb();
+        if (!db) return {};
+        
+        const { fatoresRisco: fatoresRiscoTable, medicamentosGestacao } = await import('../drizzle/schema');
+        const { inArray: inArrayFn } = await import('drizzle-orm');
+        
+        // Buscar fatores de risco em lote
+        const todosFatores = await db.select()
+          .from(fatoresRiscoTable)
+          .where(and(
+            inArrayFn(fatoresRiscoTable.gestanteId, gestanteIds),
+            eq(fatoresRiscoTable.ativo, 1)
+          ));
+        
+        // Buscar medicamentos em lote
+        const todosMedicamentos = await db.select()
+          .from(medicamentosGestacao)
+          .where(and(
+            inArrayFn(medicamentosGestacao.gestanteId, gestanteIds),
+            eq(medicamentosGestacao.ativo, 1)
+          ));
+        
+        // Agrupar por gestanteId
+        const resultado: Record<number, { fatoresRisco: typeof todosFatores; medicamentos: typeof todosMedicamentos }> = {};
+        for (const id of gestanteIds) {
+          resultado[id] = {
+            fatoresRisco: todosFatores.filter(f => f.gestanteId === id),
+            medicamentos: todosMedicamentos.filter(m => m.gestanteId === id),
+          };
+        }
+        
+        return resultado;
+      }),
+  }),
+
   // Router de Fatores de Risco
   fatoresRisco: router({
     list: protectedProcedure
